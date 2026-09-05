@@ -71,6 +71,10 @@ export default class FileTransferViewModel extends Context {
             this.receivingTransferChannel.value == "" ||
             this.receivingTransferKey.value == "",
     );
+    cannotExitReception: React.State<boolean> = React.createProxyState(
+        [this.filePathsReceived],
+        () => this.filePathsReceived.value.size > 0,
+    );
 
     cannotExport: React.State<boolean> = React.createProxyState(
         [this.exportKey, this.exportKeyConfirmation],

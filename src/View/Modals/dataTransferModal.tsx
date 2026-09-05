@@ -375,7 +375,7 @@ function TransferDisplayModal(
                             coreViewModel.translations.dataTransferModal
                                 .transferDataHeadline
                         }
-		    </h2>
+                    </h2>
 
                     <p
                         class="secondary"
@@ -394,11 +394,11 @@ function TransferDisplayModal(
                             coreViewModel.translations.dataTransferModal
                                 .allFilesSent
                         }
-		    </p>
+                    </p>
 
-		    <hr></hr>
-		    
-		    <div class="flex-column gap content-margin-bottom">
+                    <hr></hr>
+
+                    <div class="flex-column gap content-margin-bottom">
                         <div class="tile">
                             <span class="icon">forum</span>
                             <div>
@@ -514,8 +514,8 @@ function TransferDataInputModal(
                                             .transferChannelHeadline
                                     }
                                 </span>
-				<input
-				    type="number"
+                                <input
+                                    type="number"
                                     on:enter={
                                         fileTransferViewModel.prepareReceivingData
                                     }
@@ -536,7 +536,7 @@ function TransferDataInputModal(
                                     }
                                 </span>
                                 <input
-				    type="number"
+                                    type="number"
                                     on:enter={
                                         fileTransferViewModel.prepareReceivingData
                                     }
@@ -612,10 +612,23 @@ function DataReceptionModal(
                         ]}
                     ></div>
                 </main>
-                <button on:click={ViewController.reload}>
-                    {coreViewModel.translations.general.reloadAppButton}
-                    <span class="icon">refresh</span>
-                </button>
+                <div class="flex-row width-100">
+                    <button
+                        class="flex"
+                        on:click={
+                            fileTransferViewModel.showTransferDataInputModal
+                        }
+                        toggle:disabled={
+                            fileTransferViewModel.cannotExitReception
+                        }
+                    >
+                        {coreViewModel.translations.general.backButton}
+                    </button>
+                    <button class="flex" on:click={ViewController.reload}>
+                        {coreViewModel.translations.general.reloadAppButton}
+                        <span class="icon">refresh</span>
+                    </button>
+                </div>
             </div>
         </div>
     );

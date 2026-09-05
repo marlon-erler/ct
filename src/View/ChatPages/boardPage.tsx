@@ -45,125 +45,127 @@ export function BoardPage(
         }),
     );
 
-    const wrapper = <div class="content main-content" children:set={pages}></div>
-	Utility.implementPinchZoom(wrapper);
+    const wrapper = (
+        <div class="content main-content" children:set={pages}></div>
+    );
+    Utility.implementPinchZoom(wrapper);
 
     // task modal
     const taskSettingsModal = React.createProxyState(
-	[boardViewModel.selectedTaskViewModel],
-	() => {
-	    if (boardViewModel.selectedTaskViewModel.value == undefined) {
-		return <div></div>;
-	    } else {
-		ViewController.setFocusWithDelay();
+        [boardViewModel.selectedTaskViewModel],
+        () => {
+            if (boardViewModel.selectedTaskViewModel.value == undefined) {
+                return <div></div>;
+            } else {
+                ViewController.setFocusWithDelay();
 
-		return TaskSettingsModal(
-		    coreViewModel,
-		    boardViewModel.selectedTaskViewModel.value,
-		);
-	    }
-	},
+                return TaskSettingsModal(
+                    coreViewModel,
+                    boardViewModel.selectedTaskViewModel.value,
+                );
+            }
+        },
     );
 
     return (
-	<div class="pane">
-	    <div class="toolbar">
-		<span>
-		    <button
-			class="ghost board-close-button"
-			aria-label={
-			    coreViewModel.translations.chatPage.task
-			    .closeBoardButtonAudioLabel
-			}
-			on:click={boardViewModel.close}
-		    >
-			<span class="icon">arrow_back</span>
-		    </button>
-		    <button
-			class="ghost board-toggle-button inset-outline"
-			aria-label={
-			    coreViewModel.translations.chatPage.task
-			    .toggleBoardButtonAudioLabel
-			}
-			on:click={
-			    boardViewModel.taskPageViewModel.toggleBoardList
-			}
-			toggle:selected={
-			    boardViewModel.taskPageViewModel.isShowingBoadList
-			}
-		    >
-			<span class="icon">dock_to_right</span>
-		    </button>
-		    <button
-			class="ghost"
-			aria-label={
-			    coreViewModel.translations.chatPage.task
-			    .boardSettingsHeadline
-			}
-			on:click={boardViewModel.showSettings}
-		    >
-			<span class="icon">settings</span>
-		    </button>
-		</span>
-		<span class="scroll-h ribbon">
-		    {BoardViewToggleButton(
-			coreViewModel.translations.chatPage.task
-			.listViewButtonAudioLabel,
-			"view_list",
-			BoardPageTypes.List,
-			boardViewModel,
-		    )}
-    {BoardViewToggleButton(
-	coreViewModel.translations.chatPage.task
-	.kanbanViewButtonAudioLabel,
-	"view_kanban",
-	BoardPageTypes.Kanban,
-	boardViewModel,
-    )}
-    {BoardViewToggleButton(
-	coreViewModel.translations.chatPage.task
-	.statusViewButtonAudioLabel,
-	"grid_view",
-	BoardPageTypes.StatusGrid,
-	boardViewModel,
-    )}
-</span>
-<span>
-    <button
-	class="ghost inset-outline"
-	aria-label={
-	    coreViewModel.translations.chatPage.task
-	    .filterTasksButtonAudioLabel
-	}
-	on:click={boardViewModel.showFilterModal}
-	toggle:selected={boardViewModel.isFilterActive}
-    >
-	<span class="icon">filter_alt</span>
-    </button>
-    <button
-	class="ghost"
-	aria-label={
-	    coreViewModel.translations.chatPage.task
-	    .createTaskButtonAudioLabel
-	}
-	on:click={boardViewModel.createTask}
-    >
-	<span class="icon">add</span>
-    </button>
-</span>
-	    </div>
+        <div class="pane">
+            <div class="toolbar">
+                <span>
+                    <button
+                        class="ghost board-close-button"
+                        aria-label={
+                            coreViewModel.translations.chatPage.task
+                                .closeBoardButtonAudioLabel
+                        }
+                        on:click={boardViewModel.close}
+                    >
+                        <span class="icon">arrow_back</span>
+                    </button>
+                    <button
+                        class="ghost board-toggle-button inset-outline"
+                        aria-label={
+                            coreViewModel.translations.chatPage.task
+                                .toggleBoardButtonAudioLabel
+                        }
+                        on:click={
+                            boardViewModel.taskPageViewModel.toggleBoardList
+                        }
+                        toggle:selected={
+                            boardViewModel.taskPageViewModel.isShowingBoadList
+                        }
+                    >
+                        <span class="icon">dock_to_right</span>
+                    </button>
+                    <button
+                        class="ghost"
+                        aria-label={
+                            coreViewModel.translations.chatPage.task
+                                .boardSettingsHeadline
+                        }
+                        on:click={boardViewModel.showSettings}
+                    >
+                        <span class="icon">settings</span>
+                    </button>
+                </span>
+                <span class="scroll-h ribbon">
+                    {BoardViewToggleButton(
+                        coreViewModel.translations.chatPage.task
+                            .listViewButtonAudioLabel,
+                        "view_list",
+                        BoardPageTypes.List,
+                        boardViewModel,
+                    )}
+                    {BoardViewToggleButton(
+                        coreViewModel.translations.chatPage.task
+                            .kanbanViewButtonAudioLabel,
+                        "view_kanban",
+                        BoardPageTypes.Kanban,
+                        boardViewModel,
+                    )}
+                    {BoardViewToggleButton(
+                        coreViewModel.translations.chatPage.task
+                            .statusViewButtonAudioLabel,
+                        "grid_view",
+                        BoardPageTypes.StatusGrid,
+                        boardViewModel,
+                    )}
+                </span>
+                <span>
+                    <button
+                        class="ghost inset-outline"
+                        aria-label={
+                            coreViewModel.translations.chatPage.task
+                                .filterTasksButtonAudioLabel
+                        }
+                        on:click={boardViewModel.showFilterModal}
+                        toggle:selected={boardViewModel.isFilterActive}
+                    >
+                        <span class="icon">filter_alt</span>
+                    </button>
+                    <button
+                        class="ghost"
+                        aria-label={
+                            coreViewModel.translations.chatPage.task
+                                .createTaskButtonAudioLabel
+                        }
+                        on:click={boardViewModel.createTask}
+                    >
+                        <span class="icon">add</span>
+                    </button>
+                </span>
+            </div>
 
-	    {wrapper}
+            {wrapper}
 
-	{BoardSettingsModal(coreViewModel, boardViewModel)}
-	{SearchModal(
-	    coreViewModel,
-	    boardViewModel.searchViewModel,
-	    coreViewModel.translations.chatPage.task.filterTasksHeadline,
-	    TaskViewModelToEntry,
-	    boardViewModel.isPresentingFilterModal,
-	)}
-	<div children:set={taskSettingsModal}></div>
-    </div>
-);
+            {BoardSettingsModal(coreViewModel, boardViewModel)}
+            {SearchModal(
+                coreViewModel,
+                boardViewModel.searchViewModel,
+                coreViewModel.translations.chatPage.task.filterTasksHeadline,
+                TaskViewModelToEntry,
+                boardViewModel.isPresentingFilterModal,
+            )}
+            <div children:set={taskSettingsModal}></div>
+        </div>
+    );
 }
