@@ -1,4 +1,5 @@
 import { checkIsValidObject, checkMatchesObjectStructure } from "./typeSafety";
+import * as Hammer from "hammerjs";
 
 export interface Stringifiable {
     toString(): string;
@@ -323,76 +324,84 @@ export function implementPinchZoom(canvas: HTMLElement) {
     const midpoint = (e: TouchEvent, direction: "x" | "y") =>
         (point(e, direction, 0) + point(e, direction, 1)) / 2;
 
-    function apply(factor: number, offset: [number, number]) {
-        if (factor < MIN) return apply(MIN, offset);
-        if (factor > MAX) return apply(5, offset);
+    function apply(factor: number, _offset?: [number, number]) {
+        if (factor < MIN) return apply(MIN, _offset);
+        if (factor > MAX) return apply(5, _offset);
 
-        const [x, y] = offset;
-        element().style.transform = `scale(${(Math.floor(factor * 100) / 100).toString()}) translate(${x}px, ${y}px)`;
-        currentX = x;
-        currentY = y;
-        currentZoom = factor;
+	let x: number, y: number;
+	if (_offset) [x, y] = _offset;
+	else {
+	    x = currentX
+	    y = currentY
+	}
+	element().style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
+	currentX = x;
+	currentY = y;
+	currentZoom = factor;
     }
 
-    canvas.addEventListener("touchstart", (event: TouchEvent) => {
-        (document.activeElement as HTMLElement).blur();
-
-        if (lastElement != undefined && lastElement != element()) reset();
-        lastElement = element();
-
-        initialZoom = currentZoom;
-        initialX = currentX;
-        initialY = currentY;
-
-        if (event.touches.length != 2) {
-            pinching = false;
-            initialTouchX = event.touches[0].clientX;
-            initialTouchY = event.touches[0].clientY;
-            return;
-        }
-
-        pinching = true;
-        initialDistance = distance(event);
-        initialTouchX = midpoint(event, "x");
-        initialTouchY = midpoint(event, "y");
-    });
-    canvas.addEventListener("touchmove", (event: TouchEvent) => {
-        if (!pinching) {
-            apply(currentZoom, [
-                initialX +
-                    (event.touches[0].clientX - initialTouchX) / initialZoom,
-                initialY +
-                    (event.touches[0].clientY - initialTouchY) / initialZoom,
-            ]);
-            return;
-        }
-        if (event.touches.length < 2) return;
-        event.preventDefault();
-        const currentDistance = distance(event);
-        const midX = midpoint(event, "x");
-        const midY = midpoint(event, "y");
-        const ratio = currentDistance / initialDistance;
-        const difference = currentDistance - initialDistance;
-        apply(initialZoom * ratio, [
-            initialX + (midX - difference - initialTouchX) / initialZoom,
-            initialY + (midY - difference - initialTouchY) / initialZoom,
-        ]);
-    });
     canvas.addEventListener("wheel", (event: WheelEvent) => {
-        event.preventDefault();
-        if (!event.shiftKey) {
-            apply(currentZoom, [
-                currentX - event.deltaX,
-                currentY - event.deltaY,
-            ]);
-            return;
-        }
-        apply(currentZoom + (event.deltaY < 0 ? 1 : -1) * 0.1, [
-            initialX,
-            initialY,
-        ]);
+	event.preventDefault();
+
+	initialZoom = currentZoom;
+	initialX = currentX;
+	initialY = currentY;
+
+	if (!event.shiftKey) {
+	    apply(currentZoom, [
+		currentX - event.deltaX,
+		currentY - event.deltaY,
+	    ]);
+	    return;
+	}
+	apply(currentZoom - event.deltaY * 0.01);
     });
     canvas.addEventListener("scroll", (event: MouseEvent) => {
-        event.preventDefault();
+	event.preventDefault();
+    });
+
+    canvas.addEventListener("touchstart", (event: TouchEvent) => {
+	(document.activeElement as HTMLElement).blur();
+
+	if (lastElement != undefined && lastElement != element()) reset();
+	lastElement = element();
+
+	initialZoom = currentZoom;
+	initialX = currentX;
+	initialY = currentY;
+
+	if (event.touches.length != 2) {
+	    pinching = false;
+	    initialTouchX = event.touches[0].clientX;
+	    initialTouchY = event.touches[0].clientY;
+	    return;
+	}
+
+	pinching = true;
+	initialDistance = distance(event);
+	initialTouchX = midpoint(event, "x");
+	initialTouchY = midpoint(event, "y");
+    });
+    canvas.addEventListener("touchmove", (event: TouchEvent) => {
+	if (!pinching) {
+	    apply(currentZoom, [
+		initialX +
+		(event.touches[0].clientX - initialTouchX) / initialZoom,
+		initialY +
+		(event.touches[0].clientY - initialTouchY) / initialZoom,
+	    ]);
+	    return;
+	}
+	if (event.touches.length < 2) return;
+	event.preventDefault();
+	const currentDistance = distance(event);
+	const midX = midpoint(event, "x");
+	const midY = midpoint(event, "y");
+	const ratio = currentDistance / initialDistance;
+	const difference = currentDistance - initialDistance;
+	apply(initialZoom * ratio, [
+	    initialX + (midX - difference - initialTouchX) / initialZoom,
+	    initialY + (midY - difference - initialTouchY) / initialZoom,
+	]);
     });
 }

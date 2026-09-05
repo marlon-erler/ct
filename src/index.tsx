@@ -100,4 +100,3 @@ document
         StorageModal(coreViewModel, storageViewModel),
         SettingsModal(coreViewModel, settingsViewModel),
     );
-Utility.implementPinchZoom(".zoom");
