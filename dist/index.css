@@ -1,164 +1,166 @@
 /* src/colors.css */
-[color]:not([color="standard"]) {
-    --primary: hsl(var(--hue), 100%, var(--accent-luma));
-    --primary-hover: hsl(var(--hue), 95%, var(--accent-luma));
-    --primary-active: hsl(var(--hue), 80%, var(--accent-luma));
-    --text-on-color: hsl(0, 0%, var(--accent-text-luma));
-    --link: hsl(var(--hue), 100%, var(--accent-luma));
-    --surface: hsla(var(--hue), 80%, 30%, 5%);
-    --surface-hover: hsla(var(--hue), 100%, 5%, 10%);
-    --surface-active: hsla(var(--hue), 100%, 5%, 15%);
+[color]:not([color=standard]) {
+  --primary: hsl(var(--hue), 100%, var(--accent-luma));
+  --primary-hover: hsl(var(--hue), 95%, var(--accent-luma));
+  --primary-active: hsl(var(--hue), 80%, var(--accent-luma));
+  --text-on-color: hsl(0, 0%, var(--accent-text-luma));
+  --link: hsl(var(--hue), 100%, var(--accent-luma));
+  --surface: hsla(var(--hue), 80%, 30%, 5%);
+  --surface-hover: hsla(var(--hue), 100%, 5%, 10%);
+  --surface-active: hsla(var(--hue), 100%, 5%, 15%);
 }
-body[theme="dark"] [color]:not([color="standard"]) {
-    --accent-luma: var(--accent-luma-dark);
-    --accent-text-luma: var(--accent-text-luma-dark);
-    --surface: hsla(var(--hue), 100%, 95%, 5%);
-    --surface-hover: hsla(var(--hue), 100%, 95%, 10%);
-    --surface-active: hsla(var(--hue), 100%, 95%, 15%);
+body[theme=dark] [color]:not([color=standard]) {
+  --accent-luma: var(--accent-luma-dark);
+  --accent-text-luma: var(--accent-text-luma-dark);
+  --surface: hsla(var(--hue), 100%, 95%, 5%);
+  --surface-hover: hsla(var(--hue), 100%, 95%, 10%);
+  --surface-active: hsla(var(--hue), 100%, 95%, 15%);
 }
-[color]:not([color="standard"]).tile {
-    --gradient-luma-1: 70%;
-    --gradient-luma-2: 90%;
-    --hover-luma: 75%;
-    --active-luma: 80%;
-    --text-luma: 20%;
-    --surface: linear-gradient(
-        120deg,
-        hsl(var(--hue), 100%, var(--gradient-luma-1)),
-        hsla(var(--hue), 100%, var(--gradient-luma-2), 40%)
-    );
-    --surface-hover: hsl(var(--hue), 100%, var(--hover-luma));
-    --surface-active: hsl(var(--hue), 100%, var(--active-luma));
-    --text-normal: hsl(var(--hue), 100%, var(--text-luma));
+[color]:not([color=standard]).tile {
+  --gradient-luma-1: 70%;
+  --gradient-luma-2: 90%;
+  --hover-luma: 75%;
+  --active-luma: 80%;
+  --text-luma: 20%;
+  --surface:
+    linear-gradient(
+      
+      120deg,
+      hsl(var(--hue), 100%, var(--gradient-luma-1)),
+      hsla(var(--hue), 100%, var(--gradient-luma-2), 40%) );
+  --surface-hover: hsl(var(--hue), 100%, var(--hover-luma));
+  --surface-active: hsl(var(--hue), 100%, var(--active-luma));
+  --text-normal: hsl(var(--hue), 100%, var(--text-luma));
 }
-body[theme="dark"] [color]:not([color="standard"]).tile {
-    --gradient-luma-1: 20%;
-    --gradient-luma-2: 15%;
-    --hover-luma: 25%;
-    --active-luma: 30%;
-    --text-luma: 90%;
-    --surface: linear-gradient(
-        120deg,
-        hsl(var(--hue), 100%, var(--gradient-luma-1)),
-        hsla(var(--hue), 100%, var(--gradient-luma-2), 40%)
-    );
-    --surface-hover: hsl(var(--hue), 100%, var(--hover-luma));
-    --surface-active: hsl(var(--hue), 100%, var(--active-luma));
-    --text-normal: hsl(var(--hue), 100%, var(--text-luma));
+body[theme=dark] [color]:not([color=standard]).tile {
+  --gradient-luma-1: 20%;
+  --gradient-luma-2: 15%;
+  --hover-luma: 25%;
+  --active-luma: 30%;
+  --text-luma: 90%;
+  --surface:
+    linear-gradient(
+      
+      120deg,
+      hsl(var(--hue), 100%, var(--gradient-luma-1)),
+      hsla(var(--hue), 100%, var(--gradient-luma-2), 40%) );
+  --surface-hover: hsl(var(--hue), 100%, var(--hover-luma));
+  --surface-active: hsl(var(--hue), 100%, var(--active-luma));
+  --text-normal: hsl(var(--hue), 100%, var(--text-luma));
 }
-[color]:not([color="standard"]).fill-color {
-    color: white;
-    background-color: var(--primary);
+[color]:not([color=standard]).fill-color {
+  color: white;
+  background-color: var(--primary);
 }
-[color]:not([color="standard"])[selected].fill-color {
-    color: var(--primary);
+[color]:not([color=standard])[selected].fill-color {
+  color: var(--primary);
 }
 @media (min-width: 1024px) {
-    [color]:not([color="standard"]).background {
-        --luma: var(--background-luma);
-        --sat: 100%;
-        background: hsl(var(--hue), var(--sat), var(--luma), 40%);
-    }
-    body[theme="dark"] [color]:not([color="standard"]).background {
-        --luma: var(--background-luma-dark);
-        --sat: 100%;
-    }
-    [color="standard"].background {
-        background: var(--surface);
-    }
+  [color]:not([color=standard]).background {
+    --luma: var(--background-luma);
+    --sat: 100%;
+    background: hsl(var(--hue), var(--sat), var(--luma), 40%);
+  }
+  body[theme=dark] [color]:not([color=standard]).background {
+    --luma: var(--background-luma-dark);
+    --sat: 100%;
+  }
+  [color=standard].background {
+    background: var(--surface);
+  }
 }
-[color]:not([color="standard"]).subtle-background {
-    --luma: var(--subtle-luma);
-    background: hsl(var(--hue), 100%, var(--luma), 50%);
+[color]:not([color=standard]).subtle-background {
+  --luma: var(--subtle-luma);
+  background: hsl(var(--hue), 100%, var(--luma), 50%);
 }
-body[theme="dark"] [color]:not([color="standard"]).subtle-background {
-    --luma: var(--subtle-luma-dark);
+body[theme=dark] [color]:not([color=standard]).subtle-background {
+  --luma: var(--subtle-luma-dark);
 }
-[color="coral"] {
-    --hue: 20;
-    --accent-luma: 50%;
-    --accent-luma-dark: 70%;
-    --accent-text-luma: 100%;
-    --accent-text-luma-dark: 100%;
-    --background-luma: 90%;
-    --background-luma-dark: 11%;
-    --subtle-luma: 95%;
-    --subtle-luma-dark: 5%;
+[color=coral] {
+  --hue: 20;
+  --accent-luma: 50%;
+  --accent-luma-dark: 70%;
+  --accent-text-luma: 100%;
+  --accent-text-luma-dark: 100%;
+  --background-luma: 90%;
+  --background-luma-dark: 11%;
+  --subtle-luma: 95%;
+  --subtle-luma-dark: 5%;
 }
-[color="yellow"] {
-    --hue: 50;
-    --accent-luma: 50%;
-    --accent-luma-dark: 60%;
-    --accent-text-luma: 0%;
-    --accent-text-luma-dark: 0%;
-    --background-luma: 85%;
-    --background-luma-dark: 11%;
-    --subtle-luma: 95%;
-    --subtle-luma-dark: 5%;
+[color=yellow] {
+  --hue: 50;
+  --accent-luma: 50%;
+  --accent-luma-dark: 60%;
+  --accent-text-luma: 0%;
+  --accent-text-luma-dark: 0%;
+  --background-luma: 85%;
+  --background-luma-dark: 11%;
+  --subtle-luma: 95%;
+  --subtle-luma-dark: 5%;
 }
-[color="green"] {
-    --hue: 120;
-    --accent-luma: 40%;
-    --accent-luma-dark: 60%;
-    --accent-text-luma: 100%;
-    --accent-text-luma-dark: 0%;
-    --background-luma: 85%;
-    --background-luma-dark: 12%;
-    --subtle-luma: 95%;
-    --subtle-luma-dark: 5%;
+[color=green] {
+  --hue: 120;
+  --accent-luma: 40%;
+  --accent-luma-dark: 60%;
+  --accent-text-luma: 100%;
+  --accent-text-luma-dark: 0%;
+  --background-luma: 85%;
+  --background-luma-dark: 12%;
+  --subtle-luma: 95%;
+  --subtle-luma-dark: 5%;
 }
-[color="lightblue"] {
-    --hue: 180;
-    --accent-luma: 40%;
-    --accent-luma-dark: 60%;
-    --accent-text-luma: 0%;
-    --accent-text-luma-dark: 0%;
-    --background-luma: 85%;
-    --background-luma-dark: 12%;
-    --subtle-luma: 95%;
-    --subtle-luma-dark: 5%;
+[color=lightblue] {
+  --hue: 180;
+  --accent-luma: 40%;
+  --accent-luma-dark: 60%;
+  --accent-text-luma: 0%;
+  --accent-text-luma-dark: 0%;
+  --background-luma: 85%;
+  --background-luma-dark: 12%;
+  --subtle-luma: 95%;
+  --subtle-luma-dark: 5%;
 }
-[color="blue"] {
-    --hue: 220;
-    --accent-luma: 50%;
-    --accent-luma-dark: 70%;
-    --accent-text-luma: 100%;
-    --accent-text-luma-dark: 100%;
-    --background-luma: 90%;
-    --background-luma-dark: 12%;
-    --subtle-luma: 95%;
-    --subtle-luma-dark: 5%;
+[color=blue] {
+  --hue: 220;
+  --accent-luma: 50%;
+  --accent-luma-dark: 70%;
+  --accent-text-luma: 100%;
+  --accent-text-luma-dark: 100%;
+  --background-luma: 90%;
+  --background-luma-dark: 12%;
+  --subtle-luma: 95%;
+  --subtle-luma-dark: 5%;
 }
-[color="purple"] {
-    --hue: 280;
-    --accent-luma: 50%;
-    --accent-luma-dark: 70%;
-    --accent-text-luma: 100%;
-    --accent-text-luma-dark: 100%;
-    --background-luma: 90%;
-    --background-luma-dark: 11%;
-    --subtle-luma: 95%;
-    --subtle-luma-dark: 5%;
+[color=purple] {
+  --hue: 280;
+  --accent-luma: 50%;
+  --accent-luma-dark: 70%;
+  --accent-text-luma: 100%;
+  --accent-text-luma-dark: 100%;
+  --background-luma: 90%;
+  --background-luma-dark: 11%;
+  --subtle-luma: 95%;
+  --subtle-luma-dark: 5%;
 }
 
 /* src/coloredTile.css */
 .colored-tile {
-    position: relative;
-    display: flex;
-    align-items: flex-end !important;
-    justify-content: start;
-    overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end !important;
+  justify-content: start;
+  overflow: hidden;
 }
 .colored-tile h2 {
-    margin: 0px;
+  margin: 0px;
 }
 .colored-tile .shadow {
-    position: absolute;
-    left: -15px;
-    bottom: -45px;
-    font-size: 7rem;
-    opacity: 0.1;
-    white-space: nowrap;
+  position: absolute;
+  left: -15px;
+  bottom: -45px;
+  font-size: 7rem;
+  opacity: 0.1;
+  white-space: nowrap;
 }
 
 /* src/base.css */
@@ -166,159 +168,157 @@ body[theme="dark"] [color]:not([color="standard"]).subtle-background {
 #home-page #chat-section,
 #chat-page,
 #chat-page #main > div {
-    animation: slide-up var(--animation-duration) ease;
+  animation: slide-up var(--animation-duration) ease;
 }
 #background-wrapper {
-    position: fixed;
-    top: 0px;
-    left: var(--safe-area-left);
-    right: var(--safe-area-right);
-    bottom: 0px;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-    opacity: 0.4;
+  position: fixed;
+  top: 0px;
+  left: var(--safe-area-left);
+  right: var(--safe-area-right);
+  bottom: 0px;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.4;
 }
 main {
-    z-index: 2;
+  z-index: 2;
 }
 #background-wrapper div {
-    content: "";
-    position: absolute;
-    top: -80px;
-    left: -80px;
-    right: -80px;
-    bottom: -80px;
-    z-index: -1;
-    pointer-events: none;
-    filter: blur(40px);
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  right: -80px;
+  bottom: -80px;
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(40px);
 }
 #background-wrapper #sky {
-    left: -100%;
-    bottom: -50%;
-    --color-1: hsl(188, 100%, 83%);
-    --color-2: hsl(194, 72%, 56%);
-    background-image: radial-gradient(var(--color-1), var(--color-2));
+  left: -100%;
+  bottom: -50%;
+  --color-1: hsl(188, 100%, 83%);
+  --color-2: hsl(194, 72%, 56%);
+  background-image: radial-gradient(var(--color-1), var(--color-2));
 }
 #background-wrapper #grass-1 {
-    --color-1: hsl(150, 100%, 30%);
-    --color-2: hsl(150, 100%, 25%);
-    background-image: linear-gradient(
-        350deg,
-        var(--color-1),
-        var(--color-2) 30%,
-        transparent 40%
-    );
+  --color-1: hsl(150, 100%, 30%);
+  --color-2: hsl(150, 100%, 25%);
+  background-image:
+    linear-gradient(
+      350deg,
+      var(--color-1),
+      var(--color-2) 30%,
+      transparent 40%);
 }
 #background-wrapper #grass-2 {
-    --color-1: hsl(110, 100%, 40%);
-    --color-2: hsl(110, 100%, 35%);
-    background-image: linear-gradient(
-        9deg,
-        var(--color-1),
-        var(--color-2) 30%,
-        transparent 35%
-    );
+  --color-1: hsl(110, 100%, 40%);
+  --color-2: hsl(110, 100%, 35%);
+  background-image:
+    linear-gradient(
+      9deg,
+      var(--color-1),
+      var(--color-2) 30%,
+      transparent 35%);
 }
-body[theme="dark"] #background-wrapper {
-    opacity: 0.5;
+body[theme=dark] #background-wrapper {
+  opacity: 0.5;
 }
-body[theme="dark"] #background-wrapper #sky {
-    --color-1: hsl(188, 100%, 30%);
-    --color-2: hsl(194, 72%, 24%);
+body[theme=dark] #background-wrapper #sky {
+  --color-1: hsl(188, 100%, 30%);
+  --color-2: hsl(194, 72%, 24%);
 }
-body[theme="dark"] #background-wrapper #grass-1 {
-    --color-1: hsl(120, 30%, 30%);
-    --color-2: hsl(120, 30%, 24%);
+body[theme=dark] #background-wrapper #grass-1 {
+  --color-1: hsl(120, 30%, 30%);
+  --color-2: hsl(120, 30%, 24%);
 }
-body[theme="dark"] #background-wrapper #grass-2 {
-    --color-1: hsl(110, 60%, 30%);
-    --color-2: hsl(110, 50%, 24%);
+body[theme=dark] #background-wrapper #grass-2 {
+  --color-1: hsl(110, 60%, 30%);
+  --color-2: hsl(110, 50%, 24%);
 }
 
 /* src/View/homePage.css */
 #home-page > div {
-    display: flex;
-    flex-direction: row;
-    gap: var(--large-gap);
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    overflow: hidden;
-    overflow-x: scroll;
-    padding: 0px;
+  display: flex;
+  flex-direction: row;
+  gap: var(--large-gap);
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overflow: hidden;
+  overflow-x: scroll;
+  padding: 0px;
 }
 #home-page > div > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    gap: var(--gap-between-tiles);
-    padding: var(--content-padding);
-    padding-top: calc(var(--header-height) + var(--content-margin));
-    width: 100%;
-    min-width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: var(--gap-between-tiles);
+  padding: var(--content-padding);
+  padding-top: calc(var(--header-height) + var(--content-margin));
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-align: center;
 }
 #home-page #overview-section,
 #home-page #chat-section {
-    padding-bottom: calc(
-        var(--content-padding) + var(--header-height) + var(--safe-area-bottom)
-    );
+  padding-bottom: calc(var(--content-padding) + var(--header-height) + var(--safe-area-bottom));
 }
 #home-page #chat-grid {
-    margin-top: var(--content-padding);
-    display: grid;
-    gap: var(--gap-between-tiles);
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  margin-top: var(--content-padding);
+  display: grid;
+  gap: var(--gap-between-tiles);
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
 }
 @media (min-width: 640px) {
-    #home-page > div {
-        overflow-x: hidden;
-    }
-    #home-page #overview-section {
-        width: 20rem;
-        min-width: 20rem;
-    }
-    #home-page #chat-section {
-        flex: 1;
-        min-width: unset;
-    }
+  #home-page > div {
+    overflow-x: hidden;
+  }
+  #home-page #overview-section {
+    width: 20rem;
+    min-width: 20rem;
+  }
+  #home-page #chat-section {
+    flex: 1;
+    min-width: unset;
+  }
 }
 @media (min-width: 1200px) {
-    #home-page #overview-section,
-    #home-page #chat-section {
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
-    #home-page #chat-grid {
-        margin-top: 3rem;
-    }
-    #home-page #overview-section {
-        width: var(--max-input-width);
-        min-width: var(--max-input-width);
-    }
+  #home-page #overview-section,
+  #home-page #chat-section {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+  #home-page #chat-grid {
+    margin-top: 3rem;
+  }
+  #home-page #overview-section {
+    width: var(--max-input-width);
+    min-width: var(--max-input-width);
+  }
 }
 
 /* src/View/chatPage.css */
 #chat-page-wrapper {
-    display: none;
+  display: none;
 }
 body[showing-chat] #home-page {
-    display: none;
+  display: none;
 }
 body[showing-chat] #chat-page-wrapper {
-    display: flex;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background-color: var(--background-glass);
-    z-index: 2;
+  display: flex;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: var(--background-glass);
+  z-index: 2;
 }
 #chat-page {
-    --ribbon-size: var(--control-height);
+  --ribbon-size: var(--control-height);
 }
 #chat-page > div,
 #chat-page > div > #ribbon,
@@ -329,752 +329,673 @@ body[showing-chat] #chat-page-wrapper {
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar,
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar > span,
 #chat-page > div > #main > div > .pane-wrapper > .pane > .content {
-    display: flex;
+  display: flex;
 }
 #chat-page > div {
-    padding: 0px;
-    overflow: hidden;
+  padding: 0px;
+  overflow: hidden;
 }
 #chat-page > div > #main {
-    width: calc(100% - var(--ribbon-size) - 1px);
+  width: calc(100% - var(--ribbon-size) - 1px);
 }
 #chat-page #main > div,
 #chat-page > div > #main > div > .pane-wrapper,
 #chat-page > div > #main > div > .pane-wrapper > .pane,
 #chat-page > div > #main > div > .pane-wrapper > .pane > .content {
-    width: 100%;
-    height: 100%;
-    flex: 1;
+  width: 100%;
+  height: 100%;
+  flex: 1;
 }
 #chat-page > div > #main > div > .pane-wrapper,
 #chat-page > div > #main > div > .pane-wrapper > .pane {
-    flex-direction: column;
-    scroll-snap-align: center;
-    min-width: 100%;
-    overflow: hidden;
+  flex-direction: column;
+  scroll-snap-align: center;
+  min-width: 100%;
+  overflow: hidden;
 }
 #chat-page > div > #main > div > .pane-wrapper > .pane:not(.side),
 #chat-page > div > #main > div > .pane-wrapper > .pane:not(.side) .content {
-    animation: slide-up var(--animation-duration);
+  animation: slide-up var(--animation-duration);
 }
 @media (min-width: 1024px) {
-    #chat-page > div > #main > div > .pane-wrapper {
-        min-width: unset;
-    }
-    #chat-page > div > #main > div > .pane-wrapper.side {
-        width: 18rem;
-        min-width: 18rem;
-        max-width: 18rem;
-    }
+  #chat-page > div > #main > div > .pane-wrapper {
+    min-width: unset;
+  }
+  #chat-page > div > #main > div > .pane-wrapper.side {
+    width: 18rem;
+    min-width: 18rem;
+    max-width: 18rem;
+  }
 }
 #chat-page > div > #main > div > .pane-wrapper > .pane > .content {
-    flex-direction: column;
-    overflow: auto;
-    padding: var(--content-padding);
+  flex-direction: column;
+  overflow: auto;
+  padding: var(--content-padding);
 }
 #chat-page #ribbon,
 #chat-page #main,
 #chat-page #main .content {
-    flex-direction: column;
+  flex-direction: column;
 }
 #chat-page > div > #ribbon,
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar {
-    align-items: center;
+  align-items: center;
 }
 #chat-page > div > #ribbon {
-    width: calc(var(--ribbon-size) + 1px);
-    border-right: 1px solid var(--border);
-    padding-bottom: var(--safe-area-bottom);
+  width: calc(var(--ribbon-size) + 1px);
+  border-right: 1px solid var(--border);
+  padding-bottom: var(--safe-area-bottom);
 }
 #chat-page > div > #ribbon > span,
-#chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    > span.ribbon {
-    gap: var(--gap-between-tiles);
-    padding: var(--gap-between-tiles);
+#chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar > span.ribbon {
+  gap: var(--gap-between-tiles);
+  padding: var(--gap-between-tiles);
 }
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar {
-    justify-content: start;
-    justify-content: space-between;
+  justify-content: start;
+  justify-content: space-between;
 }
 #chat-page > div > #ribbon > span {
-    overflow-y: auto;
-    flex-direction: column;
-    justify-content: end;
+  overflow-y: auto;
+  flex-direction: column;
+  justify-content: end;
 }
 #chat-page > div > #ribbon > span.marquee {
-    height: 100%;
-    overflow: hidden;
-    position: relative;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 #chat-page > div > #ribbon > span.marquee > span {
-    transform: rotate(270deg);
-    transform-origin: left;
-    position: absolute;
-    bottom: -10px;
-    left: calc(var(--control-height) / 2);
-    height: var(--control-height);
-    min-width: 100vh;
-    overflow: visible;
-    text-overflow: visible;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: var(--gap-between-tiles);
+  transform: rotate(270deg);
+  transform-origin: left;
+  position: absolute;
+  bottom: -10px;
+  left: calc(var(--control-height) / 2);
+  height: var(--control-height);
+  min-width: 100vh;
+  overflow: visible;
+  text-overflow: visible;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between-tiles);
 }
 #chat-page > div > #ribbon > span.marquee > span > * {
-    animation: slide-up var(--animation-duration);
+  animation: slide-up var(--animation-duration);
 }
 #chat-page > div > #ribbon > .navigation-buttons {
-    min-height: calc(var(--control-height) * 4);
-    flex: 0;
+  min-height: calc(var(--control-height) * 4);
+  flex: 0;
 }
 #chat-page > div > #ribbon button,
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar button {
-    padding: 0px;
-    width: var(--control-height);
-    max-width: var(--control-height);
-    height: var(--control-height);
-    min-height: var(--control-height);
-    align-items: center;
-    justify-content: center;
+  padding: 0px;
+  width: var(--control-height);
+  max-width: var(--control-height);
+  height: var(--control-height);
+  min-height: var(--control-height);
+  align-items: center;
+  justify-content: center;
 }
 #chat-page > div > #ribbon button.ribbon-button,
-#chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    button.ribbon-button {
-    min-width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
-    width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
-    max-width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
-    min-height: unset;
-    height: calc(var(--control-height) - 2 * var(--gap-between-tiles));
-    color: var(--primary);
+#chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar button.ribbon-button {
+  min-width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
+  width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
+  max-width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
+  min-height: unset;
+  height: calc(var(--control-height) - 2 * var(--gap-between-tiles));
+  color: var(--primary);
 }
 #chat-page > div > #ribbon button > .icon,
-#chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    button
-    > .icon {
-    font-size: 1.1rem;
+#chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar button > .icon {
+  font-size: 1.1rem;
 }
 #chat-page > div > #ribbon > span {
-    width: 100%;
+  width: 100%;
 }
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar {
-    height: var(--ribbon-size);
-    overflow-x: auto;
-    padding: 0px;
+  height: var(--ribbon-size);
+  overflow-x: auto;
+  padding: 0px;
 }
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar > span {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar > span.title {
-    padding-left: var(--content-padding);
+  padding-left: var(--content-padding);
 }
-#chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    :is(input, select, button) {
-    height: 100%;
-    flex: 1;
+#chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar :is(input, select, button) {
+  height: 100%;
+  flex: 1;
 }
 
 /* src/View/ChatPages/taskPage.css */
 #chat-page > div > #main > #task-page > .pane-wrapper > .pane > .main-content {
-    width: 100%;
-    max-width: 100%;
-    padding: 0px;
-    overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  padding: 0px;
+  overflow: hidden;
 }
-#chat-page
-    > div
-    > #main
-    > #task-page
-    > .pane-wrapper
-    > .pane
-    > .main-content
-    > div {
-    animation: slide-up var(--animation-duration);
+#chat-page > div > #main > #task-page > .pane-wrapper > .pane > .main-content > div {
+  animation: slide-up var(--animation-duration);
 }
 #chat-page > div > #main > #task-page .task-grid {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-between-tiles);
-    padding: var(--content-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-between-tiles);
+  padding: var(--content-padding);
 }
 #chat-page > div > #main > #task-page .zoom {
-    display: flex;
-    align-items: start;
-    gap: var(--large-gap);
-    width: auto;
-    height: auto;
-    transform-origin: top left;
-    padding: var(--content-padding);
+  display: flex;
+  align-items: start;
+  gap: var(--large-gap);
+  width: auto;
+  height: auto;
+  transform-origin: top left;
+  padding: var(--content-padding);
 }
 #board-content .main-content {
-    overflow: auto;
+  overflow: auto;
 }
 #chat-page > div > #main > #task-page .kanban-board-wrapper .kanban-column,
 #chat-page > div > #main > #task-page .status-grid-wrapper .status-column {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-between-tiles);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-between-tiles);
 }
 #chat-page > div > #main > #task-page .property-input-wrapper {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 #chat-page > div > #main > #task-page .kanban-board-wrapper .kanban-column,
 #chat-page > div > #main > #task-page .property-input-wrapper,
 #chat-page > div > #main > #task-page .status-grid-wrapper .status-column,
 #chat-page > div > #main > #task-page .status-name-row > *,
 #chat-page > div > #main > #task-page .status-name-row::before {
-    width: 18rem;
-    min-width: 18rem;
-    max-width: 18rem;
+  width: 18rem;
+  min-width: 18rem;
+  max-width: 18rem;
 }
 #chat-page > div > #main > #task-page .status-name-row,
 #chat-page > div > #main > #task-page .status-grid-wrapper {
-    display: flex;
-    gap: var(--large-gap);
+  display: flex;
+  gap: var(--large-gap);
 }
 #chat-page > div > #main > #task-page .status-page-content,
 #chat-page > div > #main > #task-page .status-grid-wrapper {
-    flex-direction: column;
+  flex-direction: column;
 }
 #chat-page > div > #main > #task-page .status-name-row::before {
-    content: "";
-    display: flex;
+  content: "";
+  display: flex;
 }
 #chat-page > div > #main > #task-page .board-close-button {
-    display: none;
+  display: none;
 }
 #chat-page > div > #main > #task-page .board-toggle-button {
-    display: flex;
+  display: flex;
 }
-#chat-page
-    > div
-    > #main
-    > #task-page[isshowingboard][showingboardlist="false"]
-    #board-list {
-    display: none;
+#chat-page > div > #main > #task-page[isshowingboard][showingboardlist=false] #board-list {
+  display: none;
 }
 @media (min-width: 640px) {
-    #chat-page > div > #main > #task-page .task-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-    }
+  #chat-page > div > #main > #task-page .task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
 }
 @media (max-width: 1024px) {
-    #chat-page > div > #main > #task-page #board-list {
-        display: false;
-    }
-    #chat-page > div > #main > #task-page #board-content {
-        display: none;
-    }
-    #chat-page > div > #main > #task-page[isshowingboard] #board-list {
-        display: none;
-    }
-    #chat-page > div > #main > #task-page[isshowingboard] #board-content {
-        display: flex;
-    }
-    #chat-page > div > #main > #task-page .board-close-button {
-        display: flex;
-    }
-    #chat-page > div > #main > #task-page .board-toggle-button {
-        display: none;
-    }
+  #chat-page > div > #main > #task-page #board-list {
+    display: false;
+  }
+  #chat-page > div > #main > #task-page #board-content {
+    display: none;
+  }
+  #chat-page > div > #main > #task-page[isshowingboard] #board-list {
+    display: none;
+  }
+  #chat-page > div > #main > #task-page[isshowingboard] #board-content {
+    display: flex;
+  }
+  #chat-page > div > #main > #task-page .board-close-button {
+    display: flex;
+  }
+  #chat-page > div > #main > #task-page .board-toggle-button {
+    display: none;
+  }
 }
 
 /* src/View/ChatPages/messagePage.css */
 #chat-page #main #message-page .content {
-    padding: 0px;
-    overflow: hidden;
-    display: flex;
-    position: relative;
+  padding: 0px;
+  overflow: hidden;
+  display: flex;
+  position: relative;
 }
 #chat-page #main #message-page .content #message-container {
-    --message-container-padding: var(--control-height);
-    padding-bottom: calc(
-        var(--message-container-padding) + var(--content-padding)
-    ) !important;
+  --message-container-padding: var(--control-height);
+  padding-bottom: calc(var(--message-container-padding) + var(--content-padding)) !important;
 }
-#chat-page
-    #main
-    #message-page
-    .content:has(.reply-preview-wrapper .reply-preview)
-    #message-container {
-    --message-container-padding: calc(
-        2 * var(--control-height) + var(--gap-between-tiles)
-    );
+#chat-page #main #message-page .content:has(.reply-preview-wrapper .reply-preview) #message-container {
+  --message-container-padding: calc( 2 * var(--control-height) + var(--gap-between-tiles) );
 }
 #message-page #message-container {
-    overflow: auto;
+  overflow: auto;
 }
 #message-page #composer {
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
 #message-page #composer input {
-    margin: 0px;
-    width: 100%;
-    max-width: unset;
-    flex: 1;
-    border-top: 1px solid var(--border);
-    border-left: 1px solid var(--border);
+  margin: 0px;
+  width: 100%;
+  max-width: unset;
+  flex: 1;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
 }
 #message-page #composer .content-width-constraint {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    flex-direction: column;
-    gap: var(--gap-between-tiles);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--gap-between-tiles);
 }
 #message-page #composer .reply-preview-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+#message-page #composer .reply-preview-wrapper .reply-preview {
+  width: 100%;
+  max-width: var(--max-input-width);
+  display: flex;
+  gap: var(--gap-between-tiles);
+}
+#message-page #composer .reply-preview-wrapper .reply-preview > div {
+  display: flex;
+  align-items: center;
+  gap: var(--text-gap);
+  padding: 0px var(--content-padding);
+  width: calc(100% - var(--control-height) - var(--gap-between-tiles));
+}
+@media (max-width: 700px) {
+  #message-page #composer div {
+    width: calc(100vw - var(--control-height));
+    max-width: unset;
+    display: flex;
+  }
+}
+@media (min-width: 700px) {
+  #message-page #composer .content-width-constraint,
+  #message-page #composer .input-width-constraint {
     display: flex;
     justify-content: flex-end;
     width: 100%;
-}
-#message-page #composer .reply-preview-wrapper .reply-preview {
-    width: 100%;
+    max-width: var(--max-content-width);
+  }
+  #message-page #composer .content-width-constraint {
+    max-width: var(--max-content-width);
+  }
+  #message-page #composer .input-width-constraint {
     max-width: var(--max-input-width);
-    display: flex;
-    gap: var(--gap-between-tiles);
-}
-#message-page #composer .reply-preview-wrapper .reply-preview > div {
-    display: flex;
-    align-items: center;
-    gap: var(--text-gap);
-    padding: 0px var(--content-padding);
-    width: calc(100% - var(--control-height) - var(--gap-between-tiles));
-}
-@media (max-width: 700px) {
-    #message-page #composer div {
-        width: calc(100vw - var(--control-height));
-        max-width: unset;
-        display: flex;
-    }
-}
-@media (min-width: 700px) {
-    #message-page #composer .content-width-constraint,
-    #message-page #composer .input-width-constraint {
-        display: flex;
-        justify-content: flex-end;
-        width: 100%;
-        max-width: var(--max-content-width);
-    }
-    #message-page #composer .content-width-constraint {
-        max-width: var(--max-content-width);
-    }
-    #message-page #composer .input-width-constraint {
-        max-width: var(--max-input-width);
-    }
+  }
 }
 #message-page #message-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: var(--content-padding);
-    gap: var(--gap-between-tiles);
-    height: auto;
-    max-height: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--content-padding);
+  gap: var(--gap-between-tiles);
+  height: auto;
+  max-height: unset;
 }
 #message-page #message-container:not([scroll-hard]) {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 .message-bubble {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: var(--max-content-width);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--max-content-width);
 }
 .message-bubble .tile.main {
-    display: flex;
-    flex-direction: row;
-    align-items: start;
-    padding: 0px;
-    width: 100%;
-    max-width: var(--max-input-width);
-    overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  padding: 0px;
+  width: 100%;
+  max-width: var(--max-input-width);
+  overflow: hidden;
 }
 .message-bubble .tile.main .text-container {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    width: 100%;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  flex: 1;
 }
 .message-bubble .tile.main .button-container {
-    display: flex;
-    width: var(--control-height);
-    max-width: var(--control-height);
+  display: flex;
+  width: var(--control-height);
+  max-width: var(--control-height);
 }
 .message-bubble .tile.main button {
-    justify-content: center;
-    padding: 0px;
-    width: 100%;
-    --surface: transparent;
+  justify-content: center;
+  padding: 0px;
+  width: 100%;
+  --surface: transparent;
 }
 .message-bubble .tile.main .reply-button {
-    display: none;
+  display: none;
 }
 .message-bubble:hover .tile.main .reply-button {
-    display: flex;
+  display: flex;
 }
 .message-bubble .tile.main .text-container {
-    padding: var(--control-padding);
+  padding: var(--control-padding);
 }
 .message-bubble .tile.main .timestamp,
 .message-bubble .tile.main .timestamp .icon,
 .message-bubble .tile.main .sender-name {
-    font-size: 0.8rem;
-    opacity: 0.6;
+  font-size: 0.8rem;
+  opacity: 0.6;
 }
 .message-bubble .tile.main .timestamp {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-between-tiles);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-between-tiles);
 }
 .message-bubble .tile.main .timestamp .icon {
-    display: none;
+  display: none;
 }
 .message-bubble .tile.main .sender-name {
-    font-weight: bold;
+  font-weight: bold;
 }
 .message-bubble .tile.main .body {
-    word-break: break-word;
+  word-break: break-word;
 }
 .modal .message-bubble .tile.main .body {
-    word-break: keep-all;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
+  word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 .message-bubble[sentbyuser] {
-    justify-content: flex-end;
+  justify-content: flex-end;
 }
 .message-bubble[sentbyuser] {
-    align-items: flex-end;
+  align-items: flex-end;
 }
 .message-bubble[sentbyuser] .tile.main,
 .message-bubble[sentbyuser] .tile.main .timestamp {
-    flex-direction: row-reverse;
+  flex-direction: row-reverse;
 }
 .message-bubble[sentbyuser] .tile.main .timestamp .icon {
-    display: flex;
+  display: flex;
 }
 .message-bubble[sentbyuser] .tile.main span {
-    text-align: right;
+  text-align: right;
 }
 .message-bubble > .inline-reply {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    background: var(--surface-alt);
-    height: var(--control-height);
-    max-width: var(--max-input-width);
-    width: 100%;
-    overflow: hidden;
-    padding: 0px var(--control-padding);
-    gap: var(--text-gap);
-    border-left: var(--outline-width) solid var(--primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: var(--surface-alt);
+  height: var(--control-height);
+  max-width: var(--max-input-width);
+  width: 100%;
+  overflow: hidden;
+  padding: 0px var(--control-padding);
+  gap: var(--text-gap);
+  border-left: var(--outline-width) solid var(--primary);
 }
 .message-bubble > .message-reaction-row {
-    max-width: var(--max-input-width);
-    width: 100%;
-    padding: var(--gap-between-tiles);
-    background: var(--surface-alt);
-    display: none !important;
-    overflow: hidden;
+  max-width: var(--max-input-width);
+  width: 100%;
+  padding: var(--gap-between-tiles);
+  background: var(--surface-alt);
+  display: none !important;
+  overflow: hidden;
 }
 .message-bubble > .message-reaction-row:has(button:not([count="0"])) {
-    display: grid !important;
+  display: grid !important;
 }
 .message-bubble > .message-reaction-row button {
-    min-height: unset;
-    height: 100%;
-    width: 100%;
-    padding: var(--control-padding-compact);
-    gap: 0px;
-    flex: 1 !important;
-    animation: slide-up var(--animation-duration);
+  min-height: unset;
+  height: 100%;
+  width: 100%;
+  padding: var(--control-padding-compact);
+  gap: 0px;
+  flex: 1 !important;
+  animation: slide-up var(--animation-duration);
 }
 .message-bubble > .message-reaction-row button[count="0"] {
-    display: none;
+  display: none;
 }
 .message-reaction-row {
-    grid-template-columns: repeat(3, minmax(80px, 1fr));
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
 }
 @media (min-width: 100px) {
-    .message-reaction-row {
-        grid-template-columns: repeat(3, minmax(80px, 1fr));
-    }
+  .message-reaction-row {
+    grid-template-columns: repeat(3, minmax(80px, 1fr));
+  }
 }
 .grid.message-reaction-filter {
-    grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 }
 
 /* src/View/ChatPages/calendarPage.css */
-#chat-page
-    > div
-    > #main
-    > #calendar-page
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    .input-wrapper {
-    display: flex;
-    padding: var(--gap-between-tiles);
-    gap: var(--gap-between-tiles);
+#chat-page > div > #main > #calendar-page > .pane-wrapper > .pane > .toolbar .input-wrapper {
+  display: flex;
+  padding: var(--gap-between-tiles);
+  gap: var(--gap-between-tiles);
 }
-#chat-page
-    > div
-    > #main
-    > #calendar-page
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    .input-wrapper
-    > input {
-    min-height: unset;
-    height: calc(var(--control-height) - 2 * var(--gap-between-tiles));
-    appearance: textfield;
-    -moz-appearance: textfield;
-    padding-right: 0px;
+#chat-page > div > #main > #calendar-page > .pane-wrapper > .pane > .toolbar .input-wrapper > input {
+  min-height: unset;
+  height: calc(var(--control-height) - 2 * var(--gap-between-tiles));
+  appearance: textfield;
+  -moz-appearance: textfield;
+  padding-right: 0px;
 }
 #calendar-page .input-wrapper > input::-webkit-outer-spin-button,
 #calendar-page .input-wrapper > input::-webkit-innner-spin-button {
-    appearance: none;
-    -webkit-appearance: none;
-    margin: 0px;
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0px;
 }
-#chat-page
-    > div
-    > #main
-    > #calendar-page
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    .input-wrapper
-    > .year-input {
-    width: 4.4rem;
+#chat-page > div > #main > #calendar-page > .pane-wrapper > .pane > .toolbar .input-wrapper > .year-input {
+  width: 4.4rem;
 }
-#chat-page
-    > div
-    > #main
-    > #calendar-page
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    .input-wrapper
-    > .month-input {
-    width: 3.1rem;
+#chat-page > div > #main > #calendar-page > .pane-wrapper > .pane > .toolbar .input-wrapper > .month-input {
+  width: 3.1rem;
 }
 @media (max-width: 750px) {
-    #chat-page > div > #main > #calendar-page {
-        flex-direction: column;
-    }
-    #chat-page > div > #main > #calendar-page .grid-pane-wrapper {
-        border-bottom: 1px solid var(--border);
-    }
+  #chat-page > div > #main > #calendar-page {
+    flex-direction: column;
+  }
+  #chat-page > div > #main > #calendar-page .grid-pane-wrapper {
+    border-bottom: 1px solid var(--border);
+  }
 }
 @media (max-width: 1024px) and (min-width: 750px) {
-    #chat-page > div > #main > #calendar-page .pane-wrapper {
-        flex: 1;
-        min-width: unset;
-    }
-    #chat-page > div > #main > #calendar-page .grid-pane-wrapper {
-        border-right: 1px solid var(--border);
-    }
+  #chat-page > div > #main > #calendar-page .pane-wrapper {
+    flex: 1;
+    min-width: unset;
+  }
+  #chat-page > div > #main > #calendar-page .grid-pane-wrapper {
+    border-right: 1px solid var(--border);
+  }
 }
 
 /* src/View/Components/monthGrid.css */
 .month-grid-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-between-tiles);
-    height: 100%;
-    overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-between-tiles);
+  height: 100%;
+  overflow: auto;
 }
 .month-grid-wrapper .day-labels {
-    flex: 0;
-    padding: var(--content-padding);
-    padding-bottom: 0px;
+  flex: 0;
+  padding: var(--content-padding);
+  padding-bottom: 0px;
 }
 .month-grid-wrapper > div {
-    display: grid;
-    gap: var(--gap-between-tiles);
-    grid-template-columns: repeat(7, minmax(0px, 1fr));
-    animation: slide-up var(--animation-duration);
+  display: grid;
+  gap: var(--gap-between-tiles);
+  grid-template-columns: repeat(7, minmax(0px, 1fr));
+  animation: slide-up var(--animation-duration);
 }
 .month-grid {
-    overflow: visible;
-    padding: var(--content-padding);
-    padding-top: 0px;
-    flex: 1;
-    grid-auto-rows: 1fr;
+  overflow: visible;
+  padding: var(--content-padding);
+  padding-top: 0px;
+  flex: 1;
+  grid-auto-rows: 1fr;
 }
 .month-grid .tile {
-    animation: slide-up var(--animation-duration);
-    overflow: hidden;
-    align-items: start;
+  animation: slide-up var(--animation-duration);
+  overflow: hidden;
+  align-items: start;
 }
 .month-grid .tile[today] b {
-    color: var(--primary);
+  color: var(--primary);
 }
 .month-grid .tile > div {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 .month-grid .tile .event-count {
-    display: none;
-    background-color: var(--text-normal);
-    color: var(--background);
-    opacity: 0.6;
-    border-radius: 100%;
-    width: 1rem;
-    height: 1rem;
-    font-size: 0.6rem;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
+  display: none;
+  background-color: var(--text-normal);
+  color: var(--background);
+  opacity: 0.6;
+  border-radius: 100%;
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.6rem;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
 }
 .month-grid .tile .event-count[has-events] {
-    background-color: var(--primary);
-    opacity: 1;
+  background-color: var(--primary);
+  opacity: 1;
 }
 .month-grid .tile .event-list {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    gap: var(--gap-between-tiles);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  gap: var(--gap-between-tiles);
 }
 .month-grid .tile .event-list span {
-    animation: slide-up var(--animation-duration);
+  animation: slide-up var(--animation-duration);
 }
 @media (max-width: 900px) {
-    .month-grid .tile {
-        padding: 0px;
-    }
-    .month-grid .tile > div {
-        align-items: center;
-        justify-content: center;
-    }
-    .month-grid .tile .event-count {
-        display: flex;
-    }
-    .month-grid .tile .event-list {
-        display: none;
-    }
+  .month-grid .tile {
+    padding: 0px;
+  }
+  .month-grid .tile > div {
+    align-items: center;
+    justify-content: center;
+  }
+  .month-grid .tile .event-count {
+    display: flex;
+  }
+  .month-grid .tile .event-list {
+    display: none;
+  }
 }
 
 /* src/View/Modals/splitModal.css */
 .modal > div:has(.split-modal[extended]) {
-    max-width: 64rem;
+  max-width: 64rem;
 }
 .split-modal {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
 }
 .split-modal > div {
-    width: 100%;
-    min-width: calc(100% - 4rem);
-    flex: 0;
-    scroll-snap-align: center;
+  width: 100%;
+  min-width: calc(100% - 4rem);
+  flex: 0;
+  scroll-snap-align: center;
 }
 .split-modal > div,
 .split-modal > div > .scroll-area {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: start;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: start;
 }
 .split-modal[navigation]:not([page-open]) > div {
-    justify-content: safe center;
+  justify-content: safe center;
 }
 .split-modal[navigation] > div {
-    min-width: 100%;
+  min-width: 100%;
 }
 .split-modal .scroll-area {
-    flex: 1;
-    width: 100%;
-    overflow-y: auto;
-    padding: var(--content-padding);
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  padding: var(--content-padding);
 }
 .split-modal[navigation] > div:nth-child(2) > .flex-row > button {
-    transform: translateX(calc(-1 * var(--content-padding)));
+  transform: translateX(calc(-1 * var(--content-padding)));
 }
 .split-modal .detail-button-wrapper {
-    display: flex;
-    justify-content: end;
-    border-top: 1px solid var(--border);
-    padding: var(--content-padding);
+  display: flex;
+  justify-content: end;
+  border-top: 1px solid var(--border);
+  padding: var(--content-padding);
 }
 .split-modal .detail-button-wrapper button {
-    max-width: 100%;
+  max-width: 100%;
 }
 .split-modal code {
-    width: 100%;
-    height: 100%;
-    font-size: 0.9rem;
+  width: 100%;
+  height: 100%;
+  font-size: 0.9rem;
 }
 @media (min-width: 640px) {
-    .split-modal > div {
-        flex: 1;
-        min-width: unset;
-    }
-    .split-modal[navigation] > div {
-        min-width: unset;
-    }
-    .split-modal[navigation] > div:first-child {
-        flex: 0;
-        min-width: 20rem;
-    }
-    .split-modal:not([navigation]) > div {
-        width: 50%;
-        min-width: 50%;
-    }
-    .split-modal .detail-button-wrapper {
-        display: none;
-    }
+  .split-modal > div {
+    flex: 1;
+    min-width: unset;
+  }
+  .split-modal[navigation] > div {
+    min-width: unset;
+  }
+  .split-modal[navigation] > div:first-child {
+    flex: 0;
+    min-width: 20rem;
+  }
+  .split-modal:not([navigation]) > div {
+    width: 50%;
+    min-width: 50%;
+  }
+  .split-modal .detail-button-wrapper {
+    display: none;
+  }
 }
 @media (max-width: 640px) {
-    .split-modal[navigation]:not([page-open]) > div:nth-child(2) {
-        display: none;
-    }
-    .split-modal[navigation][page-open] > div:first-child {
-        display: none;
-    }
+  .split-modal[navigation]:not([page-open]) > div:nth-child(2) {
+    display: none;
+  }
+  .split-modal[navigation][page-open] > div:first-child {
+    display: none;
+  }
 }
