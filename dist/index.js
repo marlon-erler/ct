@@ -1161,15 +1161,37 @@
     );
     const point = (e, direction, i) => e.touches[i][direction == "x" ? "clientX" : "clientY"];
     const midpoint = (e, direction) => (point(e, direction, 0) + point(e, direction, 1)) / 2;
-    function apply(factor, offset) {
-      if (factor < MIN) return apply(MIN, offset);
-      if (factor > MAX) return apply(5, offset);
-      const [x, y] = offset;
-      element().style.transform = `scale(${(Math.floor(factor * 100) / 100).toString()}) translate(${x}px, ${y}px)`;
+    function apply(factor, _offset) {
+      if (factor < MIN) return apply(MIN, _offset);
+      if (factor > MAX) return apply(5, _offset);
+      let x, y;
+      if (_offset) [x, y] = _offset;
+      else {
+        x = currentX;
+        y = currentY;
+      }
+      element().style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
       currentX = x;
       currentY = y;
       currentZoom = factor;
     }
+    canvas.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      initialZoom = currentZoom;
+      initialX = currentX;
+      initialY = currentY;
+      if (!event.shiftKey) {
+        apply(currentZoom, [
+          currentX - event.deltaX,
+          currentY - event.deltaY
+        ]);
+        return;
+      }
+      apply(currentZoom - event.deltaY * 0.01);
+    });
+    canvas.addEventListener("scroll", (event) => {
+      event.preventDefault();
+    });
     canvas.addEventListener("touchstart", (event) => {
       document.activeElement.blur();
       if (lastElement != void 0 && lastElement != element()) reset();
@@ -1208,23 +1230,6 @@
         initialY + (midY - difference - initialTouchY) / initialZoom
       ]);
     });
-    canvas.addEventListener("wheel", (event) => {
-      event.preventDefault();
-      if (!event.shiftKey) {
-        apply(currentZoom, [
-          currentX - event.deltaX,
-          currentY - event.deltaY
-        ]);
-        return;
-      }
-      apply(currentZoom + (event.deltaY < 0 ? 1 : -1) * 0.1, [
-        initialX,
-        initialY
-      ]);
-    });
-    canvas.addEventListener("scroll", (event) => {
-      event.preventDefault();
-    });
   }
 
   // src/ViewModel/Global/coreViewModel.ts
@@ -1236,7 +1241,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.05.A";
+      this.BUILD = "Build 26.09.06.A";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -8120,5 +8125,4 @@
     StorageModal(coreViewModel, storageViewModel),
     SettingsModal(coreViewModel, settingsViewModel)
   );
-  implementPinchZoom(".zoom");
 })();
