@@ -375,7 +375,7 @@ function TransferDisplayModal(
                             coreViewModel.translations.dataTransferModal
                                 .transferDataHeadline
                         }
-                    </h2>
+		    </h2>
 
                     <p
                         class="secondary"
@@ -394,7 +394,46 @@ function TransferDisplayModal(
                             coreViewModel.translations.dataTransferModal
                                 .allFilesSent
                         }
-                    </p>
+		    </p>
+
+		    <hr></hr>
+		    
+		    <div class="flex-column gap content-margin-bottom">
+                        <div class="tile">
+                            <span class="icon">forum</span>
+                            <div>
+                                <span class="secondary">
+                                    {
+                                        coreViewModel.translations
+                                            .dataTransferModal
+                                            .transferChannelHeadline
+                                    }
+                                </span>
+                                <b
+                                    subscribe:innerText={
+                                        fileTransferViewModel.transferChannel
+                                    }
+                                ></b>
+                            </div>
+                        </div>
+                        <div class="tile">
+                            <span class="icon">key</span>
+                            <div>
+                                <span class="secondary">
+                                    {
+                                        coreViewModel.translations
+                                            .dataTransferModal
+                                            .transferKeyHeadline
+                                    }
+                                </span>
+                                <b
+                                    subscribe:innerText={
+                                        fileTransferViewModel.transferKey
+                                    }
+                                ></b>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr></hr>
 
