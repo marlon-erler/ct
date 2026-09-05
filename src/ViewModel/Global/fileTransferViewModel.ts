@@ -139,6 +139,7 @@ export default class FileTransferViewModel extends Context {
     };
 
     downloadFile = async (): Promise<void> => {
+	if (this.cannotExport.value == true) return;
         const date = new Date().toISOString().split("T")[0];
 
         const backup: Blob =
