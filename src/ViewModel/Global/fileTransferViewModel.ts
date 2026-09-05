@@ -86,7 +86,7 @@ export default class FileTransferViewModel extends Context {
         [this.importedFile],
         () => this.importedFile.value == undefined,
     );
-    cannotDecryptImport: React.State<boolean> = React.createProxyState(
+    importDecryptSuccessful: React.State<boolean> = React.createProxyState(
         [this.importKey],
         () => this.importKey.value == "",
     );
@@ -179,7 +179,7 @@ export default class FileTransferViewModel extends Context {
         const key = this.importKey.value;
         if (!fileString || !key) return;
 
-        this.cannotDecryptImport.value = true;
+        this.importDecryptSuccessful.value = true;
         try {
             await this.coreViewModel.fileTransferModel.handleBackupFile(
                 fileString,
@@ -189,7 +189,7 @@ export default class FileTransferViewModel extends Context {
         } catch (e) {
             console.error(e);
             this.isImportKeyCorrect.value = false;
-            this.cannotDecryptImport.value = false;
+            this.importDecryptSuccessful.value = false;
         }
     };
 

@@ -928,7 +928,7 @@ function ImportDecryptionDataModal(
                         class="primary flex"
                         on:click={fileTransferViewModel.decryptImport}
                         toggle:disabled={
-                            fileTransferViewModel.cannotDecryptImport
+                            fileTransferViewModel.importDecryptSuccessful
                         }
                     >
                         {

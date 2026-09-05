@@ -93,7 +93,7 @@ export default class FileTransferModel {
         const parsed = parse(decrypted);
         if (!Array.isArray(parsed)) {
             console.error("Canceling backup - not an array", decrypted);
-            return;
+            throw "no array";
         }
 
         for (const file of parsed) {
