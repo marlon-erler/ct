@@ -16,7 +16,6 @@ import { SettingsModal } from "./View/Modals/settingsModal";
 import { DataTransferModalWrapper } from "./View/Modals/dataTransferModal";
 import { ConnectionModal } from "./View/Modals/connectionModal";
 import v1Upgrader from "./Upgrader/v1";
-import * as Utility from "./Model/Utility/utility";
 import StorageModel from "./Model/Global/storageModel";
 import SettingsModel from "./Model/Global/settingsModel";
 import FileTransferModel from "./Model/Global/fileTransferModel";

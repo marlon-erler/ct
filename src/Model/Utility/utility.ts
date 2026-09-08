@@ -313,20 +313,22 @@ export function implementPinchZoom(canvas: HTMLElement) {
     const MIN = 0.25;
     const MAX = 5;
 
-    const element = (): HTMLElement => canvas.querySelector(".zoom");
+    const element = (): HTMLElement|null=> canvas.querySelector(".zoom");
     const distance = (e: TouchEvent) =>
-        Math.hypot(
-            e.touches[0].pageX - e.touches[1].pageX,
-            e.touches[0].pageY - e.touches[1].pageY,
-        );
+	Math.hypot(
+	    e.touches[0].pageX - e.touches[1].pageX,
+	    e.touches[0].pageY - e.touches[1].pageY,
+	);
     const point = (e: TouchEvent, direction: "x" | "y", i: number) =>
-        e.touches[i][direction == "x" ? "clientX" : "clientY"];
+	e.touches[i][direction == "x" ? "clientX" : "clientY"];
     const midpoint = (e: TouchEvent, direction: "x" | "y") =>
-        (point(e, direction, 0) + point(e, direction, 1)) / 2;
+	(point(e, direction, 0) + point(e, direction, 1)) / 2;
 
     function apply(factor: number, _offset?: [number, number]) {
-        if (factor < MIN) return apply(MIN, _offset);
-        if (factor > MAX) return apply(5, _offset);
+	const el = element();
+	if (!el) return;
+	if (factor < MIN) return apply(MIN, _offset);
+	if (factor > MAX) return apply(5, _offset);
 
 	let x: number, y: number;
 	if (_offset) [x, y] = _offset;
@@ -334,7 +336,7 @@ export function implementPinchZoom(canvas: HTMLElement) {
 	    x = currentX
 	    y = currentY
 	}
-	element().style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
+	el.style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
 	currentX = x;
 	currentY = y;
 	currentZoom = factor;
@@ -356,15 +358,17 @@ export function implementPinchZoom(canvas: HTMLElement) {
 	}
 	apply(currentZoom - event.deltaY * 0.01);
     });
-    canvas.addEventListener("scroll", (event: MouseEvent) => {
+    canvas.addEventListener("scroll", (event: Event) => {
 	event.preventDefault();
     });
 
     canvas.addEventListener("touchstart", (event: TouchEvent) => {
 	(document.activeElement as HTMLElement).blur();
 
-	if (lastElement != undefined && lastElement != element()) reset();
-	lastElement = element();
+	const el = element();
+	if (!el) return;
+	if (lastElement != undefined && lastElement != el) reset();
+	lastElement = el;
 
 	initialZoom = currentZoom;
 	initialX = currentX;

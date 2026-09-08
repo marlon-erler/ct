@@ -23,7 +23,7 @@ export default class StorageViewModel extends Context {
         const path: string[] = StorageModel.stringToPathComponents(
             this.selectedPath.value,
         );
-        const content: string | undefined =
+        const content: string | null =
             this.coreViewModel.storageModel.read(path);
         return (
             (content ?? this.coreViewModel.translations.storage.notAFile) ||

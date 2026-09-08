@@ -9,7 +9,7 @@ import ConnectionModel from "../../Model/Global/connectionModel";
 import ChatListModel from "../../Model/Chat/chatListModel";
 
 export default class CoreViewModel {
-    readonly BUILD = "Build 26.09.06.A";
+    readonly BUILD = "Build 26.09.09.A";
 
     translations: Translations;
 
@@ -40,7 +40,8 @@ export default class CoreViewModel {
             return;
 
         while (this.contexts.length > 0) {
-            const currentContext: Context = this.context;
+            const currentContext: Context|undefined= this.context;
+	    if (!currentContext) return;
             currentContext.handleContextClose(fromHistoryEvent);
             this.contextStack.delete(currentContext.contextId);
             if (currentContext.contextId == contextId) break;
@@ -53,7 +54,7 @@ export default class CoreViewModel {
         const contexts: Context[] = this.contexts;
         while (contexts.length > 0) {
             const currentContext: Context | undefined = contexts.pop();
-            if (!currentContext) contexts;
+            if (!currentContext) return;
             const isHandled: boolean = currentContext.handleKeystroke(e);
             if (isHandled == true) break;
         }
@@ -102,6 +103,7 @@ export default class CoreViewModel {
         document.body.addEventListener("keydown", this.handleKeyDown);
 
         window.onpopstate = () => {
+	    if (!this.context) return;
             this.closeContext(this.context.contextId, true);
         };
 
@@ -142,7 +144,6 @@ export class Context {
 }
 
 export class ContextHost<T> extends Context {
-    coreViewModel: CoreViewModel;
     contexts = new Map<T, Context>();
     currentContext = new React.State<Context | undefined>(undefined);
 
@@ -169,8 +170,10 @@ export class ContextHost<T> extends Context {
     updateContexts = (): void => {
         if (this.isOpen == false) return;
 
+	const selection = this.contextSelection;
+	if (!selection) return;
         const selectedContext: Context | undefined = this.contexts.get(
-            this.contextSelection,
+            selection
         );
         if (!selectedContext) return;
         if (selectedContext != this.currentContext.value) {
@@ -180,4 +183,8 @@ export class ContextHost<T> extends Context {
         this.coreViewModel.context = selectedContext;
         this.currentContext.value = selectedContext;
     };
+    
+    constructor(contextDebugDescription: string, public coreViewModel: CoreViewModel) {
+	super(contextDebugDescription);
+    }
 }

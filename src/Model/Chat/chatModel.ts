@@ -34,8 +34,8 @@ export default class ChatModel {
 
     // data
     readonly id: string;
-    info: ChatInfo;
-    color: Colors;
+    info: ChatInfo; /* load function called in constructor */
+    color: Colors = Colors.Standard;
 
     get unwrappedPrimaryChannel(): string {
         return this.info.namespace + this.info.primaryChannel;
@@ -196,7 +196,7 @@ export default class ChatModel {
         fileContent?: FileContent<string>,
     ): Promise<boolean> => {
         const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return;
+        if (nameAndChannel == false) return false;
         const [senderName, combinedChannel] = nameAndChannel;
 
         const chatMessage: ChatMessage = await ChatModel.createChatMessage(
@@ -231,11 +231,11 @@ export default class ChatModel {
     readonly sendReaction = async (
         messageId: string,
         content: ReactionSymbols,
-        isDeleting?: boolean,
+        isDeleting: boolean = false,
     ): Promise<void> => {
         const nameAndChannel = this.getNameAndChannel();
         if (nameAndChannel == false) return;
-        const [senderName, combinedChannel] = nameAndChannel;
+        const [senderName] = nameAndChannel;
 
         const reaction = ChatModel.createMessageReaction(
             messageId,

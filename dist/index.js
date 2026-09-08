@@ -605,9 +605,9 @@
         exportHeadline: "Daten exportieren",
         importHeadline: "Daten importieren",
         selectionDescription: "W\xE4hle die Daten aus, die du \xFCbertragen m\xF6chtest.",
+        exportSelectionDescription: "W\xE4hle die Daten aus, die du exportieren m\xF6chtest.",
         dataEntryDescription: "Gib diese Informationen auf dem anderen Ger\xE4t ein.",
         dataEntryInputDescription: "Gib die auf dem anderen Ger\xE4t angezeigten Informationen ein.",
-        notConnectedError: "Du bist mit keinem Server verbunden.",
         fromThisDeviceButton: "An anderes Ger\xE4t senden",
         toThisDeviceButton: "An dieses Ger\xE4t senden",
         exportButton: "Als Datei exportieren",
@@ -622,7 +622,13 @@
         sendAgainButton: "Erneut senden",
         filesSentCount: (count) => `Dateien gesendet: ${count}.`,
         allFilesSent: "Fertig.",
-        filesReceivedCount: (count) => `Dateien empfangen: ${count}.`
+        filesReceivedCount: (count) => `Dateien empfangen: ${count}.`,
+        exportKey: "Schl\xFCssel",
+        exportKeyConfirmation: "Schl\xFCssel best\xE4tigen",
+        downloadFileButton: "Herunterladen",
+        importFileButton: "Importieren",
+        decryptImportButton: "Entschl\xFCsseln",
+        incorrectPassphraseError: "Der Schl\xFCssel ist nicht korrekt"
       },
       storage: {
         noItemSelected: "Kein Element ausgew\xE4hlt",
@@ -814,9 +820,9 @@
         exportHeadline: "Exportar archivo",
         importHeadline: "Importar archivo",
         selectionDescription: "Selecciona los datos que quieres transferir.",
+        exportSelectionDescription: "Selecciona los datos que quieres exportar.",
         dataEntryDescription: "Introduce estos datos en el otro dispositivo.",
         dataEntryInputDescription: "Introduce los datos mostrados en el otro dispositivo.",
-        notConnectedError: "No est\xE1s conectado a ning\xFAn servidor.",
         fromThisDeviceButton: "Enviar a otro dispositivo",
         toThisDeviceButton: "Enviar a este dispositivo",
         exportButton: "Exportar archivo",
@@ -826,12 +832,18 @@
         settingsData: "Datos de Configuraci\xF3n",
         chatsHeadline: "Chats",
         transferChannelHeadline: "Canal de Transferencia",
-        transferKeyHeadline: "Clave de Encriptaci\xF3n de Transferencia",
+        transferKeyHeadline: "Clave de encriptaci\xF3n de transferencia",
         sendButton: "Enviar",
         sendAgainButton: "Enviar otra vez",
         filesSentCount: (count) => `Archivos enviados: ${count}.`,
         allFilesSent: "Hecho.",
-        filesReceivedCount: (count) => `Archivos recibidos: ${count}.`
+        filesReceivedCount: (count) => `Archivos recibidos: ${count}.`,
+        exportKey: "Clave de encriptaci\xF3n",
+        exportKeyConfirmation: "Confirmar clave",
+        downloadFileButton: "Descargar",
+        importFileButton: "Importar",
+        decryptImportButton: "Descifrar",
+        incorrectPassphraseError: "La clave no es correcta"
       },
       storage: {
         noItemSelected: "Ning\xFAn elemento seleccionado",
@@ -1162,6 +1174,8 @@
     const point = (e, direction, i) => e.touches[i][direction == "x" ? "clientX" : "clientY"];
     const midpoint = (e, direction) => (point(e, direction, 0) + point(e, direction, 1)) / 2;
     function apply(factor, _offset) {
+      const el = element();
+      if (!el) return;
       if (factor < MIN) return apply(MIN, _offset);
       if (factor > MAX) return apply(5, _offset);
       let x, y;
@@ -1170,7 +1184,7 @@
         x = currentX;
         y = currentY;
       }
-      element().style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
+      el.style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
       currentX = x;
       currentY = y;
       currentZoom = factor;
@@ -1194,8 +1208,10 @@
     });
     canvas.addEventListener("touchstart", (event) => {
       document.activeElement.blur();
-      if (lastElement != void 0 && lastElement != element()) reset();
-      lastElement = element();
+      const el = element();
+      if (!el) return;
+      if (lastElement != void 0 && lastElement != el) reset();
+      lastElement = el;
       initialZoom = currentZoom;
       initialX = currentX;
       initialY = currentY;
@@ -1241,7 +1257,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.06.A";
+      this.BUILD = "Build 26.09.09.A";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1249,6 +1265,7 @@
           return;
         while (this.contexts.length > 0) {
           const currentContext = this.context;
+          if (!currentContext) return;
           currentContext.handleContextClose(fromHistoryEvent);
           this.contextStack.delete(currentContext.contextId);
           if (currentContext.contextId == contextId) break;
@@ -1260,7 +1277,7 @@
         const contexts = this.contexts;
         while (contexts.length > 0) {
           const currentContext = contexts.pop();
-          if (!currentContext) contexts;
+          if (!currentContext) return;
           const isHandled = currentContext.handleKeystroke(e);
           if (isHandled == true) break;
         }
@@ -1287,6 +1304,7 @@
       this.translations = allTranslations[settingsModel2.language] || allTranslations.en;
       document.body.addEventListener("keydown", this.handleKeyDown);
       window.onpopstate = () => {
+        if (!this.context) return;
         this.closeContext(this.context.contextId, true);
       };
       this.startChron();
@@ -1337,8 +1355,9 @@
     }
   };
   var ContextHost = class extends Context {
-    constructor() {
-      super(...arguments);
+    constructor(contextDebugDescription, coreViewModel2) {
+      super(contextDebugDescription);
+      this.coreViewModel = coreViewModel2;
       this.contexts = /* @__PURE__ */ new Map();
       this.currentContext = new State(void 0);
       this.registerContext = (key, context) => {
@@ -1354,8 +1373,10 @@
       };
       this.updateContexts = () => {
         if (this.isOpen == false) return;
+        const selection = this.contextSelection;
+        if (!selection) return;
         const selectedContext = this.contexts.get(
-          this.contextSelection
+          selection
         );
         if (!selectedContext) return;
         if (selectedContext != this.currentContext.value) {
@@ -1657,6 +1678,11 @@
   var SettingsModel = class _SettingsModel {
     // init
     constructor(storageModel2) {
+      // data
+      this.username = "";
+      this.firstDayOfWeek = "";
+      this.language = "";
+      this.theme = "";
       // storage
       this.storeSetting = (pathName, value) => {
         const path = StorageModel.getPath(
@@ -1943,6 +1969,7 @@
         const input = document.getElementById("file-transfer-input");
         if (!input) return;
         if (!(input instanceof HTMLInputElement)) return;
+        if (!input.files) return;
         const file = input.files[0];
         this.importedFile.value = file;
       };
@@ -1953,6 +1980,7 @@
         reader.readAsText(file, "utf8");
         reader.onload = () => {
           const result = reader.result;
+          if (!result) return;
           this.importedFileString.value = result.toString();
           this.showImportDecryptDataModal();
         };
@@ -3183,7 +3211,7 @@
   var TaskPageViewModel = class extends ContextHost {
     // init
     constructor(coreViewModel2, chatViewModel, boardsAndTasksModel) {
-      super("task-page");
+      super("task-page", coreViewModel2);
       this.coreViewModel = coreViewModel2;
       this.chatViewModel = chatViewModel;
       this.boardsAndTasksModel = boardsAndTasksModel;
@@ -3508,6 +3536,8 @@
   var ChatModel = class _ChatModel {
     // init
     constructor(storageModel2, connectionModel2, settingsModel2, chatListModel2, chatId) {
+      /* load function called in constructor */
+      this.color = "standard" /* Standard */;
       // handler managers
       this.chatMessageHandlerManager = new HandlerManager();
       this.reactionHandlerManager = new HandlerManager();
@@ -3622,7 +3652,7 @@
       };
       this.sendMessage = async (body, inlineReplyId, fileContent) => {
         const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return;
+        if (nameAndChannel == false) return false;
         const [senderName, combinedChannel] = nameAndChannel;
         const chatMessage = await _ChatModel.createChatMessage(
           combinedChannel,
@@ -3648,10 +3678,10 @@
         chatMessage.body = decryptedBody;
         chatMessage.stringifiedFile = decryptedFile;
       };
-      this.sendReaction = async (messageId, content, isDeleting) => {
+      this.sendReaction = async (messageId, content, isDeleting = false) => {
         const nameAndChannel = this.getNameAndChannel();
         if (nameAndChannel == false) return;
-        const [senderName, combinedChannel] = nameAndChannel;
+        const [senderName] = nameAndChannel;
         const reaction = _ChatModel.createMessageReaction(
           messageId,
           senderName,
@@ -3860,6 +3890,9 @@
     constructor(coreViewModel2, messagePageViewModel, chatMessage, sentByUser) {
       this.coreViewModel = coreViewModel2;
       this.messagePageViewModel = messagePageViewModel;
+      this.channel = "";
+      this.sender = "";
+      this.dateSent = "";
       this.body = new State("");
       this.inlineReply = void 0;
       this.status = new State(
@@ -4314,7 +4347,7 @@
   var ChatViewModel6 = class extends ContextHost {
     // init
     constructor(coreViewModel2, chatModel, settingsViewModel2, notificationViewModel, connectionViewModel2, chatListViewModel2) {
-      super("chat");
+      super("chat", coreViewModel2);
       this.coreViewModel = coreViewModel2;
       this.chatModel = chatModel;
       this.settingsViewModel = settingsViewModel2;
@@ -4498,6 +4531,7 @@
         ].find(
           (chat2) => chat2.chatModel.unwrappedPrimaryChannel == notification.chat
         );
+        if (!chat) return;
         chat.open();
         chat.openPage("messages" /* Messages */);
       };
@@ -4508,6 +4542,7 @@
           return this.stopLoop();
         }
         const notification = this.messagesInMarquee.shift();
+        if (!notification) return;
         this.seenMessageIds.delete(notification.messageId);
         this.marquee.value = notification;
       };
@@ -6573,6 +6608,7 @@
   // src/View/Modals/splitModal.tsx
   function SplitModal(coreViewModel2, leftView, rightView, extendedStyle = false, navigationState) {
     function closePage() {
+      if (!navigationState) return;
       navigationState.value = void 0;
     }
     const hasPageOpen = new State(false);
@@ -7531,6 +7567,7 @@
         return transferData;
       };
       this.prepareToSend = () => {
+        if (!this.transferData) return;
         this.direction = 0 /* Send */;
         this.connectionModel.addChannel(this.transferData.channel);
       };
@@ -7627,6 +7664,7 @@
         return stringify(fileData);
       };
       this.sendFile = async (stringifiedFileData) => {
+        if (!this.transferData) return;
         const encryptedFileData = await encryptString(
           stringifiedFileData,
           this.transferData.key

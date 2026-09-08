@@ -35,7 +35,7 @@ export default class NotificationViewModel {
     };
 
     openNotification = () => {
-        const notification: Notification = this.marquee.value;
+        const notification: Notification|undefined = this.marquee.value;
         if (notification == undefined) return;
 
         const chat = [
@@ -44,6 +44,7 @@ export default class NotificationViewModel {
             (chat) =>
                 chat.chatModel.unwrappedPrimaryChannel == notification.chat,
         );
+	if (!chat) return;
         chat.open();
         chat.openPage(ChatPageTypes.Messages);
     };
@@ -55,7 +56,8 @@ export default class NotificationViewModel {
             return this.stopLoop();
         }
 
-        const notification: Notification = this.messagesInMarquee.shift();
+        const notification: Notification|undefined = this.messagesInMarquee.shift();
+	if (!notification) return;
         this.seenMessageIds.delete(notification.messageId);
         this.marquee.value = notification;
     };

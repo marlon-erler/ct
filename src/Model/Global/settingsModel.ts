@@ -6,10 +6,10 @@ export default class SettingsModel {
     readonly storageModel: StorageModel;
 
     // data
-    username: string;
-    firstDayOfWeek: string;
-    language: string;
-    theme: string;
+    username: string = "";
+    firstDayOfWeek: string = "";
+    language: string = "";
+    theme: string = "";
 
     // storage
     private readonly storeSetting = (
@@ -46,7 +46,7 @@ export default class SettingsModel {
     // load
     private readonly readSetting = (
         pathName: keyof typeof filePaths.settingsModel,
-    ): string => {
+    ): string|null=> {
         const path = StorageModel.getPath(
             StorageModelSubPaths.SettingsModel,
             filePaths.settingsModel[pathName],

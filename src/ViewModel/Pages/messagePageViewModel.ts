@@ -68,7 +68,7 @@ export default class MessagePageViewModel extends Context {
         );
     };
 
-    setReply = (chatMessageViewModel: ChatMessageViewModel): void => {
+    setReply = (chatMessageViewModel: ChatMessageViewModel|undefined): void => {
         this.replyingMessage.value = chatMessageViewModel;
         this.setFocus();
     };

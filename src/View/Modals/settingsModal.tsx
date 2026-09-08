@@ -169,7 +169,7 @@ function SettingsAppearancePane(
             <h2>{coreViewModel.translations.settings.pages.appearance}</h2>
             <hr></hr>
             {OptionButtonList(
-                new React.ListState<[string, ThemeSettings]>([
+                new React.ListState<[string, string]>([
                     [
                         coreViewModel.translations.settings.themes.dark,
                         ThemeSettings.Dark,

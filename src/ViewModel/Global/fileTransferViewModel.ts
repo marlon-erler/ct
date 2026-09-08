@@ -54,7 +54,7 @@ export default class FileTransferViewModel extends Context {
     exportKey: React.State<string> = new React.State("");
     exportKeyConfirmation: React.State<string> = new React.State("");
 
-    importedFile: React.State<File | undefined> = new React.State(undefined);
+    importedFile: React.State<File | undefined> = new React.State<File | undefined>(undefined);
     importedFileString: React.State<string> = new React.State("");
     importKey: React.State<string> = new React.State("");
     isImportKeyCorrect: React.State<boolean> = new React.State(true);
@@ -158,6 +158,7 @@ export default class FileTransferViewModel extends Context {
         if (!input) return;
         if (!(input instanceof HTMLInputElement)) return;
 
+	if (!input.files) return;
         const file = input.files[0];
         this.importedFile.value = file;
     };
@@ -170,6 +171,7 @@ export default class FileTransferViewModel extends Context {
         reader.readAsText(file, "utf8");
         reader.onload = () => {
             const result = reader.result;
+	    if (!result) return;
             this.importedFileString.value = result.toString();
             this.showImportDecryptDataModal();
         };

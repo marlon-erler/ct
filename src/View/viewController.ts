@@ -7,9 +7,9 @@ class Tracker<T> {
 class TrackerMap<T> {
     trackers = new Map<string, Tracker<T>>();
 
-    private register = (key: string): Tracker<T> => {
+    private register = (key: string): Tracker<T>=> {
         if (this.trackers.has(key)) {
-            return this.trackers.get(key);
+            return this.trackers.get(key)!;
         }
         const tracker = new Tracker<T>();
         this.trackers.set(key, tracker);
@@ -19,7 +19,7 @@ class TrackerMap<T> {
     setState = (
         key: string,
         stateBuilder: () => React.State<T>,
-    ): React.State<T | undefined> | undefined => {
+    ): React.State<T> | undefined => {
         const tracker: Tracker<T> = this.register(key);
 
         if (tracker.state != undefined) {

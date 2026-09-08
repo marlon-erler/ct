@@ -11,9 +11,9 @@ import {
 export default class ChatMessageViewModel {
     // data
     chatMessage: ChatMessage;
-    channel: string;
-    sender: string;
-    dateSent: string;
+    channel: string = "";
+    sender: string = "";
+    dateSent: string = "";
     body: React.State<string> = new React.State("");
     inlineReply: ChatMessageViewModel | undefined = undefined;
     status: React.State<ChatMessageStatuses | any> = new React.State<any>(

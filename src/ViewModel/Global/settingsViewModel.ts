@@ -9,14 +9,14 @@ export default class SettingsViewModel extends Context {
     usernameInput: React.State<string> = new React.State("");
     isShowingSettingsModal: React.State<boolean> = new React.State(false);
     selectedModalPage: React.State<SettingsModalPages | undefined> =
-        new React.State(undefined);
+        new React.State<SettingsModalPages | undefined>(undefined);
     requiresReload = new React.State<boolean>(false);
 
     firstDayOfWeek: React.State<string> = new React.State("0");
-    language: React.State<Languages | string> = new React.State(
+    language: React.State<Languages | string> = new React.State<Languages | string>(
         Languages.English,
     );
-    theme: React.State<ThemeSettings | string> = new React.State(
+    theme: React.State<ThemeSettings | string> = new React.State<ThemeSettings | string>(
         ThemeSettings.System,
     );
 

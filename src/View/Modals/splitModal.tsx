@@ -10,6 +10,7 @@ export function SplitModal<T>(
     navigationState?: React.State<T | undefined>,
 ) {
     function closePage() {
+	if (!navigationState) return;
         navigationState.value = undefined;
     }
 
