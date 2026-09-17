@@ -7,14 +7,10 @@
 }
 
 /* Gradient */
-
 #background-wrapper {
     position: fixed;
 
-    top: 0px;
-    left: var(--safe-area-left);
-    right: var(--safe-area-right);
-    bottom: 0px;
+    inset: -80px;
 
     z-index: 1;
     pointer-events: none;
@@ -22,6 +18,7 @@
     overflow: hidden;
 
     opacity: 0.4;
+    filter: blur(40px);
 }
 
 main {
@@ -32,29 +29,25 @@ main {
     content: "";
 
     position: absolute;
-    top: -80px;
-    left: -80px;
-    right: -80px;
-    bottom: -80px;
+    inset: 0px;
 
     z-index: -1;
     pointer-events: none;
-
-    filter: blur(40px);
 }
 
 #background-wrapper #sky {
     left: -100%;
     bottom: -50%;
 
-    --color-1: hsl(188, 100%, 83%);
-    --color-2: hsl(194, 72%, 56%);
-    background-image: radial-gradient(var(--color-1), var(--color-2));
+    background-image: radial-gradient(var(--sky-1), var(--sky-2));
 }
 
 #background-wrapper #grass-1 {
-    --color-1: hsl(150, 100%, 30%);
-    --color-2: hsl(150, 100%, 25%);
+    --color-1: hsl(150, 60%, 30%);
+    --color-2: hsl(150, 60%, 25%);
+
+    filter: var(--backdrop-grass-filter);
+    opacity: .7;
 
     background-image: linear-gradient(
         350deg,
@@ -65,8 +58,11 @@ main {
 }
 
 #background-wrapper #grass-2 {
-    --color-1: hsl(110, 100%, 40%);
-    --color-2: hsl(110, 100%, 35%);
+    --color-1: hsl(110, 60%, 40%);
+    --color-2: hsl(110, 60%, 35%);
+    
+    filter: var(--backdrop-grass-filter);
+    opacity: .7;
 
     background-image: linear-gradient(
         9deg,

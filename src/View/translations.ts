@@ -83,6 +83,7 @@ const englishTranslations = {
             info: "About Comms",
         },
         themes: {
+	    dynamic: "Dynamic",
             dark: "Dark",
             light: "Light",
             system: "Device theme",
@@ -410,58 +411,59 @@ export const allTranslations: {
                 info: "Über Comms",
             },
             themes: {
-                dark: "Dunkel",
-                light: "Hell",
-                system: "Geräteeinstellung",
-            },
+		dynamic: "Dynamisch",
+		dark: "Dunkel",
+		light: "Hell",
+		system: "Geräteeinstellung",
+	    },
 
-            version: "Version",
-            language: "Sprache",
+	    version: "Version",
+	    language: "Sprache",
 
-            firstDayOfWeekLabel: "Erster Wochentag",
-        },
+	    firstDayOfWeekLabel: "Erster Wochentag",
+	},
 
-        connectionModal: {
-            connectionModalHeadline: "Verbindungen verwalten",
+	connectionModal: {
+	    connectionModalHeadline: "Verbindungen verwalten",
 
-            connectButtonAudioLabel: "verbinden",
-        },
+	    connectButtonAudioLabel: "verbinden",
+	},
 
-        dataTransferModal: {
-            transferDataHeadline: "Datenübertragung",
-            sendHeadline: "An anderes Gerät senden",
-            receiveHeadline: "An dieses Gerät senden",
-            exportHeadline: "Daten exportieren",
-            importHeadline: "Daten importieren",
-            selectionDescription:
-                "Wähle die Daten aus, die du übertragen möchtest.",
-            exportSelectionDescription:
-                "Wähle die Daten aus, die du exportieren möchtest.",
-            dataEntryDescription:
-                "Gib diese Informationen auf dem anderen Gerät ein.",
-            dataEntryInputDescription:
-                "Gib die auf dem anderen Gerät angezeigten Informationen ein.",
+	dataTransferModal: {
+	    transferDataHeadline: "Datenübertragung",
+	    sendHeadline: "An anderes Gerät senden",
+	    receiveHeadline: "An dieses Gerät senden",
+	    exportHeadline: "Daten exportieren",
+	    importHeadline: "Daten importieren",
+	    selectionDescription:
+	    "Wähle die Daten aus, die du übertragen möchtest.",
+	    exportSelectionDescription:
+	    "Wähle die Daten aus, die du exportieren möchtest.",
+	    dataEntryDescription:
+	    "Gib diese Informationen auf dem anderen Gerät ein.",
+	    dataEntryInputDescription:
+	    "Gib die auf dem anderen Gerät angezeigten Informationen ein.",
 
-            fromThisDeviceButton: "An anderes Gerät senden",
-            toThisDeviceButton: "An dieses Gerät senden",
-            exportButton: "Als Datei exportieren",
-            importButton: "Aus Datei importieren",
+	    fromThisDeviceButton: "An anderes Gerät senden",
+	    toThisDeviceButton: "An dieses Gerät senden",
+	    exportButton: "Als Datei exportieren",
+	    importButton: "Aus Datei importieren",
 
-            generalHeadline: "Allgemein",
+	    generalHeadline: "Allgemein",
 
-            connectionData: "Verbindungsdaten",
-            settingsData: "Einstellungen",
+	    connectionData: "Verbindungsdaten",
+	    settingsData: "Einstellungen",
 
-            chatsHeadline: "Chats",
+	    chatsHeadline: "Chats",
 
-            transferChannelHeadline: "Übertragungskanal",
-            transferKeyHeadline: "Schlüssel",
+	    transferChannelHeadline: "Übertragungskanal",
+	    transferKeyHeadline: "Schlüssel",
 
-            sendButton: "Senden",
-            sendAgainButton: "Erneut senden",
+	    sendButton: "Senden",
+	    sendAgainButton: "Erneut senden",
 
-            filesSentCount: (count) => `Dateien gesendet: ${count}.`,
-            allFilesSent: "Fertig.",
+	    filesSentCount: (count) => `Dateien gesendet: ${count}.`,
+	    allFilesSent: "Fertig.",
 
 	    filesReceivedCount: (count) => `Dateien empfangen: ${count}.`,
 
@@ -705,6 +707,7 @@ export const allTranslations: {
 		info: "Sobre Comms",
 	    },
 	    themes: {
+		dynamic: "Dinámico",
 		dark: "Oscuro",
 		light: "Claro",
 		system: "Según dispositivo",
@@ -758,7 +761,7 @@ export const allTranslations: {
 	    allFilesSent: "Hecho.",
 
 	    filesReceivedCount: (count) => `Archivos recibidos: ${count}.`,
-        
+
 	    exportKey: "Clave de encriptación",
 	    exportKeyConfirmation: "Confirmar clave",
 	    downloadFileButton: "Descargar",

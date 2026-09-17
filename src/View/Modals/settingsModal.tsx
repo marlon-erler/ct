@@ -171,6 +171,10 @@ function SettingsAppearancePane(
             {OptionButtonList(
                 new React.ListState<[string, string]>([
                     [
+                        coreViewModel.translations.settings.themes.dynamic,
+                        ThemeSettings.Dynamic,
+                    ],
+                    [
                         coreViewModel.translations.settings.themes.dark,
                         ThemeSettings.Dark,
                     ],

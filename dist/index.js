@@ -353,6 +353,7 @@
         info: "About Comms"
       },
       themes: {
+        dynamic: "Dynamic",
         dark: "Dark",
         light: "Light",
         system: "Device theme"
@@ -586,6 +587,7 @@
           info: "\xDCber Comms"
         },
         themes: {
+          dynamic: "Dynamisch",
           dark: "Dunkel",
           light: "Hell",
           system: "Ger\xE4teeinstellung"
@@ -801,6 +803,7 @@
           info: "Sobre Comms"
         },
         themes: {
+          dynamic: "Din\xE1mico",
           dark: "Oscuro",
           light: "Claro",
           system: "Seg\xFAn dispositivo"
@@ -1257,7 +1260,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.09.A";
+      this.BUILD = "Build 26.09.17.A";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1800,10 +1803,42 @@
       // view
       this.applyTheme = () => {
         let theme = this.theme.value;
+        if (theme == "dynamic" /* Dynamic */) {
+          const scene = this.selectDynamicScene();
+          this.setScene(scene);
+          return;
+        }
         if (theme == "system" /* System */) {
           theme = _SettingsViewModel.getSystemTheme();
         }
-        document.body.setAttribute("theme", theme);
+        if (theme == "dark" /* Dark */) {
+          this.setScene(DynamicSceneNight);
+        } else {
+          this.setScene(DynamicSceneDay);
+        }
+      };
+      this.selectDynamicScene = () => {
+        let hour = (/* @__PURE__ */ new Date()).getHours();
+        if (hour >= 21 || hour <= 6) {
+          return DynamicSceneNight;
+        } else if (hour > 6 && hour < 10) {
+          return DynamicSceneSunrise;
+        } else if (hour < 14) {
+          return DynamicSceneDay;
+        } else if (hour < 17) {
+          return DynamicSceneAfternoon;
+        } else if (hour < 21) {
+          return DynamicSceneSunset;
+        }
+      };
+      this.setScene = (scene) => {
+        document.body.style.setProperty("--backdrop-grass-filter", `brightness(${scene.brightness})`);
+        function setSkyColor(tone, hue, saturation, luma) {
+          document.body.style.setProperty(`--sky-${tone}`, `hsl(${hue}, ${saturation}%, ${luma}%)`);
+        }
+        setSkyColor(1, scene.hue1, scene.saturation, scene.luma);
+        setSkyColor(2, scene.hue2, scene.saturation - 10, scene.luma - 10);
+        document.body.setAttribute("theme", scene.baseTheme);
       };
       // exit
       this.close = () => {
@@ -1835,6 +1870,11 @@
         "change",
         () => this.applyTheme()
       );
+      const seconds = (/* @__PURE__ */ new Date()).getSeconds();
+      const secondsUntilNewMinute = 60 - seconds;
+      setTimeout(() => {
+        setInterval(this.applyTheme, 1e3 * 60);
+      }, secondsUntilNewMinute);
       this.registerKeyStroke("backspace" /* CloseOrCancel */, this.close);
     }
     static generateThemeMedia() {
@@ -1844,6 +1884,46 @@
       const media = _SettingsViewModel.generateThemeMedia();
       return media.matches == true ? "dark" /* Dark */ : "light" /* Light */;
     }
+  };
+  var DynamicSceneNight = {
+    hue1: 215,
+    hue2: 220,
+    saturation: 50,
+    luma: 25,
+    brightness: 0.4,
+    baseTheme: "dark" /* Dark */
+  };
+  var DynamicSceneSunrise = {
+    hue1: 45,
+    hue2: 190,
+    saturation: 100,
+    luma: 50,
+    brightness: 1.2,
+    baseTheme: "light" /* Light */
+  };
+  var DynamicSceneDay = {
+    hue1: 190,
+    hue2: 180,
+    saturation: 100,
+    luma: 70,
+    brightness: 1.4,
+    baseTheme: "light" /* Light */
+  };
+  var DynamicSceneAfternoon = {
+    hue1: 195,
+    hue2: 220,
+    saturation: 100,
+    luma: 50,
+    brightness: 0.8,
+    baseTheme: "light" /* Light */
+  };
+  var DynamicSceneSunset = {
+    hue1: 20,
+    hue2: 260,
+    saturation: 100,
+    luma: 50,
+    brightness: 0.4,
+    baseTheme: "dark" /* Dark */
   };
 
   // src/ViewModel/Global/fileTransferViewModel.ts
@@ -6867,6 +6947,10 @@
   function SettingsAppearancePane(coreViewModel2, settingsViewModel2) {
     return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.settings.pages.appearance), /* @__PURE__ */ createElement("hr", null), OptionButtonList(
       new ListState([
+        [
+          coreViewModel2.translations.settings.themes.dynamic,
+          "dynamic" /* Dynamic */
+        ],
         [
           coreViewModel2.translations.settings.themes.dark,
           "dark" /* Dark */
