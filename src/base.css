@@ -10,7 +10,8 @@
 #background-wrapper {
     position: fixed;
 
-    inset: -80px;
+    inset: 0px;
+    transform: scale(1.2);
 
     z-index: 1;
     pointer-events: none;
@@ -40,6 +41,10 @@ main {
     bottom: -50%;
 
     background-image: radial-gradient(var(--sky-1), var(--sky-2));
+}
+
+body {
+    transition: --sky-1 1s, --sky-2 5s;
 }
 
 #background-wrapper #grass-1 {
