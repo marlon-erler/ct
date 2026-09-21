@@ -28,6 +28,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
     isPresentingFilterModal: React.State<boolean> = new React.State(false);
 
     searchViewModel: SearchViewModel<TaskViewModel>;
+    searchSuggestions = new React.ListState<string>();
     filteredTaskViewModels: React.ListState<TaskViewModel> =
         new React.ListState();
     isFilterActive: React.State<boolean>;
@@ -115,16 +116,24 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
         ];
         this.coreViewModel.storageModel.write(suggestionPath, "");
         if (
-            !this.coreViewModel.boardFilterStringSuggestions.value.has(
+            !this.searchSuggestions.value.has(
                 searchTerm,
-            )
+            ) && searchTerm != ""
         ) {
-            this.coreViewModel.boardFilterStringSuggestions.add(searchTerm);
+            this.searchSuggestions.add(searchTerm);
         }
 
         const lastSearchPath: string[] = this.getLastSearchPath();
         this.coreViewModel.storageModel.write(lastSearchPath, searchTerm);
     };
+
+    handleSearchRemoved = (searchTerm: string): void => {
+        const suggestionPath: string[] = [
+            ...this.getPreviousSearchesPath(),
+            searchTerm,
+        ];
+        this.coreViewModel.storageModel.remove(suggestionPath);
+    }
 
     // view
     showTask = (taskFileContent: TaskFileContent): void => {
@@ -224,7 +233,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
         const dirPath: string[] = this.getPreviousSearchesPath();
         const searches: string[] =
             this.coreViewModel.storageModel.list(dirPath);
-        this.coreViewModel.boardFilterStringSuggestions.add(...searches);
+        this.searchSuggestions.add(...searches.filter(x => x != ""));
     };
 
     restoreSearch = (): void => {
@@ -297,12 +306,13 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
             this.taskViewModels,
             this.filteredTaskViewModels,
             TaskViewModel.getStringsForFilter,
-            this.coreViewModel.boardFilterStringSuggestions,
+	    this.searchSuggestions,
         );
         this.searchViewModel.appliedQuery.subscribeSilent((newQuery) => {
             this.handleNewSearch(newQuery);
         });
         this.restoreSearch();
+	this.searchSuggestions.handleRemovals(this.handleSearchRemoved);
 
         this.isFilterActive = React.createProxyState(
             [this.searchViewModel.appliedQuery],

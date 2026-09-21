@@ -162,7 +162,6 @@ export function BoardPage(
                 coreViewModel,
                 boardViewModel.searchViewModel,
                 coreViewModel.translations.chatPage.task.filterTasksHeadline,
-                TaskViewModelToEntry,
                 boardViewModel.isPresentingFilterModal,
             )}
             <div children:set={taskSettingsModal}></div>

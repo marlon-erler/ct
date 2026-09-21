@@ -9,7 +9,6 @@ export function SearchModal<T>(
     coreViewModel: CoreViewModel,
     searchViewModel: SearchViewModel<T>,
     headline: string,
-    converter: React.StateItemConverter<T>,
     isOpen: React.State<boolean>,
 ) {
     function close() {
@@ -31,6 +30,7 @@ export function SearchModal<T>(
                     <div class="flex-row">
                         <input
 			    id="focused"
+			    style="max-width: unset"
                             placeholder={
                                 coreViewModel.translations.general.searchLabel
                             }
@@ -70,14 +70,15 @@ export function SearchModal<T>(
                         </button>
                     </div>
 
-                    <hr></hr>
+		    <hr></hr>
+
+		    <h3>{coreViewModel.translations.general.searchSuggestionsLabel}</h3>
 
                     <div
-                        class="grid gap"
-                        style="grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr))"
+                        class="flex-column gap"
                         children:append={[
-                            searchViewModel.matchingObjects,
-                            converter,
+                                searchViewModel.suggestions,
+			    (suggestion: string) => SuggestionView(suggestion, searchViewModel, coreViewModel),
                         ]}
                     ></div>
                 </main>
@@ -88,4 +89,35 @@ export function SearchModal<T>(
             </div>
         </div>
     );
+}
+
+function SuggestionView<T>(suggestion: string, searchViewModel: SearchViewModel<T>, coreViewModel: CoreViewModel) {
+    const isApplied = React.createProxyState([searchViewModel.appliedQuery], ()=>searchViewModel.appliedQuery.value == suggestion);
+
+    function deleteSuggestion() {
+	searchViewModel.deleteSuggestion(suggestion);
+    }
+    
+    function applySuggestion() {
+	searchViewModel.search(suggestion);
+    }
+
+    return <div class="flex-row surface align-center">
+	<span class="width-100 flex-1 padding-h">{suggestion}</span>
+	<button 
+	    class="danger"
+	    aria-label={coreViewModel.translations.general.deleteButton}
+	    on:click={deleteSuggestion}
+	>
+	    <span class="icon">delete</span>
+	</button>
+	<button 
+	    class="primary"
+	    aria-label={coreViewModel.translations.general.applyButton}
+	    on:click={applySuggestion}
+	    toggle:disabled={isApplied}
+	>
+	    <span class="icon">check</span>
+	</button>
+    </div>
 }

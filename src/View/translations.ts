@@ -9,9 +9,11 @@ const englishTranslations = {
         searchButtonClearAudioLabel: "clear search query",
 
         abortButton: "Abort",
+	applyButton: "Apply",
+        backButton: "Back",
         cancelButton: "Cancel",
         closeButton: "Close",
-        backButton: "Back",
+	deleteButton: "Delete",
 
         continueButton: "Continue",
         confirmButton: "Confirm",
@@ -22,6 +24,7 @@ const englishTranslations = {
 
         fileVersionLabel: "Version",
         searchLabel: "Search",
+	searchSuggestionsLabel: "Recent searches",
         waitingLabel: "Waiting...",
 
         restoreConnection: "Restore connection",

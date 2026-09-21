@@ -83,9 +83,6 @@ export default class CoreViewModel {
 
     // SUGGESTIONS
     // boards & tasks
-    boardFilterStringSuggestions: React.ListState<string> =
-        new React.ListState();
-
     taskCategorySuggestions: React.ListState<string> = new React.ListState();
     taskStatusSuggestions: React.ListState<string> = new React.ListState();
 

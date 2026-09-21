@@ -2,16 +2,9 @@ import * as React from "bloatless-react";
 import { checkDoesObjectMatchSearch } from "../../Model/Utility/utility";
 
 export default class SearchViewModel<T> {
-    // data
-    allObjects: React.ListState<T> | React.MapState<T>;
-    getStringsOfObject: (object: T) => string[];
-
     // state
     appliedQuery = new React.State<string>("");
     searchInput = new React.State<string>("");
-    matchingObjects: React.ListState<T>;
-
-    suggestions: React.ListState<string>;
 
     // guards
     cannotApplySearch: React.State<boolean> = React.createProxyState(
@@ -45,18 +38,17 @@ export default class SearchViewModel<T> {
 	this.searchInput.value = "";
     }
 
+    deleteSuggestion = (suggestion: string): void => {
+	this.suggestions.remove(suggestion);
+    }
+
     // init
     constructor(
-        allObjects: React.ListState<T> | React.MapState<T>,
-        matchingObjects: React.ListState<T>,
-        getStringsOfObject: (object: T) => string[],
-        suggestions: React.ListState<string>,
+        public allObjects: React.ListState<T> | React.MapState<T>,
+        public matchingObjects: React.ListState<T>,
+        public getStringsOfObject: (object: T) => string[],
+        public suggestions: React.ListState<string>,
     ) {
-        this.allObjects = allObjects;
-        this.matchingObjects = matchingObjects;
-        this.getStringsOfObject = getStringsOfObject;
-        this.suggestions = suggestions;
-
         // handle new objects
         this.allObjects.handleAddition((newObject: T) => {
             const doesMatch: boolean = this.checkDoesMatchSearch(newObject);
