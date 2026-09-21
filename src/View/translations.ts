@@ -6,6 +6,7 @@ const englishTranslations = {
     general: {
         deleteItemButtonAudioLabel: "delete item",
         searchButtonAudioLabel: "search",
+        searchButtonClearAudioLabel: "clear search query",
 
         abortButton: "Abort",
         cancelButton: "Cancel",

@@ -18,6 +18,10 @@ export default class SearchViewModel<T> {
         [this.searchInput, this.appliedQuery],
         () => this.searchInput.value == this.appliedQuery.value,
     );
+    cannotClear: React.State<boolean> = React.createProxyState(
+        [this.searchInput],
+        () => this.searchInput.value == "",
+    );
 
     // methods
     search = (searchTerm: string): void => {
@@ -36,6 +40,10 @@ export default class SearchViewModel<T> {
             this.matchingObjects.add(object);
         }
     };
+
+    clear = (): void => {
+	this.searchInput.value = "";
+    }
 
     // init
     constructor(

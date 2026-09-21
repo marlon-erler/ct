@@ -28,9 +28,9 @@ export function SearchModal<T>(
             <div>
                 <main>
                     <h2>{headline}</h2>
-                    <div class="flex-row width-input">
+                    <div class="flex-row">
                         <input
-                            id="focused"
+			    id="focused"
                             placeholder={
                                 coreViewModel.translations.general.searchLabel
                             }
@@ -46,6 +46,17 @@ export function SearchModal<T>(
                                 StringToOption,
                             ]}
                         ></datalist>
+                        <button
+                            class="standard"
+                            aria-label={
+                                coreViewModel.translations.general
+                                    .searchButtonClearAudioLabel
+                            }
+                            on:click={searchViewModel.clear}
+                            toggle:disabled={searchViewModel.cannotClear}
+                        >
+                            <span class="icon">close</span>
+                        </button>
                         <button
                             class="primary"
                             aria-label={
