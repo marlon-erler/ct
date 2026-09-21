@@ -70,24 +70,25 @@ export function SearchModal<T>(
                         </button>
                     </div>
 
-		    <hr></hr>
-
-		    <h3>{coreViewModel.translations.general.searchSuggestionsLabel}</h3>
-
-                    <div
-                        class="flex-column gap"
-                        children:append={[
-                                searchViewModel.suggestions,
-			    (suggestion: string) => SuggestionView(suggestion, searchViewModel, coreViewModel),
-                        ]}
-                    ></div>
-                </main>
-                <button on:click={close}>
-                    {coreViewModel.translations.general.closeButton}
-                    <span class="icon">close</span>
-                </button>
-            </div>
-        </div>
+		    <div 
+			toggle:hidden={searchViewModel.hasNoSuggestions}>
+			<hr></hr>
+			<h3>{coreViewModel.translations.general.searchSuggestionsLabel}</h3>
+			<div
+			    class="flex-column gap"
+			    children:append={[
+				searchViewModel.suggestions,
+				(suggestion: string) => SuggestionView(suggestion, searchViewModel, coreViewModel),
+			    ]}
+			></div>
+		    </div>
+		</main>
+		<button on:click={close}>
+		    {coreViewModel.translations.general.closeButton}
+		    <span class="icon">close</span>
+		</button>
+	    </div>
+	</div>
     );
 }
 
@@ -97,7 +98,7 @@ function SuggestionView<T>(suggestion: string, searchViewModel: SearchViewModel<
     function deleteSuggestion() {
 	searchViewModel.deleteSuggestion(suggestion);
     }
-    
+
     function applySuggestion() {
 	searchViewModel.search(suggestion);
     }
