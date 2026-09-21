@@ -77,7 +77,7 @@ body[theme="dark"] [color]:not([color="standard"]).tile {
     [color]:not([color="standard"]).background {
         --luma: var(--background-luma);
         --sat: 100%;
-        background: hsl(var(--hue), var(--sat), var(--luma), 40%);
+        background: hsl(var(--hue), var(--sat), var(--luma), 20%);
     }
 
     body[theme="dark"] [color]:not([color="standard"]).background {
