@@ -65,6 +65,12 @@ body[showing-chat] #chat-page-wrapper {
     overflow: hidden;
 }
 
+@media (pointer: coarse) and (max-width: 480px){
+    #chat-page > div > #main > div > .pane-wrapper > .pane {
+	flex-direction: column-reverse;
+    }
+}
+
 #chat-page > div > #main > div > .pane-wrapper > .pane:not(.side),
 #chat-page > div > #main > div > .pane-wrapper > .pane:not(.side) .content {
     animation: slide-up var(--animation-duration);
