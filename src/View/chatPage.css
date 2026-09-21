@@ -72,13 +72,13 @@ body[showing-chat] #chat-page-wrapper {
 
 @media (min-width: 1024px) {
     #chat-page > div > #main > div > .pane-wrapper {
-        min-width: unset;
+	min-width: unset;
     }
 
     #chat-page > div > #main > div > .pane-wrapper.side {
-        width: 18rem;
-        min-width: 18rem;
-        max-width: 18rem;
+	width: 18rem;
+	min-width: 18rem;
+	max-width: 18rem;
     }
 }
 
@@ -108,13 +108,13 @@ body[showing-chat] #chat-page-wrapper {
 
 #chat-page > div > #ribbon > span,
 #chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    > span.ribbon {
+> div
+> #main
+> div
+> .pane-wrapper
+> .pane
+> .toolbar
+> span.ribbon {
     gap: var(--gap-between-tiles);
     padding: var(--gap-between-tiles);
 }
@@ -180,13 +180,13 @@ body[showing-chat] #chat-page-wrapper {
 
 #chat-page > div > #ribbon button.ribbon-button,
 #chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    button.ribbon-button {
+> div
+> #main
+> div
+> .pane-wrapper
+> .pane
+> .toolbar
+button.ribbon-button {
     min-width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
     width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
     max-width: calc(var(--control-height) - 2 * var(--gap-between-tiles));
@@ -199,14 +199,14 @@ body[showing-chat] #chat-page-wrapper {
 
 #chat-page > div > #ribbon button > .icon,
 #chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    button
-    > .icon {
+> div
+> #main
+> div
+> .pane-wrapper
+> .pane
+> .toolbar
+button
+> .icon {
     font-size: 1.1rem;
 }
 
@@ -232,13 +232,31 @@ body[showing-chat] #chat-page-wrapper {
 }
 
 #chat-page
-    > div
-    > #main
-    > div
-    > .pane-wrapper
-    > .pane
-    > .toolbar
-    :is(input, select, button) {
+> div
+> #main
+> div
+> .pane-wrapper
+> .pane
+> .toolbar
+:is(input, select, button) {
     height: 100%;
     flex: 1;
+}
+
+/* task settings */
+.modal.task-settings > div {
+    max-width: 52rem;
+}
+
+@media (min-width: 640px) {
+    .modal.task-settings .column-wrapper {
+	display: flex;
+	flex-direction: row;
+	gap: var(--content-padding);
+    }
+
+    .modal.task-settings .column-wrapper > .flex-column{
+	width: 100%;
+	flex: 1;
+    }
 }

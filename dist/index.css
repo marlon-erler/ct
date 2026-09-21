@@ -59,7 +59,7 @@ body[theme=dark] [color]:not([color=standard]).tile {
   [color]:not([color=standard]).background {
     --luma: var(--background-luma);
     --sat: 100%;
-    background: hsl(var(--hue), var(--sat), var(--luma), 40%);
+    background: hsl(var(--hue), var(--sat), var(--luma), 20%);
   }
   body[theme=dark] [color]:not([color=standard]).background {
     --luma: var(--background-luma-dark);
@@ -468,6 +468,20 @@ body[showing-chat] #chat-page-wrapper {
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar :is(input, select, button) {
   height: 100%;
   flex: 1;
+}
+.modal.task-settings > div {
+  max-width: 52rem;
+}
+@media (min-width: 640px) {
+  .modal.task-settings .column-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: var(--content-padding);
+  }
+  .modal.task-settings .column-wrapper > .flex-column {
+    width: 100%;
+    flex: 1;
+  }
 }
 
 /* src/View/ChatPages/taskPage.css */

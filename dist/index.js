@@ -5379,16 +5379,7 @@
       const isSelected = entry[0] == taskViewModel.task.boardId;
       return Option(entry[1], entry[0], isSelected);
     };
-    return /* @__PURE__ */ createElement("div", { class: "modal", open: true }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.chatPage.task.taskSettingsHeadline), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "history"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.general.fileVersionLabel), /* @__PURE__ */ createElement(
-      "select",
-      {
-        "bind:value": taskViewModel.selectedVersionId,
-        "children:append": [
-          taskViewModel.versionIds,
-          VersionIdToOption
-        ]
-      }
-    ), /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_drop_down"))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "label"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskNameLabel), /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { class: "modal task-settings", open: true }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.chatPage.task.taskSettingsHeadline), /* @__PURE__ */ createElement("div", { class: "column-wrapper" }, /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "label"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskNameLabel), /* @__PURE__ */ createElement(
       "input",
       {
         "bind:value": taskViewModel.name,
@@ -5409,7 +5400,7 @@
         rows: "10",
         "bind:value": taskViewModel.description
       }
-    ))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskCategoryLabel), /* @__PURE__ */ createElement(
+    )))), /* @__PURE__ */ createElement("hr", { class: "mobile-only" }), /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskCategoryLabel), /* @__PURE__ */ createElement(
       "input",
       {
         "bind:value": taskViewModel.category,
@@ -5459,7 +5450,16 @@
         type: "time",
         "bind:value": taskViewModel.time
       }
-    ))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, DangerousActionButton(
+    ))))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "history"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.general.fileVersionLabel), /* @__PURE__ */ createElement(
+      "select",
+      {
+        "bind:value": taskViewModel.selectedVersionId,
+        "children:append": [
+          taskViewModel.versionIds,
+          VersionIdToOption
+        ]
+      }
+    ), /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_drop_down"))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, DangerousActionButton(
       coreViewModel2,
       coreViewModel2.translations.chatPage.task.deleteTaskButton,
       "delete_forever",
