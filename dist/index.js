@@ -1274,7 +1274,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.21.C";
+      this.BUILD = "Build 26.09.22.A";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1289,7 +1289,9 @@
         }
       };
       this.handleKeyDown = (e) => {
+        if (!(e instanceof KeyboardEvent)) return console.trace("NOT A KEY EVENT");
         if (_CoreViewModel.checkIsKeystroke(e) == false) return;
+        console.log(e.key);
         e.preventDefault();
         const contexts = this.contexts;
         while (contexts.length > 0) {
@@ -1313,10 +1315,6 @@
       };
       // DRAG & DROP
       this.draggedObject = new State(void 0);
-      // SUGGESTIONS
-      // boards & tasks
-      this.taskCategorySuggestions = new ListState();
-      this.taskStatusSuggestions = new ListState();
       this.translations = allTranslations[settingsModel2.language] || allTranslations.en;
       document.body.addEventListener("keydown", this.handleKeyDown);
       window.onpopstate = () => {
@@ -2345,8 +2343,15 @@
       this.handleFileContent = (fileContent) => {
         const didStore = this.storeFileContent(fileContent);
         if (didStore == false) return;
-        this.boardsAndTasksModel.handleFileContent(fileContent);
-        this.chatModel.handleReaction(fileContent);
+        switch (fileContent.type) {
+          case "board-info":
+          case "task":
+            this.boardsAndTasksModel.handleFileContent(fileContent);
+            break;
+          case "reaction":
+            this.chatModel.handleReaction(fileContent);
+            break;
+        }
       };
       // methods
       this.addFileContentAndSend = (fileContent) => {
@@ -2839,15 +2844,15 @@
         this.index.value = index;
       };
       this.updateSuggestions = () => {
-        if (this.coreViewModel.taskCategorySuggestions.value.has(
+        if (this.containingViewModel.taskCategorySuggestions.value.has(
           this.category.value
         ) == false) {
-          this.coreViewModel.taskCategorySuggestions.add(this.category.value);
+          this.containingViewModel.taskCategorySuggestions.add(this.category.value);
         }
-        if (this.coreViewModel.taskStatusSuggestions.value.has(
+        if (this.containingViewModel.taskStatusSuggestions.value.has(
           this.status.value
         ) == false) {
-          this.coreViewModel.taskStatusSuggestions.add(this.status.value);
+          this.containingViewModel.taskStatusSuggestions.add(this.status.value);
         }
       };
       // settings
@@ -2964,6 +2969,8 @@
       );
       this.selectedTaskViewModel = new State(void 0);
       this.taskViewModels = new MapState();
+      this.taskCategorySuggestions = new ListState();
+      this.taskStatusSuggestions = new ListState();
       // methods
       this.createTaskFromBoardId = (boardId) => {
         const taskFileContent = this.boardsAndTasksModel.createTask(boardId);
@@ -3180,6 +3187,7 @@
           this,
           taskFileContent
         );
+        console.log("STILL HERE", taskFileContent.fileId);
         this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
       };
       this.removeTaskFromView = (taskFileContent) => {
@@ -3303,7 +3311,7 @@
       this.registerKeyStroke("backspace" /* CloseOrCancel */, this.hideFilterModal);
       this.registerKeyStroke("," /* Settings */, this.showSettings);
       this.registerKeyStroke("enter" /* Apply */, this.hideSettings);
-      this.registerKeyStroke(";" /* Create */, this.createTask);
+      this.registerKeyStroke("a" /* Create */, this.createTask);
       this.registerKeyStroke(
         "j",
         () => this.selectedPage.value = "list" /* List */
@@ -4277,7 +4285,7 @@
         }
       });
       this.registerKeyStroke("-" /* Reset */, this.resetFilter);
-      this.registerKeyStroke(";" /* Create */, this.setFocus);
+      this.registerKeyStroke("a" /* Create */, this.setFocus);
       this.chatViewModel.registerContext("messages" /* Messages */, this);
     }
   };
@@ -4444,7 +4452,7 @@
       this.registerKeyStroke("-" /* Reset */, this.showToday);
       this.registerKeyStroke("k", this.showPreviousMonth);
       this.registerKeyStroke("l", this.showNextMonth);
-      this.registerKeyStroke(";" /* Create */, this.createEvent);
+      this.registerKeyStroke("a" /* Create */, this.createEvent);
       this.chatViewModel.registerContext("calendar" /* Calendar */, this);
     }
     // data
@@ -5445,7 +5453,7 @@
         hidden: true,
         id: categorySuggestionId,
         "children:append": [
-          taskViewModel.coreViewModel.taskCategorySuggestions,
+          taskViewModel.containingViewModel.taskCategorySuggestions,
           StringToOption
         ]
       }
@@ -5461,7 +5469,7 @@
         hidden: true,
         id: statusSuggestionId,
         "children:append": [
-          taskViewModel.coreViewModel.taskStatusSuggestions,
+          taskViewModel.containingViewModel.taskStatusSuggestions,
           StringToOption
         ]
       }

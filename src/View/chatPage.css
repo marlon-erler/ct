@@ -266,3 +266,15 @@ button
 	flex: 1;
     }
 }
+
+.modal.task-settings:not([full-description]) :is(#fullscreen-exit, #fullscreen-main) {
+    display: none;
+}
+
+.modal.task-settings[full-description] :is(#controls, #standard-main) {
+    display: none;
+}
+
+.modal.task-settings[full-description] > div {
+    height: 100%;
+}

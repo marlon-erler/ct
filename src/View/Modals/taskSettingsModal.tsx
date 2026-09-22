@@ -25,9 +25,9 @@ export function TaskSettingsModal(
     };
 
     return (
-	<div class="modal task-settings" open>
+	<div class="modal task-settings" open toggle:full-description={taskViewModel.isPresentingFullScreenDescription}>
 	    <div>
-		<main>
+		<main id="standard-main">
 		    <h2>
 			{
 			    coreViewModel.translations.chatPage.task
@@ -89,6 +89,18 @@ export function TaskSettingsModal(
 				    ></textarea>
 				</div>
 			    </label>
+			    <div class="flex-row justify-end">
+				<button
+				    class="width-50"
+				    on:click={taskViewModel.openFullscreenDecription}
+				>
+				    {
+					coreViewModel.translations.chatPage.task.taskDescriptionExpandButton
+				    }
+
+				    <span class="icon">fullscreen</span>
+				</button>
+			    </div>
 			</div>
 
 			<hr class="mobile-only"></hr>
@@ -193,7 +205,7 @@ export function TaskSettingsModal(
 		    </label>
 		</div>
 	    </div>
-	    
+
 	    <hr></hr>
 
 	    <label class="tile flex-no">
@@ -228,7 +240,28 @@ export function TaskSettingsModal(
 		)}
 	    </div>
 	</main>
-	<div class="flex-row width-100">
+	<main id="fullscreen-main">
+	    <textarea
+		style="height: 100%; width: 100%; max-width: unset"
+		bind:value={taskViewModel.description}
+	    ></textarea>
+	</main>
+	<div 
+	    class="flex-row width-100"
+	    id="fullscreen-exit"
+	>
+	<button
+	    class="flex"
+	    on:click={taskViewModel.closeFullscreenDecription}
+	>
+	    {coreViewModel.translations.general.exitButton}
+	    <span class="icon">fullscreen_exit</span>
+	</button>
+    </div>
+	<div 
+	    class="flex-row width-100"
+	    id="controls"
+	>
 	    <button
 		class="flex"
 		on:click={taskViewModel.closeAndDiscard}
@@ -245,5 +278,5 @@ export function TaskSettingsModal(
 	</div>
     </div>
 </div>
-    );
+);
 }

@@ -58,6 +58,8 @@ export default class TaskViewModel extends Context {
     selectedVersionId: React.State<string> = new React.State("");
     versionIds: React.ListState<string> = new React.ListState();
 
+    isPresentingFullScreenDescription: React.State<boolean> = new React.State(false);
+
     // methods
     dragStart = (event: DragEvent): void => {
         ViewController.allowDrag(event);
@@ -95,6 +97,14 @@ export default class TaskViewModel extends Context {
         this.close();
         this.save();
     };
+
+    openFullscreenDecription = (): void => {
+	this.isPresentingFullScreenDescription.value = true;
+    }
+
+    closeFullscreenDecription = (): void => {
+	this.isPresentingFullScreenDescription.value = false;
+    }
 
     updateIndex = (): void => {
         const index: number =

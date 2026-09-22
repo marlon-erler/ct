@@ -14,6 +14,7 @@ const englishTranslations = {
         cancelButton: "Cancel",
         closeButton: "Close",
 	deleteButton: "Delete",
+	exitButton: "Exit",
 
         continueButton: "Continue",
         confirmButton: "Confirm",
@@ -285,6 +286,7 @@ const englishTranslations = {
             taskPriorityLabel: "Priority",
 
             taskDescriptionLabel: "Description",
+	    taskDescriptionExpandButton: "Fullscreen",
 
             taskDateLabel: "Date",
             taskTimeLabel: "Time",
