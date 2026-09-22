@@ -6,6 +6,7 @@ import { BoardViewModelToEntry } from "../Components/boardEntry";
 import * as React from "../../react";
 import TaskPageViewModel from "../../ViewModel/Pages/taskPageViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
+import {NewItemEntry} from "../Components/newItemEntry";
 
 export function TaskPage(
     coreViewModel: CoreViewModel,
@@ -65,26 +66,13 @@ export function TaskPage(
                                 bind:value={taskPageViewModel.boardQuery}
                                 on:enter={taskPageViewModel.createBoard}
                                 placeholder={
-                                    coreViewModel.translations.chatPage.task
-                                        .newBoardNamePlaceholder
+                                    coreViewModel.translations.general.filterOrCreateLabel
                                 }
                             ></input>
-                            <button
-                                class="primary"
-                                aria-label={
-                                    coreViewModel.translations.chatPage.task
-                                        .createBoardButtonAudioLabel
-                                }
-                                on:click={taskPageViewModel.createBoard}
-                                toggle:disabled={
-                                    taskPageViewModel.cannotCreateBoard
-                                }
-                            >
-                                <span class="icon">add</span>
-                            </button>
                         </div>
                     </div>
-                    <div class="content">
+		    <div class="content gap">
+			{NewItemEntry(coreViewModel, taskPageViewModel.boardQuery, taskPageViewModel.createBoard)}
                         <div
                             class="grid gap"
                             style="grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr))"

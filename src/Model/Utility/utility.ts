@@ -106,7 +106,7 @@ export default function implementFilter<T>(
     function update() {
         matches.clear();
         allItems.value.forEach((item: T) => {
-            if (!itemToString(item).includes(query.value)) return;
+            if (!itemToString(item).toLowerCase().includes(query.value.toLowerCase())) return;
             matches.add(item);
             allItems.handleRemoval(item, () => {
                 matches.remove(item);

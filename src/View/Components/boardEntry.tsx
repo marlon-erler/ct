@@ -6,7 +6,7 @@ export function BoardEntry(boardViewModel: BoardViewModel) {
     const view = (
         <button
             set:color={boardViewModel.color}
-            class="tile colored-tile"
+            class="tile colored-tile slide-up"
             toggle:selected={boardViewModel.isSelected}
             on:click={boardViewModel.select}
             on:dragover={ViewController.allowDrop}
