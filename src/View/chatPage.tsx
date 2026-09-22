@@ -95,44 +95,47 @@ export function ChatPage(
                         toggle:hidden={
                             chatViewModel.connectionViewModel.isConnected
                         }
-                    >
-                        <span class="icon">signal_disconnected</span>
-                    </button>
+			toggle:disabled={
+			    chatViewModel.connectionViewModel.hasNoPreviousConnections
+			}
+		    >
+			<span class="icon">signal_disconnected</span>
+		    </button>
 
-                    <span class="marquee" children:set={marqueeContent}></span>
+		    <span class="marquee" children:set={marqueeContent}></span>
 
-                    <span class="navigation-buttons">
-                        {ChatViewToggleButton(
-                            coreViewModel.translations.chatPage.pages.calendar,
-                            "calendar_month",
-                            ChatPageTypes.Calendar,
-                            chatViewModel,
-                        )}
-                        {ChatViewToggleButton(
-                            coreViewModel.translations.chatPage.pages.tasks,
-                            "task_alt",
-                            ChatPageTypes.Tasks,
-                            chatViewModel,
-                        )}
-                        {ChatViewToggleButton(
-                            coreViewModel.translations.chatPage.pages.messages,
-                            "forum",
-                            ChatPageTypes.Messages,
-                            chatViewModel,
-                        )}
-                        {ChatViewToggleButton(
-                            coreViewModel.translations.chatPage.pages.settings,
-                            "settings",
-                            ChatPageTypes.Settings,
-                            chatViewModel,
-                        )}
-                    </span>
-                </div>
-                <div
-                    id="main"
-                    children:set={ViewController.chatPages.state}
-                ></div>
-            </div>
-        </article>
+		    <span class="navigation-buttons">
+			{ChatViewToggleButton(
+			    coreViewModel.translations.chatPage.pages.calendar,
+			    "calendar_month",
+			    ChatPageTypes.Calendar,
+			    chatViewModel,
+			)}
+    {ChatViewToggleButton(
+	coreViewModel.translations.chatPage.pages.tasks,
+	"task_alt",
+	ChatPageTypes.Tasks,
+	chatViewModel,
+    )}
+    {ChatViewToggleButton(
+	coreViewModel.translations.chatPage.pages.messages,
+	"forum",
+	ChatPageTypes.Messages,
+	chatViewModel,
+    )}
+    {ChatViewToggleButton(
+	coreViewModel.translations.chatPage.pages.settings,
+	"settings",
+	ChatPageTypes.Settings,
+	chatViewModel,
+    )}
+</span>
+		</div>
+		<div
+		    id="main"
+		    children:set={ViewController.chatPages.state}
+		></div>
+	    </div>
+	</article>
     );
 }

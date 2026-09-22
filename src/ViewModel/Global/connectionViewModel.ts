@@ -47,6 +47,8 @@ export default class ConnectionViewModel {
                 this.coreViewModel.connectionModel.address,
             );
         }
+
+	this.hideConnectionModal();
     };
 
     // methods
@@ -66,6 +68,9 @@ export default class ConnectionViewModel {
     removePreviousAddress = (address: string): void => {
         this.coreViewModel.connectionModel.removeAddress(address);
         this.updatePreviousAddresses();
+
+	if (this.previousAddresses.value.size > 0) return;
+	this.hideConnectionModal();
     };
 
     // view
