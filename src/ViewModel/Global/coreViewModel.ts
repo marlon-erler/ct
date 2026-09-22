@@ -49,7 +49,9 @@ export default class CoreViewModel {
     };
 
     handleKeyDown = (e: KeyboardEvent): void => {
+	if (!(e instanceof KeyboardEvent)) return console.trace("NOT A KEY EVENT");
         if (CoreViewModel.checkIsKeystroke(e) == false) return;
+	console.log(e.key);
         e.preventDefault();
         const contexts: Context[] = this.contexts;
         while (contexts.length > 0) {

@@ -6,5 +6,5 @@ export enum CommonKeys {
     CloseOrCancel = "backspace",
     Apply = "enter",
     Settings = ",",
-    Create = ";",
+    Create = "a",
 }
