@@ -311,6 +311,7 @@
       cancelButton: "Cancel",
       closeButton: "Close",
       deleteButton: "Delete",
+      exitButton: "Exit",
       continueButton: "Continue",
       confirmButton: "Confirm",
       saveButton: "Save",
@@ -508,6 +509,7 @@
         taskStatusLabel: "Status",
         taskPriorityLabel: "Priority",
         taskDescriptionLabel: "Description",
+        taskDescriptionExpandButton: "Fullscreen",
         taskDateLabel: "Date",
         taskTimeLabel: "Time",
         deleteTaskButton: "Delete task",
@@ -1274,7 +1276,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.22.A";
+      this.BUILD = "Build 26.09.22.B";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -2808,6 +2810,7 @@
       this.time = new State("");
       this.selectedVersionId = new State("");
       this.versionIds = new ListState();
+      this.isPresentingFullScreenDescription = new State(false);
       // methods
       this.dragStart = (event) => {
         ViewController.allowDrag(event);
@@ -2838,6 +2841,12 @@
       this.closeAndSave = () => {
         this.close();
         this.save();
+      };
+      this.openFullscreenDecription = () => {
+        this.isPresentingFullScreenDescription.value = true;
+      };
+      this.closeFullscreenDecription = () => {
+        this.isPresentingFullScreenDescription.value = false;
       };
       this.updateIndex = () => {
         const index = this.containingViewModel.taskIndexManager.getIndex(this);
@@ -5420,11 +5429,10 @@
       const isSelected = entry[0] == taskViewModel.task.boardId;
       return Option(entry[1], entry[0], isSelected);
     };
-    return /* @__PURE__ */ createElement("div", { class: "modal task-settings", open: true }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.chatPage.task.taskSettingsHeadline), /* @__PURE__ */ createElement("div", { class: "column-wrapper" }, /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "label"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskNameLabel), /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { class: "modal task-settings", open: true, "toggle:full-description": taskViewModel.isPresentingFullScreenDescription }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", { id: "standard-main" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.chatPage.task.taskSettingsHeadline), /* @__PURE__ */ createElement("div", { class: "column-wrapper" }, /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "label"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskNameLabel), /* @__PURE__ */ createElement(
       "input",
       {
-        "bind:value": taskViewModel.name,
-        id: "focused"
+        "bind:value": taskViewModel.name
       }
     ))), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskBoardLabel), /* @__PURE__ */ createElement(
       "select",
@@ -5441,7 +5449,15 @@
         rows: "10",
         "bind:value": taskViewModel.description
       }
-    )))), /* @__PURE__ */ createElement("hr", { class: "mobile-only" }), /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskCategoryLabel), /* @__PURE__ */ createElement(
+    ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "width-50",
+        "on:click": taskViewModel.openFullscreenDecription
+      },
+      coreViewModel2.translations.chatPage.task.taskDescriptionExpandButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "fullscreen")
+    ))), /* @__PURE__ */ createElement("hr", { class: "mobile-only" }), /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskCategoryLabel), /* @__PURE__ */ createElement(
       "input",
       {
         "bind:value": taskViewModel.category,
@@ -5505,22 +5521,51 @@
       coreViewModel2.translations.chatPage.task.deleteTaskButton,
       "delete_forever",
       taskViewModel.deleteTask
-    ))), /* @__PURE__ */ createElement("div", { class: "flex-row width-100" }, /* @__PURE__ */ createElement(
-      "button",
+    ))), /* @__PURE__ */ createElement("main", { id: "fullscreen-main" }, /* @__PURE__ */ createElement(
+      "textarea",
       {
-        class: "flex",
-        "on:click": taskViewModel.closeAndDiscard
+        style: "height: 100%; width: 100%; max-width: unset",
+        "bind:value": taskViewModel.description
+      }
+    )), /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "flex-row width-100",
+        id: "fullscreen-exit"
       },
-      coreViewModel2.translations.general.closeButton
+      /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "flex",
+          "on:click": taskViewModel.closeFullscreenDecription
+        },
+        coreViewModel2.translations.general.exitButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "fullscreen_exit")
+      )
     ), /* @__PURE__ */ createElement(
-      "button",
+      "div",
       {
-        class: "flex primary",
-        "on:click": taskViewModel.closeAndSave
+        class: "flex-row width-100",
+        id: "controls"
       },
-      coreViewModel2.translations.general.saveButton,
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "save")
-    ))));
+      /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "flex",
+          "on:click": taskViewModel.closeAndDiscard
+        },
+        coreViewModel2.translations.general.closeButton
+      ),
+      /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "flex primary",
+          "on:click": taskViewModel.closeAndSave
+        },
+        coreViewModel2.translations.general.saveButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "save")
+      )
+    )));
   }
 
   // src/View/Modals/searchModal.tsx

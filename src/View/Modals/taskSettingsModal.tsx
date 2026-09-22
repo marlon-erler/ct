@@ -48,7 +48,6 @@ export function TaskSettingsModal(
 				    </span>
 				    <input
 					bind:value={taskViewModel.name}
-					id="focused"
 				    ></input>
 				</div>
 			    </label>

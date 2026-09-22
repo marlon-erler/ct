@@ -488,6 +488,15 @@ body[showing-chat] #chat-page-wrapper {
     flex: 1;
   }
 }
+.modal.task-settings:not([full-description]) :is(#fullscreen-exit, #fullscreen-main) {
+  display: none;
+}
+.modal.task-settings[full-description] :is(#controls, #standard-main) {
+  display: none;
+}
+.modal.task-settings[full-description] > div {
+  height: 100%;
+}
 
 /* src/View/ChatPages/taskPage.css */
 #chat-page > div > #main > #task-page > .pane-wrapper > .pane > .main-content {
