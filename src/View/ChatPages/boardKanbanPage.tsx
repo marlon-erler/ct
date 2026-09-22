@@ -1,4 +1,3 @@
-import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { TaskViewModelToEntry } from "../Components/taskEntry";
 import {
@@ -6,6 +5,7 @@ import {
     createPropertyValueIndexState,
 } from "../Components/propertyValueList";
 import { FilteredList } from "../Components/filteredList";
+import * as React from "../../react";
 import { TaskCategoryBulkChangeViewModel } from "../../ViewModel/Utility/taskPropertyBulkChangeViewModel";
 import TaskViewModel from "../../ViewModel/Pages/taskViewModel";
 import BoardViewModel from "../../ViewModel/Pages/boardViewModel";

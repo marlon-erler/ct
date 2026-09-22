@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import { OptionButton } from "./optionButton";
+import * as React from "../../react";
 
 export function OptionButtonList<T>(
     options: React.ListState<[string, T]>,

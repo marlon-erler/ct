@@ -1,7 +1,7 @@
-import * as React from "../../react";
 import { MessageReactionButtonRow } from "./messageReactionButtonRow";
 import { InlineReply } from "./inlineReply";
 import { ChatMessageInfoModal } from "../Modals/chatMessageInfoModal";
+import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
 import { ChatMessageStatuses } from "../../Model/Chat/chatModel";

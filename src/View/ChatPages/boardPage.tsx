@@ -1,4 +1,3 @@
-import * as React from "../../react";
 import { BoardStatusGridPage } from "./boardStatusGridPage";
 import { BoardKanbanPage } from "./boardKanbanPage";
 import { ViewController } from "../viewController";
@@ -7,6 +6,7 @@ import { SearchModal } from "../Modals/searchModal";
 import { BoardSettingsModal } from "../Modals/boardSettingsModal";
 import { TaskViewModelToEntry } from "../Components/taskEntry";
 import { BoardViewToggleButton } from "../Components/boardViewToggleButton";
+import * as React from "../../react";
 import BoardViewModel, {
     BoardPageTypes,
 } from "../../ViewModel/Pages/boardViewModel";

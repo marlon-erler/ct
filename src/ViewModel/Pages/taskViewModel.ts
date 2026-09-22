@@ -1,7 +1,7 @@
-import * as React from "../../react";
 import TaskContainingPageViewModel from "./taskContainingPageViewModel";
 import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel from "../Chat/chatViewModel";
+import * as React from "../../react";
 import { ViewController } from "../../View/viewController";
 import { CommonKeys } from "../../View/keystrokes";
 import { localeCompare, padZero } from "../../Model/Utility/utility";
@@ -58,7 +58,9 @@ export default class TaskViewModel extends Context {
     selectedVersionId: React.State<string> = new React.State("");
     versionIds: React.ListState<string> = new React.ListState();
 
-    isPresentingFullScreenDescription: React.State<boolean> = new React.State(false);
+    isPresentingFullScreenDescription: React.State<boolean> = new React.State(
+        false,
+    );
 
     // methods
     dragStart = (event: DragEvent): void => {
@@ -99,12 +101,12 @@ export default class TaskViewModel extends Context {
     };
 
     openFullscreenDecription = (): void => {
-	this.isPresentingFullScreenDescription.value = true;
-    }
+        this.isPresentingFullScreenDescription.value = true;
+    };
 
     closeFullscreenDecription = (): void => {
-	this.isPresentingFullScreenDescription.value = false;
-    }
+        this.isPresentingFullScreenDescription.value = false;
+    };
 
     updateIndex = (): void => {
         const index: number =
@@ -118,7 +120,9 @@ export default class TaskViewModel extends Context {
                 this.category.value,
             ) == false
         ) {
-            this.containingViewModel.taskCategorySuggestions.add(this.category.value);
+            this.containingViewModel.taskCategorySuggestions.add(
+                this.category.value,
+            );
         }
 
         if (
@@ -126,7 +130,9 @@ export default class TaskViewModel extends Context {
                 this.status.value,
             ) == false
         ) {
-            this.containingViewModel.taskStatusSuggestions.add(this.status.value);
+            this.containingViewModel.taskStatusSuggestions.add(
+                this.status.value,
+            );
         }
     };
 

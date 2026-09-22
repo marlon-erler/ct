@@ -1,7 +1,7 @@
-import * as React from "../../react";
 import { DeletableListItem } from "../Components/deletableListItem";
 import { DangerousActionButton } from "../Components/dangerousActionButton";
 import { ColorPicker } from "../Components/colorPicker";
+import * as React from "../../react";
 import SettingsPageViewModel from "../../ViewModel/Pages/settingsPageViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 

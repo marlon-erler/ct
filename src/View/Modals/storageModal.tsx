@@ -1,7 +1,7 @@
-import * as React from "../../react";
 import { SplitModal } from "./splitModal";
 import { DirectoryItemList } from "../Components/directoryItemList";
 import { DangerousActionButton } from "../Components/dangerousActionButton";
+import * as React from "../../react";
 import StorageViewModel from "../../ViewModel/Global/storageViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import { PATH_COMPONENT_SEPARATOR } from "../../Model/Global/storageModel";

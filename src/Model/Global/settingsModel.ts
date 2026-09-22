@@ -46,7 +46,7 @@ export default class SettingsModel {
     // load
     private readonly readSetting = (
         pathName: keyof typeof filePaths.settingsModel,
-    ): string|null=> {
+    ): string | null => {
         const path = StorageModel.getPath(
             StorageModelSubPaths.SettingsModel,
             filePaths.settingsModel[pathName],

@@ -1,9 +1,9 @@
-import * as React from "../../react";
 import "./messagePage.css";
 import { ViewController } from "../viewController";
 import { MessageFilterModal } from "../Modals/messageFilterModal";
 import { ReplyPreview } from "../Components/replyPreview";
 import { ChatMessage } from "../Components/chatMessage";
+import * as React from "../../react";
 import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";

@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import CoreViewModel, { Context } from "./coreViewModel";
+import * as React from "../../react";
 import { CommonKeys } from "../../View/keystrokes";
 import StorageModel, {
     StorageModelSubPaths,
@@ -54,7 +54,9 @@ export default class FileTransferViewModel extends Context {
     exportKey: React.State<string> = new React.State("");
     exportKeyConfirmation: React.State<string> = new React.State("");
 
-    importedFile: React.State<File | undefined> = new React.State<File | undefined>(undefined);
+    importedFile: React.State<File | undefined> = new React.State<
+        File | undefined
+    >(undefined);
     importedFileString: React.State<string> = new React.State("");
     importKey: React.State<string> = new React.State("");
     isImportKeyCorrect: React.State<boolean> = new React.State(true);
@@ -139,7 +141,7 @@ export default class FileTransferViewModel extends Context {
     };
 
     downloadFile = async (): Promise<void> => {
-	if (this.cannotExport.value == true) return;
+        if (this.cannotExport.value == true) return;
         const date = new Date().toISOString().split("T")[0];
 
         const backup: Blob =
@@ -158,7 +160,7 @@ export default class FileTransferViewModel extends Context {
         if (!input) return;
         if (!(input instanceof HTMLInputElement)) return;
 
-	if (!input.files) return;
+        if (!input.files) return;
         const file = input.files[0];
         this.importedFile.value = file;
     };
@@ -171,7 +173,7 @@ export default class FileTransferViewModel extends Context {
         reader.readAsText(file, "utf8");
         reader.onload = () => {
             const result = reader.result;
-	    if (!result) return;
+            if (!result) return;
             this.importedFileString.value = result.toString();
             this.showImportDecryptDataModal();
         };

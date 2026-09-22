@@ -1,5 +1,5 @@
 import { checkIsValidObject, checkMatchesObjectStructure } from "./typeSafety";
-import * as Hammer from "hammerjs";
+import * as React from "../../react";
 
 export interface Stringifiable {
     toString(): string;
@@ -18,7 +18,7 @@ export function createTimestamp(): string {
     return new Date().toISOString();
 }
 
-// filters etc
+// filters
 export type StringEntryObject = { [key: string]: Stringifiable | undefined };
 
 export function filterObjectsByStringEntries<T>(
@@ -28,7 +28,7 @@ export function filterObjectsByStringEntries<T>(
 ): Set<T> {
     const matches: Set<T> = new Set();
 
-    object_loop: for (const object of objects) {
+    for (const object of objects) {
         const doesMatch: boolean = checkDoesObjectMatchReference(
             reference,
             converter(object),
@@ -39,79 +39,6 @@ export function filterObjectsByStringEntries<T>(
     return matches;
 }
 
-export function checkDoesObjectMatchReference(
-    reference: StringEntryObject,
-    stringEntryObject: StringEntryObject,
-    explicitEmptyValue: boolean = false,
-): boolean {
-    reference_entry_loop: for (const referenceEntry of Object.entries(
-        reference,
-    )) {
-        const [referenceKey, referenceValue] = referenceEntry;
-        const stringEntryObjectValue: Stringifiable | undefined =
-            stringEntryObject[referenceKey];
-
-        if (referenceValue == undefined) return false;
-
-        if (referenceValue[0] == "-") {
-            const strippedReferenceValue: string = referenceValue
-                .toString()
-                .substring(1);
-            // property may not exist
-            if (
-                strippedReferenceValue == "" &&
-                stringEntryObjectValue != undefined &&
-                stringEntryObjectValue != ""
-            ) {
-                return false;
-            }
-
-            // property may not match
-            if (stringEntryObjectValue == strippedReferenceValue) {
-                return false;
-            }
-        } else {
-            if (explicitEmptyValue == false) {
-                // property must exist but be anything
-                if (
-                    referenceValue == "" &&
-                    (stringEntryObjectValue == undefined ||
-                        stringEntryObjectValue == "")
-                ) {
-                    return false;
-                } else if (referenceValue == "") {
-                    continue reference_entry_loop;
-                }
-            }
-
-            // property must match
-            if (stringEntryObjectValue != referenceValue) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-export function collectObjectValuesForKey<T>(
-    key: string,
-    converter: (object: T) => StringEntryObject,
-    objects: T[],
-): string[] {
-    const values: Set<string> = new Set();
-
-    for (const object of objects) {
-        const stringEntryObject: StringEntryObject = converter(object);
-        const stringEntryObjectValue: Stringifiable | undefined =
-            stringEntryObject[key];
-        if (stringEntryObjectValue == undefined) continue;
-
-        values.add(stringEntryObjectValue.toString());
-    }
-
-    return [...values.values()];
-}
-
 export function filterObjectsByWords<T>(
     query: string,
     getStringsOfObject: (object: T) => string[],
@@ -119,7 +46,7 @@ export function filterObjectsByWords<T>(
 ): Set<T> {
     const matches: Set<T> = new Set();
 
-    object_loop: for (const object of objects) {
+    for (const object of objects) {
         const doesMatch: boolean = checkDoesObjectMatchSearch(
             query,
             getStringsOfObject,
@@ -168,6 +95,26 @@ export function checkDoesObjectMatchSearch<T>(
     }
 
     return true;
+}
+
+export default function implementFilter<T>(
+    allItems: React.ListState<T>|React.MapState<T>,
+    matches: React.ListState<T>,
+    query: React.State<string>,
+    itemToString: (item: T) => string,
+) {
+    function update() {
+        matches.clear();
+        allItems.value.forEach((item: T) => {
+            if (!itemToString(item).includes(query.value)) return;
+            matches.add(item);
+            allItems.handleRemoval(item, () => {
+                matches.remove(item);
+            });
+        });
+    }
+    query.subscribe(update);
+    allItems.handleAddition(update);
 }
 
 // handlers
@@ -313,99 +260,174 @@ export function implementPinchZoom(canvas: HTMLElement) {
     const MIN = 0.25;
     const MAX = 5;
 
-    const element = (): HTMLElement|null=> canvas.querySelector(".zoom");
+    const element = (): HTMLElement | null => canvas.querySelector(".zoom");
     const distance = (e: TouchEvent) =>
-	Math.hypot(
-	    e.touches[0].pageX - e.touches[1].pageX,
-	    e.touches[0].pageY - e.touches[1].pageY,
-	);
+        Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY,
+        );
     const point = (e: TouchEvent, direction: "x" | "y", i: number) =>
-	e.touches[i][direction == "x" ? "clientX" : "clientY"];
+        e.touches[i][direction == "x" ? "clientX" : "clientY"];
     const midpoint = (e: TouchEvent, direction: "x" | "y") =>
-	(point(e, direction, 0) + point(e, direction, 1)) / 2;
+        (point(e, direction, 0) + point(e, direction, 1)) / 2;
 
     function apply(factor: number, _offset?: [number, number]) {
-	const el = element();
-	if (!el) return;
-	if (factor < MIN) return apply(MIN, _offset);
-	if (factor > MAX) return apply(5, _offset);
+        const el = element();
+        if (!el) return;
+        if (factor < MIN) return apply(MIN, _offset);
+        if (factor > MAX) return apply(5, _offset);
 
-	let x: number, y: number;
-	if (_offset) [x, y] = _offset;
-	else {
-	    x = currentX
-	    y = currentY
-	}
-	el.style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
-	currentX = x;
-	currentY = y;
-	currentZoom = factor;
+        let x: number, y: number;
+        if (_offset) [x, y] = _offset;
+        else {
+            x = currentX;
+            y = currentY;
+        }
+        el.style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
+        currentX = x;
+        currentY = y;
+        currentZoom = factor;
     }
 
     canvas.addEventListener("wheel", (event: WheelEvent) => {
-	event.preventDefault();
+        event.preventDefault();
 
-	initialZoom = currentZoom;
-	initialX = currentX;
-	initialY = currentY;
+        initialZoom = currentZoom;
+        initialX = currentX;
+        initialY = currentY;
 
-	if (!event.shiftKey) {
-	    apply(currentZoom, [
-		currentX - event.deltaX,
-		currentY - event.deltaY,
-	    ]);
-	    return;
-	}
-	apply(currentZoom - event.deltaY * 0.01);
+        if (!event.shiftKey) {
+            apply(currentZoom, [
+                currentX - event.deltaX,
+                currentY - event.deltaY,
+            ]);
+            return;
+        }
+        apply(currentZoom - event.deltaY * 0.01);
     });
     canvas.addEventListener("scroll", (event: Event) => {
-	event.preventDefault();
+        event.preventDefault();
     });
 
     canvas.addEventListener("touchstart", (event: TouchEvent) => {
-	(document.activeElement as HTMLElement).blur();
+        (document.activeElement as HTMLElement).blur();
 
-	const el = element();
-	if (!el) return;
-	if (lastElement != undefined && lastElement != el) reset();
-	lastElement = el;
+        const el = element();
+        if (!el) return;
+        if (lastElement != undefined && lastElement != el) reset();
+        lastElement = el;
 
-	initialZoom = currentZoom;
-	initialX = currentX;
-	initialY = currentY;
+        initialZoom = currentZoom;
+        initialX = currentX;
+        initialY = currentY;
 
-	if (event.touches.length != 2) {
-	    pinching = false;
-	    initialTouchX = event.touches[0].clientX;
-	    initialTouchY = event.touches[0].clientY;
-	    return;
-	}
+        if (event.touches.length != 2) {
+            pinching = false;
+            initialTouchX = event.touches[0].clientX;
+            initialTouchY = event.touches[0].clientY;
+            return;
+        }
 
-	pinching = true;
-	initialDistance = distance(event);
-	initialTouchX = midpoint(event, "x");
-	initialTouchY = midpoint(event, "y");
+        pinching = true;
+        initialDistance = distance(event);
+        initialTouchX = midpoint(event, "x");
+        initialTouchY = midpoint(event, "y");
     });
     canvas.addEventListener("touchmove", (event: TouchEvent) => {
-	if (!pinching) {
-	    apply(currentZoom, [
-		initialX +
-		(event.touches[0].clientX - initialTouchX) / initialZoom,
-		initialY +
-		(event.touches[0].clientY - initialTouchY) / initialZoom,
-	    ]);
-	    return;
-	}
-	if (event.touches.length < 2) return;
-	event.preventDefault();
-	const currentDistance = distance(event);
-	const midX = midpoint(event, "x");
-	const midY = midpoint(event, "y");
-	const ratio = currentDistance / initialDistance;
-	const difference = currentDistance - initialDistance;
-	apply(initialZoom * ratio, [
-	    initialX + (midX - difference - initialTouchX) / initialZoom,
-	    initialY + (midY - difference - initialTouchY) / initialZoom,
-	]);
+        if (!pinching) {
+            apply(currentZoom, [
+                initialX +
+                    (event.touches[0].clientX - initialTouchX) / initialZoom,
+                initialY +
+                    (event.touches[0].clientY - initialTouchY) / initialZoom,
+            ]);
+            return;
+        }
+        if (event.touches.length < 2) return;
+        event.preventDefault();
+        const currentDistance = distance(event);
+        const midX = midpoint(event, "x");
+        const midY = midpoint(event, "y");
+        const ratio = currentDistance / initialDistance;
+        const difference = currentDistance - initialDistance;
+        apply(initialZoom * ratio, [
+            initialX + (midX - difference - initialTouchX) / initialZoom,
+            initialY + (midY - difference - initialTouchY) / initialZoom,
+        ]);
     });
+}
+
+// objecs
+export function collectObjectValuesForKey<T>(
+    key: string,
+    converter: (object: T) => StringEntryObject,
+    objects: T[],
+): string[] {
+    const values: Set<string> = new Set();
+
+    for (const object of objects) {
+        const stringEntryObject: StringEntryObject = converter(object);
+        const stringEntryObjectValue: Stringifiable | undefined =
+            stringEntryObject[key];
+        if (stringEntryObjectValue == undefined) continue;
+
+        values.add(stringEntryObjectValue.toString());
+    }
+
+    return [...values.values()];
+}
+
+// type safety
+export function checkDoesObjectMatchReference(
+    reference: StringEntryObject,
+    stringEntryObject: StringEntryObject,
+    explicitEmptyValue: boolean = false,
+): boolean {
+    reference_entry_loop: for (const referenceEntry of Object.entries(
+        reference,
+    )) {
+        const [referenceKey, referenceValue] = referenceEntry;
+        const stringEntryObjectValue: Stringifiable | undefined =
+            stringEntryObject[referenceKey];
+
+        if (referenceValue == undefined) return false;
+
+        if (referenceValue[0] == "-") {
+            const strippedReferenceValue: string = referenceValue
+                .toString()
+                .substring(1);
+            // property may not exist
+            if (
+                strippedReferenceValue == "" &&
+                stringEntryObjectValue != undefined &&
+                stringEntryObjectValue != ""
+            ) {
+                return false;
+            }
+
+            // property may not match
+            if (stringEntryObjectValue == strippedReferenceValue) {
+                return false;
+            }
+        } else {
+            if (explicitEmptyValue == false) {
+                // property must exist but be anything
+                if (
+                    referenceValue == "" &&
+                    (stringEntryObjectValue == undefined ||
+                        stringEntryObjectValue == "")
+                ) {
+                    return false;
+                } else if (referenceValue == "") {
+                    continue reference_entry_loop;
+                }
+            }
+
+            // property must match
+            if (stringEntryObjectValue != referenceValue) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

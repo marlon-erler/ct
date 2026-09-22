@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
-import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { StringToOption } from "../Components/option";
+import * as React from "../../react";
 import SearchViewModel from "../../ViewModel/Utility/searchViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 
@@ -29,8 +29,8 @@ export function SearchModal<T>(
                     <h2>{headline}</h2>
                     <div class="flex-row">
                         <input
-			    id="focused"
-			    style="max-width: unset"
+                            id="focused"
+                            style="max-width: unset"
                             placeholder={
                                 coreViewModel.translations.general.searchLabel
                             }
@@ -70,55 +70,73 @@ export function SearchModal<T>(
                         </button>
                     </div>
 
-		    <div
-			toggle:hidden={searchViewModel.hasNoSuggestions}>
-			<hr></hr>
-			<h3>{coreViewModel.translations.general.searchSuggestionsLabel}</h3>
-			<div
-			    class="flex-column gap"
-			    children:append={[
-				searchViewModel.suggestions,
-				(suggestion: string) => SuggestionView(suggestion, searchViewModel, coreViewModel),
-			    ]}
-			></div>
-		    </div>
-		</main>
-		<button on:click={close}>
-		    {coreViewModel.translations.general.closeButton}
-		    <span class="icon">close</span>
-		</button>
-	    </div>
-	</div>
+                    <div toggle:hidden={searchViewModel.hasNoSuggestions}>
+                        <hr></hr>
+                        <h3>
+                            {
+                                coreViewModel.translations.general
+                                    .searchSuggestionsLabel
+                            }
+                        </h3>
+                        <div
+                            class="flex-column gap"
+                            children:append={[
+                                searchViewModel.suggestions,
+                                (suggestion: string) =>
+                                    SuggestionView(
+                                        suggestion,
+                                        searchViewModel,
+                                        coreViewModel,
+                                    ),
+                            ]}
+                        ></div>
+                    </div>
+                </main>
+                <button on:click={close}>
+                    {coreViewModel.translations.general.closeButton}
+                    <span class="icon">close</span>
+                </button>
+            </div>
+        </div>
     );
 }
 
-function SuggestionView<T>(suggestion: string, searchViewModel: SearchViewModel<T>, coreViewModel: CoreViewModel) {
-    const isApplied = React.createProxyState([searchViewModel.appliedQuery], ()=>searchViewModel.appliedQuery.value == suggestion);
+function SuggestionView<T>(
+    suggestion: string,
+    searchViewModel: SearchViewModel<T>,
+    coreViewModel: CoreViewModel,
+) {
+    const isApplied = React.createProxyState(
+        [searchViewModel.appliedQuery],
+        () => searchViewModel.appliedQuery.value == suggestion,
+    );
 
     function deleteSuggestion() {
-	searchViewModel.deleteSuggestion(suggestion);
+        searchViewModel.deleteSuggestion(suggestion);
     }
 
     function applySuggestion() {
-	searchViewModel.search(suggestion);
+        searchViewModel.search(suggestion);
     }
 
-    return <div class="flex-row surface align-center">
-	<span class="width-100 flex-1 padding-h">{suggestion}</span>
-	<button
-	    class="danger"
-	    aria-label={coreViewModel.translations.general.deleteButton}
-	    on:click={deleteSuggestion}
-	>
-	    <span class="icon">delete</span>
-	</button>
-	<button
-	    class="primary"
-	    aria-label={coreViewModel.translations.general.applyButton}
-	    on:click={applySuggestion}
-	    toggle:disabled={isApplied}
-	>
-	    <span class="icon">check</span>
-	</button>
-    </div>
+    return (
+        <div class="flex-row surface align-center">
+            <span class="width-100 flex-1 padding-h">{suggestion}</span>
+            <button
+                class="danger"
+                aria-label={coreViewModel.translations.general.deleteButton}
+                on:click={deleteSuggestion}
+            >
+                <span class="icon">delete</span>
+            </button>
+            <button
+                class="primary"
+                aria-label={coreViewModel.translations.general.applyButton}
+                on:click={applySuggestion}
+                toggle:disabled={isApplied}
+            >
+                <span class="icon">check</span>
+            </button>
+        </div>
+    );
 }

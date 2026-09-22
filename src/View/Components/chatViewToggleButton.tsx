@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import { RibbonButton } from "./ribbonButton";
+import * as React from "../../react";
 import ChatViewModel, {
     ChatPageTypes,
 } from "../../ViewModel/Chat/chatViewModel";

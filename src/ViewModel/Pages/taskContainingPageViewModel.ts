@@ -1,7 +1,7 @@
-import * as React from "../../react";
 import TaskViewModel from "./taskViewModel";
 import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel from "../Chat/chatViewModel";
+import * as React from "../../react";
 import { IndexManager } from "../../Model/Utility/utility";
 import BoardsAndTasksModel, {
     TaskFileContent,
@@ -20,7 +20,6 @@ export default class TaskContainingPageViewModel extends Context {
 
     taskCategorySuggestions: React.ListState<string> = new React.ListState();
     taskStatusSuggestions: React.ListState<string> = new React.ListState();
-
 
     // methods
     createTaskFromBoardId = (boardId: string): void => {

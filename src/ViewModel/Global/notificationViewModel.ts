@@ -1,6 +1,6 @@
-import * as React from "../../react";
 import { ChatPageTypes } from "../Chat/chatViewModel";
 import ChatListViewModel from "../Chat/chatListViewModel";
+import * as React from "../../react";
 import ChatModel, { ChatMessage } from "../../Model/Chat/chatModel";
 
 export default class NotificationViewModel {
@@ -35,7 +35,7 @@ export default class NotificationViewModel {
     };
 
     openNotification = () => {
-        const notification: Notification|undefined = this.marquee.value;
+        const notification: Notification | undefined = this.marquee.value;
         if (notification == undefined) return;
 
         const chat = [
@@ -44,7 +44,7 @@ export default class NotificationViewModel {
             (chat) =>
                 chat.chatModel.unwrappedPrimaryChannel == notification.chat,
         );
-	if (!chat) return;
+        if (!chat) return;
         chat.open();
         chat.openPage(ChatPageTypes.Messages);
     };
@@ -56,8 +56,9 @@ export default class NotificationViewModel {
             return this.stopLoop();
         }
 
-        const notification: Notification|undefined = this.messagesInMarquee.shift();
-	if (!notification) return;
+        const notification: Notification | undefined =
+            this.messagesInMarquee.shift();
+        if (!notification) return;
         this.seenMessageIds.delete(notification.messageId);
         this.marquee.value = notification;
     };

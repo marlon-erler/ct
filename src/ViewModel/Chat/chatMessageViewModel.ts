@@ -1,6 +1,6 @@
-import * as React from "../../react";
 import MessagePageViewModel from "../Pages/messagePageViewModel";
 import CoreViewModel from "../Global/coreViewModel";
+import * as React from "../../react";
 import {
     ChatMessage,
     ChatMessageReaction,

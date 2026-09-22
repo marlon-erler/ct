@@ -1,4 +1,3 @@
-import * as React from "../../react";
 import ChatListViewModel from "./chatListViewModel";
 import TaskPageViewModel from "../Pages/taskPageViewModel";
 import SettingsPageViewModel from "../Pages/settingsPageViewModel";
@@ -10,6 +9,7 @@ import SettingsViewModel from "../Global/settingsViewModel";
 import NotificationViewModel from "../Global/notificationViewModel";
 import CoreViewModel, { Context, ContextHost } from "../Global/coreViewModel";
 import ConnectionViewModel from "../Global/connectionViewModel";
+import * as React from "../../react";
 import { Colors } from "../../colors";
 import { CommonKeys } from "../../View/keystrokes";
 import { Entry } from "../../View/Components/option";

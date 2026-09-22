@@ -1,8 +1,8 @@
-import * as React from "../react";
 import "./homePage.css";
 import { StringToOption } from "./Components/option";
 import { HomePageButton } from "./Components/homePageButton";
 import { ChatViewModelToChatEntry } from "./Components/chatEntry";
+import * as React from "../react";
 import StorageViewModel from "../ViewModel/Global/storageViewModel";
 import SettingsViewModel from "../ViewModel/Global/settingsViewModel";
 import FileTransferViewModel from "../ViewModel/Global/fileTransferViewModel";

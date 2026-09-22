@@ -1,4 +1,3 @@
-import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { TaskViewModelToEntry } from "../Components/taskEntry";
 import {
@@ -8,6 +7,7 @@ import {
     createSortedPropertyValueState,
 } from "../Components/propertyValueList";
 import { FilteredList } from "../Components/filteredList";
+import * as React from "../../react";
 import {
     TaskCategoryBulkChangeViewModel,
     TaskStatusBulkChangeViewModel,

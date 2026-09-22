@@ -1,10 +1,10 @@
-import * as React from "../../react";
 import "./calendarPage.css";
 import { ViewController } from "../viewController";
 import { TaskSettingsModal } from "../Modals/taskSettingsModal";
 import { TaskViewModelToEntry } from "../Components/taskEntry";
 import { PlaceholderView } from "../Components/placeholderView";
 import { MonthGrid } from "../Components/monthGrid";
+import * as React from "../../react";
 import CalendarPageViewModel from "../../ViewModel/Pages/calendarPageViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 

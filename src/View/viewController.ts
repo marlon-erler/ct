@@ -7,7 +7,7 @@ class Tracker<T> {
 class TrackerMap<T> {
     trackers = new Map<string, Tracker<T>>();
 
-    private register = (key: string): Tracker<T>=> {
+    private register = (key: string): Tracker<T> => {
         if (this.trackers.has(key)) {
             return this.trackers.get(key)!;
         }

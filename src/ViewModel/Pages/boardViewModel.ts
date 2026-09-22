@@ -1,10 +1,10 @@
-import * as React from "../../react";
 import TaskViewModel from "./taskViewModel";
 import TaskPageViewModel from "./taskPageViewModel";
 import TaskContainingPageViewModel from "./taskContainingPageViewModel";
 import SearchViewModel from "../Utility/searchViewModel";
 import CoreViewModel from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
+import * as React from "../../react";
 import { Colors } from "../../colors";
 import { CommonKeys } from "../../View/keystrokes";
 import BoardsAndTasksModel, {
@@ -115,11 +115,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
             searchTerm,
         ];
         this.coreViewModel.storageModel.write(suggestionPath, "");
-        if (
-            !this.searchSuggestions.value.has(
-                searchTerm,
-            ) && searchTerm != ""
-        ) {
+        if (!this.searchSuggestions.value.has(searchTerm) && searchTerm != "") {
             this.searchSuggestions.add(searchTerm);
         }
 
@@ -133,7 +129,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
             searchTerm,
         ];
         this.coreViewModel.storageModel.remove(suggestionPath);
-    }
+    };
 
     // view
     showTask = (taskFileContent: TaskFileContent): void => {
@@ -154,7 +150,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
             this,
             taskFileContent,
         );
-	console.log("STILL HERE", taskFileContent.fileId);
+        console.log("STILL HERE", taskFileContent.fileId);
         this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
     };
 
@@ -234,7 +230,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
         const dirPath: string[] = this.getPreviousSearchesPath();
         const searches: string[] =
             this.coreViewModel.storageModel.list(dirPath);
-        this.searchSuggestions.add(...searches.filter(x => x != ""));
+        this.searchSuggestions.add(...searches.filter((x) => x != ""));
     };
 
     restoreSearch = (): void => {
@@ -307,13 +303,13 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
             this.taskViewModels,
             this.filteredTaskViewModels,
             TaskViewModel.getStringsForFilter,
-	    this.searchSuggestions,
+            this.searchSuggestions,
         );
         this.searchViewModel.appliedQuery.subscribeSilent((newQuery) => {
             this.handleNewSearch(newQuery);
         });
         this.restoreSearch();
-	this.searchSuggestions.handleRemovals(this.handleSearchRemoved);
+        this.searchSuggestions.handleRemovals(this.handleSearchRemoved);
 
         this.isFilterActive = React.createProxyState(
             [this.searchViewModel.appliedQuery],

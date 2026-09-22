@@ -37,7 +37,7 @@ export default class FileTransferModel {
     };
 
     readonly prepareToSend = (): void => {
-	if (!this.transferData) return;
+        if (!this.transferData) return;
         this.direction = TransferDirections.Send;
         this.connectionModel.addChannel(this.transferData.channel);
     };
@@ -157,8 +157,7 @@ export default class FileTransferModel {
     };
 
     readonly prepareFileForSending = (filePath: string[]): string => {
-        const fileContent: string | null =
-            this.storageModel.read(filePath);
+        const fileContent: string | null = this.storageModel.read(filePath);
         if (fileContent == null) return "";
 
         const fileData: FileData = {
@@ -169,7 +168,7 @@ export default class FileTransferModel {
     };
 
     readonly sendFile = async (stringifiedFileData: string): Promise<void> => {
-	if (!this.transferData) return;
+        if (!this.transferData) return;
 
         const encryptedFileData: string = await encryptString(
             stringifiedFileData,

@@ -1,7 +1,7 @@
-import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { DangerousActionButton } from "../Components/dangerousActionButton";
 import { ColorPicker } from "../Components/colorPicker";
+import * as React from "../../react";
 import BoardViewModel from "../../ViewModel/Pages/boardViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 

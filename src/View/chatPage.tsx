@@ -1,4 +1,3 @@
-import * as React from "../react";
 import { ViewController } from "./viewController";
 import "./homePage.css";
 import { ChatViewToggleButton } from "./Components/chatViewToggleButton";
@@ -6,6 +5,7 @@ import { TaskPage } from "./ChatPages/taskPage";
 import { SettingsPage } from "./ChatPages/settingsPage";
 import { MessagePage } from "./ChatPages/messagePage";
 import { CalendarPage } from "./ChatPages/calendarPage";
+import * as React from "../react";
 import CoreViewModel from "../ViewModel/Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../ViewModel/Chat/chatViewModel";
 
@@ -73,8 +73,8 @@ export function ChatPage(
             <div>
                 <div id="ribbon">
                     <button
-			class="ghost"
-			id="close-button"
+                        class="ghost"
+                        id="close-button"
                         aria-label={
                             coreViewModel.translations.chatPage
                                 .closeChatAudioLabe
@@ -95,47 +95,48 @@ export function ChatPage(
                         toggle:hidden={
                             chatViewModel.connectionViewModel.isConnected
                         }
-			toggle:disabled={
-			    chatViewModel.connectionViewModel.hasNoPreviousConnections
-			}
-		    >
-			<span class="icon">signal_disconnected</span>
-		    </button>
+                        toggle:disabled={
+                            chatViewModel.connectionViewModel
+                                .hasNoPreviousConnections
+                        }
+                    >
+                        <span class="icon">signal_disconnected</span>
+                    </button>
 
-		    <span class="marquee" children:set={marqueeContent}></span>
+                    <span class="marquee" children:set={marqueeContent}></span>
 
-		    <span class="navigation-buttons">
-			{ChatViewToggleButton(
-			    coreViewModel.translations.chatPage.pages.calendar,
-			    "calendar_month",
-			    ChatPageTypes.Calendar,
-			    chatViewModel,
-			)}
-    {ChatViewToggleButton(
-	coreViewModel.translations.chatPage.pages.tasks,
-	"task_alt",
-	ChatPageTypes.Tasks,
-	chatViewModel,
-    )}
-    {ChatViewToggleButton(
-	coreViewModel.translations.chatPage.pages.messages,
-	"forum",
-	ChatPageTypes.Messages,
-	chatViewModel,
-    )}
-    {ChatViewToggleButton(
-	coreViewModel.translations.chatPage.pages.settings,
-	"settings",
-	ChatPageTypes.Settings,
-	chatViewModel,
-    )}
-</span>
-		</div>
-		<div
-		    id="main"
-		    children:set={ViewController.chatPages.state}
-		></div>
-	    </div>
-	</article>
+                    <span class="navigation-buttons">
+                        {ChatViewToggleButton(
+                            coreViewModel.translations.chatPage.pages.calendar,
+                            "calendar_month",
+                            ChatPageTypes.Calendar,
+                            chatViewModel,
+                        )}
+                        {ChatViewToggleButton(
+                            coreViewModel.translations.chatPage.pages.tasks,
+                            "task_alt",
+                            ChatPageTypes.Tasks,
+                            chatViewModel,
+                        )}
+                        {ChatViewToggleButton(
+                            coreViewModel.translations.chatPage.pages.messages,
+                            "forum",
+                            ChatPageTypes.Messages,
+                            chatViewModel,
+                        )}
+                        {ChatViewToggleButton(
+                            coreViewModel.translations.chatPage.pages.settings,
+                            "settings",
+                            ChatPageTypes.Settings,
+                            chatViewModel,
+                        )}
+                    </span>
+                </div>
+                <div
+                    id="main"
+                    children:set={ViewController.chatPages.state}
+                ></div>
+            </div>
+        </article>
     );
 }

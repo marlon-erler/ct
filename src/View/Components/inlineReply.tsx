@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import { ViewController } from "../viewController";
+import * as React from "../../react";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
 
 export function InlineReply(chatMessageViewModel: ChatMessageViewModel) {

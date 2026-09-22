@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import TaskViewModel from "../Pages/taskViewModel";
+import * as React from "../../react";
 
 export default class TaskPropertyBulkChangeViewModel {
     taskViewModels: React.ListState<TaskViewModel>;

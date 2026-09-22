@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import { ViewController } from "../viewController";
+import * as React from "../../react";
 import BoardViewModel from "../../ViewModel/Pages/boardViewModel";
 
 export function BoardEntry(boardViewModel: BoardViewModel) {

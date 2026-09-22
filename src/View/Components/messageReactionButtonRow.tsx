@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import { MessageReactionButton } from "./messageReactionButton";
+import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
 import { ReactionSymbols } from "../../Model/Chat/chatModel";

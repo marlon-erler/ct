@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import { DeletableListItem } from "../Components/deletableListItem";
+import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ConnectionViewModel from "../../ViewModel/Global/connectionViewModel";
 

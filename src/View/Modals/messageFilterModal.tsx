@@ -1,6 +1,6 @@
-import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { MessageReactionFilterButton } from "../Components/messageReactionFilterButton";
+import * as React from "../../react";
 import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import { ReactionSymbols } from "../../Model/Chat/chatModel";

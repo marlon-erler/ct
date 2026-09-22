@@ -1,9 +1,9 @@
-import * as React from "../../react";
 import BoardViewModel from "./boardViewModel";
 import CoreViewModel, { ContextHost } from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
+import * as React from "../../react";
 import { CommonKeys } from "../../View/keystrokes";
-import { IndexManager } from "../../Model/Utility/utility";
+import implementFilter, { IndexManager } from "../../Model/Utility/utility";
 import BoardsAndTasksModel, {
     BoardInfoFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
@@ -26,8 +26,9 @@ export default class TaskPageViewModel extends ContextHost<string> {
     };
 
     // state
-    newBoardNameInput: React.State<string> = new React.State("");
+    boardQuery: React.State<string> = new React.State("");
     boardViewModels: React.MapState<BoardViewModel> = new React.MapState();
+    boardMatches: React.ListState<BoardViewModel> = new React.ListState();
     isShowingBoadList: React.State<boolean> = new React.State(true);
     selectedBoardId: React.State<string | undefined> = new React.State<any>(
         undefined,
@@ -47,8 +48,8 @@ export default class TaskPageViewModel extends ContextHost<string> {
 
     // guards
     cannotCreateBoard: React.State<boolean> = React.createProxyState(
-        [this.newBoardNameInput],
-        () => this.newBoardNameInput.value == "",
+        [this.boardQuery],
+        () => this.boardQuery.value == "",
     );
 
     // methods
@@ -56,8 +57,8 @@ export default class TaskPageViewModel extends ContextHost<string> {
         if (this.cannotCreateBoard.value == true) return;
 
         const boardInfoFileContent: BoardInfoFileContent =
-            this.boardsAndTasksModel.createBoard(this.newBoardNameInput.value);
-        this.newBoardNameInput.value = "";
+            this.boardsAndTasksModel.createBoard(this.boardQuery.value);
+        this.boardQuery.value = "";
 
         this.showBoardInList(boardInfoFileContent);
         this.boardsAndTasksModel.updateBoardAndSend(boardInfoFileContent);
@@ -176,6 +177,9 @@ export default class TaskPageViewModel extends ContextHost<string> {
         this.loadData(); // needed for board options in calendar
 
         this.chatViewModel = chatViewModel;
+
+	// filter 
+	implementFilter(this.boardViewModels, this.boardMatches, this.boardQuery, (board) => board.name.value);
 
         // context
         this.chatViewModel.registerContext(ChatPageTypes.Tasks, this);

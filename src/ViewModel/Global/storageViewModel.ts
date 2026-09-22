@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import CoreViewModel, { Context } from "./coreViewModel";
+import * as React from "../../react";
 import { CommonKeys } from "../../View/keystrokes";
 import StorageModel, {
     PATH_COMPONENT_SEPARATOR,

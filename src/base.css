@@ -44,7 +44,9 @@ main {
 }
 
 body {
-    transition: --sky-1 1s, --sky-2 5s;
+    transition:
+        --sky-1 1s,
+        --sky-2 5s;
 }
 
 #background-wrapper #grass-1 {
@@ -52,7 +54,7 @@ body {
     --color-2: hsl(150, 60%, 25%);
 
     filter: var(--backdrop-grass-filter);
-    opacity: .7;
+    opacity: 0.7;
 
     background-image: linear-gradient(
         350deg,
@@ -65,9 +67,9 @@ body {
 #background-wrapper #grass-2 {
     --color-1: hsl(110, 60%, 40%);
     --color-2: hsl(110, 60%, 35%);
-    
+
     filter: var(--backdrop-grass-filter);
-    opacity: .7;
+    opacity: 0.7;
 
     background-image: linear-gradient(
         9deg,

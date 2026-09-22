@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import "./splitModal.css";
+import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 
 export function SplitModal<T>(
@@ -10,7 +10,7 @@ export function SplitModal<T>(
     navigationState?: React.State<T | undefined>,
 ) {
     function closePage() {
-	if (!navigationState) return;
+        if (!navigationState) return;
         navigationState.value = undefined;
     }
 

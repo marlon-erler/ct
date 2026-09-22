@@ -1,9 +1,9 @@
-import * as React from "../../react";
 import ChatViewModel from "./chatViewModel";
 import SettingsViewModel from "../Global/settingsViewModel";
 import NotificationViewModel from "../Global/notificationViewModel";
 import CoreViewModel from "../Global/coreViewModel";
 import ConnectionViewModel from "../Global/connectionViewModel";
+import * as React from "../../react";
 import { IndexManager } from "../../Model/Utility/utility";
 import ChatModel from "../../Model/Chat/chatModel";
 

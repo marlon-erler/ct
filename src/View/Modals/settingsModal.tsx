@@ -1,10 +1,10 @@
-import * as React from "../../react";
 import { SplitModal } from "./splitModal";
 import { languageNames } from "../translations";
 import { PlaceholderView } from "../Components/placeholderView";
 import { OptionButtonList } from "../Components/optionButtonList";
 import { NavigationButton } from "../Components/navigationButton";
 import { InfoTile } from "../Components/infoTile";
+import * as React from "../../react";
 import SettingsViewModel, {
     SettingsModalPages,
 } from "../../ViewModel/Global/settingsViewModel";

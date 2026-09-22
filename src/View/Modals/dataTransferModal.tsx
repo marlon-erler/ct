@@ -1,6 +1,6 @@
-import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { StringToTextSpan } from "../Components/textSpan";
+import * as React from "../../react";
 import FileTransferViewModel, {
     FileTransferModals,
     FileTransferOption,
@@ -758,7 +758,9 @@ function ExportModal(
                                 </span>
                                 <input
                                     bind:value={fileTransferViewModel.exportKey}
-				    on:enter={fileTransferViewModel.downloadFile}
+                                    on:enter={
+                                        fileTransferViewModel.downloadFile
+                                    }
                                     type="password"
                                 ></input>
                             </div>
@@ -777,36 +779,38 @@ function ExportModal(
                                     bind:value={
                                         fileTransferViewModel.exportKeyConfirmation
                                     }
-				    on:enter={fileTransferViewModel.downloadFile}
-				    type="password"
-				></input>
-			    </div>
-			</label>
-		    </div>
-		</main>
-		<div class="flex-row width-100">
-		    <button
-			class="flex"
-			on:click={
-			    fileTransferViewModel.showExportSelectionModal
-			}
-		    >
-			{coreViewModel.translations.general.backButton}
-		    </button>
-		    <button
-			class="primary flex"
-			on:click={fileTransferViewModel.downloadFile}
-			toggle:disabled={fileTransferViewModel.cannotExport}
-		    >
-			{
-			    coreViewModel.translations.dataTransferModal
-			    .downloadFileButton
-			}
-			<span class="icon">download</span>
-		    </button>
-		</div>
-	    </div>
-	</div>
+                                    on:enter={
+                                        fileTransferViewModel.downloadFile
+                                    }
+                                    type="password"
+                                ></input>
+                            </div>
+                        </label>
+                    </div>
+                </main>
+                <div class="flex-row width-100">
+                    <button
+                        class="flex"
+                        on:click={
+                            fileTransferViewModel.showExportSelectionModal
+                        }
+                    >
+                        {coreViewModel.translations.general.backButton}
+                    </button>
+                    <button
+                        class="primary flex"
+                        on:click={fileTransferViewModel.downloadFile}
+                        toggle:disabled={fileTransferViewModel.cannotExport}
+                    >
+                        {
+                            coreViewModel.translations.dataTransferModal
+                                .downloadFileButton
+                        }
+                        <span class="icon">download</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }
 
@@ -815,57 +819,57 @@ function ImportModal(
     fileTransferViewModel: FileTransferViewModel,
 ) {
     const isPresented = React.createProxyState(
-	[fileTransferViewModel.presentedModal],
-	() =>
-	fileTransferViewModel.presentedModal.value ==
-	FileTransferModals.ImportSelection,
+        [fileTransferViewModel.presentedModal],
+        () =>
+            fileTransferViewModel.presentedModal.value ==
+            FileTransferModals.ImportSelection,
     );
 
     return (
-	<div class="modal" toggle:open={isPresented}>
-	    <div>
-		<main>
-		    <h2>
-			{
-			    coreViewModel.translations.dataTransferModal
-			    .importHeadline
-			}
-		    </h2>
+        <div class="modal" toggle:open={isPresented}>
+            <div>
+                <main>
+                    <h2>
+                        {
+                            coreViewModel.translations.dataTransferModal
+                                .importHeadline
+                        }
+                    </h2>
 
-		    <div class="flex-column gap content-margin-bottom">
-			<input
-			    id="file-transfer-input"
-			    type="file"
-			    on:change={
-				fileTransferViewModel.updateImportSelection
-			    }
-			></input>
-		    </div>
-		</main>
+                    <div class="flex-column gap content-margin-bottom">
+                        <input
+                            id="file-transfer-input"
+                            type="file"
+                            on:change={
+                                fileTransferViewModel.updateImportSelection
+                            }
+                        ></input>
+                    </div>
+                </main>
 
-		<div class="flex-row width-100">
-		    <button
-			class="flex"
-			on:click={
-			    fileTransferViewModel.showDirectionSelectionModal
-			}
-		    >
-			{coreViewModel.translations.general.backButton}
-		    </button>
-		    <button
-			class="primary flex"
-			on:click={fileTransferViewModel.importFile}
-			toggle:disabled={fileTransferViewModel.cannotImport}
-		    >
-			{
-			    coreViewModel.translations.dataTransferModal
-			    .importFileButton
-			}
-			<span class="icon">arrow_forward</span>
-		    </button>
-		</div>
-	    </div>
-	</div>
+                <div class="flex-row width-100">
+                    <button
+                        class="flex"
+                        on:click={
+                            fileTransferViewModel.showDirectionSelectionModal
+                        }
+                    >
+                        {coreViewModel.translations.general.backButton}
+                    </button>
+                    <button
+                        class="primary flex"
+                        on:click={fileTransferViewModel.importFile}
+                        toggle:disabled={fileTransferViewModel.cannotImport}
+                    >
+                        {
+                            coreViewModel.translations.dataTransferModal
+                                .importFileButton
+                        }
+                        <span class="icon">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }
 
@@ -874,74 +878,76 @@ function ImportDecryptionDataModal(
     fileTransferViewModel: FileTransferViewModel,
 ) {
     const isPresented = React.createProxyState(
-	[fileTransferViewModel.presentedModal],
-	() =>
-	fileTransferViewModel.presentedModal.value ==
-	FileTransferModals.ImportDecryptData,
+        [fileTransferViewModel.presentedModal],
+        () =>
+            fileTransferViewModel.presentedModal.value ==
+            FileTransferModals.ImportDecryptData,
     );
 
     return (
-	<div class="modal" toggle:open={isPresented}>
-	    <div>
-		<main>
-		    <h2>
-			{
-			    coreViewModel.translations.dataTransferModal
-			    .importHeadline
-			}
-		    </h2>
+        <div class="modal" toggle:open={isPresented}>
+            <div>
+                <main>
+                    <h2>
+                        {
+                            coreViewModel.translations.dataTransferModal
+                                .importHeadline
+                        }
+                    </h2>
 
-		    <div class="flex-column gap content-margin-bottom">
-			<label class="tile">
-			    <span class="icon">key</span>
-			    <div>
-				<span class="secondary">
-				    {
-					coreViewModel.translations
-					.dataTransferModal.exportKey
-				    }
-				</span>
-				<input
-				    bind:value={fileTransferViewModel.importKey}
-				    on:enter={fileTransferViewModel.decryptImport}
-				    type="password"
-				></input>
-			    </div>
-			</label>
-		    </div>
+                    <div class="flex-column gap content-margin-bottom">
+                        <label class="tile">
+                            <span class="icon">key</span>
+                            <div>
+                                <span class="secondary">
+                                    {
+                                        coreViewModel.translations
+                                            .dataTransferModal.exportKey
+                                    }
+                                </span>
+                                <input
+                                    bind:value={fileTransferViewModel.importKey}
+                                    on:enter={
+                                        fileTransferViewModel.decryptImport
+                                    }
+                                    type="password"
+                                ></input>
+                            </div>
+                        </label>
+                    </div>
 
-		    <p
-			class="error"
-			toggle:hidden={fileTransferViewModel.isImportKeyCorrect}
-		    >
-			{
-			    coreViewModel.translations.dataTransferModal
-			    .incorrectPassphraseError
-			}
-		    </p>
-		</main>
-		<div class="flex-row width-100">
-		    <button
-			class="flex"
-			on:click={fileTransferViewModel.showImportModal}
-		    >
-			{coreViewModel.translations.general.backButton}
-		    </button>
-		    <button
-			class="primary flex"
-			on:click={fileTransferViewModel.decryptImport}
-			toggle:disabled={
-			    fileTransferViewModel.importDecryptSuccessful
-			}
-		    >
-			{
-			    coreViewModel.translations.dataTransferModal
-			    .decryptImportButton
-			}
-			<span class="icon">arrow_forward</span>
-		    </button>
-		</div>
-	    </div>
-	</div>
+                    <p
+                        class="error"
+                        toggle:hidden={fileTransferViewModel.isImportKeyCorrect}
+                    >
+                        {
+                            coreViewModel.translations.dataTransferModal
+                                .incorrectPassphraseError
+                        }
+                    </p>
+                </main>
+                <div class="flex-row width-100">
+                    <button
+                        class="flex"
+                        on:click={fileTransferViewModel.showImportModal}
+                    >
+                        {coreViewModel.translations.general.backButton}
+                    </button>
+                    <button
+                        class="primary flex"
+                        on:click={fileTransferViewModel.decryptImport}
+                        toggle:disabled={
+                            fileTransferViewModel.importDecryptSuccessful
+                        }
+                    >
+                        {
+                            coreViewModel.translations.dataTransferModal
+                                .decryptImportButton
+                        }
+                        <span class="icon">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }

@@ -40,8 +40,8 @@ export default class CoreViewModel {
             return;
 
         while (this.contexts.length > 0) {
-            const currentContext: Context|undefined= this.context;
-	    if (!currentContext) return;
+            const currentContext: Context | undefined = this.context;
+            if (!currentContext) return;
             currentContext.handleContextClose(fromHistoryEvent);
             this.contextStack.delete(currentContext.contextId);
             if (currentContext.contextId == contextId) break;
@@ -49,9 +49,10 @@ export default class CoreViewModel {
     };
 
     handleKeyDown = (e: KeyboardEvent): void => {
-	if (!(e instanceof KeyboardEvent)) return console.trace("NOT A KEY EVENT");
+        if (!(e instanceof KeyboardEvent))
+            return console.trace("NOT A KEY EVENT");
         if (CoreViewModel.checkIsKeystroke(e) == false) return;
-	console.log(e.key);
+        console.log(e.key);
         e.preventDefault();
         const contexts: Context[] = this.contexts;
         while (contexts.length > 0) {
@@ -97,7 +98,7 @@ export default class CoreViewModel {
         document.body.addEventListener("keydown", this.handleKeyDown);
 
         window.onpopstate = () => {
-	    if (!this.context) return;
+            if (!this.context) return;
             this.closeContext(this.context.contextId, true);
         };
 
@@ -164,11 +165,10 @@ export class ContextHost<T> extends Context {
     updateContexts = (): void => {
         if (this.isOpen == false) return;
 
-	const selection = this.contextSelection;
-	if (!selection) return;
-        const selectedContext: Context | undefined = this.contexts.get(
-            selection
-        );
+        const selection = this.contextSelection;
+        if (!selection) return;
+        const selectedContext: Context | undefined =
+            this.contexts.get(selection);
         if (!selectedContext) return;
         if (selectedContext != this.currentContext.value) {
             this.closeCurrentContext();
@@ -178,7 +178,10 @@ export class ContextHost<T> extends Context {
         this.currentContext.value = selectedContext;
     };
 
-    constructor(contextDebugDescription: string, public coreViewModel: CoreViewModel) {
-	super(contextDebugDescription);
+    constructor(
+        contextDebugDescription: string,
+        public coreViewModel: CoreViewModel,
+    ) {
+        super(contextDebugDescription);
     }
 }

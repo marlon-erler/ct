@@ -1,8 +1,8 @@
-import * as React from "../../react";
 import SearchViewModel from "../Utility/searchViewModel";
 import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
 import ChatMessageViewModel from "../Chat/chatMessageViewModel";
+import * as React from "../../react";
 import { CommonKeys } from "../../View/keystrokes";
 import {
     ChatMessage,
@@ -68,7 +68,9 @@ export default class MessagePageViewModel extends Context {
         );
     };
 
-    setReply = (chatMessageViewModel: ChatMessageViewModel|undefined): void => {
+    setReply = (
+        chatMessageViewModel: ChatMessageViewModel | undefined,
+    ): void => {
         this.replyingMessage.value = chatMessageViewModel;
         this.setFocus();
     };

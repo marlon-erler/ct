@@ -1,8 +1,8 @@
-import * as React from "../../react";
 import TaskViewModel from "./taskViewModel";
 import TaskContainingPageViewModel from "./taskContainingPageViewModel";
 import CoreViewModel from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
+import * as React from "../../react";
 import { CommonKeys } from "../../View/keystrokes";
 import CalendarModel, { MonthGrid } from "../../Model/Files/calendarModel";
 import BoardsAndTasksModel, {

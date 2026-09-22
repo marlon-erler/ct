@@ -1,5 +1,5 @@
-import * as React from "../../react";
 import CoreViewModel from "./coreViewModel";
+import * as React from "../../react";
 
 export default class ConnectionViewModel {
     // state
@@ -48,7 +48,7 @@ export default class ConnectionViewModel {
             );
         }
 
-	this.hideConnectionModal();
+        this.hideConnectionModal();
     };
 
     // methods
@@ -69,8 +69,8 @@ export default class ConnectionViewModel {
         this.coreViewModel.connectionModel.removeAddress(address);
         this.updatePreviousAddresses();
 
-	if (this.previousAddresses.value.size > 0) return;
-	this.hideConnectionModal();
+        if (this.previousAddresses.value.size > 0) return;
+        this.hideConnectionModal();
     };
 
     // view

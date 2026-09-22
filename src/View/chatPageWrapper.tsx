@@ -1,6 +1,6 @@
-import * as React from "../react";
 import "./chatPage.css";
 import { ChatPage } from "./chatPage";
+import * as React from "../react";
 import CoreViewModel from "../ViewModel/Global/coreViewModel";
 import ChatListViewModel from "../ViewModel/Chat/chatListViewModel";
 

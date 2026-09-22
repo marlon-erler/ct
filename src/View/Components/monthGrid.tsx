@@ -1,6 +1,6 @@
-import * as React from "../../react";
 import "./monthGrid.css";
 import { ViewController } from "../viewController";
+import * as React from "../../react";
 import TaskViewModel from "../../ViewModel/Pages/taskViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import { localeCompare } from "../../Model/Utility/utility";

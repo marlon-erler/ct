@@ -15,7 +15,10 @@ export default class SearchViewModel<T> {
         [this.searchInput],
         () => this.searchInput.value == "",
     );
-    hasNoSuggestions: React.State<boolean> = React.createProxyState([this.suggestions], ()=>this.suggestions.value.size == 0);
+    hasNoSuggestions: React.State<boolean> = React.createProxyState(
+        [this.suggestions],
+        () => this.suggestions.value.size == 0,
+    );
 
     // methods
     search = (searchTerm: string): void => {
@@ -36,12 +39,12 @@ export default class SearchViewModel<T> {
     };
 
     clear = (): void => {
-	this.searchInput.value = "";
-    }
+        this.searchInput.value = "";
+    };
 
     deleteSuggestion = (suggestion: string): void => {
-	this.suggestions.remove(suggestion);
-    }
+        this.suggestions.remove(suggestion);
+    };
 
     // init
     constructor(

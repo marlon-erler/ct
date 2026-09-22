@@ -1,6 +1,6 @@
-import * as React from "../../react";
 import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
+import * as React from "../../react";
 import { Colors } from "../../colors";
 
 export default class SettingsPageViewModel extends Context {
