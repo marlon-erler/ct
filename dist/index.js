@@ -5596,6 +5596,19 @@
     );
   }
 
+  // src/View/Components/deletableListItem.tsx
+  function DeletableListItem(coreViewModel2, text, primaryButton, ondelete) {
+    return /* @__PURE__ */ createElement("div", { class: "tile flex-row justify-apart align-center padding-0" }, /* @__PURE__ */ createElement("span", { class: "padding-h ellipsis" }, text), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, primaryButton, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "danger",
+        "aria-label": coreViewModel2.translations.general.deleteItemButtonAudioLabel,
+        "on:click": ondelete
+      },
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "delete")
+    )));
+  }
+
   // src/View/Modals/searchModal.tsx
   function SearchModal(coreViewModel2, searchViewModel, headline, isOpen) {
     function close() {
@@ -5670,24 +5683,21 @@
     function applySuggestion() {
       searchViewModel.search(suggestion);
     }
-    return /* @__PURE__ */ createElement("div", { class: "flex-row surface align-center" }, /* @__PURE__ */ createElement("span", { class: "width-100 flex-1 padding-h" }, suggestion), /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "danger",
-        "aria-label": coreViewModel2.translations.general.deleteButton,
-        "on:click": deleteSuggestion
-      },
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "delete")
-    ), /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "primary",
-        "aria-label": coreViewModel2.translations.general.applyButton,
-        "on:click": applySuggestion,
-        "toggle:disabled": isApplied
-      },
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
-    ));
+    return DeletableListItem(
+      coreViewModel2,
+      suggestion,
+      /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "primary",
+          "aria-label": coreViewModel2.translations.general.applyButton,
+          "on:click": applySuggestion,
+          "toggle:disabled": isApplied
+        },
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
+      ),
+      deleteSuggestion
+    );
   }
 
   // src/View/Components/colorPicker.tsx
@@ -5980,19 +5990,6 @@
         }
       )
     );
-  }
-
-  // src/View/Components/deletableListItem.tsx
-  function DeletableListItem(coreViewModel2, text, primaryButton, ondelete) {
-    return /* @__PURE__ */ createElement("div", { class: "tile flex-row justify-apart align-center padding-0" }, /* @__PURE__ */ createElement("span", { class: "padding-h ellipsis" }, text), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, primaryButton, /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "danger",
-        "aria-label": coreViewModel2.translations.general.deleteItemButtonAudioLabel,
-        "on:click": ondelete
-      },
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "delete")
-    )));
   }
 
   // src/View/ChatPages/settingsPage.tsx

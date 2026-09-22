@@ -13,12 +13,11 @@ export default class NotificationViewModel {
 
     // main
     showNotification = (message: ChatMessage): void => {
-        const notification: Notification =
-            NotificationViewModel.createNotification(message);
         if (this.seenMessageIds.has(message.id)) return;
-
         if (this.chatListViewModel.selectedChat.value == undefined) return;
 
+        const notification: Notification =
+            this.createNotification(message);
         const currentChat =
             this.chatListViewModel.selectedChat.value.chatModel
                 .unwrappedPrimaryChannel;
@@ -83,13 +82,15 @@ export default class NotificationViewModel {
     };
 
     // init
-    constructor(public readonly chatListViewModel: ChatListViewModel) {}
+    constructor(public chatListViewModel: ChatListViewModel) {}
 
     // util
-    static createNotification(message: ChatMessage): Notification {
+    createNotification(message: ChatMessage): Notification {
+	const fullChannel = ChatModel.splitChannel(message.channel)[0];
+	const chat = this.chatListViewModel.stripNamespace(fullChannel);
         return {
             messageId: message.id,
-            chat: ChatModel.splitChannel(message.channel)[0],
+            chat,
             sender: message.sender,
             body: message.body,
         };

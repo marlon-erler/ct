@@ -102,4 +102,14 @@ export default class ChatListViewModel {
 
         this.loadChats();
     }
+
+    // utility
+    stripNamespace = (fullChannel: string): string => {
+    	for (const vm of this.chatViewModels.value) {
+	    const fullReference = vm.chatModel.info.namespace + vm.chatModel.info.primaryChannel;
+	    if (fullReference == fullChannel) return vm.chatModel.info.primaryChannel;
+	}
+
+	return fullChannel;
+    }
 }
