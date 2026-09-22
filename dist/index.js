@@ -1298,7 +1298,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.22.C";
+      this.BUILD = "Build 26.09.22.D";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -4666,7 +4666,7 @@
   };
 
   // src/ViewModel/Global/notificationViewModel.ts
-  var NotificationViewModel = class _NotificationViewModel {
+  var NotificationViewModel = class {
     // init
     constructor(chatListViewModel2) {
       this.chatListViewModel = chatListViewModel2;
@@ -4678,9 +4678,9 @@
       this.interval = void 0;
       // main
       this.showNotification = (message) => {
-        const notification = _NotificationViewModel.createNotification(message);
         if (this.seenMessageIds.has(message.id)) return;
         if (this.chatListViewModel.selectedChat.value == void 0) return;
+        const notification = this.createNotification(message);
         const currentChat = this.chatListViewModel.selectedChat.value.chatModel.unwrappedPrimaryChannel;
         const currentPage = this.chatListViewModel.selectedChat.value.selectedPage.value;
         if (notification.chat == currentChat && currentPage == "messages" /* Messages */)
@@ -4728,10 +4728,12 @@
       };
     }
     // util
-    static createNotification(message) {
+    createNotification(message) {
+      const fullChannel = ChatModel.splitChannel(message.channel)[0];
+      const chat = this.chatListViewModel.stripNamespace(fullChannel);
       return {
         messageId: message.id,
-        chat: ChatModel.splitChannel(message.channel)[0],
+        chat,
         sender: message.sender,
         body: message.body
       };
@@ -4809,6 +4811,14 @@
           this.trackChat(chatViewModel);
         }
         this.updateIndices();
+      };
+      // utility
+      this.stripNamespace = (fullChannel) => {
+        for (const vm of this.chatViewModels.value) {
+          const fullReference = vm.chatModel.info.namespace + vm.chatModel.info.primaryChannel;
+          if (fullReference == fullChannel) return vm.chatModel.info.primaryChannel;
+        }
+        return fullChannel;
       };
       this.notificationViewModel = new NotificationViewModel(this);
       this.loadChats();
