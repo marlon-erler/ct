@@ -314,6 +314,8 @@
       confirmButton: "Confirm",
       saveButton: "Save",
       setButton: "Set",
+      filterOrCreateLabel: "Search or create",
+      createLabel: (query) => `Create "${query}"`,
       reloadAppButton: "Reload App",
       fileVersionLabel: "Version",
       searchLabel: "Search",
@@ -481,9 +483,6 @@
         questionReaction: "Reaction: question mark"
       },
       task: {
-        newBoardNamePlaceholder: "Create a board",
-        createBoardButtonAudioLabel: "create board",
-        ///
         noBoardSelected: "No board selected",
         boardNotFound: "Board not found",
         ///
@@ -556,6 +555,8 @@
         confirmButton: "Best\xE4tigen",
         saveButton: "Speichern",
         setButton: "OK",
+        filterOrCreateLabel: "Suchen oder erstellen",
+        createLabel: (query) => `"${query}" erstellen`,
         reloadAppButton: "Neu laden",
         fileVersionLabel: "Version",
         searchLabel: "Suche",
@@ -713,8 +714,6 @@
           questionReaction: "Reaktion: Fragezeichen"
         },
         task: {
-          newBoardNamePlaceholder: "Board erstellen",
-          createBoardButtonAudioLabel: "board erstellen",
           noBoardSelected: "Kein Board ausgew\xE4hlt",
           boardNotFound: "Board nicht gefunden",
           closeBoardButtonAudioLabel: "board schlie\xDFen",
@@ -778,6 +777,8 @@
         confirmButton: "Confirmar",
         saveButton: "Guardar",
         setButton: "OK",
+        filterOrCreateLabel: "Buscar o crear",
+        createLabel: (query) => `Crear "${query}"`,
         reloadAppButton: "Recargar app",
         fileVersionLabel: "Versi\xF3n",
         searchLabel: "Buscar",
@@ -935,8 +936,6 @@
           questionReaction: "Reaccion: signo de interrogaci\xF3n"
         },
         task: {
-          newBoardNamePlaceholder: "Crear un tablero",
-          createBoardButtonAudioLabel: "crear tablero",
           noBoardSelected: "Ning\xFAn tablero seleccionado",
           boardNotFound: "Tablero no encontrado",
           closeBoardButtonAudioLabel: "cerrar tablero",
@@ -1031,46 +1030,6 @@
   function createTimestamp() {
     return (/* @__PURE__ */ new Date()).toISOString();
   }
-  function checkDoesObjectMatchReference(reference, stringEntryObject, explicitEmptyValue = false) {
-    reference_entry_loop: for (const referenceEntry of Object.entries(
-      reference
-    )) {
-      const [referenceKey, referenceValue] = referenceEntry;
-      const stringEntryObjectValue = stringEntryObject[referenceKey];
-      if (referenceValue == void 0) return false;
-      if (referenceValue[0] == "-") {
-        const strippedReferenceValue = referenceValue.toString().substring(1);
-        if (strippedReferenceValue == "" && stringEntryObjectValue != void 0 && stringEntryObjectValue != "") {
-          return false;
-        }
-        if (stringEntryObjectValue == strippedReferenceValue) {
-          return false;
-        }
-      } else {
-        if (explicitEmptyValue == false) {
-          if (referenceValue == "" && (stringEntryObjectValue == void 0 || stringEntryObjectValue == "")) {
-            return false;
-          } else if (referenceValue == "") {
-            continue reference_entry_loop;
-          }
-        }
-        if (stringEntryObjectValue != referenceValue) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-  function collectObjectValuesForKey(key, converter, objects) {
-    const values = /* @__PURE__ */ new Set();
-    for (const object of objects) {
-      const stringEntryObject = converter(object);
-      const stringEntryObjectValue = stringEntryObject[key];
-      if (stringEntryObjectValue == void 0) continue;
-      values.add(stringEntryObjectValue.toString());
-    }
-    return [...values.values()];
-  }
   function checkDoesObjectMatchSearch(query, getStringsOfObject, object) {
     if (query == "") return true;
     const stringsInObject = getStringsOfObject(object);
@@ -1093,6 +1052,20 @@
       }
     }
     return true;
+  }
+  function implementFilter(allItems, matches, query, itemToString) {
+    function update() {
+      matches.clear();
+      allItems.value.forEach((item) => {
+        if (!itemToString(item).toLowerCase().includes(query.value.toLowerCase())) return;
+        matches.add(item);
+        allItems.handleRemoval(item, () => {
+          matches.remove(item);
+        });
+      });
+    }
+    query.subscribe(update);
+    allItems.handleAddition(update);
   }
   var HandlerManager = class {
     constructor() {
@@ -1275,6 +1248,46 @@
       ]);
     });
   }
+  function collectObjectValuesForKey(key, converter, objects) {
+    const values = /* @__PURE__ */ new Set();
+    for (const object of objects) {
+      const stringEntryObject = converter(object);
+      const stringEntryObjectValue = stringEntryObject[key];
+      if (stringEntryObjectValue == void 0) continue;
+      values.add(stringEntryObjectValue.toString());
+    }
+    return [...values.values()];
+  }
+  function checkDoesObjectMatchReference(reference, stringEntryObject, explicitEmptyValue = false) {
+    reference_entry_loop: for (const referenceEntry of Object.entries(
+      reference
+    )) {
+      const [referenceKey, referenceValue] = referenceEntry;
+      const stringEntryObjectValue = stringEntryObject[referenceKey];
+      if (referenceValue == void 0) return false;
+      if (referenceValue[0] == "-") {
+        const strippedReferenceValue = referenceValue.toString().substring(1);
+        if (strippedReferenceValue == "" && stringEntryObjectValue != void 0 && stringEntryObjectValue != "") {
+          return false;
+        }
+        if (stringEntryObjectValue == strippedReferenceValue) {
+          return false;
+        }
+      } else {
+        if (explicitEmptyValue == false) {
+          if (referenceValue == "" && (stringEntryObjectValue == void 0 || stringEntryObjectValue == "")) {
+            return false;
+          } else if (referenceValue == "") {
+            continue reference_entry_loop;
+          }
+        }
+        if (stringEntryObjectValue != referenceValue) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
   // src/ViewModel/Global/coreViewModel.ts
   var CoreViewModel = class _CoreViewModel {
@@ -1285,7 +1298,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.22.B";
+      this.BUILD = "Build 26.09.22.C";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1300,7 +1313,8 @@
         }
       };
       this.handleKeyDown = (e) => {
-        if (!(e instanceof KeyboardEvent)) return console.trace("NOT A KEY EVENT");
+        if (!(e instanceof KeyboardEvent))
+          return console.trace("NOT A KEY EVENT");
         if (_CoreViewModel.checkIsKeystroke(e) == false) return;
         console.log(e.key);
         e.preventDefault();
@@ -1400,9 +1414,7 @@
         if (this.isOpen == false) return;
         const selection = this.contextSelection;
         if (!selection) return;
-        const selectedContext = this.contexts.get(
-          selection
-        );
+        const selectedContext = this.contexts.get(selection);
         if (!selectedContext) return;
         if (selectedContext != this.currentContext.value) {
           this.closeCurrentContext();
@@ -1793,12 +1805,8 @@
       this.selectedModalPage = new State(void 0);
       this.requiresReload = new State(false);
       this.firstDayOfWeek = new State("0");
-      this.language = new State(
-        "en" /* English */
-      );
-      this.theme = new State(
-        "system" /* System */
-      );
+      this.language = new State("en" /* English */);
+      this.theme = new State("system" /* System */);
       // guards
       this.cannotSetName = createProxyState(
         [this.usernameInput],
@@ -1854,9 +1862,15 @@
         }
       };
       this.setScene = (scene) => {
-        document.body.style.setProperty("--backdrop-grass-filter", `brightness(${scene.brightness})`);
+        document.body.style.setProperty(
+          "--backdrop-grass-filter",
+          `brightness(${scene.brightness})`
+        );
         function setSkyColor(tone, hue, saturation, luma) {
-          document.body.style.setProperty(`--sky-${tone}`, `hsl(${hue}, ${saturation}%, ${luma}%)`);
+          document.body.style.setProperty(
+            `--sky-${tone}`,
+            `hsl(${hue}, ${saturation}%, ${luma}%)`
+          );
         }
         setSkyColor(1, scene.hue1, scene.saturation, scene.luma);
         setSkyColor(2, scene.hue2, scene.saturation - 10, scene.luma - 10);
@@ -2210,6 +2224,7 @@
             this.coreViewModel.connectionModel.address
           );
         }
+        this.hideConnectionModal();
       };
       // methods
       this.connect = () => {
@@ -2225,6 +2240,8 @@
       this.removePreviousAddress = (address) => {
         this.coreViewModel.connectionModel.removeAddress(address);
         this.updatePreviousAddresses();
+        if (this.previousAddresses.value.size > 0) return;
+        this.hideConnectionModal();
       };
       // view
       this.showConnectionModal = () => {
@@ -2819,7 +2836,9 @@
       this.time = new State("");
       this.selectedVersionId = new State("");
       this.versionIds = new ListState();
-      this.isPresentingFullScreenDescription = new State(false);
+      this.isPresentingFullScreenDescription = new State(
+        false
+      );
       // methods
       this.dragStart = (event) => {
         ViewController.allowDrag(event);
@@ -2865,12 +2884,16 @@
         if (this.containingViewModel.taskCategorySuggestions.value.has(
           this.category.value
         ) == false) {
-          this.containingViewModel.taskCategorySuggestions.add(this.category.value);
+          this.containingViewModel.taskCategorySuggestions.add(
+            this.category.value
+          );
         }
         if (this.containingViewModel.taskStatusSuggestions.value.has(
           this.status.value
         ) == false) {
-          this.containingViewModel.taskStatusSuggestions.add(this.status.value);
+          this.containingViewModel.taskStatusSuggestions.add(
+            this.status.value
+          );
         }
       };
       // settings
@@ -3042,7 +3065,10 @@
         [this.searchInput],
         () => this.searchInput.value == ""
       );
-      this.hasNoSuggestions = createProxyState([this.suggestions], () => this.suggestions.value.size == 0);
+      this.hasNoSuggestions = createProxyState(
+        [this.suggestions],
+        () => this.suggestions.value.size == 0
+      );
       // methods
       this.search = (searchTerm) => {
         this.searchInput.value = searchTerm;
@@ -3173,9 +3199,7 @@
           searchTerm
         ];
         this.coreViewModel.storageModel.write(suggestionPath, "");
-        if (!this.searchSuggestions.value.has(
-          searchTerm
-        ) && searchTerm != "") {
+        if (!this.searchSuggestions.value.has(searchTerm) && searchTerm != "") {
           this.searchSuggestions.add(searchTerm);
         }
         const lastSearchPath = this.getLastSearchPath();
@@ -3369,22 +3393,23 @@
         return [...this.getBasePath(), "last-used-board" /* LastUsedBoard */];
       };
       // state
-      this.newBoardNameInput = new State("");
+      this.boardQuery = new State("");
       this.boardViewModels = new MapState();
+      this.boardMatches = new ListState();
       this.isShowingBoadList = new State(true);
       this.selectedBoardId = new State(
         void 0
       );
       // guards
       this.cannotCreateBoard = createProxyState(
-        [this.newBoardNameInput],
-        () => this.newBoardNameInput.value == ""
+        [this.boardQuery],
+        () => this.boardQuery.value == ""
       );
       // methods
       this.createBoard = () => {
         if (this.cannotCreateBoard.value == true) return;
-        const boardInfoFileContent = this.boardsAndTasksModel.createBoard(this.newBoardNameInput.value);
-        this.newBoardNameInput.value = "";
+        const boardInfoFileContent = this.boardsAndTasksModel.createBoard(this.boardQuery.value);
+        this.boardQuery.value = "";
         this.showBoardInList(boardInfoFileContent);
         this.boardsAndTasksModel.updateBoardAndSend(boardInfoFileContent);
         this.updateBoardIndices();
@@ -3468,6 +3493,7 @@
       };
       this.loadData();
       this.chatViewModel = chatViewModel;
+      implementFilter(this.boardViewModels, this.boardMatches, this.boardQuery, (board) => board.name.value);
       this.chatViewModel.registerContext("tasks" /* Tasks */, this);
       this.selectedBoardId.subscribeSilent(this.updateContexts);
       boardsAndTasksModel.boardHandlerManager.setHandler(
@@ -5438,111 +5464,112 @@
       const isSelected = entry[0] == taskViewModel.task.boardId;
       return Option(entry[1], entry[0], isSelected);
     };
-    return /* @__PURE__ */ createElement("div", { class: "modal task-settings", open: true, "toggle:full-description": taskViewModel.isPresentingFullScreenDescription }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", { id: "standard-main" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.chatPage.task.taskSettingsHeadline), /* @__PURE__ */ createElement("div", { class: "column-wrapper" }, /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "label"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskNameLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        "bind:value": taskViewModel.name
-      }
-    ))), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskBoardLabel), /* @__PURE__ */ createElement(
-      "select",
-      {
-        "bind:value": taskViewModel.boardId,
-        "children:append": [
-          taskViewModel.chatViewModel.taskBoardSuggestions,
-          BoardOptionConverter
-        ]
-      }
-    ), /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_drop_down"))), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "description"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskDescriptionLabel), /* @__PURE__ */ createElement(
-      "textarea",
-      {
-        rows: "10",
-        "bind:value": taskViewModel.description
-      }
-    ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "width-50",
-        "on:click": taskViewModel.openFullscreenDecription
-      },
-      coreViewModel2.translations.general.fullscreenButton,
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "fullscreen")
-    ))), /* @__PURE__ */ createElement("hr", { class: "mobile-only" }), /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskCategoryLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        "bind:value": taskViewModel.category,
-        list: categorySuggestionId
-      }
-    ))), /* @__PURE__ */ createElement(
-      "datalist",
-      {
-        hidden: true,
-        id: categorySuggestionId,
-        "children:append": [
-          taskViewModel.containingViewModel.taskCategorySuggestions,
-          StringToOption
-        ]
-      }
-    ), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "clock_loader_40"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskStatusLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        "bind:value": taskViewModel.status,
-        list: statusSuggestionId
-      }
-    ))), /* @__PURE__ */ createElement(
-      "datalist",
-      {
-        hidden: true,
-        id: statusSuggestionId,
-        "children:append": [
-          taskViewModel.containingViewModel.taskStatusSuggestions,
-          StringToOption
-        ]
-      }
-    ), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "priority_high"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskPriorityLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        type: "number",
-        "bind:value": taskViewModel.priority
-      }
-    ))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "calendar_month"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskDateLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        type: "date",
-        "bind:value": taskViewModel.date
-      }
-    ))), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "schedule"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskTimeLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        type: "time",
-        "bind:value": taskViewModel.time
-      }
-    ))))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "history"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.general.fileVersionLabel), /* @__PURE__ */ createElement(
-      "select",
-      {
-        "bind:value": taskViewModel.selectedVersionId,
-        "children:append": [
-          taskViewModel.versionIds,
-          VersionIdToOption
-        ]
-      }
-    ), /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_drop_down"))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, DangerousActionButton(
-      coreViewModel2,
-      coreViewModel2.translations.chatPage.task.deleteTaskButton,
-      "delete_forever",
-      taskViewModel.deleteTask
-    ))), /* @__PURE__ */ createElement("main", { id: "fullscreen-main" }, /* @__PURE__ */ createElement(
-      "textarea",
-      {
-        style: "height: 100%; width: 100%; max-width: unset",
-        "bind:value": taskViewModel.description
-      }
-    )), /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement(
       "div",
       {
-        class: "flex-row width-100",
-        id: "fullscreen-exit"
+        class: "modal task-settings",
+        open: true,
+        "toggle:full-description": taskViewModel.isPresentingFullScreenDescription
       },
-      /* @__PURE__ */ createElement(
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", { id: "standard-main" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.chatPage.task.taskSettingsHeadline), /* @__PURE__ */ createElement("div", { class: "column-wrapper" }, /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "label"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskNameLabel), /* @__PURE__ */ createElement(
+        "input",
+        {
+          "bind:value": taskViewModel.name
+        }
+      ))), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskBoardLabel), /* @__PURE__ */ createElement(
+        "select",
+        {
+          "bind:value": taskViewModel.boardId,
+          "children:append": [
+            taskViewModel.chatViewModel.taskBoardSuggestions,
+            BoardOptionConverter
+          ]
+        }
+      ), /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_drop_down"))), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "description"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskDescriptionLabel), /* @__PURE__ */ createElement(
+        "textarea",
+        {
+          rows: "10",
+          "bind:value": taskViewModel.description
+        }
+      ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "width-50",
+          "on:click": taskViewModel.openFullscreenDecription
+        },
+        coreViewModel2.translations.general.fullscreenButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "fullscreen")
+      ))), /* @__PURE__ */ createElement("hr", { class: "mobile-only" }), /* @__PURE__ */ createElement("div", { class: "flex-column" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskCategoryLabel), /* @__PURE__ */ createElement(
+        "input",
+        {
+          "bind:value": taskViewModel.category,
+          list: categorySuggestionId
+        }
+      ))), /* @__PURE__ */ createElement(
+        "datalist",
+        {
+          hidden: true,
+          id: categorySuggestionId,
+          "children:append": [
+            taskViewModel.containingViewModel.taskCategorySuggestions,
+            StringToOption
+          ]
+        }
+      ), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "clock_loader_40"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskStatusLabel), /* @__PURE__ */ createElement(
+        "input",
+        {
+          "bind:value": taskViewModel.status,
+          list: statusSuggestionId
+        }
+      ))), /* @__PURE__ */ createElement(
+        "datalist",
+        {
+          hidden: true,
+          id: statusSuggestionId,
+          "children:append": [
+            taskViewModel.containingViewModel.taskStatusSuggestions,
+            StringToOption
+          ]
+        }
+      ), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "priority_high"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskPriorityLabel), /* @__PURE__ */ createElement(
+        "input",
+        {
+          type: "number",
+          "bind:value": taskViewModel.priority
+        }
+      ))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "calendar_month"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskDateLabel), /* @__PURE__ */ createElement(
+        "input",
+        {
+          type: "date",
+          "bind:value": taskViewModel.date
+        }
+      ))), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "schedule"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.task.taskTimeLabel), /* @__PURE__ */ createElement(
+        "input",
+        {
+          type: "time",
+          "bind:value": taskViewModel.time
+        }
+      ))))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "history"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.general.fileVersionLabel), /* @__PURE__ */ createElement(
+        "select",
+        {
+          "bind:value": taskViewModel.selectedVersionId,
+          "children:append": [
+            taskViewModel.versionIds,
+            VersionIdToOption
+          ]
+        }
+      ), /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_drop_down"))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, DangerousActionButton(
+        coreViewModel2,
+        coreViewModel2.translations.chatPage.task.deleteTaskButton,
+        "delete_forever",
+        taskViewModel.deleteTask
+      ))), /* @__PURE__ */ createElement("main", { id: "fullscreen-main" }, /* @__PURE__ */ createElement(
+        "textarea",
+        {
+          style: "height: 100%; width: 100%; max-width: unset",
+          "bind:value": taskViewModel.description
+        }
+      )), /* @__PURE__ */ createElement("div", { class: "flex-row width-100", id: "fullscreen-exit" }, /* @__PURE__ */ createElement(
         "button",
         {
           class: "flex",
@@ -5550,22 +5577,14 @@
         },
         coreViewModel2.translations.general.exitButton,
         /* @__PURE__ */ createElement("span", { class: "icon" }, "fullscreen_exit")
-      )
-    ), /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "flex-row width-100",
-        id: "controls"
-      },
-      /* @__PURE__ */ createElement(
+      )), /* @__PURE__ */ createElement("div", { class: "flex-row width-100", id: "controls" }, /* @__PURE__ */ createElement(
         "button",
         {
           class: "flex",
           "on:click": taskViewModel.closeAndDiscard
         },
         coreViewModel2.translations.general.closeButton
-      ),
-      /* @__PURE__ */ createElement(
+      ), /* @__PURE__ */ createElement(
         "button",
         {
           class: "flex primary",
@@ -5573,8 +5592,8 @@
         },
         coreViewModel2.translations.general.saveButton,
         /* @__PURE__ */ createElement("span", { class: "icon" }, "save")
-      )
-    )));
+      )))
+    );
   }
 
   // src/View/Modals/searchModal.tsx
@@ -5625,27 +5644,26 @@
         "toggle:disabled": searchViewModel.cannotApplySearch
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "search")
-    )), /* @__PURE__ */ createElement(
+    )), /* @__PURE__ */ createElement("div", { "toggle:hidden": searchViewModel.hasNoSuggestions }, /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.general.searchSuggestionsLabel), /* @__PURE__ */ createElement(
       "div",
       {
-        "toggle:hidden": searchViewModel.hasNoSuggestions
-      },
-      /* @__PURE__ */ createElement("hr", null),
-      /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.general.searchSuggestionsLabel),
-      /* @__PURE__ */ createElement(
-        "div",
-        {
-          class: "flex-column gap",
-          "children:append": [
-            searchViewModel.suggestions,
-            (suggestion) => SuggestionView(suggestion, searchViewModel, coreViewModel2)
-          ]
-        }
-      )
-    )), /* @__PURE__ */ createElement("button", { "on:click": close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close"))));
+        class: "flex-column gap",
+        "children:append": [
+          searchViewModel.suggestions,
+          (suggestion) => SuggestionView(
+            suggestion,
+            searchViewModel,
+            coreViewModel2
+          )
+        ]
+      }
+    ))), /* @__PURE__ */ createElement("button", { "on:click": close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close"))));
   }
   function SuggestionView(suggestion, searchViewModel, coreViewModel2) {
-    const isApplied = createProxyState([searchViewModel.appliedQuery], () => searchViewModel.appliedQuery.value == suggestion);
+    const isApplied = createProxyState(
+      [searchViewModel.appliedQuery],
+      () => searchViewModel.appliedQuery.value == suggestion
+    );
     function deleteSuggestion() {
       searchViewModel.deleteSuggestion(suggestion);
     }
@@ -5855,7 +5873,7 @@
       "button",
       {
         "set:color": boardViewModel.color,
-        class: "tile colored-tile",
+        class: "tile colored-tile slide-up",
         "toggle:selected": boardViewModel.isSelected,
         "on:click": boardViewModel.select,
         "on:dragover": ViewController.allowDrop,
@@ -5878,6 +5896,22 @@
   var BoardViewModelToEntry = (boardViewModel) => {
     return BoardEntry(boardViewModel);
   };
+
+  // src/View/Components/newItemEntry.tsx
+  function NewItemEntry(coreViewModel2, query, fn) {
+    const isHidden = createProxyState([query], () => query.value == "");
+    const label = createProxyState([query], () => coreViewModel2.translations.general.createLabel(query.value));
+    return /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard slide-up",
+        "toggle:hidden": isHidden,
+        "on:click": fn
+      },
+      /* @__PURE__ */ createElement("span", { "subscribe:innerText": label }),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
+    );
+  }
 
   // src/View/ChatPages/taskPage.tsx
   function TaskPage(coreViewModel2, taskPageViewModel) {
@@ -5921,26 +5955,17 @@
           "input",
           {
             class: "no-outline",
-            "bind:value": taskPageViewModel.newBoardNameInput,
+            "bind:value": taskPageViewModel.boardQuery,
             "on:enter": taskPageViewModel.createBoard,
-            placeholder: coreViewModel2.translations.chatPage.task.newBoardNamePlaceholder
+            placeholder: coreViewModel2.translations.general.filterOrCreateLabel
           }
-        ), /* @__PURE__ */ createElement(
-          "button",
-          {
-            class: "primary",
-            "aria-label": coreViewModel2.translations.chatPage.task.createBoardButtonAudioLabel,
-            "on:click": taskPageViewModel.createBoard,
-            "toggle:disabled": taskPageViewModel.cannotCreateBoard
-          },
-          /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
-        ))), /* @__PURE__ */ createElement("div", { class: "content" }, /* @__PURE__ */ createElement(
+        ))), /* @__PURE__ */ createElement("div", { class: "content gap" }, NewItemEntry(coreViewModel2, taskPageViewModel.boardQuery, taskPageViewModel.createBoard), /* @__PURE__ */ createElement(
           "div",
           {
             class: "grid gap",
             style: "grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr))",
             "children:append": [
-              taskPageViewModel.boardViewModels,
+              taskPageViewModel.boardMatches,
               BoardViewModelToEntry
             ]
           }
@@ -6762,6 +6787,7 @@
         "button",
         {
           class: "ghost",
+          id: "close-button",
           "aria-label": coreViewModel2.translations.chatPage.closeChatAudioLabe,
           "on:click": chatViewModel.close
         },
@@ -6772,7 +6798,8 @@
           class: "danger",
           "aria-label": coreViewModel2.translations.general.restoreConnection,
           "on:click": chatViewModel.connectionViewModel.showConnectionModal,
-          "toggle:hidden": chatViewModel.connectionViewModel.isConnected
+          "toggle:hidden": chatViewModel.connectionViewModel.isConnected,
+          "toggle:disabled": chatViewModel.connectionViewModel.hasNoPreviousConnections
         },
         /* @__PURE__ */ createElement("span", { class: "icon" }, "signal_disconnected")
       ), /* @__PURE__ */ createElement("span", { class: "marquee", "children:set": marqueeContent }), /* @__PURE__ */ createElement("span", { class: "navigation-buttons" }, ChatViewToggleButton(
