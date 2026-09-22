@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { ChatMessageReaction } from "../../Model/Chat/chatModel";
 
 export function MessageReactionEntry(reaction: ChatMessageReaction) {

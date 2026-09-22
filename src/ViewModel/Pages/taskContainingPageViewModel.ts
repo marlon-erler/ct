@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import TaskViewModel from "./taskViewModel";
 import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel from "../Chat/chatViewModel";
@@ -17,7 +17,7 @@ export default class TaskContainingPageViewModel extends Context {
         new React.State<any>(undefined);
 
     taskViewModels: React.MapState<TaskViewModel> = new React.MapState();
-    
+
     taskCategorySuggestions: React.ListState<string> = new React.ListState();
     taskStatusSuggestions: React.ListState<string> = new React.ListState();
 

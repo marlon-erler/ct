@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import BoardViewModel from "./boardViewModel";
 import CoreViewModel, { ContextHost } from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";

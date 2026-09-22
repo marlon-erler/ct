@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "./react";
 import "./colors.css";
 import "./coloredTile.css";
 import "./base.css";

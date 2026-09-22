@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import MessagePageViewModel from "../Pages/messagePageViewModel";
 import CoreViewModel from "../Global/coreViewModel";
 import {

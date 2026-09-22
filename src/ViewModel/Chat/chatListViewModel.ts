@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import ChatViewModel from "./chatViewModel";
 import SettingsViewModel from "../Global/settingsViewModel";
 import NotificationViewModel from "../Global/notificationViewModel";

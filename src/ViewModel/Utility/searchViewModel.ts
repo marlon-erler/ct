@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { checkDoesObjectMatchSearch } from "../../Model/Utility/utility";
 
 export default class SearchViewModel<T> {

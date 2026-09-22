@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 
 export function Option(text: string, value: string, selectedOnCreate: boolean) {
     return (

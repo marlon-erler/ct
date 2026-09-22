@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { MessageReactionEntry } from "../Components/messageReactionEntry";
 import { MessageReactionButtonRow } from "../Components/messageReactionButtonRow";
 import { InfoTile } from "../Components/infoTile";

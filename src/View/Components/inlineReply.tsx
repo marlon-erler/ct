@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { ViewController } from "../viewController";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
 

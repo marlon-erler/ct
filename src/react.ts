@@ -108,7 +108,7 @@ export class ListState<T> extends State<Set<T>> {
             this.removalHandlers.set(item, new Set());
         this.removalHandlers.get(item)!.add(handler);
     }
-    
+
     handleRemovals(handler: RemovalSubscription<T>): void {
         this.genericRemovalHandlers.add(handler);
     }
@@ -279,103 +279,105 @@ export function createElement(
 		case "on": {
 		    switch (directiveValue) {
 			case "enter": {
-			    element.addEventListener("keydown", (e: KeyboardEvent) => {
-				if (e.key != "Enter") return;
-				value(e);
-			    });
-			    break;
+			element.addEventListener("keydown", (e: Event) => {
+			if (!(e instanceof KeyboardEvent)) return;
+			if (e.key != "Enter") return;
+			value(e);
+   });
+   break;
 			}
 			default: {
-			    element.addEventListener(directiveValue, value);
+   element.addEventListener(directiveValue, value);
 			}
 		    }
 		    break;
 		}
 		case "keystroke": {
-		    element.addEventListener("keydown", (e: KeyboardEvent) => {
-			if (e.metaKey == false && e.ctrlKey == false) return;
-			if (e.key != directiveValue) return;
-			value(e);
-		    })
-		    break;
+  element.addEventListener("keydown", (e: Event) => {
+    if (!(e instanceof KeyboardEvent)) return;
+		if (e.metaKey == false && e.ctrlKey == false) return;
+		if (e.key != directiveValue) return;
+		value(e);
+  })
+  break;
 		}
 		case "subscribe": {
-		    const state = value as State<any>;
-		    state.subscribe(
-			(newValue) => (element[directiveValue] = newValue)
-		    );
+  const state = value as State<any>;
+  state.subscribe(
+		(newValue) => (element[directiveValue] = newValue)
+  );
 
-		    break;
+  break;
 		}
 		case "bind": {
-		    const state = value as State<any>;
-		    state.subscribe(
-			(newValue) => (element[directiveValue] = newValue)
-		    );
-		    element.addEventListener(
-			"input",
-			() => (state.value = (element as any)[directiveValue])
-		    );
-		    break;
+  const state = value as State<any>;
+  state.subscribe(
+		(newValue) => (element[directiveValue] = newValue)
+  );
+  element.addEventListener(
+		"input",
+		() => (state.value = (element as any)[directiveValue])
+  );
+  break;
 		}
 		case "toggle": {
-		    if (value.subscribe) {
-			const state = value as State<any>;
-			state.subscribe((newValue) =>
-			    element.toggleAttribute(directiveValue, newValue)
-			);
-		    } else {
-			element.toggleAttribute(directiveValue, value);
-		    }
-		    break;
+  if (value.subscribe) {
+		const state = value as State<any>;
+		state.subscribe((newValue) =>
+  element.toggleAttribute(directiveValue, newValue)
+		);
+  } else {
+		element.toggleAttribute(directiveValue, value);
+  }
+  break;
 		}
 		case "set": {
-		    const state = value as State<any>;
-		    state.subscribe((newValue) =>
-			element.setAttribute(directiveValue, newValue)
-		    );
-		    break;
+  const state = value as State<any>;
+  state.subscribe((newValue) =>
+		element.setAttribute(directiveValue, newValue)
+  );
+  break;
 		}
 		case "children": {
-		    switch (directiveValue) {
-			case "set": {
-			    const state = value as State<Node | Node[]>;
-			    state.subscribe((newValue) => {
-				element.innerHTML = "";
-				element.append(...[newValue].flat());
-			    });
-			    break;
-			}
-			case "append":
-			case "prepend": {
-			    try {
-				const [listState, toElement] = value as [
-				    listState: ListState<any>,
-				    StateItemConverter<any>
-				];
+  switch (directiveValue) {
+		case "set": {
+  const state = value as State<Node | Node[]>;
+  state.subscribe((newValue) => {
+		element.innerHTML = "";
+		element.append(...[newValue].flat());
+  });
+  break;
+		}
+		case "append":
+		case "prepend": {
+  try {
+		const [listState, toElement] = value as [
+  listState: ListState<any>,
+  StateItemConverter<any>
+		];
 
-				listState.handleAddition((newItem) => {
-				    const child = toElement(newItem);
-				    listState.handleRemoval(newItem, () =>
-					child.remove()
-				    );
+		listState.handleAddition((newItem) => {
+  const child = toElement(newItem);
+  listState.handleRemoval(newItem, () =>
+		child.remove()
+  );
 
-				    if (directiveValue == "append") {
-					element.append(child);
-				    } else if (directiveValue == "prepend") {
-					element.prepend(child);
-				    }
-				});
-			    } catch (error) {
-				console.error(error);
-				throw `error: cannot process subscribe:children directive. \n Usage: "children:append={[list, converter]}"; you can find a more detailed example in the documentation.`;
-			    }
-			}
-		    }
-		    break;
+  if (directiveValue == "append") {
+		element.append(child);
+  } else if (directiveValue == "prepend") {
+		element.prepend(child);
+  }
+		});
+  } catch (error) {
+		console.error(error);
+		throw `error: cannot process subscribe:children directive. \n Usage: "children:append={[list, converter]}"; you can find a more detailed example in the documentation.`;
+  }
+		}
+  }
+  break;
 		}
 		default:
-		    element.setAttribute(attributename, value);
+  element.setAttribute(attributename, value);
 	    }
 	});
 

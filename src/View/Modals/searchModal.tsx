@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { StringToOption } from "../Components/option";
 import SearchViewModel from "../../ViewModel/Utility/searchViewModel";
@@ -70,7 +70,7 @@ export function SearchModal<T>(
                         </button>
                     </div>
 
-		    <div 
+		    <div
 			toggle:hidden={searchViewModel.hasNoSuggestions}>
 			<hr></hr>
 			<h3>{coreViewModel.translations.general.searchSuggestionsLabel}</h3>
@@ -105,14 +105,14 @@ function SuggestionView<T>(suggestion: string, searchViewModel: SearchViewModel<
 
     return <div class="flex-row surface align-center">
 	<span class="width-100 flex-1 padding-h">{suggestion}</span>
-	<button 
+	<button
 	    class="danger"
 	    aria-label={coreViewModel.translations.general.deleteButton}
 	    on:click={deleteSuggestion}
 	>
 	    <span class="icon">delete</span>
 	</button>
-	<button 
+	<button
 	    class="primary"
 	    aria-label={coreViewModel.translations.general.applyButton}
 	    on:click={applySuggestion}

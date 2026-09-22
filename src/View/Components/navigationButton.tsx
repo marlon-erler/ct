@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 
 export function NavigationButton<T>(

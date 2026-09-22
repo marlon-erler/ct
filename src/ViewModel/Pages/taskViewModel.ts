@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import TaskContainingPageViewModel from "./taskContainingPageViewModel";
 import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel from "../Chat/chatViewModel";

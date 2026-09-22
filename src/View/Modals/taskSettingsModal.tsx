@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import {
     Entry,
     Option,
@@ -245,7 +245,7 @@ export function TaskSettingsModal(
 		bind:value={taskViewModel.description}
 	    ></textarea>
 	</main>
-	<div 
+	<div
 	    class="flex-row width-100"
 	    id="fullscreen-exit"
 	>
@@ -257,7 +257,7 @@ export function TaskSettingsModal(
 	    <span class="icon">fullscreen_exit</span>
 	</button>
     </div>
-	<div 
+	<div
 	    class="flex-row width-100"
 	    id="controls"
 	>

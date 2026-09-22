@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { ChatPageTypes } from "../Chat/chatViewModel";
 import ChatListViewModel from "../Chat/chatListViewModel";
 import ChatModel, { ChatMessage } from "../../Model/Chat/chatModel";

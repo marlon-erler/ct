@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { ViewController } from "../viewController";
 import { MessageReactionFilterButton } from "../Components/messageReactionFilterButton";
 import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";

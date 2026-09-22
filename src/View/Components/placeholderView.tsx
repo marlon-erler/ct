@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 
 export function PlaceholderView(text: string) {
     return (

@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../react";
 import "./chatPage.css";
 import { ChatPage } from "./chatPage";
 import CoreViewModel from "../ViewModel/Global/coreViewModel";

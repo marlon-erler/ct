@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import "./calendarPage.css";
 import { ViewController } from "../viewController";
 import { TaskSettingsModal } from "../Modals/taskSettingsModal";

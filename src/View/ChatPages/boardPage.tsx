@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { BoardStatusGridPage } from "./boardStatusGridPage";
 import { BoardKanbanPage } from "./boardKanbanPage";
 import { ViewController } from "../viewController";

@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";
 import { ReactionSymbols } from "../../Model/Chat/chatModel";
 

@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import TaskViewModel from "../../ViewModel/Pages/taskViewModel";
 
 export function TaskEntry(taskViewModel: TaskViewModel) {

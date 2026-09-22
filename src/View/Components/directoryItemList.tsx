@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import StorageViewModel from "../../ViewModel/Global/storageViewModel";
 import StorageModel, {
     PATH_COMPONENT_SEPARATOR,

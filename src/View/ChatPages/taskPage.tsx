@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import "./taskPage.css";
 import { BoardPage } from "./boardPage";
 import { ViewController } from "../viewController";

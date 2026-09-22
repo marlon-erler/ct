@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../react";
 import "./homePage.css";
 import { StringToOption } from "./Components/option";
 import { HomePageButton } from "./Components/homePageButton";

@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../react";
 
 class Tracker<T> {
     state: React.State<T> | undefined;

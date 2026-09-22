@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import CoreViewModel, { Context } from "./coreViewModel";
 import { CommonKeys } from "../../View/keystrokes";
 import { Languages, ThemeSettings } from "../../Model/Global/settingsModel";
@@ -83,7 +83,7 @@ export default class SettingsViewModel extends Context {
 	    return DynamicSceneDay;
 	} else if (hour < 17) {
 	    return DynamicSceneAfternoon
-	} else if (hour < 21) {
+	} else {
 	    return DynamicSceneSunset
 	}
     }

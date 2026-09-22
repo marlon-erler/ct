@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { DeletableListItem } from "../Components/deletableListItem";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ConnectionViewModel from "../../ViewModel/Global/connectionViewModel";

@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { allTranslations, Translations } from "../../View/translations";
 import { HandlerManager } from "../../Model/Utility/utility";
 import StorageModel from "../../Model/Global/storageModel";
@@ -177,7 +177,7 @@ export class ContextHost<T> extends Context {
         this.coreViewModel.context = selectedContext;
         this.currentContext.value = selectedContext;
     };
-    
+
     constructor(contextDebugDescription: string, public coreViewModel: CoreViewModel) {
 	super(contextDebugDescription);
     }

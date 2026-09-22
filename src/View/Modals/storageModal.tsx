@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { SplitModal } from "./splitModal";
 import { DirectoryItemList } from "../Components/directoryItemList";
 import { DangerousActionButton } from "../Components/dangerousActionButton";

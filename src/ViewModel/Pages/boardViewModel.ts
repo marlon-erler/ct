@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import TaskViewModel from "./taskViewModel";
 import TaskPageViewModel from "./taskPageViewModel";
 import TaskContainingPageViewModel from "./taskContainingPageViewModel";
@@ -32,7 +32,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
     filteredTaskViewModels: React.ListState<TaskViewModel> =
         new React.ListState();
     isFilterActive: React.State<boolean>;
-    
+
     // paths
     getBasePath = (): string[] => {
         return [

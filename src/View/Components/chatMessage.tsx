@@ -1,4 +1,4 @@
-import * as React from "bloatless-react";
+import * as React from "../../react";
 import { MessageReactionButtonRow } from "./messageReactionButtonRow";
 import { InlineReply } from "./inlineReply";
 import { ChatMessageInfoModal } from "../Modals/chatMessageInfoModal";
