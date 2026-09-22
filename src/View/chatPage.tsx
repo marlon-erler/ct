@@ -73,7 +73,8 @@ export function ChatPage(
             <div>
                 <div id="ribbon">
                     <button
-                        class="ghost"
+			class="ghost"
+			id="close-button"
                         aria-label={
                             coreViewModel.translations.chatPage
                                 .closeChatAudioLabe

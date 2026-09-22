@@ -125,6 +125,12 @@ body[showing-chat] #chat-page-wrapper {
     padding: var(--gap-between-tiles);
 }
 
+@media (pointer: coarse) and (max-width: 480px){
+#chat-page > div > #ribbon #close-button {
+    order: 1;
+} 
+}
+
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar {
     justify-content: start;
     justify-content: space-between;
