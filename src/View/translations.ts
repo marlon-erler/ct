@@ -15,6 +15,7 @@ const englishTranslations = {
         closeButton: "Close",
 	deleteButton: "Delete",
 	exitButton: "Exit",
+	fullscreenButton: "Fullscreen",
 
         continueButton: "Continue",
         confirmButton: "Confirm",
@@ -286,7 +287,6 @@ const englishTranslations = {
             taskPriorityLabel: "Priority",
 
             taskDescriptionLabel: "Description",
-	    taskDescriptionExpandButton: "Fullscreen",
 
             taskDateLabel: "Date",
             taskTimeLabel: "Time",
@@ -342,81 +342,87 @@ export const allTranslations: {
         },
 
         general: {
-            deleteItemButtonAudioLabel: "element löschen",
-            searchButtonAudioLabel: "suchen",
+	    deleteItemButtonAudioLabel: "element löschen",
+	    searchButtonAudioLabel: "suchen",
+	    searchButtonClearAudioLabel: "suche zurücksetzen",
 
-            abortButton: "Abbrechen",
-            cancelButton: "Abbrechen",
-            closeButton: "Schließen",
-            backButton: "Zurück",
+	    abortButton: "Abbrechen",
+	    applyButton: "Anwenden",
+	    backButton: "Zurück",
+	    cancelButton: "Abbrechen",
+	    closeButton: "Schließen",
+	    deleteButton: "Löschen",
+	    exitButton: "Schließen",
+	fullscreenButton: "Vollbild",
 
-            continueButton: "Weiter",
-            confirmButton: "Bestätigen",
-            saveButton: "Speichern",
-            setButton: "OK",
+	    continueButton: "Weiter",
+	    confirmButton: "Bestätigen",
+	    saveButton: "Speichern",
+	    setButton: "OK",
 
-            reloadAppButton: "Neu laden",
+	    reloadAppButton: "Neu laden",
 
-            fileVersionLabel: "Version",
-            searchLabel: "Suche",
-            waitingLabel: "Warten...",
+	    fileVersionLabel: "Version",
+	    searchLabel: "Suche",
+	    searchSuggestionsLabel: "Vorherige Suchen",
+	    waitingLabel: "Warten...",
 
-            restoreConnection: "Verbindung wiederherstellen",
+	    restoreConnection: "Verbindung wiederherstellen",
 
-            noPageSelected: "Keine Seite ausgewählt",
-        },
+	    noPageSelected: "Keine Seite ausgewählt",
+	},
 
-        regional: {
-            weekdays: {
-                full: [
-                    "Sonntag",
-                    "Montag",
-                    "Dienstag",
-                    "Mittwoch",
-                    "Donnerstag",
-                    "Freitag",
-                    "Samstag",
-                ],
-                abbreviated: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
-            },
-        },
+	regional: {
+	    weekdays: {
+		full: [
+		    "Sonntag",
+		    "Montag",
+		    "Dienstag",
+		    "Mittwoch",
+		    "Donnerstag",
+		    "Freitag",
+		    "Samstag",
+		],
+		abbreviated: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+	    },
+	},
 
-        homePage: {
-            appName: "Comms",
+	homePage: {
+	    appName: "Comms",
 
-            overviewHeadline: "Übersicht",
+	    overviewHeadline: "Übersicht",
 
-            serverAddress: "Serveradresse",
-            serverAddressPlaceholder: "wss://192.168.0.69:3000",
-            connectAudioLabel: "mit Server verbinden",
-            disconnectAudioLabel: "vom Server trennen",
-            manageConnectionsAudioLabel: "Verbindungen verwalten",
+	    serverAddress: "Serveradresse",
+	    serverAddressPlaceholder: "wss://192.168.0.69:3000",
+	    connectAudioLabel: "mit Server verbinden",
+	    disconnectAudioLabel: "vom Server trennen",
+	    manageConnectionsAudioLabel: "Verbindungen verwalten",
 
-            yourNameLabel: "Dein Name",
-            yourNamePlaceholder: "Max Mustermann",
-            setNameButtonAudioLabel: "Name speichern",
+	    yourNameLabel: "Dein Name",
+	    yourNamePlaceholder: "Max Mustermann",
+	    setNameButtonAudioLabel: "Name speichern",
 
-            settingsButton: "Einstellungen",
-            manageStorageButton: "Daten verwalten",
-            transferDataButton: "Daten übertragen",
+	    settingsButton: "Einstellungen",
+	    manageStorageButton: "Daten verwalten",
+	    transferDataButton: "Daten übertragen",
 
-            scrollToChatButton: "Chats",
+	    scrollToChatButton: "Chats",
 
-            backToOverviewAudioLabel: "zurück zur übersicht",
-            chatsHeadline: "Chats",
+	    backToOverviewAudioLabel: "zurück zur übersicht",
+	    chatsHeadline: "Chats",
 
-            addChatAudioLabel: "Name des neuen Chats",
-            addChatPlaceholder: "Chat hinzufügen",
-            addChatButton: "Chat hinzufügen",
-        },
+	    addChatAudioLabel: "Name des neuen Chats",
+	    addChatPlaceholder: "Chat hinzufügen",
+	    addChatButton: "Chat hinzufügen",
+	},
 
-        settings: {
-            pages: {
-                appearance: "Erscheinungsbild",
-                regional: "Sprache & Region",
-                info: "Über Comms",
-            },
-            themes: {
+	settings: {
+	    pages: {
+		appearance: "Erscheinungsbild",
+		regional: "Sprache & Region",
+		info: "Über Comms",
+	    },
+	    themes: {
 		dynamic: "Dynamisch",
 		dark: "Dunkel",
 		light: "Hell",
@@ -640,11 +646,16 @@ export const allTranslations: {
 	general: {
 	    deleteItemButtonAudioLabel: "eliminar elemento",
 	    searchButtonAudioLabel: "buscar",
+	    searchButtonClearAudioLabel: "borrar büsqueda",
 
 	    abortButton: "Abortar",
+	    applyButton: "Guardar",
+	    backButton: "Atrás",
 	    cancelButton: "Cancelar",
 	    closeButton: "Cerrar",
-	    backButton: "Atrás",
+	    deleteButton: "Borrar",
+	    exitButton: "Salir",
+	    fullscreenButton: "Pantalla completa",
 
 	    continueButton: "Continuar",
 	    confirmButton: "Confirmar",
@@ -655,6 +666,7 @@ export const allTranslations: {
 
 	    fileVersionLabel: "Versión",
 	    searchLabel: "Buscar",
+	    searchSuggestionsLabel: "Búsquedas anteriores",
 	    waitingLabel: "Esperando...",
 
 	    restoreConnection: "Conectar de nuevo",

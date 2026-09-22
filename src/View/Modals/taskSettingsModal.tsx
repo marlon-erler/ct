@@ -94,7 +94,7 @@ export function TaskSettingsModal(
 				    on:click={taskViewModel.openFullscreenDecription}
 				>
 				    {
-					coreViewModel.translations.chatPage.task.taskDescriptionExpandButton
+					coreViewModel.translations.general.fullscreenButton
 				    }
 
 				    <span class="icon">fullscreen</span>
