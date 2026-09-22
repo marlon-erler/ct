@@ -1298,7 +1298,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.22.D";
+      this.BUILD = "Build 26.09.22.E";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -4683,18 +4683,19 @@
         const notification = this.createNotification(message);
         const currentChat = this.chatListViewModel.selectedChat.value.chatModel.unwrappedPrimaryChannel;
         const currentPage = this.chatListViewModel.selectedChat.value.selectedPage.value;
-        if (notification.chat == currentChat && currentPage == "messages" /* Messages */)
+        if (notification.fullChannel == currentChat && currentPage == "messages" /* Messages */)
           return;
         this.messagesInMarquee.push(notification);
         this.startLoop();
       };
       this.openNotification = () => {
         const notification = this.marquee.value;
+        console.log(notification);
         if (notification == void 0) return;
         const chat = [
           ...this.chatListViewModel.chatViewModels.value.values()
         ].find(
-          (chat2) => chat2.chatModel.unwrappedPrimaryChannel == notification.chat
+          (chat2) => chat2.chatModel.unwrappedPrimaryChannel == notification.fullChannel
         );
         if (!chat) return;
         chat.open();
@@ -4734,6 +4735,7 @@
       return {
         messageId: message.id,
         chat,
+        fullChannel,
         sender: message.sender,
         body: message.body
       };
@@ -4815,7 +4817,7 @@
       // utility
       this.stripNamespace = (fullChannel) => {
         for (const vm of this.chatViewModels.value) {
-          const fullReference = vm.chatModel.info.namespace + vm.chatModel.info.primaryChannel;
+          const fullReference = vm.chatModel.unwrappedPrimaryChannel;
           if (fullReference == fullChannel) return vm.chatModel.info.primaryChannel;
         }
         return fullChannel;

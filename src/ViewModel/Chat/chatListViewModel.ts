@@ -106,7 +106,7 @@ export default class ChatListViewModel {
     // utility
     stripNamespace = (fullChannel: string): string => {
     	for (const vm of this.chatViewModels.value) {
-	    const fullReference = vm.chatModel.info.namespace + vm.chatModel.info.primaryChannel;
+	    const fullReference = vm.chatModel.unwrappedPrimaryChannel;
 	    if (fullReference == fullChannel) return vm.chatModel.info.primaryChannel;
 	}
 

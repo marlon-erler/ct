@@ -24,7 +24,7 @@ export default class NotificationViewModel {
         const currentPage =
             this.chatListViewModel.selectedChat.value.selectedPage.value;
         if (
-            notification.chat == currentChat &&
+            notification.fullChannel == currentChat &&
             currentPage == ChatPageTypes.Messages
         )
             return;
@@ -35,13 +35,14 @@ export default class NotificationViewModel {
 
     openNotification = () => {
         const notification: Notification | undefined = this.marquee.value;
+	console.log(notification);
         if (notification == undefined) return;
 
         const chat = [
             ...this.chatListViewModel.chatViewModels.value.values(),
         ].find(
             (chat) =>
-                chat.chatModel.unwrappedPrimaryChannel == notification.chat,
+                chat.chatModel.unwrappedPrimaryChannel == notification.fullChannel,
         );
         if (!chat) return;
         chat.open();
@@ -91,6 +92,7 @@ export default class NotificationViewModel {
         return {
             messageId: message.id,
             chat,
+	    fullChannel,
             sender: message.sender,
             body: message.body,
         };
@@ -100,6 +102,7 @@ export default class NotificationViewModel {
 export interface Notification {
     messageId: string;
     chat: string;
+    fullChannel: string;
     sender: string;
     body: string;
 }
