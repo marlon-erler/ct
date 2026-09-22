@@ -32,7 +32,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
     filteredTaskViewModels: React.ListState<TaskViewModel> =
         new React.ListState();
     isFilterActive: React.State<boolean>;
-
+    
     // paths
     getBasePath = (): string[] => {
         return [

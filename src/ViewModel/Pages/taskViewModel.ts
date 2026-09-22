@@ -104,19 +104,19 @@ export default class TaskViewModel extends Context {
 
     updateSuggestions = (): void => {
         if (
-            this.coreViewModel.taskCategorySuggestions.value.has(
+            this.containingViewModel.taskCategorySuggestions.value.has(
                 this.category.value,
             ) == false
         ) {
-            this.coreViewModel.taskCategorySuggestions.add(this.category.value);
+            this.containingViewModel.taskCategorySuggestions.add(this.category.value);
         }
 
         if (
-            this.coreViewModel.taskStatusSuggestions.value.has(
+            this.containingViewModel.taskStatusSuggestions.value.has(
                 this.status.value,
             ) == false
         ) {
-            this.coreViewModel.taskStatusSuggestions.add(this.status.value);
+            this.containingViewModel.taskStatusSuggestions.add(this.status.value);
         }
     };
 

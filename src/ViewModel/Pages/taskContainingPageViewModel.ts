@@ -17,6 +17,10 @@ export default class TaskContainingPageViewModel extends Context {
         new React.State<any>(undefined);
 
     taskViewModels: React.MapState<TaskViewModel> = new React.MapState();
+    
+    taskCategorySuggestions: React.ListState<string> = new React.ListState();
+    taskStatusSuggestions: React.ListState<string> = new React.ListState();
+
 
     // methods
     createTaskFromBoardId = (boardId: string): void => {

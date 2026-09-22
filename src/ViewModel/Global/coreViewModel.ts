@@ -9,7 +9,7 @@ import ConnectionModel from "../../Model/Global/connectionModel";
 import ChatListModel from "../../Model/Chat/chatListModel";
 
 export default class CoreViewModel {
-    readonly BUILD = "Build 26.09.21.B";
+    readonly BUILD = "Build 26.09.21.C";
 
     translations: Translations;
 
@@ -80,11 +80,6 @@ export default class CoreViewModel {
 
     // DRAG & DROP
     draggedObject: React.State<any> = new React.State<any>(undefined);
-
-    // SUGGESTIONS
-    // boards & tasks
-    taskCategorySuggestions: React.ListState<string> = new React.ListState();
-    taskStatusSuggestions: React.ListState<string> = new React.ListState();
 
     // init
     constructor(

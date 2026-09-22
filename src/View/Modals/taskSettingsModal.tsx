@@ -113,7 +113,7 @@ export function TaskSettingsModal(
 				hidden
 				id={categorySuggestionId}
 				children:append={[
-				    taskViewModel.coreViewModel.taskCategorySuggestions,
+				    taskViewModel.containingViewModel.taskCategorySuggestions,
 				    StringToOption,
 				]}
 			    ></datalist>
@@ -137,7 +137,7 @@ export function TaskSettingsModal(
 			    hidden
 			    id={statusSuggestionId}
 			    children:append={[
-				taskViewModel.coreViewModel.taskStatusSuggestions,
+				taskViewModel.containingViewModel.taskStatusSuggestions,
 				StringToOption,
 			    ]}
 			></datalist>

@@ -1,10 +1,9 @@
 (() => {
-  // node_modules/bloatless-react/index.ts
+  // ../bloatless-react/index.ts
   var State = class {
-    _value;
-    _bindings = /* @__PURE__ */ new Set();
     // init
     constructor(initialValue) {
+      this._bindings = /* @__PURE__ */ new Set();
       this._value = initialValue;
     }
     // value
@@ -32,15 +31,17 @@
     }
   };
   var ListState = class extends State {
-    additionHandlers = /* @__PURE__ */ new Set();
-    removalHandlers = /* @__PURE__ */ new Map();
     // init
     constructor(initialItems) {
       super(new Set(initialItems));
+      this.additionHandlers = /* @__PURE__ */ new Set();
+      this.removalHandlers = /* @__PURE__ */ new Map();
+      this.genericRemovalHandlers = /* @__PURE__ */ new Set();
     }
     // list
     add(...items) {
       items.forEach((item) => {
+        if (this.value.has(item)) return;
         this.value.add(item);
         this.additionHandlers.forEach((handler) => handler(item));
       });
@@ -49,6 +50,7 @@
     remove(...items) {
       items.forEach((item) => {
         this.value.delete(item);
+        this.genericRemovalHandlers.forEach((handler) => handler(item));
         if (!this.removalHandlers.has(item)) return;
         this.removalHandlers.get(item).forEach((handler) => handler(item));
         this.removalHandlers.delete(item);
@@ -68,6 +70,9 @@
         this.removalHandlers.set(item, /* @__PURE__ */ new Set());
       this.removalHandlers.get(item).add(handler);
     }
+    handleRemovals(handler) {
+      this.genericRemovalHandlers.add(handler);
+    }
     // stringification
     toString() {
       const array = [...this.value.values()];
@@ -76,11 +81,12 @@
     }
   };
   var MapState = class extends State {
-    additionHandlers = /* @__PURE__ */ new Set();
-    removalHandlers = /* @__PURE__ */ new Map();
     // init
     constructor(initialItems) {
       super(new Map(initialItems));
+      this.additionHandlers = /* @__PURE__ */ new Set();
+      this.removalHandlers = /* @__PURE__ */ new Map();
+      this.genericRemovalHandlers = /* @__PURE__ */ new Set();
     }
     // list
     set(key, item) {
@@ -94,6 +100,7 @@
       if (!item) return;
       this.value.delete(key);
       this.callSubscriptions();
+      this.genericRemovalHandlers.forEach((handler) => handler(item));
       if (!this.removalHandlers.has(item)) return;
       this.removalHandlers.get(item).forEach((handler) => handler(item));
       this.removalHandlers.delete(item);
@@ -110,6 +117,9 @@
       if (!this.removalHandlers.has(item))
         this.removalHandlers.set(item, /* @__PURE__ */ new Set());
       this.removalHandlers.get(item).add(handler);
+    }
+    handleRemovals(handler) {
+      this.genericRemovalHandlers.add(handler);
     }
     // stringification
     toString() {
@@ -294,10 +304,13 @@
     general: {
       deleteItemButtonAudioLabel: "delete item",
       searchButtonAudioLabel: "search",
+      searchButtonClearAudioLabel: "clear search query",
       abortButton: "Abort",
+      applyButton: "Apply",
+      backButton: "Back",
       cancelButton: "Cancel",
       closeButton: "Close",
-      backButton: "Back",
+      deleteButton: "Delete",
       continueButton: "Continue",
       confirmButton: "Confirm",
       saveButton: "Save",
@@ -305,6 +318,7 @@
       reloadAppButton: "Reload App",
       fileVersionLabel: "Version",
       searchLabel: "Search",
+      searchSuggestionsLabel: "Recent searches",
       waitingLabel: "Waiting...",
       restoreConnection: "Restore connection",
       noPageSelected: "No page selected"
@@ -1260,7 +1274,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.21.B";
+      this.BUILD = "Build 26.09.21.C";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1301,7 +1315,6 @@
       this.draggedObject = new State(void 0);
       // SUGGESTIONS
       // boards & tasks
-      this.boardFilterStringSuggestions = new ListState();
       this.taskCategorySuggestions = new ListState();
       this.taskStatusSuggestions = new ListState();
       this.translations = allTranslations[settingsModel2.language] || allTranslations.en;
@@ -2988,6 +3001,10 @@
   var SearchViewModel = class {
     // init
     constructor(allObjects, matchingObjects, getStringsOfObject, suggestions) {
+      this.allObjects = allObjects;
+      this.matchingObjects = matchingObjects;
+      this.getStringsOfObject = getStringsOfObject;
+      this.suggestions = suggestions;
       // state
       this.appliedQuery = new State("");
       this.searchInput = new State("");
@@ -2996,6 +3013,11 @@
         [this.searchInput, this.appliedQuery],
         () => this.searchInput.value == this.appliedQuery.value
       );
+      this.cannotClear = createProxyState(
+        [this.searchInput],
+        () => this.searchInput.value == ""
+      );
+      this.hasNoSuggestions = createProxyState([this.suggestions], () => this.suggestions.value.size == 0);
       // methods
       this.search = (searchTerm) => {
         this.searchInput.value = searchTerm;
@@ -3010,6 +3032,12 @@
           this.matchingObjects.add(object);
         }
       };
+      this.clear = () => {
+        this.searchInput.value = "";
+      };
+      this.deleteSuggestion = (suggestion) => {
+        this.suggestions.remove(suggestion);
+      };
       // utility
       this.checkDoesMatchSearch = (object) => {
         return checkDoesObjectMatchSearch(
@@ -3018,10 +3046,6 @@
           object
         );
       };
-      this.allObjects = allObjects;
-      this.matchingObjects = matchingObjects;
-      this.getStringsOfObject = getStringsOfObject;
-      this.suggestions = suggestions;
       this.allObjects.handleAddition((newObject) => {
         const doesMatch = this.checkDoesMatchSearch(newObject);
         if (doesMatch == false) {
@@ -3056,6 +3080,7 @@
       );
       this.isPresentingSettingsModal = new State(false);
       this.isPresentingFilterModal = new State(false);
+      this.searchSuggestions = new ListState();
       this.filteredTaskViewModels = new ListState();
       // paths
       this.getBasePath = () => {
@@ -3123,13 +3148,20 @@
           searchTerm
         ];
         this.coreViewModel.storageModel.write(suggestionPath, "");
-        if (!this.coreViewModel.boardFilterStringSuggestions.value.has(
+        if (!this.searchSuggestions.value.has(
           searchTerm
-        )) {
-          this.coreViewModel.boardFilterStringSuggestions.add(searchTerm);
+        ) && searchTerm != "") {
+          this.searchSuggestions.add(searchTerm);
         }
         const lastSearchPath = this.getLastSearchPath();
         this.coreViewModel.storageModel.write(lastSearchPath, searchTerm);
+      };
+      this.handleSearchRemoved = (searchTerm) => {
+        const suggestionPath = [
+          ...this.getPreviousSearchesPath(),
+          searchTerm
+        ];
+        this.coreViewModel.storageModel.remove(suggestionPath);
       };
       // view
       this.showTask = (taskFileContent) => {
@@ -3209,7 +3241,7 @@
       this.loadSearchSuggestions = () => {
         const dirPath = this.getPreviousSearchesPath();
         const searches = this.coreViewModel.storageModel.list(dirPath);
-        this.coreViewModel.boardFilterStringSuggestions.add(...searches);
+        this.searchSuggestions.add(...searches.filter((x) => x != ""));
       };
       this.restoreSearch = () => {
         const lastSearchPath = this.getLastSearchPath();
@@ -3255,12 +3287,13 @@
         this.taskViewModels,
         this.filteredTaskViewModels,
         TaskViewModel.getStringsForFilter,
-        this.coreViewModel.boardFilterStringSuggestions
+        this.searchSuggestions
       );
       this.searchViewModel.appliedQuery.subscribeSilent((newQuery) => {
         this.handleNewSearch(newQuery);
       });
       this.restoreSearch();
+      this.searchSuggestions.handleRemovals(this.handleSearchRemoved);
       this.isFilterActive = createProxyState(
         [this.searchViewModel.appliedQuery],
         () => this.searchViewModel.appliedQuery.value != ""
@@ -5483,7 +5516,7 @@
   }
 
   // src/View/Modals/searchModal.tsx
-  function SearchModal(coreViewModel2, searchViewModel, headline, converter, isOpen) {
+  function SearchModal(coreViewModel2, searchViewModel, headline, isOpen) {
     function close() {
       isOpen.value = false;
     }
@@ -5492,10 +5525,11 @@
       if (!isOpen2) return;
       ViewController.setFocusWithDelay();
     });
-    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isOpen, extended: true }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, headline), /* @__PURE__ */ createElement("div", { class: "flex-row width-input" }, /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isOpen, extended: true }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, headline), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
       "input",
       {
         id: "focused",
+        style: "max-width: unset",
         placeholder: coreViewModel2.translations.general.searchLabel,
         "bind:value": searchViewModel.searchInput,
         "on:enter": searchViewModel.applySearch,
@@ -5514,23 +5548,66 @@
     ), /* @__PURE__ */ createElement(
       "button",
       {
+        class: "standard",
+        "aria-label": coreViewModel2.translations.general.searchButtonClearAudioLabel,
+        "on:click": searchViewModel.clear,
+        "toggle:disabled": searchViewModel.cannotClear
+      },
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
         class: "primary",
         "aria-label": coreViewModel2.translations.general.searchButtonAudioLabel,
         "on:click": searchViewModel.applySearch,
         "toggle:disabled": searchViewModel.cannotApplySearch
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "search")
-    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement(
+    )), /* @__PURE__ */ createElement(
       "div",
       {
-        class: "grid gap",
-        style: "grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr))",
-        "children:append": [
-          searchViewModel.matchingObjects,
-          converter
-        ]
-      }
+        "toggle:hidden": searchViewModel.hasNoSuggestions
+      },
+      /* @__PURE__ */ createElement("hr", null),
+      /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.general.searchSuggestionsLabel),
+      /* @__PURE__ */ createElement(
+        "div",
+        {
+          class: "flex-column gap",
+          "children:append": [
+            searchViewModel.suggestions,
+            (suggestion) => SuggestionView(suggestion, searchViewModel, coreViewModel2)
+          ]
+        }
+      )
     )), /* @__PURE__ */ createElement("button", { "on:click": close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close"))));
+  }
+  function SuggestionView(suggestion, searchViewModel, coreViewModel2) {
+    const isApplied = createProxyState([searchViewModel.appliedQuery], () => searchViewModel.appliedQuery.value == suggestion);
+    function deleteSuggestion() {
+      searchViewModel.deleteSuggestion(suggestion);
+    }
+    function applySuggestion() {
+      searchViewModel.search(suggestion);
+    }
+    return /* @__PURE__ */ createElement("div", { class: "flex-row surface align-center" }, /* @__PURE__ */ createElement("span", { class: "width-100 flex-1 padding-h" }, suggestion), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "danger",
+        "aria-label": coreViewModel2.translations.general.deleteButton,
+        "on:click": deleteSuggestion
+      },
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "delete")
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "primary",
+        "aria-label": coreViewModel2.translations.general.applyButton,
+        "on:click": applySuggestion,
+        "toggle:disabled": isApplied
+      },
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
+    ));
   }
 
   // src/View/Components/colorPicker.tsx
@@ -5701,7 +5778,6 @@
       coreViewModel2,
       boardViewModel.searchViewModel,
       coreViewModel2.translations.chatPage.task.filterTasksHeadline,
-      TaskViewModelToEntry,
       boardViewModel.isPresentingFilterModal
     ), /* @__PURE__ */ createElement("div", { "children:set": taskSettingsModal }));
   }
