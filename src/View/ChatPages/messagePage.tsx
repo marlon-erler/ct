@@ -7,6 +7,7 @@ import * as React from "../../react";
 import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
+import {ReplyViewHeader} from "../Components/replyViewHeader";
 
 export function MessagePage(
     coreViewModel: CoreViewModel,
@@ -98,7 +99,8 @@ export function MessagePage(
                             </button>
                         </span>
                     </div>
-                    <div class="content">
+		    <div class="content">
+			{ReplyViewHeader(coreViewModel, messagePageViewModel)}
                         {messageContainer}
                         <div id="composer">
                             <div class="content-width-constraint">
