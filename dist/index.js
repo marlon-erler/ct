@@ -480,7 +480,10 @@
         stopReaction: "Reaction: stop sign",
         attentionReaction: "Reaction: exclamation mark",
         doubleAttentionReaction: "Reaction: double exclamation mark",
-        questionReaction: "Reaction: question mark"
+        questionReaction: "Reaction: question mark",
+        //
+        replyPrefixLabel: "Replies: ",
+        replyHeaderLabel: (sender) => `Replies to ${sender}`
       },
       task: {
         noBoardSelected: "No board selected",
@@ -711,7 +714,9 @@
           stopReaction: "Reaktion: Stopp",
           attentionReaction: "Reaktion: Ausrufezeichen",
           doubleAttentionReaction: "Reaktion: doppeltes Ausrufezeichen",
-          questionReaction: "Reaktion: Fragezeichen"
+          questionReaction: "Reaktion: Fragezeichen",
+          replyPrefixLabel: "Antworten: ",
+          replyHeaderLabel: (sender) => `Antworten an ${sender}`
         },
         task: {
           noBoardSelected: "Kein Board ausgew\xE4hlt",
@@ -933,7 +938,9 @@
           stopReaction: "Reacci\xF3n: signo de parada",
           attentionReaction: "Reaccion: signo de atenci\xF3n",
           doubleAttentionReaction: "Reaccion: signo de atenci\xF3n doble",
-          questionReaction: "Reaccion: signo de interrogaci\xF3n"
+          questionReaction: "Reaccion: signo de interrogaci\xF3n",
+          replyPrefixLabel: "Respuestas: ",
+          replyHeaderLabel: (sender) => `Respuestas a ${sender}`
         },
         task: {
           noBoardSelected: "Ning\xFAn tablero seleccionado",
@@ -1298,7 +1305,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.22.E";
+      this.BUILD = "Build 26.09.23.A";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -4060,6 +4067,8 @@
       this.dateSent = "";
       this.body = new State("");
       this.inlineReply = void 0;
+      this.replies = new MapState();
+      this.replyCount = createProxyState([this.replies], () => this.replies.value.size);
       this.status = new State(
         void 0
       );
@@ -4156,14 +4165,22 @@
           this.inlineReply = this.messagePageViewModel.chatMessageViewModels.value.get(
             this.chatMessage.inlineReplyId
           );
+          this.inlineReply.replies.set(this.chatMessage.id, this);
         }
       };
       this.chatMessage = chatMessage;
       this.sentByUser = sentByUser;
       this.loadData();
+      let hideForReactions = false;
+      let hideForReplyView = false;
+      const updateHiding = () => {
+        console.log(hideForReactions, hideForReplyView);
+        this.isHidden.value = hideForReactions || hideForReplyView;
+      };
       this.messagePageViewModel.reactionFilter.subscribe((content) => {
         if (content == void 0) {
-          this.isHidden.value = false;
+          hideForReactions = false;
+          updateHiding();
           return;
         }
         let count = 0;
@@ -4193,7 +4210,15 @@
             break;
           }
         }
-        this.isHidden.value = count == 0;
+        hideForReactions = count == 0;
+        updateHiding();
+      });
+      this.messagePageViewModel.replyViewSelectedMessage.subscribe((selectedMessage) => {
+        if (selectedMessage == void 0) hideForReplyView = false;
+        else if (selectedMessage == this) hideForReplyView = false;
+        else if (selectedMessage == this.inlineReply) hideForReplyView = false;
+        else hideForReplyView = true;
+        updateHiding();
       });
     }
   };
@@ -4208,6 +4233,7 @@
       // state
       this.chatMessageViewModels = new MapState();
       this.filteredMessageViewModels = new ListState();
+      this.replyViewSelectedMessage = new State(void 0);
       this.isFilterModalOpen = new State(false);
       this.reactionFilter = new State(void 0);
       this.replyingMessage = new State(
@@ -4227,6 +4253,7 @@
           replyId = this.replyingMessage.value.chatMessage.id;
         }
         this.chatViewModel.chatModel.sendMessage(body, replyId);
+        if (this.replyViewSelectedMessage.value != void 0) return;
         this.replyingMessage.value = void 0;
       };
       this.decryptMessage = async (messageViewModel) => {
@@ -4289,6 +4316,15 @@
       this.resetFilter = () => {
         this.revokeReactionFilter();
         this.searchViewModel.search("");
+      };
+      this.setReplyView = (message) => {
+        this.replyViewSelectedMessage.value = message;
+        this.revokeReactionFilter();
+        this.setReply(message);
+      };
+      this.resetReplyView = () => {
+        this.replyViewSelectedMessage.value = void 0;
+        this.resetReply();
       };
       this.setFocus = () => {
         this.focusSetter.callSubscriptions();
@@ -6356,6 +6392,24 @@
     );
   }
 
+  // src/View/Components/replyLink.tsx
+  function ReplyLink(coreViewModel2, chatMessageViewModel) {
+    const isHidden = createProxyState([chatMessageViewModel.replyCount], () => chatMessageViewModel.replyCount.value == 0);
+    function select() {
+      chatMessageViewModel.messagePageViewModel.setReplyView(chatMessageViewModel);
+    }
+    return /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "reply-link",
+        "toggle:hidden": isHidden,
+        "on:click": select
+      },
+      /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.message.replyPrefixLabel),
+      /* @__PURE__ */ createElement("b", { class: "ellipsis", "subscribe:innerText": chatMessageViewModel.replyCount })
+    );
+  }
+
   // src/View/Components/chatMessage.tsx
   function ChatMessage3(coreViewModel2, chatMessageViewModel) {
     const statusIcon = createProxyState(
@@ -6411,7 +6465,32 @@
         /* @__PURE__ */ createElement("span", { class: "icon" }, "reply")
       ))),
       MessageReactionButtonRow(coreViewModel2, chatMessageViewModel),
+      ReplyLink(coreViewModel2, chatMessageViewModel),
       ChatMessageInfoModal(coreViewModel2, chatMessageViewModel)
+    );
+  }
+
+  // src/View/Components/replyViewHeader.tsx
+  function ReplyViewHeader(coreViewModel2, messagePageViewModel) {
+    const isHidden = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value == void 0);
+    const label = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value == void 0 ? "" : coreViewModel2.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.sender));
+    const message = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value == void 0 ? "" : messagePageViewModel.replyViewSelectedMessage.value.body.value);
+    return /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "reply-header",
+        "toggle:hidden": isHidden
+      },
+      /* @__PURE__ */ createElement("b", { class: "ellipsis", "subscribe:innerText": label }),
+      /* @__PURE__ */ createElement("span", { class: "secondary ellipsis", "subscribe:innerText": message }),
+      /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "standard square",
+          "on:click": messagePageViewModel.resetReplyView
+        },
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+      )
     );
   }
 
@@ -6465,7 +6544,8 @@
     messagePageViewModel.focusSetter.subscribeSilent(() => {
       ViewController.setFocusWithDelay();
     });
-    return /* @__PURE__ */ createElement("div", { id: "message-page" }, /* @__PURE__ */ createElement("div", { class: "pane-wrapper" }, /* @__PURE__ */ createElement("div", { class: "pane" }, /* @__PURE__ */ createElement("div", { class: "toolbar" }, /* @__PURE__ */ createElement("span", { class: "title" }, coreViewModel2.translations.chatPage.message.messagesHeadline), /* @__PURE__ */ createElement("span", null, /* @__PURE__ */ createElement(
+    const isInReplyView = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value != void 0);
+    return /* @__PURE__ */ createElement("div", { id: "message-page", "toggle:reply-view": isInReplyView }, /* @__PURE__ */ createElement("div", { class: "pane-wrapper" }, /* @__PURE__ */ createElement("div", { class: "pane" }, /* @__PURE__ */ createElement("div", { class: "toolbar" }, /* @__PURE__ */ createElement("span", { class: "title" }, coreViewModel2.translations.chatPage.message.messagesHeadline), /* @__PURE__ */ createElement("span", null, /* @__PURE__ */ createElement(
       "button",
       {
         class: "ghost inset-outline",
@@ -6474,7 +6554,7 @@
         "toggle:selected": messagePageViewModel.isFilterActive
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "filter_alt")
-    ))), /* @__PURE__ */ createElement("div", { class: "content" }, messageContainer, /* @__PURE__ */ createElement("div", { id: "composer" }, /* @__PURE__ */ createElement("div", { class: "content-width-constraint" }, /* @__PURE__ */ createElement(
+    ))), /* @__PURE__ */ createElement("div", { class: "content" }, ReplyViewHeader(coreViewModel2, messagePageViewModel), messageContainer, /* @__PURE__ */ createElement("div", { id: "composer" }, /* @__PURE__ */ createElement("div", { class: "content-width-constraint" }, /* @__PURE__ */ createElement(
       "div",
       {
         class: "reply-preview-wrapper",

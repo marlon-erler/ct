@@ -616,6 +616,19 @@ body[showing-chat] #chat-page-wrapper {
 #message-page #message-container {
   overflow: auto;
 }
+#message-page .reply-header {
+  width: 100%;
+  padding-left: var(--content-padding);
+  gap: var(--gap-in-controls);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+}
+#message-page .reply-header span {
+  width: 100%;
+  flex: 1;
+}
 #message-page #composer {
   display: flex;
   justify-content: center;
@@ -776,7 +789,7 @@ body[showing-chat] #chat-page-wrapper {
 .message-bubble[sentbyuser] .tile.main span {
   text-align: right;
 }
-.message-bubble > .inline-reply {
+.message-bubble > :is(.inline-reply, .reply-link, .message-reaction-row) {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -786,16 +799,20 @@ body[showing-chat] #chat-page-wrapper {
   width: 100%;
   overflow: hidden;
   padding: 0px var(--control-padding);
-  gap: var(--text-gap);
+}
+.message-bubble > .inline-reply {
   border-left: var(--outline-width) solid var(--primary);
+  gap: var(--text-gap);
+}
+.message-bubble > .reply-link {
+  gap: 5px;
+}
+#message-page[reply-view] :is(.reply-link, .inline-reply) {
+  display: none;
 }
 .message-bubble > .message-reaction-row {
-  max-width: var(--max-input-width);
-  width: 100%;
   padding: var(--gap-between-tiles);
-  background: var(--surface-alt);
   display: none !important;
-  overflow: hidden;
 }
 .message-bubble > .message-reaction-row:has(button:not([count="0"])) {
   display: grid !important;
