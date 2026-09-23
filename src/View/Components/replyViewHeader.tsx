@@ -5,7 +5,8 @@ import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";
 export function ReplyViewHeader(coreViewModel: CoreViewModel, messagePageViewModel: MessagePageViewModel) {
     const isHidden = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value == undefined);
 
-    const label = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>coreViewModel.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.sender));
+    const label = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value == undefined ? "" : coreViewModel.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.sender));
+    const message = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value == undefined ? "" : messagePageViewModel.replyViewSelectedMessage.value.body.value);
 
     return (
 	<div 
@@ -13,8 +14,9 @@ export function ReplyViewHeader(coreViewModel: CoreViewModel, messagePageViewMod
 	    toggle:hidden={isHidden}
 	>
 	    <b class="ellipsis" subscribe:innerText={label}></b>
+	    <span class="secondary ellipsis" subscribe:innerText={message}></span>
 	    <button 
-		class="primary square"
+		class="standard square"
 		on:click={messagePageViewModel.resetReplyView}
 	    >
 		<span class="icon">close</span>

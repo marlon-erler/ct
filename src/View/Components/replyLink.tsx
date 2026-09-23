@@ -6,7 +6,7 @@ export function ReplyLink(coreViewModel: CoreViewModel, chatMessageViewModel: Ch
     const isHidden = React.createProxyState([chatMessageViewModel.replyCount], ()=>chatMessageViewModel.replyCount.value == 0);
 
     function select() {
-	chatMessageViewModel.messagePageViewModel.replyViewSelectedMessage.value = chatMessageViewModel;
+	chatMessageViewModel.messagePageViewModel.setReplyView(chatMessageViewModel);
     }
 
     return (

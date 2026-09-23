@@ -72,8 +72,10 @@ export function MessagePage(
         ViewController.setFocusWithDelay();
     });
 
+    const isInReplyView = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value != undefined);
+
     return (
-        <div id="message-page">
+        <div id="message-page" toggle:reply-view={isInReplyView}>
             <div class="pane-wrapper">
                 <div class="pane">
                     <div class="toolbar">

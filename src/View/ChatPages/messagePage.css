@@ -28,6 +28,23 @@
     overflow: auto;
 }
 
+#message-page .reply-header {
+    width: 100%;
+    padding-left: var(--content-padding);
+    gap: var(--gap-in-controls);
+	
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    background: var(--surface);
+}
+
+#message-page .reply-header span {
+    width: 100%;
+    flex: 1;
+}
+
 /* composer */
 #message-page #composer {
     display: flex;
@@ -257,6 +274,10 @@
 
 .message-bubble > .reply-link {
     gap: 5px;
+}
+
+#message-page[reply-view] :is(.reply-link, .inline-reply) {
+    display: none;
 }
 
 .message-bubble > .message-reaction-row {

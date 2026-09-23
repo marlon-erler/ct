@@ -46,6 +46,8 @@ export default class MessagePageViewModel extends Context {
             replyId = this.replyingMessage.value.chatMessage.id;
         }
         this.chatViewModel.chatModel.sendMessage(body, replyId);
+
+	if (this.replyViewSelectedMessage.value != undefined) return;
         this.replyingMessage.value = undefined;
     };
 
@@ -133,8 +135,15 @@ export default class MessagePageViewModel extends Context {
         this.searchViewModel.search("");
     };
 
+    setReplyView = (message: ChatMessageViewModel): void => {
+	this.replyViewSelectedMessage.value = message;
+	this.revokeReactionFilter();
+	this.setReply(message);
+    }
+
     resetReplyView = (): void => {
 	this.replyViewSelectedMessage.value = undefined;
+	this.resetReply();
     }
 
     setFocus = (): void => {

@@ -154,12 +154,14 @@ export default class ChatMessageViewModel {
 	let hideForReplyView: boolean = false;
 
 	const updateHiding = () => {
+	    console.log(hideForReactions, hideForReplyView);
 	    this.isHidden.value = hideForReactions || hideForReplyView;
 	}
 
         this.messagePageViewModel.reactionFilter.subscribe((content) => {
             if (content == undefined) {
 		hideForReactions = false;
+		updateHiding();
                 return;
             }
 
