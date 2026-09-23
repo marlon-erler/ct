@@ -74,13 +74,16 @@ export default class MessagePageViewModel extends Context {
 
     setReply = (
         chatMessageViewModel: ChatMessageViewModel | undefined,
+	setFocus: boolean = true,
     ): void => {
         this.replyingMessage.value = chatMessageViewModel;
+	if (setFocus == false || chatMessageViewModel == undefined) return;
         this.setFocus();
     };
 
-    resetReply = (): void => {
+    resetReply = (setFocus: boolean = true): void => {
         this.replyingMessage.value = undefined;
+	if (setFocus == false) return;
         this.setFocus();
     };
 
@@ -138,12 +141,12 @@ export default class MessagePageViewModel extends Context {
     setReplyView = (message: ChatMessageViewModel): void => {
 	this.replyViewSelectedMessage.value = message;
 	this.revokeReactionFilter();
-	this.setReply(message);
+	this.setReply(message, false);
     }
 
     resetReplyView = (): void => {
 	this.replyViewSelectedMessage.value = undefined;
-	this.resetReply();
+	this.resetReply(false);
     }
 
     setFocus = (): void => {

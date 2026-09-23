@@ -258,7 +258,6 @@
     align-items: center;
 
     background: var(--surface-alt);
-    height: var(--control-height);
 
     max-width: var(--max-input-width);
     width: 100%;
@@ -270,10 +269,12 @@
 .message-bubble > .inline-reply {
     border-left: var(--outline-width) solid var(--primary);
     gap: var(--text-gap);
+    height: var(--control-height);
 }
 
 .message-bubble > .reply-link {
     gap: 5px;
+    height: var(--control-height);
 }
 
 .message-bubble > .message-reaction-row {
