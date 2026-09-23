@@ -248,6 +248,10 @@ const englishTranslations = {
             attentionReaction: "Reaction: exclamation mark",
             doubleAttentionReaction: "Reaction: double exclamation mark",
             questionReaction: "Reaction: question mark",
+
+	    //
+	    
+	    replyPrefixLabel: "Replies: ",
         },
 
         task: {
@@ -569,6 +573,8 @@ export const allTranslations: {
 		attentionReaction: "Reaktion: Ausrufezeichen",
 		doubleAttentionReaction: "Reaktion: doppeltes Ausrufezeichen",
 		questionReaction: "Reaktion: Fragezeichen",
+	    
+		replyPrefixLabel: "Antworten: ",
 	    },
 
 	    task: {
@@ -871,6 +877,8 @@ export const allTranslations: {
 		attentionReaction: "Reaccion: signo de atención",
 		doubleAttentionReaction: "Reaccion: signo de atención doble",
 		questionReaction: "Reaccion: signo de interrogación",
+
+		replyPrefixLabel: "Respuestas: ",
 	    },
 
 	    task: {

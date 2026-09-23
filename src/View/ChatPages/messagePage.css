@@ -234,7 +234,7 @@
     text-align: right;
 }
 
-.message-bubble > .inline-reply {
+.message-bubble > :is(.inline-reply, .reply-link, .message-reaction-row) {
     cursor: pointer;
 
     display: flex;
@@ -248,20 +248,20 @@
     overflow: hidden;
 
     padding: 0px var(--control-padding);
-    gap: var(--text-gap);
+}
 
+.message-bubble > .inline-reply {
     border-left: var(--outline-width) solid var(--primary);
+    gap: var(--text-gap);
+}
+
+.message-bubble > .reply-link {
+    gap: 5px;
 }
 
 .message-bubble > .message-reaction-row {
-    max-width: var(--max-input-width);
-    width: 100%;
-
     padding: var(--gap-between-tiles);
-    background: var(--surface-alt);
-
     display: none !important;
-    overflow: hidden;
 }
 
 .message-bubble > .message-reaction-row:has(button:not([count="0"])) {

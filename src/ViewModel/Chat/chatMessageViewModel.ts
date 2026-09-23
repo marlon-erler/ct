@@ -16,6 +16,8 @@ export default class ChatMessageViewModel {
     dateSent: string = "";
     body: React.State<string> = new React.State("");
     inlineReply: ChatMessageViewModel | undefined = undefined;
+    replies: React.MapState<ChatMessageViewModel> = new React.MapState();
+    replyCount: React.State<number> = React.createProxyState([this.replies], ()=>this.replies.value.size);
     status: React.State<ChatMessageStatuses | any> = new React.State<any>(
         undefined,
     );
@@ -133,6 +135,7 @@ export default class ChatMessageViewModel {
                 this.messagePageViewModel.chatMessageViewModels.value.get(
                     this.chatMessage.inlineReplyId,
                 );
+	    this.inlineReply.replies.set(this.chatMessage.id, this);
         }
     };
 
@@ -147,9 +150,16 @@ export default class ChatMessageViewModel {
         this.sentByUser = sentByUser;
         this.loadData();
 
+	let hideForReactions: boolean = false;
+	let hideForReplyView: boolean = false;
+
+	const updateHiding = () => {
+	    this.isHidden.value = hideForReactions || hideForReplyView;
+	}
+
         this.messagePageViewModel.reactionFilter.subscribe((content) => {
             if (content == undefined) {
-                this.isHidden.value = false;
+		hideForReactions = false;
                 return;
             }
 
@@ -181,7 +191,16 @@ export default class ChatMessageViewModel {
                 }
             }
 
-            this.isHidden.value = count == 0;
+            hideForReactions = count == 0;
+	    updateHiding();
         });
+
+	this.messagePageViewModel.replyViewSelectedMessage.subscribe(selectedMessage => {
+	    if (selectedMessage == undefined) hideForReplyView = false;
+	    else if (selectedMessage == this) hideForReplyView = false;
+	    else if (selectedMessage == this.inlineReply) hideForReplyView = false;
+	    else hideForReplyView = true;
+	    updateHiding();
+	})
     }
 }

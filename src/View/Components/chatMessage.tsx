@@ -5,6 +5,7 @@ import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
 import { ChatMessageStatuses } from "../../Model/Chat/chatModel";
+import {ReplyLink} from "./replyLink";
 
 export function ChatMessage(
     coreViewModel: CoreViewModel,
@@ -75,6 +76,7 @@ export function ChatMessage(
                 </div>
             </div>
             {MessageReactionButtonRow(coreViewModel, chatMessageViewModel)}
+            {ReplyLink(coreViewModel, chatMessageViewModel)}
             {ChatMessageInfoModal(coreViewModel, chatMessageViewModel)}
         </div>
     );

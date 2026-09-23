@@ -16,6 +16,7 @@ export default class MessagePageViewModel extends Context {
         new React.MapState();
     filteredMessageViewModels: React.ListState<ChatMessageViewModel> =
         new React.ListState();
+    replyViewSelectedMessage: React.State<ChatMessageViewModel|undefined> = new React.State(undefined);
     searchViewModel: SearchViewModel<ChatMessageViewModel>;
     isFilterModalOpen = new React.State<boolean>(false);
     reactionFilter = new React.State<ReactionSymbols | undefined>(undefined);
@@ -25,6 +26,7 @@ export default class MessagePageViewModel extends Context {
         undefined,
     );
     composingMessage = new React.State<string>("");
+
     focusSetter = new React.State(null);
 
     // guards
@@ -130,6 +132,10 @@ export default class MessagePageViewModel extends Context {
         this.revokeReactionFilter();
         this.searchViewModel.search("");
     };
+
+    resetReplyView = (): void => {
+	this.replyViewSelectedMessage.value = undefined;
+    }
 
     setFocus = (): void => {
         this.focusSetter.callSubscriptions();
