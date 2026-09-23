@@ -807,6 +807,9 @@ body[showing-chat] #chat-page-wrapper {
 .message-bubble > .reply-link {
   gap: 5px;
 }
+.message-bubble > .message-reaction-row {
+  padding: var(--gap-between-tiles);
+}
 #message-page[reply-view] :is(.reply-link, .inline-reply) {
   display: none;
 }
