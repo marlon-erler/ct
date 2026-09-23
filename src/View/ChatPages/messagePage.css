@@ -16,7 +16,7 @@
 
 #chat-page
     #main
-    #message-page
+    #message-page:not([reply-view])
     .content:has(.reply-preview-wrapper .reply-preview)
     #message-container {
     --message-container-padding: calc(

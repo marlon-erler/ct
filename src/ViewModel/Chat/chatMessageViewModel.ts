@@ -154,7 +154,6 @@ export default class ChatMessageViewModel {
 	let hideForReplyView: boolean = false;
 
 	const updateHiding = () => {
-	    console.log(hideForReactions, hideForReplyView);
 	    this.isHidden.value = hideForReactions || hideForReplyView;
 	}
 
@@ -199,10 +198,10 @@ export default class ChatMessageViewModel {
 
 	this.messagePageViewModel.replyViewSelectedMessage.subscribe(selectedMessage => {
 	    if (selectedMessage == undefined) hideForReplyView = false;
-	    else if (selectedMessage == this) hideForReplyView = false;
-	    else if (selectedMessage == this.inlineReply) hideForReplyView = false;
+	    else if (selectedMessage.chatMessage.id == this.chatMessage.id) hideForReplyView = false;
+	    else if (this.inlineReply != undefined &&  selectedMessage.chatMessage.id == this.inlineReply.chatMessage.id) hideForReplyView = false;
 	    else hideForReplyView = true;
 	    updateHiding();
-	})
+	});
     }
 }
