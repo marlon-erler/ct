@@ -1305,7 +1305,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.23.B";
+      this.BUILD = "Build 26.09.23.C";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -4269,12 +4269,14 @@
           isDeleting
         );
       };
-      this.setReply = (chatMessageViewModel) => {
+      this.setReply = (chatMessageViewModel, setFocus = true) => {
         this.replyingMessage.value = chatMessageViewModel;
+        if (setFocus == false || chatMessageViewModel == void 0) return;
         this.setFocus();
       };
-      this.resetReply = () => {
+      this.resetReply = (setFocus = true) => {
         this.replyingMessage.value = void 0;
+        if (setFocus == false) return;
         this.setFocus();
       };
       // view
@@ -4320,11 +4322,11 @@
       this.setReplyView = (message) => {
         this.replyViewSelectedMessage.value = message;
         this.revokeReactionFilter();
-        this.setReply(message);
+        this.setReply(message, false);
       };
       this.resetReplyView = () => {
         this.replyViewSelectedMessage.value = void 0;
-        this.resetReply();
+        this.resetReply(false);
       };
       this.setFocus = () => {
         this.focusSetter.callSubscriptions();
