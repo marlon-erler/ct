@@ -281,7 +281,7 @@
     padding: var(--gap-between-tiles);
 }
 
-#message-page[reply-view] :is(.reply-link, .inline-reply) {
+#message-page[reply-view] :is(.reply-link, .inline-reply, #composer .reply-preview-wrapper) {
     display: none;
 }
 
