@@ -66,6 +66,10 @@ export function MessagePage(
     messagePageViewModel.filteredMessageViewModels.subscribeSilent(
         scrollDownIfApplicable,
     );
+    messagePageViewModel.replyViewSelectedMessage.subscribeSilent(selectedMessage => {
+	if (selectedMessage != undefined) return;
+	setTimeout(scrollDown, 100);
+    })
     setTimeout(() => scrollDown(true), 100);
 
     messagePageViewModel.focusSetter.subscribeSilent(() => {
