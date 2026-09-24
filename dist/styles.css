@@ -145,6 +145,10 @@ a {
     color: var(--link);
 }
 
+.background-primary {
+    background: var(--primary);
+}
+
 /* text */
 
 .success {

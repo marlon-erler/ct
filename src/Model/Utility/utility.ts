@@ -177,6 +177,10 @@ export function getLocalStorageItemAndClear(key: string): string | null {
     return value;
 }
 
+export function bytesToMB(bytes: number): number {
+    return bytes / (1024*1024);
+}
+
 // string & parsing
 export function stringify(data: any): string {
     return JSON.stringify(data, null, 4);

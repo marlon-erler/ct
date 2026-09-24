@@ -13,6 +13,9 @@ export default class StorageViewModel extends Context {
     );
     didMakeChanges: React.State<boolean> = new React.State(false);
 
+    occupiedSpaceMB: React.State<number> = new React.State(0);
+    maximumSpaceMB: React.State<number> = new React.State(0);
+
     selectedFileName: React.State<string>;
     selectedFileContent: React.State<string>;
 
@@ -46,10 +49,17 @@ export default class StorageViewModel extends Context {
         this.selectedPath.value = PATH_COMPONENT_SEPARATOR;
     };
 
+    calculateUsage = (): void => {
+	this.occupiedSpaceMB.value = this.coreViewModel.storageModel.calculateUsage();
+	this.maximumSpaceMB.value = this.coreViewModel.storageModel.determineCapacity();
+	console.log(this.occupiedSpaceMB.value, this.maximumSpaceMB.value);
+    }
+
     // view
     showStorageModal = (): void => {
         this.coreViewModel.context = this;
         this.isShowingStorageModal.value = true;
+	this.calculateUsage();
     };
 
     // exit

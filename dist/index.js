@@ -306,12 +306,13 @@
       applyButton: "Apply",
       backButton: "Back",
       cancelButton: "Cancel",
+      confirmButton: "Confirm",
+      continueButton: "Continue",
       closeButton: "Close",
       deleteButton: "Delete",
       exitButton: "Exit",
       fullscreenButton: "Fullscreen",
-      continueButton: "Continue",
-      confirmButton: "Confirm",
+      refreshButton: "Refresh",
       saveButton: "Save",
       setButton: "Set",
       filterOrCreateLabel: "Search or create",
@@ -424,6 +425,8 @@
       noItemSelected: "No item selected",
       notAFile: "(not a file)",
       contentEmpty: "(empty)",
+      usageLabel: "Usage",
+      usageVauleLabel: (used, max) => `${used} of ${max} MB`,
       path: "Path",
       content: "Content",
       deleteItem: "Delete item",
@@ -551,12 +554,13 @@
         applyButton: "Anwenden",
         backButton: "Zur\xFCck",
         cancelButton: "Abbrechen",
+        continueButton: "Weiter",
+        confirmButton: "Best\xE4tigen",
         closeButton: "Schlie\xDFen",
         deleteButton: "L\xF6schen",
         exitButton: "Schlie\xDFen",
         fullscreenButton: "Vollbild",
-        continueButton: "Weiter",
-        confirmButton: "Best\xE4tigen",
+        refreshButton: "Aktualisieren",
         saveButton: "Speichern",
         setButton: "OK",
         filterOrCreateLabel: "Suchen oder erstellen",
@@ -661,6 +665,8 @@
         noItemSelected: "Kein Element ausgew\xE4hlt",
         notAFile: "(keine Datei)",
         contentEmpty: "(leer)",
+        usageLabel: "Speicher",
+        usageVauleLabel: (used, max) => `${used} von ${max} MB belegt`,
         path: "Pfad",
         content: "Inhalt",
         deleteItem: "Element l\xF6schen",
@@ -776,12 +782,13 @@
         applyButton: "Guardar",
         backButton: "Atr\xE1s",
         cancelButton: "Cancelar",
+        continueButton: "Continuar",
+        confirmButton: "Confirmar",
         closeButton: "Cerrar",
         deleteButton: "Borrar",
         exitButton: "Salir",
         fullscreenButton: "Pantalla completa",
-        continueButton: "Continuar",
-        confirmButton: "Confirmar",
+        refreshButton: "Actualizar",
         saveButton: "Guardar",
         setButton: "OK",
         filterOrCreateLabel: "Buscar o crear",
@@ -886,6 +893,8 @@
         noItemSelected: "Ning\xFAn elemento seleccionado",
         notAFile: "(no es un archivo)",
         contentEmpty: "(vac\xEDo)",
+        usageLabel: "Almacenamiento",
+        usageVauleLabel: (used, max) => `${used} de ${max} MB en uso`,
         path: "Ruta",
         content: "Contenido",
         deleteItem: "Eliminar elemento",
@@ -1120,6 +1129,9 @@
     localStorage.removeItem(key);
     if (value != null) localStorage.setItem(`_${key}`, value);
     return value;
+  }
+  function bytesToMB(bytes) {
+    return bytes / (1024 * 1024);
   }
   function stringify(data) {
     return JSON.stringify(data, null, 4);
@@ -1607,12 +1619,40 @@
         if (object == null) return null;
         return object;
       };
-      // cleaning
+      // cleaning & usage
       this.removeJunk = () => {
         this.recurse([], (path) => {
           if (path[0] == DATA_VERSION) return;
           this.remove(path);
         });
+      };
+      this.determineCapacity = () => {
+        const KEY = "storage-capacity-check";
+        let chunk = "0";
+        for (let i = 0; i < 1024 * 256; i++) {
+          chunk += "0";
+        }
+        localStorage.setItem(KEY, "");
+        while (true) {
+          try {
+            const current = localStorage.getItem(KEY);
+            console.log(current);
+            localStorage.setItem(KEY, current + chunk);
+          } catch (e) {
+            const capacity = this.calculateUsage();
+            localStorage.removeItem(KEY);
+            return capacity;
+          }
+        }
+      };
+      this.calculateUsage = () => {
+        let data = JSON.stringify(localStorage);
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(data);
+        const bytes = encoded.byteLength;
+        const mb = bytesToMB(bytes);
+        const rounded = Math.round(mb * 100) / 100;
+        return rounded;
       };
       // tree
       this.initializeTree = () => {
@@ -1721,6 +1761,8 @@
         PATH_COMPONENT_SEPARATOR
       );
       this.didMakeChanges = new State(false);
+      this.occupiedSpaceMB = new State(0);
+      this.maximumSpaceMB = new State(0);
       this.lastDeletedItemPath = new State("");
       // methods
       this.getSelectedItemContent = () => {
@@ -1742,10 +1784,16 @@
         this.coreViewModel.storageModel.removeJunk();
         this.selectedPath.value = PATH_COMPONENT_SEPARATOR;
       };
+      this.calculateUsage = () => {
+        this.occupiedSpaceMB.value = this.coreViewModel.storageModel.calculateUsage();
+        this.maximumSpaceMB.value = this.coreViewModel.storageModel.determineCapacity();
+        console.log(this.occupiedSpaceMB.value, this.maximumSpaceMB.value);
+      };
       // view
       this.showStorageModal = () => {
         this.coreViewModel.context = this;
         this.isShowingStorageModal.value = true;
+        this.calculateUsage();
       };
       // exit
       this.close = () => {
@@ -7125,13 +7173,47 @@
     ));
   }
 
+  // src/View/Components/usageBar.tsx
+  function UsageBar(label, valueLabel, value, maximum) {
+    const style = createProxyState([value, maximum], () => `width: ${100 * (value.value / maximum.value)}%`);
+    return /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "surface flex-column padding gap"
+      },
+      /* @__PURE__ */ createElement("b", null, label),
+      /* @__PURE__ */ createElement(
+        "div",
+        {
+          class: "width-100 surface-alt",
+          style: "height: 18px"
+        },
+        /* @__PURE__ */ createElement(
+          "div",
+          {
+            class: "height-100 background-primary",
+            "set:style": style
+          }
+        )
+      ),
+      /* @__PURE__ */ createElement(
+        "span",
+        {
+          class: "secondary",
+          "subscribe:innerText": valueLabel
+        }
+      )
+    );
+  }
+
   // src/View/Modals/storageModal.tsx
   function StorageModal(coreViewModel2, storageViewModel2) {
+    const usageValueLabel = createProxyState([storageViewModel2.occupiedSpaceMB, storageViewModel2.maximumSpaceMB], () => coreViewModel2.translations.storage.usageVauleLabel(storageViewModel2.occupiedSpaceMB.value, storageViewModel2.maximumSpaceMB.value));
     const detailView = createProxyState(
       [storageViewModel2.selectedPath],
       () => {
         if (storageViewModel2.selectedPath.value == PATH_COMPONENT_SEPARATOR)
-          return /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.storage.noItemSelected), /* @__PURE__ */ createElement("hr", null), DangerousActionButton(
+          return /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.storage.noItemSelected), /* @__PURE__ */ createElement("hr", null), UsageBar(coreViewModel2.translations.storage.usageLabel, usageValueLabel, storageViewModel2.occupiedSpaceMB, storageViewModel2.maximumSpaceMB), /* @__PURE__ */ createElement("hr", null), DangerousActionButton(
             coreViewModel2,
             coreViewModel2.translations.storage.removeJunkButton,
             "delete_forever",

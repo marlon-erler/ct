@@ -1,338 +1,341 @@
 const englishTranslations = {
     updater: {
-        migrated: "Migrated",
+	migrated: "Migrated",
     },
 
     general: {
-        deleteItemButtonAudioLabel: "delete item",
-        searchButtonAudioLabel: "search",
-        searchButtonClearAudioLabel: "clear search query",
+	deleteItemButtonAudioLabel: "delete item",
+	searchButtonAudioLabel: "search",
+	searchButtonClearAudioLabel: "clear search query",
 
-        abortButton: "Abort",
-        applyButton: "Apply",
-        backButton: "Back",
-        cancelButton: "Cancel",
-        closeButton: "Close",
-        deleteButton: "Delete",
-        exitButton: "Exit",
-        fullscreenButton: "Fullscreen",
-
-        continueButton: "Continue",
-        confirmButton: "Confirm",
-        saveButton: "Save",
-        setButton: "Set",
+	abortButton: "Abort",
+	applyButton: "Apply",
+	backButton: "Back",
+	cancelButton: "Cancel",
+	confirmButton: "Confirm",
+	continueButton: "Continue",
+	closeButton: "Close",
+	deleteButton: "Delete",
+	exitButton: "Exit",
+	fullscreenButton: "Fullscreen",
+	refreshButton: "Refresh",
+	saveButton: "Save",
+	setButton: "Set",
 
 	filterOrCreateLabel: "Search or create",
 	createLabel: (query: string) => `Create "${query}"`,
 
-        reloadAppButton: "Reload App",
+	reloadAppButton: "Reload App",
 
-        fileVersionLabel: "Version",
-        searchLabel: "Search",
-        searchSuggestionsLabel: "Recent searches",
-        waitingLabel: "Waiting...",
+	fileVersionLabel: "Version",
+	searchLabel: "Search",
+	searchSuggestionsLabel: "Recent searches",
+	waitingLabel: "Waiting...",
 
-        restoreConnection: "Restore connection",
+	restoreConnection: "Restore connection",
 
-        noPageSelected: "No page selected",
+	noPageSelected: "No page selected",
     },
 
     regional: {
-        weekdays: {
-            full: [
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-            ],
-            abbreviated: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        },
+	weekdays: {
+	    full: [
+		"Sunday",
+		"Monday",
+		"Tuesday",
+		"Wednesday",
+		"Thursday",
+		"Friday",
+		"Saturday",
+	    ],
+	    abbreviated: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+	},
     },
 
     homePage: {
-        appName: "Comms",
+	appName: "Comms",
 
-        ///
+	///
 
-        overviewHeadline: "Overview",
+	overviewHeadline: "Overview",
 
-        serverAddress: "Server address",
-        serverAddressPlaceholder: "wss://192.168.0.69:3000",
-        connectAudioLabel: "connect to server",
-        disconnectAudioLabel: "disconnect from server",
-        manageConnectionsAudioLabel: "manage connections",
+	serverAddress: "Server address",
+	serverAddressPlaceholder: "wss://192.168.0.69:3000",
+	connectAudioLabel: "connect to server",
+	disconnectAudioLabel: "disconnect from server",
+	manageConnectionsAudioLabel: "manage connections",
 
-        yourNameLabel: "Your name",
-        yourNamePlaceholder: "Jane Doe",
-        setNameButtonAudioLabel: "set name",
+	yourNameLabel: "Your name",
+	yourNamePlaceholder: "Jane Doe",
+	setNameButtonAudioLabel: "set name",
 
-        settingsButton: "Settings",
-        manageStorageButton: "Manage storage",
-        transferDataButton: "Transfer or export data",
+	settingsButton: "Settings",
+	manageStorageButton: "Manage storage",
+	transferDataButton: "Transfer or export data",
 
 	updateButton: (version: string) => `Update to ${version}`,
 
-        scrollToChatButton: "Chats",
+	scrollToChatButton: "Chats",
 
-        ///
+	///
 
-        backToOverviewAudioLabel: "go back to overview",
-        chatsHeadline: "Chats",
+	backToOverviewAudioLabel: "go back to overview",
+	chatsHeadline: "Chats",
 
-        addChatAudioLabel: "name of new chat",
-        addChatPlaceholder: "Add chat",
-        addChatButton: "Add chat",
+	addChatAudioLabel: "name of new chat",
+	addChatPlaceholder: "Add chat",
+	addChatButton: "Add chat",
     },
 
     settings: {
-        pages: {
-            appearance: "Appearance",
-            regional: "Language & Region",
-            info: "About Comms",
-        },
-        themes: {
-            dynamic: "Dynamic",
-            dark: "Dark",
-            light: "Light",
-            system: "Device theme",
-        },
+	pages: {
+	    appearance: "Appearance",
+	    regional: "Language & Region",
+	    info: "About Comms",
+	},
+	themes: {
+	    dynamic: "Dynamic",
+	    dark: "Dark",
+	    light: "Light",
+	    system: "Device theme",
+	},
 
-        version: "Version",
-        language: "Language",
+	version: "Version",
+	language: "Language",
 
-        firstDayOfWeekLabel: "First day of week",
+	firstDayOfWeekLabel: "First day of week",
     },
 
     connectionModal: {
-        connectionModalHeadline: "Manage Connections",
+	connectionModalHeadline: "Manage Connections",
 
-        ///
+	///
 
-        connectButtonAudioLabel: "connect",
+	connectButtonAudioLabel: "connect",
     },
 
     dataTransferModal: {
-        transferDataHeadline: "Data Transfer",
-        sendHeadline: "Transfer to other device",
-        receiveHeadline: "Transfer to This Device",
-        exportHeadline: "Export Data",
-        importHeadline: "Import Data",
-        selectionDescription: "Select the data that you want to transfer.",
-        exportSelectionDescription: "Select the data that you want to export.",
-        dataEntryDescription: "Enter this data on the other device.",
-        dataEntryInputDescription:
-            "Enter the data displayed on the other device.",
+	transferDataHeadline: "Data Transfer",
+	sendHeadline: "Transfer to other device",
+	receiveHeadline: "Transfer to This Device",
+	exportHeadline: "Export Data",
+	importHeadline: "Import Data",
+	selectionDescription: "Select the data that you want to transfer.",
+	exportSelectionDescription: "Select the data that you want to export.",
+	dataEntryDescription: "Enter this data on the other device.",
+	dataEntryInputDescription:
+	"Enter the data displayed on the other device.",
 
-        ///
+	///
 
-        fromThisDeviceButton: "Send to other device",
-        toThisDeviceButton: "Send to this device",
-        exportButton: "Export to file",
-        importButton: "Import from file",
+	fromThisDeviceButton: "Send to other device",
+	toThisDeviceButton: "Send to this device",
+	exportButton: "Export to file",
+	importButton: "Import from file",
 
-        ///
+	///
 
-        generalHeadline: "General",
+	generalHeadline: "General",
 
-        connectionData: "Connection Data",
-        settingsData: "Settings Data",
+	connectionData: "Connection Data",
+	settingsData: "Settings Data",
 
-        chatsHeadline: "Chats",
+	chatsHeadline: "Chats",
 
-        ///
+	///
 
-        transferChannelHeadline: "Transfer Chanel",
-        transferKeyHeadline: "Transfer Encryption Key",
+	transferChannelHeadline: "Transfer Chanel",
+	transferKeyHeadline: "Transfer Encryption Key",
 
-        sendButton: "Send",
-        sendAgainButton: "Send again",
+	sendButton: "Send",
+	sendAgainButton: "Send again",
 
-        ///
+	///
 
-        filesSentCount: (count: number) => `Files sent: ${count}.`,
-        allFilesSent: "Done.",
+	filesSentCount: (count: number) => `Files sent: ${count}.`,
+	allFilesSent: "Done.",
 
-        filesReceivedCount: (count: number) => `Files processed: ${count}.`,
+	filesReceivedCount: (count: number) => `Files processed: ${count}.`,
 
-        //
+	//
 
-        exportKey: "Encryption key",
-        exportKeyConfirmation: "Confirm",
-        downloadFileButton: "Download",
-        importFileButton: "Import",
-        decryptImportButton: "Decrypt",
-        incorrectPassphraseError: "The encryption key is incorrect",
+	exportKey: "Encryption key",
+	exportKeyConfirmation: "Confirm",
+	downloadFileButton: "Download",
+	importFileButton: "Import",
+	decryptImportButton: "Decrypt",
+	incorrectPassphraseError: "The encryption key is incorrect",
     },
 
     storage: {
-        noItemSelected: "No item selected",
-        notAFile: "(not a file)",
-        contentEmpty: "(empty)",
+	noItemSelected: "No item selected",
+	notAFile: "(not a file)",
+	contentEmpty: "(empty)",
 
-        path: "Path",
-        content: "Content",
+	usageLabel: "Usage",
+	usageVauleLabel: (used: number, max: number) => `${used} of ${max} MB`,
 
-        deleteItem: "Delete item",
+	path: "Path",
+	content: "Content",
 
-        removeJunkButton: "Delete junk files",
+	deleteItem: "Delete item",
+
+	removeJunkButton: "Delete junk files",
     },
 
     chatPage: {
-        closeChatAudioLabe: "close chat",
-        chatSettingsAudioLabel: "chat settings",
+	closeChatAudioLabe: "close chat",
+	chatSettingsAudioLabel: "chat settings",
 
-        pages: {
-            settings: "Settings",
-            messages: "Messages",
-            tasks: "Tasks",
-            calendar: "Calendar",
-        },
+	pages: {
+	    settings: "Settings",
+	    messages: "Messages",
+	    tasks: "Tasks",
+	    calendar: "Calendar",
+	},
 
-        settings: {
-            settingsHeadline: "Settings",
+	settings: {
+	    settingsHeadline: "Settings",
 
-            primaryChannelLabel: "Primary channel",
-            setPrimaryChannelButtonAudioLabel: "set primary channel",
+	    primaryChannelLabel: "Primary channel",
+	    setPrimaryChannelButtonAudioLabel: "set primary channel",
 
-            namespaceLabel: "Namespace",
-            namespacePlaceholder: "No namespace",
-            setNamespaceButtonAudioLabel: "set namespace",
+	    namespaceLabel: "Namespace",
+	    namespacePlaceholder: "No namespace",
+	    setNamespaceButtonAudioLabel: "set namespace",
 
-            newSecondaryChannelPlaceholder: "Add secondary channel",
-            newSecondaryChannelAudioLabel: "name of new secondary channel",
-            addSecondaryChannelButtonAudioLabel: "add secondary channel",
+	    newSecondaryChannelPlaceholder: "Add secondary channel",
+	    newSecondaryChannelAudioLabel: "name of new secondary channel",
+	    addSecondaryChannelButtonAudioLabel: "add secondary channel",
 
-            encryptionKeyLabel: "Encryption key",
-            setEncryptionKeyButtonAudioLabel: "set encryption key",
-            showEncryptionKey: "Show encryption key",
+	    encryptionKeyLabel: "Encryption key",
+	    setEncryptionKeyButtonAudioLabel: "set encryption key",
+	    showEncryptionKey: "Show encryption key",
 
-            deleteChatButton: "Delete entire chat",
-        },
+	    deleteChatButton: "Delete entire chat",
+	},
 
-        message: {
-            messagesHeadline: "Messages",
+	message: {
+	    messagesHeadline: "Messages",
 
-            messageFilterHeadline: "Filter messages",
-            messageFilterReactionsHadline: "Reactions",
-            messageFilterAllReactionsButton: "Show all",
+	    messageFilterHeadline: "Filter messages",
+	    messageFilterReactionsHadline: "Reactions",
+	    messageFilterAllReactionsButton: "Show all",
 
-            ///
+	    ///
 
-            composerInputPlaceholder: "Type a message...",
-            sendMessageButtonAudioLabel: "send message",
-            filterMessagesButtonAudioLabel: "filter messages",
+	    composerInputPlaceholder: "Type a message...",
+	    sendMessageButtonAudioLabel: "send message",
+	    filterMessagesButtonAudioLabel: "filter messages",
 
-            ///
+	    ///
 
-            showMessageInfoButtonAudioLabel: "show message info",
-            messageInfoHeadline: "Message Info",
-            cancelReplyAudioLabel: "cancel reply",
+	    showMessageInfoButtonAudioLabel: "show message info",
+	    messageInfoHeadline: "Message Info",
+	    cancelReplyAudioLabel: "cancel reply",
 
-            sentBy: "Sent by",
-            timeSent: "Time sent",
-            channel: "Channel",
-            messageContent: "Message content",
+	    sentBy: "Sent by",
+	    timeSent: "Time sent",
+	    channel: "Channel",
+	    messageContent: "Message content",
 
-            copyMessageButton: "Copy message",
-            resendMessageButton: "Resend message",
-            decryptMessageButton: "Decrypt message",
-            replyToMessageButton: "Reply to message",
-            deleteMessageButton: "Delete message",
-
-            //
-
-            thumbsUpReaction: "Reaction: thumbs up",
-            checkReaction: "Reaction: check",
-            stopReaction: "Reaction: stop sign",
-            attentionReaction: "Reaction: exclamation mark",
-            doubleAttentionReaction: "Reaction: double exclamation mark",
-            questionReaction: "Reaction: question mark",
+	    copyMessageButton: "Copy message",
+	    resendMessageButton: "Resend message",
+	    decryptMessageButton: "Decrypt message",
+	    replyToMessageButton: "Reply to message",
+	    deleteMessageButton: "Delete message",
 
 	    //
-	    
+
+	    thumbsUpReaction: "Reaction: thumbs up",
+	    checkReaction: "Reaction: check",
+	    stopReaction: "Reaction: stop sign",
+	    attentionReaction: "Reaction: exclamation mark",
+	    doubleAttentionReaction: "Reaction: double exclamation mark",
+	    questionReaction: "Reaction: question mark",
+
+	    //
+
 	    replyPrefixLabel: "Replies: ",
 	    replyHeaderLabel: (message: string) => `Replies to "${message}"`,
-        },
+	},
 
-        task: {
-            noBoardSelected: "No board selected",
-            boardNotFound: "Board not found",
+	task: {
+	    noBoardSelected: "No board selected",
+	    boardNotFound: "Board not found",
 
-            ///
+	    ///
 
-            closeBoardButtonAudioLabel: "close board",
-            toggleBoardButtonAudioLabel: "toggle board list",
-            showBoardSettingsButtonAudioLabel: "show board settigns",
+	    closeBoardButtonAudioLabel: "close board",
+	    toggleBoardButtonAudioLabel: "toggle board list",
+	    showBoardSettingsButtonAudioLabel: "show board settigns",
 
-            listViewButtonAudioLabel: "list view",
-            kanbanViewButtonAudioLabel: "kanban view",
-            statusViewButtonAudioLabel: "status grid view",
+	    listViewButtonAudioLabel: "list view",
+	    kanbanViewButtonAudioLabel: "kanban view",
+	    statusViewButtonAudioLabel: "status grid view",
 
-            filterTasksButtonAudioLabel: "filter tasks",
-            createTaskButtonAudioLabel: "create new task",
+	    filterTasksButtonAudioLabel: "filter tasks",
+	    createTaskButtonAudioLabel: "create new task",
 
-            ///
+	    ///
 
-            boardSettingsHeadline: "Board Settings",
-            boardNameInputLabel: "Board name",
-            deleteBoardButton: "Delete board and all tasks",
+	    boardSettingsHeadline: "Board Settings",
+	    boardNameInputLabel: "Board name",
+	    deleteBoardButton: "Delete board and all tasks",
 
-            ///
+	    ///
 
-            taskSettingsHeadline: "Edit Task",
+	    taskSettingsHeadline: "Edit Task",
 
-            taskNameLabel: "Title",
-            taskBoardLabel: "Board",
+	    taskNameLabel: "Title",
+	    taskBoardLabel: "Board",
 
-            taskCategoryLabel: "Category",
-            taskStatusLabel: "Status",
-            taskPriorityLabel: "Priority",
+	    taskCategoryLabel: "Category",
+	    taskStatusLabel: "Status",
+	    taskPriorityLabel: "Priority",
 
-            taskDescriptionLabel: "Description",
+	    taskDescriptionLabel: "Description",
 
-            taskDateLabel: "Date",
-            taskTimeLabel: "Time",
+	    taskDateLabel: "Date",
+	    taskTimeLabel: "Time",
 
-            deleteTaskButton: "Delete task",
+	    deleteTaskButton: "Delete task",
 
-            ///
+	    ///
 
-            filterTasksHeadline: "Filter Tasks",
+	    filterTasksHeadline: "Filter Tasks",
 
-            ///
+	    ///
 
-            renameCategoryInputPlaceholder: "Rename category",
-            renameStatusInputPlaceholder: "Rename status",
-        },
+	    renameCategoryInputPlaceholder: "Rename category",
+	    renameStatusInputPlaceholder: "Rename status",
+	},
 
-        calendar: {
-            eventsBoard: "Events",
+	calendar: {
+	    eventsBoard: "Events",
 
-            ///
+	    ///
 
-            todayButtonAudioLabel: "go to today",
+	    todayButtonAudioLabel: "go to today",
 
-            previousMonthButtonAudioLabel: "previous month",
-            nextMonthButtonAudioLabel: "next month",
+	    previousMonthButtonAudioLabel: "previous month",
+	    nextMonthButtonAudioLabel: "next month",
 
-            yearInputAudioLabel: "year",
-            monthInputAudioLabel: "month",
+	    yearInputAudioLabel: "year",
+	    monthInputAudioLabel: "month",
 
-            yearInputPlaceholder: "2000",
-            monthInputPlaceholder: "01",
+	    yearInputPlaceholder: "2000",
+	    monthInputPlaceholder: "01",
 
-            ///
+	    ///
 
-            searchEventsHeadline: "Search Events",
+	    searchEventsHeadline: "Search Events",
 
-            ///
+	    ///
 
-            events: "Events",
-            noEvents: "No events",
-        },
+	    events: "Events",
+	    noEvents: "No events",
+	},
     },
 };
 
@@ -342,29 +345,29 @@ export const allTranslations: {
     en: englishTranslations,
 
     de: {
-        updater: {
-            migrated: "Migriert",
-        },
+	updater: {
+	    migrated: "Migriert",
+	},
 
-        general: {
-            deleteItemButtonAudioLabel: "element löschen",
-            searchButtonAudioLabel: "suchen",
-            searchButtonClearAudioLabel: "suche zurücksetzen",
+	general: {
+	    deleteItemButtonAudioLabel: "element löschen",
+	    searchButtonAudioLabel: "suchen",
+	    searchButtonClearAudioLabel: "suche zurücksetzen",
 
-            abortButton: "Abbrechen",
-            applyButton: "Anwenden",
-            backButton: "Zurück",
-            cancelButton: "Abbrechen",
-            closeButton: "Schließen",
-            deleteButton: "Löschen",
-            exitButton: "Schließen",
-            fullscreenButton: "Vollbild",
+	    abortButton: "Abbrechen",
+	    applyButton: "Anwenden",
+	    backButton: "Zurück",
+	    cancelButton: "Abbrechen",
+	    continueButton: "Weiter",
+	    confirmButton: "Bestätigen",
+	    closeButton: "Schließen",
+	    deleteButton: "Löschen",
+	    exitButton: "Schließen",
+	    fullscreenButton: "Vollbild",
+	    refreshButton: "Aktualisieren",
+	    saveButton: "Speichern",
+	    setButton: "OK",
 
-            continueButton: "Weiter",
-            confirmButton: "Bestätigen",
-            saveButton: "Speichern",
-            setButton: "OK",
-	
 	    filterOrCreateLabel: "Suchen oder erstellen",
 	    createLabel: (query: string) => `"${query}" erstellen`,
 
@@ -413,7 +416,7 @@ export const allTranslations: {
 	    settingsButton: "Einstellungen",
 	    manageStorageButton: "Daten verwalten",
 	    transferDataButton: "Daten übertragen",
-	
+
 	    updateButton: (version: string) => `Aktualisieren: ${version}`,
 
 	    scrollToChatButton: "Chats",
@@ -502,6 +505,9 @@ export const allTranslations: {
 	    notAFile: "(keine Datei)",
 	    contentEmpty: "(leer)",
 
+	    usageLabel: "Speicher",
+	    usageVauleLabel: (used: number, max: number) => `${used} von ${max} MB belegt`,
+
 	    path: "Pfad",
 	    content: "Inhalt",
 
@@ -578,7 +584,7 @@ export const allTranslations: {
 		attentionReaction: "Reaktion: Ausrufezeichen",
 		doubleAttentionReaction: "Reaktion: doppeltes Ausrufezeichen",
 		questionReaction: "Reaktion: Fragezeichen",
-	    
+
 		replyPrefixLabel: "Antworten: ",
 		replyHeaderLabel: (message: string) => `Antworten an "${message}"`,
 	    },
@@ -662,13 +668,13 @@ export const allTranslations: {
 	    applyButton: "Guardar",
 	    backButton: "Atrás",
 	    cancelButton: "Cancelar",
+	    continueButton: "Continuar",
+	    confirmButton: "Confirmar",
 	    closeButton: "Cerrar",
 	    deleteButton: "Borrar",
 	    exitButton: "Salir",
 	    fullscreenButton: "Pantalla completa",
-
-	    continueButton: "Continuar",
-	    confirmButton: "Confirmar",
+	    refreshButton: "Actualizar",
 	    saveButton: "Guardar",
 	    setButton: "OK",
 
@@ -720,7 +726,7 @@ export const allTranslations: {
 	    settingsButton: "Ajustes",
 	    manageStorageButton: "Gestionar almacenamiento",
 	    transferDataButton: "Enviar o exportar archivos",
-	    
+
 	    updateButton: (version: string) => `Actualizar a ${version}`,
 
 	    scrollToChatButton: "Chats",
@@ -807,6 +813,9 @@ export const allTranslations: {
 	    noItemSelected: "Ningún elemento seleccionado",
 	    notAFile: "(no es un archivo)",
 	    contentEmpty: "(vacío)",
+
+	    usageLabel: "Almacenamiento",
+	    usageVauleLabel: (used: number, max: number) => `${used} de ${max} MB en uso`,
 
 	    path: "Ruta",
 	    content: "Contenido",

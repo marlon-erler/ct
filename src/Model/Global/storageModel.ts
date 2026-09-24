@@ -1,6 +1,5 @@
-// cleanup: Phase A
 
-import { localeCompare, parseValidObject, stringify } from "../Utility/utility";
+import { bytesToMB, localeCompare, parseValidObject, stringify } from "../Utility/utility";
 import { DATA_VERSION, ValidObject } from "../Utility/typeSafety";
 
 export const PATH_COMPONENT_SEPARATOR = "\\";
@@ -144,13 +143,45 @@ export default class StorageModel {
         return object;
     };
 
-    // cleaning
+    // cleaning & usage
     readonly removeJunk = (): void => {
         this.recurse([], (path: string[]) => {
             if (path[0] == DATA_VERSION) return;
             this.remove(path);
         });
     };
+
+    readonly determineCapacity = (): number => {
+	const KEY = "storage-capacity-check";
+
+	let chunk = "0";
+	for (let i = 0; i < 1024*256; i++) {
+	    chunk += "0";
+	} 
+
+	localStorage.setItem(KEY, "");
+	while (true) {
+	    try {
+		const current = localStorage.getItem(KEY);
+		console.log(current);
+		localStorage.setItem(KEY, current + chunk);
+	    } catch (e) {
+		const capacity = this.calculateUsage();
+		localStorage.removeItem(KEY);
+		return capacity;
+	    }
+	}
+    }
+
+    readonly calculateUsage = (): number => {
+	let data = JSON.stringify(localStorage);
+	const encoder = new TextEncoder();
+	const encoded = encoder.encode(data);
+	const bytes = encoded.byteLength;
+	const mb = bytesToMB(bytes);
+	const rounded = Math.round(mb * 100)/100;
+	return rounded;
+    }
 
     // tree
     readonly initializeTree = (): void => {
