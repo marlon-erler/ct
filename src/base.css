@@ -97,3 +97,18 @@ body[theme="dark"] #background-wrapper #grass-2 {
     --color-1: hsl(110, 60%, 30%);
     --color-2: hsl(110, 50%, 24%);
 }
+
+/* Zoom */
+.zoom {
+    display: flex;
+    align-items: start;
+    gap: var(--large-gap);
+
+    width: auto;
+    height: auto;
+
+    transform-origin: center;
+
+    padding: var(--content-padding);
+}
+

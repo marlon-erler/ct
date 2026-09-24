@@ -25,19 +25,6 @@
     padding: var(--content-padding);
 }
 
-#chat-page > div > #main > #task-page .zoom {
-    display: flex;
-    align-items: start;
-    gap: var(--large-gap);
-
-    width: auto;
-    height: auto;
-
-    transform-origin: top left;
-
-    padding: var(--content-padding);
-}
-
 #board-content .main-content {
     overflow: auto;
 }
