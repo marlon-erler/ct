@@ -8,7 +8,7 @@
     },
     "scripts": {
         "build": "esbuild src/index.tsx --bundle --outdir=build",
-        "dist": "esbuild src/index.tsx --bundle --outdir=dist"
+        "dist": "bun run build; rm -rf dist; cp -r build dist"
     },
     "devDependencies": {
         "prettier-plugin-sort-imports": "^1.8.11"

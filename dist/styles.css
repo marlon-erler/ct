@@ -115,7 +115,7 @@ body[theme="dark"] {
 
 /* basic */
 body {
-    background: var(--background);
+    background: black;
     color: var(--text-normal);
 }
 
