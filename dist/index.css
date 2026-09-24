@@ -610,7 +610,7 @@ body[showing-chat] #chat-page-wrapper {
   --message-container-padding: var(--control-height);
   padding-bottom: calc(var(--message-container-padding) + var(--content-padding)) !important;
 }
-#chat-page #main #message-page .content:has(.reply-preview-wrapper .reply-preview) #message-container {
+#chat-page #main #message-page:not([reply-view]) .content:has(.reply-preview-wrapper .reply-preview) #message-container {
   --message-container-padding: calc( 2 * var(--control-height) + var(--gap-between-tiles) );
 }
 #message-page #message-container {
@@ -811,7 +811,7 @@ body[showing-chat] #chat-page-wrapper {
 .message-bubble > .message-reaction-row {
   padding: var(--gap-between-tiles);
 }
-#message-page[reply-view] :is(.reply-link, .inline-reply) {
+#message-page[reply-view] :is(.reply-link, .inline-reply, #composer .reply-preview-wrapper) {
   display: none;
 }
 .message-bubble > .message-reaction-row {

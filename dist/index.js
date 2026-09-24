@@ -1305,7 +1305,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.23.C";
+      this.BUILD = "Build 26.09.24.A";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1640,6 +1640,7 @@
         ...filePaths.chat.chatBase(id),
         "reactions"
       ],
+      previousFilter: (id) => [...filePaths.chat.chatBase(id), "previous-filter"],
       lastUsedPage: (id) => [
         ...filePaths.chat.chatBase(id),
         "last-used-page"
@@ -3750,6 +3751,9 @@
       this.getReactionPath = (id) => {
         return [...this.getReactionDirPath(), id];
       };
+      this.getPreviousFilterPath = () => {
+        return ["chat" /* Chat */, ...filePaths.chat.previousFilter(this.id)];
+      };
       // handlers
       this.handleMessage = (body) => {
         const chatMessage = parseValidObject(
@@ -3876,6 +3880,12 @@
       };
       this.storeColor = () => {
         this.storageModel.write(this.getColorPath(), this.color);
+      };
+      this.storeFilter = (filter) => {
+        this.storageModel.write(this.getPreviousFilterPath(), filter);
+      };
+      this.getFilter = () => {
+        return this.storageModel.read(this.getPreviousFilterPath());
       };
       this.delete = () => {
         this.chatListModel.untrackChat(this);
@@ -4026,6 +4036,15 @@
       };
     }
   };
+  var ReactionSymbols = /* @__PURE__ */ ((ReactionSymbols2) => {
+    ReactionSymbols2["ThumbsUp"] = "\u{1F44D}";
+    ReactionSymbols2["Check"] = "\u2705";
+    ReactionSymbols2["Stop"] = "\u{1F6D1}";
+    ReactionSymbols2["Attention"] = "\u2757\uFE0F";
+    ReactionSymbols2["DoubleAttention"] = "\u203C\uFE0F";
+    ReactionSymbols2["Question"] = "\u2753";
+    return ReactionSymbols2;
+  })(ReactionSymbols || {});
   var ChatInfoReference = {
     dataVersion: DATA_VERSION,
     primaryChannel: "",
@@ -4136,6 +4155,49 @@
       this.hideInfoModal = () => {
         this.isPresentingInfoModal.value = false;
       };
+      this.toggleHiding = () => {
+        let hideForReactions = false;
+        let hideForReplyView = false;
+        const reactionFilter = this.messagePageViewModel.reactionFilter.value;
+        if (reactionFilter == void 0) {
+          hideForReactions = false;
+        } else {
+          let count = 0;
+          switch (reactionFilter) {
+            case "\u{1F44D}" /* ThumbsUp */: {
+              count = this.reactionsThumbsUpCount.value;
+              break;
+            }
+            case "\u2705" /* Check */: {
+              count = this.reactionsCheckCount.value;
+              break;
+            }
+            case "\u{1F6D1}" /* Stop */: {
+              count = this.reactionsStopCount.value;
+              break;
+            }
+            case "\u2757\uFE0F" /* Attention */: {
+              count = this.reactionsAttentionCount.value;
+              break;
+            }
+            case "\u203C\uFE0F" /* DoubleAttention */: {
+              count = this.reactionsDoubleAttentionCount.value;
+              break;
+            }
+            case "\u2753" /* Question */: {
+              count = this.reactionsQuestionCount.value;
+              break;
+            }
+          }
+          hideForReactions = count == 0;
+        }
+        const selectedMessage = this.messagePageViewModel.replyViewSelectedMessage.value;
+        if (selectedMessage == void 0) hideForReplyView = false;
+        else if (selectedMessage.chatMessage.id == this.chatMessage.id) hideForReplyView = false;
+        else if (this.inlineReply != void 0 && selectedMessage.chatMessage.id == this.inlineReply.chatMessage.id) hideForReplyView = false;
+        else hideForReplyView = true;
+        this.isHidden.value = hideForReactions || hideForReplyView;
+      };
       // reactions
       this.handleReaction = (reaction) => {
         if (reaction.isDeleting) {
@@ -4171,55 +4233,8 @@
       this.chatMessage = chatMessage;
       this.sentByUser = sentByUser;
       this.loadData();
-      let hideForReactions = false;
-      let hideForReplyView = false;
-      const updateHiding = () => {
-        console.log(hideForReactions, hideForReplyView);
-        this.isHidden.value = hideForReactions || hideForReplyView;
-      };
-      this.messagePageViewModel.reactionFilter.subscribe((content) => {
-        if (content == void 0) {
-          hideForReactions = false;
-          updateHiding();
-          return;
-        }
-        let count = 0;
-        switch (content) {
-          case "\u{1F44D}" /* ThumbsUp */: {
-            count = this.reactionsThumbsUpCount.value;
-            break;
-          }
-          case "\u2705" /* Check */: {
-            count = this.reactionsCheckCount.value;
-            break;
-          }
-          case "\u{1F6D1}" /* Stop */: {
-            count = this.reactionsStopCount.value;
-            break;
-          }
-          case "\u2757\uFE0F" /* Attention */: {
-            count = this.reactionsAttentionCount.value;
-            break;
-          }
-          case "\u203C\uFE0F" /* DoubleAttention */: {
-            count = this.reactionsDoubleAttentionCount.value;
-            break;
-          }
-          case "\u2753" /* Question */: {
-            count = this.reactionsQuestionCount.value;
-            break;
-          }
-        }
-        hideForReactions = count == 0;
-        updateHiding();
-      });
-      this.messagePageViewModel.replyViewSelectedMessage.subscribe((selectedMessage) => {
-        if (selectedMessage == void 0) hideForReplyView = false;
-        else if (selectedMessage == this) hideForReplyView = false;
-        else if (selectedMessage == this.inlineReply) hideForReplyView = false;
-        else hideForReplyView = true;
-        updateHiding();
-      });
+      bulkSubscribe([this.messagePageViewModel.reactionFilter, this.messagePageViewModel.replyViewSelectedMessage, this.allReactions], this.toggleHiding);
+      this.toggleHiding();
     }
   };
 
@@ -4309,11 +4324,13 @@
       this.hideFilterModal = () => {
         this.isFilterModalOpen.value = false;
       };
-      this.revokeReactionFilter = () => {
+      this.revokeReactionFilter = (persist = true) => {
         this.reactionFilter.value = void 0;
+        if (persist) this.chatViewModel.chatModel.storeFilter("");
       };
       this.setReactionFilter = (content) => {
         this.reactionFilter.value = content;
+        this.chatViewModel.chatModel.storeFilter(content);
       };
       this.resetFilter = () => {
         this.revokeReactionFilter();
@@ -4321,12 +4338,13 @@
       };
       this.setReplyView = (message) => {
         this.replyViewSelectedMessage.value = message;
-        this.revokeReactionFilter();
+        this.revokeReactionFilter(false);
         this.setReply(message, false);
       };
       this.resetReplyView = () => {
         this.replyViewSelectedMessage.value = void 0;
         this.resetReply(false);
+        this.restoreFilter();
       };
       this.setFocus = () => {
         this.focusSetter.callSubscriptions();
@@ -4341,6 +4359,11 @@
           this.handleReaction(reaction);
         }
       };
+      this.restoreFilter = () => {
+        const previousFilter = this.chatViewModel.chatModel.getFilter();
+        if (Object.values(ReactionSymbols).includes(previousFilter)) this.setReactionFilter(previousFilter);
+      };
+      this.restoreFilter();
       this.cannotSendMessage = createProxyState(
         [
           this.chatViewModel.settingsViewModel.username,
@@ -6413,7 +6436,7 @@
   }
 
   // src/View/Components/chatMessage.tsx
-  function ChatMessage3(coreViewModel2, chatMessageViewModel) {
+  function ChatMessage4(coreViewModel2, chatMessageViewModel) {
     const statusIcon = createProxyState(
       [chatMessageViewModel.status],
       () => {
@@ -6500,7 +6523,7 @@
   function MessagePage(coreViewModel2, messagePageViewModel) {
     messagePageViewModel.loadData();
     const ChatMessageViewModelToView = (chatMessageViewModel) => {
-      return ChatMessage3(coreViewModel2, chatMessageViewModel);
+      return ChatMessage4(coreViewModel2, chatMessageViewModel);
     };
     const messageContainer = /* @__PURE__ */ createElement(
       "div",
@@ -6542,6 +6565,10 @@
     messagePageViewModel.filteredMessageViewModels.subscribeSilent(
       scrollDownIfApplicable
     );
+    messagePageViewModel.replyViewSelectedMessage.subscribeSilent((selectedMessage) => {
+      if (selectedMessage != void 0) return;
+      setTimeout(scrollDown, 100);
+    });
     setTimeout(() => scrollDown(true), 100);
     messagePageViewModel.focusSetter.subscribeSilent(() => {
       ViewController.setFocusWithDelay();
