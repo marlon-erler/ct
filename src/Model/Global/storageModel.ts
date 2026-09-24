@@ -254,6 +254,7 @@ export const filePaths = {
             ...filePaths.chat.chatBase(id),
             "reactions",
         ],
+	previousFilter: (id: string) => [...filePaths.chat.chatBase(id), "previous-filter"],
         lastUsedPage: (id: string) => [
             ...filePaths.chat.chatBase(id),
             "last-used-page",

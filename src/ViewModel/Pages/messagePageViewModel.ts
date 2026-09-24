@@ -127,10 +127,12 @@ export default class MessagePageViewModel extends Context {
 
     revokeReactionFilter = (): void => {
         this.reactionFilter.value = undefined;
+	this.chatViewModel.chatModel.storeFilter("");
     };
 
     setReactionFilter = (content: ReactionSymbols): void => {
         this.reactionFilter.value = content;
+	this.chatViewModel.chatModel.storeFilter(content);
     };
 
     resetFilter = (): void => {
@@ -195,6 +197,9 @@ export default class MessagePageViewModel extends Context {
                 this.searchViewModel.appliedQuery.value != "" ||
                 this.reactionFilter.value != undefined,
         );
+
+	const previousFilter = this.chatViewModel.chatModel.getFilter() as any;
+	if (Object.values(ReactionSymbols).includes(previousFilter)) this.setReactionFilter(previousFilter);
 
         // keystrokes
         this.registerKeyStroke(CommonKeys.Filter, this.showFilterModal);

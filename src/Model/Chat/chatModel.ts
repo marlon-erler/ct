@@ -95,6 +95,10 @@ export default class ChatModel {
         return [...this.getReactionDirPath(), id];
     };
 
+    readonly getPreviousFilterPath = (): string[] => {
+	return [StorageModelSubPaths.Chat, ...filePaths.chat.previousFilter(this.id)];
+    }
+
     // handlers
     readonly handleMessage = (body: string): void => {
         const chatMessage: ChatMessage | null = parseValidObject(
@@ -264,6 +268,14 @@ export default class ChatModel {
     readonly storeColor = (): void => {
         this.storageModel.write(this.getColorPath(), this.color);
     };
+
+    readonly storeFilter = (filter: string): void => {
+	this.storageModel.write(this.getPreviousFilterPath(), filter);
+    }
+    
+    readonly getFilter = (): string => {
+	return this.storageModel.read(this.getPreviousFilterPath());
+    }
 
     readonly delete = () => {
         // untrack
@@ -541,4 +553,4 @@ export const ChatMessageReactionReference: ChatMessageReaction = {
     content: "",
 
     isDeleting: false,
-};
+}
