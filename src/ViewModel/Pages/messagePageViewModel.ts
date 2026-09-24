@@ -125,9 +125,9 @@ export default class MessagePageViewModel extends Context {
         this.isFilterModalOpen.value = false;
     };
 
-    revokeReactionFilter = (): void => {
+    revokeReactionFilter = (persist: boolean = true): void => {
         this.reactionFilter.value = undefined;
-	this.chatViewModel.chatModel.storeFilter("");
+	if (persist) this.chatViewModel.chatModel.storeFilter("");
     };
 
     setReactionFilter = (content: ReactionSymbols): void => {
@@ -142,13 +142,14 @@ export default class MessagePageViewModel extends Context {
 
     setReplyView = (message: ChatMessageViewModel): void => {
 	this.replyViewSelectedMessage.value = message;
-	this.revokeReactionFilter();
+	this.revokeReactionFilter(false);
 	this.setReply(message, false);
     }
 
     resetReplyView = (): void => {
 	this.replyViewSelectedMessage.value = undefined;
 	this.resetReply(false);
+	this.restoreFilter();
     }
 
     setFocus = (): void => {
@@ -166,12 +167,18 @@ export default class MessagePageViewModel extends Context {
         }
     };
 
+    restoreFilter = (): void => {
+	const previousFilter = this.chatViewModel.chatModel.getFilter() as any;
+	if (Object.values(ReactionSymbols).includes(previousFilter)) this.setReactionFilter(previousFilter);
+    }
+
     // init
     constructor(
         public readonly coreViewModel: CoreViewModel,
         public readonly chatViewModel: ChatViewModel,
     ) {
         super("message-page");
+	this.restoreFilter();
 
         // states
         this.cannotSendMessage = React.createProxyState(
@@ -197,9 +204,6 @@ export default class MessagePageViewModel extends Context {
                 this.searchViewModel.appliedQuery.value != "" ||
                 this.reactionFilter.value != undefined,
         );
-
-	const previousFilter = this.chatViewModel.chatModel.getFilter() as any;
-	if (Object.values(ReactionSymbols).includes(previousFilter)) this.setReactionFilter(previousFilter);
 
         // keystrokes
         this.registerKeyStroke(CommonKeys.Filter, this.showFilterModal);
