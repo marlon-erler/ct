@@ -1156,17 +1156,14 @@
   function localeCompare(a, b) {
     return a.localeCompare(b);
   }
-  function implementPinchZoom(canvas) {
+  function implementPinchZoom(canvas, data) {
     let pinching = false;
     let dragging = false;
     let lastElement = void 0;
-    let initialDistance, currentZoom, initialZoom, currentX, currentY, initialX, initialY, initialTouchX, initialTouchY;
+    let initialDistance, initialZoom, initialX, initialY, initialTouchX, initialTouchY;
     function reset() {
       initialDistance = 0;
-      currentZoom = 1;
       initialZoom = 1;
-      currentX = 0;
-      currentY = 0;
       initialX = 0;
       initialY = 0;
       initialTouchX = 0;
@@ -1182,36 +1179,36 @@
     );
     const point = (e, direction, i) => e.touches[i][direction == "x" ? "clientX" : "clientY"];
     const midpoint = (e, direction) => (point(e, direction, 0) + point(e, direction, 1)) / 2;
-    function apply(factor, _offset) {
+    function apply(zoom, _offset) {
+      if (zoom < MIN) return apply(MIN, _offset);
+      if (zoom > MAX) return apply(5, _offset);
+      let { x, y } = data.value;
+      if (_offset) [x, y] = _offset;
+      data.value = {
+        zoom,
+        x,
+        y
+      };
+    }
+    data.subscribe((data2) => {
       const el = element();
       if (!el) return;
-      if (factor < MIN) return apply(MIN, _offset);
-      if (factor > MAX) return apply(5, _offset);
-      let x, y;
-      if (_offset) [x, y] = _offset;
-      else {
-        x = currentX;
-        y = currentY;
-      }
-      el.style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
-      currentX = x;
-      currentY = y;
-      currentZoom = factor;
-    }
+      el.style.transform = `scale(${data2.zoom.toString()}) translate(${data2.x}px, ${data2.y}px)`;
+    });
     canvas.addEventListener("wheel", (event) => {
       event.preventDefault();
-      initialZoom = currentZoom;
-      initialX = currentX;
-      initialY = currentY;
-      apply(currentZoom - event.deltaY * 5e-3);
+      initialZoom = data.value.zoom;
+      initialX = data.value.x;
+      initialY = data.value.y;
+      apply(data.value.zoom - event.deltaY * 5e-3);
     });
     canvas.addEventListener("scroll", (event) => {
       event.preventDefault();
     });
     canvas.addEventListener("mousedown", (event) => {
-      initialZoom = currentZoom;
-      initialX = currentX;
-      initialY = currentY;
+      initialZoom = data.value.zoom;
+      initialX = data.value.x;
+      initialY = data.value.y;
       initialTouchX = event.clientX;
       initialTouchY = event.clientY;
       dragging = true;
@@ -1221,7 +1218,7 @@
     });
     canvas.addEventListener("mousemove", (event) => {
       if (!dragging) return;
-      apply(currentZoom, [
+      apply(data.value.zoom, [
         initialX + (event.clientX - initialTouchX) / initialZoom,
         initialY + (event.clientY - initialTouchY) / initialZoom
       ]);
@@ -1232,9 +1229,9 @@
       if (!el) return;
       if (lastElement != void 0 && lastElement != el) reset();
       lastElement = el;
-      initialZoom = currentZoom;
-      initialX = currentX;
-      initialY = currentY;
+      initialZoom = data.value.zoom;
+      initialX = data.value.x;
+      initialY = data.value.y;
       if (event.touches.length != 2) {
         pinching = false;
         initialTouchX = event.touches[0].clientX;
@@ -1248,7 +1245,7 @@
     });
     canvas.addEventListener("touchmove", (event) => {
       if (!pinching) {
-        apply(currentZoom, [
+        apply(data.value.zoom, [
           initialX + (event.touches[0].clientX - initialTouchX) / initialZoom,
           initialY + (event.touches[0].clientY - initialTouchY) / initialZoom
         ]);
@@ -1317,7 +1314,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.24.C";
+      this.BUILD = "Build 26.09.24.D";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -3153,6 +3150,7 @@
       this.isPresentingFilterModal = new State(false);
       this.searchSuggestions = new ListState();
       this.filteredTaskViewModels = new ListState();
+      this.pinchToZoomData = new State({ zoom: 1, x: 0, y: 0 });
       // paths
       this.getBasePath = () => {
         return [
@@ -5879,7 +5877,7 @@
       })
     );
     const wrapper = /* @__PURE__ */ createElement("div", { class: "content main-content", "children:set": pages });
-    implementPinchZoom(wrapper);
+    implementPinchZoom(wrapper, boardViewModel.pinchToZoomData);
     const taskSettingsModal = createProxyState(
       [boardViewModel.selectedTaskViewModel],
       () => {
