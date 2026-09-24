@@ -46,7 +46,7 @@ export function BoardPage(
     );
 
     const wrapper = (
-        <div class="content main-content" children:set={pages}></div>
+        <div class="content main-content allow-drag-move" children:set={pages}></div>
     );
     Utility.implementPinchZoom(wrapper, boardViewModel.pinchToZoomData);
 

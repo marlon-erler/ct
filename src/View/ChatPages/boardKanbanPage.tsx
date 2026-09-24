@@ -42,7 +42,7 @@ export function BoardKanbanPage(
 
             return (
                 <div
-                    class="kanban-board-wrapper zoom"
+                    class="kanban-board-wrapper zoom allow-drag-move"
                     children:append={[categories, categoryNameConverter]}
                 ></div>
             );

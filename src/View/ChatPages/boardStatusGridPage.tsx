@@ -183,7 +183,7 @@ function CategoryRow(
 
             const view = (
                 <div class="flex-row flex-no large-gap">
-                    <div class="property-input-wrapper">
+                    <div class="property-input-wrapper allow-drag-move">
                         <input
                             placeholder={
                                 coreViewModel.translations.chatPage.task
