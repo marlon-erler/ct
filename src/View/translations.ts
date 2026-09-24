@@ -252,7 +252,7 @@ const englishTranslations = {
 	    //
 	    
 	    replyPrefixLabel: "Replies: ",
-	    replyHeaderLabel: (sender: string) => `Replies to ${sender}`,
+	    replyHeaderLabel: (message: string) => `Replies to "${message}"`,
         },
 
         task: {
@@ -576,7 +576,7 @@ export const allTranslations: {
 		questionReaction: "Reaktion: Fragezeichen",
 	    
 		replyPrefixLabel: "Antworten: ",
-		replyHeaderLabel: (sender: string) => `Antworten an ${sender}`,
+		replyHeaderLabel: (message: string) => `Antworten an "${message}"`,
 	    },
 
 	    task: {
@@ -881,7 +881,7 @@ export const allTranslations: {
 		questionReaction: "Reaccion: signo de interrogación",
 
 		replyPrefixLabel: "Respuestas: ",
-		replyHeaderLabel: (sender: string) => `Respuestas a ${sender}`,
+		replyHeaderLabel: (message: string) => `Respuestas a "${message}"`,
 	    },
 
 	    task: {
