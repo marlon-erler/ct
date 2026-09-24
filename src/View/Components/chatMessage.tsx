@@ -69,7 +69,8 @@ export function ChatMessage(
                         aria-label={
                             coreViewModel.translations.chatPage.message
                                 .replyToMessageButton
-                        }
+			    }
+			    toggle:hidden={chatMessageViewModel.messagePageViewModel.isReplyViewActive}
                     >
                         <span class="icon">reply</span>
                     </button>

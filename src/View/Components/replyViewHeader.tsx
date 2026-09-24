@@ -3,7 +3,7 @@ import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";
 
 export function ReplyViewHeader(coreViewModel: CoreViewModel, messagePageViewModel: MessagePageViewModel) {
-    const isHidden = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value == undefined);
+    const isHidden = React.createProxyState([messagePageViewModel.isReplyViewActive], ()=>!messagePageViewModel.isReplyViewActive.value);
 
     const label = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value == undefined ? "" : coreViewModel.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.sender));
     const message = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value == undefined ? "" : messagePageViewModel.replyViewSelectedMessage.value.body.value);
