@@ -377,7 +377,8 @@
       },
       version: "Version",
       language: "Language",
-      firstDayOfWeekLabel: "First day of week"
+      firstDayOfWeekLabel: "First day of week",
+      checkUpdatesButton: "Check for updates"
     },
     connectionModal: {
       connectionModalHeadline: "Manage Connections",
@@ -623,7 +624,8 @@
         },
         version: "Version",
         language: "Sprache",
-        firstDayOfWeekLabel: "Erster Wochentag"
+        firstDayOfWeekLabel: "Erster Wochentag",
+        checkUpdatesButton: "Nach updates suchen"
       },
       connectionModal: {
         connectionModalHeadline: "Verbindungen verwalten",
@@ -851,7 +853,8 @@
         },
         version: "Versi\xF3n",
         language: "Idioma",
-        firstDayOfWeekLabel: "Primer d\xEDa de la semana"
+        firstDayOfWeekLabel: "Primer d\xEDa de la semana",
+        checkUpdatesButton: "Buscar actualizaciones"
       },
       connectionModal: {
         connectionModalHeadline: "Gestionar Conexiones",
@@ -1221,6 +1224,9 @@
       event.preventDefault();
     });
     canvas.addEventListener("mousedown", (event) => {
+      const target = event.target;
+      if (!target || !target.classList.contains("allow-drag-move")) return;
+      event.preventDefault();
       initialZoom = data.value.zoom;
       initialX = data.value.x;
       initialY = data.value.y;
@@ -1233,6 +1239,7 @@
     });
     canvas.addEventListener("mousemove", (event) => {
       if (!dragging) return;
+      event.preventDefault();
       apply(data.value.zoom, [
         initialX + (event.clientX - initialTouchX) / initialZoom,
         initialY + (event.clientY - initialTouchY) / initialZoom
@@ -1335,6 +1342,7 @@
       this.noUpdateAvailable = createProxyState([this.latestVersion], () => {
         return this.latestVersion.value == "" || this.latestVersion.value == this.version.value;
       });
+      this.updateText = new State("");
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1393,12 +1401,13 @@
             console.error(`Could not install service worker: ${error}`);
           }
         }
+      };
+      this.checkUpdates = () => {
         fetch("/version").then(async (response) => {
           this.version.value = await response.text();
         });
         fetch("/latestVersion").then(async (response) => {
           this.latestVersion.value = (await response.text()).replace("\n", "");
-          console.log("LATEST", this.latestVersion.value);
         });
       };
       this.update = async () => {
@@ -1407,12 +1416,16 @@
         window.location.reload();
       };
       this.translations = allTranslations[settingsModel2.language] || allTranslations.en;
+      this.latestVersion.subscribe((latestVersion) => {
+        this.updateText.value = this.translations.homePage.updateButton(latestVersion);
+      });
       document.body.addEventListener("keydown", this.handleKeyDown);
       window.onpopstate = () => {
         if (!this.context) return;
         this.closeContext(this.context.contextId, true);
       };
       this.configureServiceWorker();
+      this.checkUpdates();
       this.noUpdateAvailable.subscribe(() => {
         console.log(this.noUpdateAvailable.value, this.latestVersion.value, this.version.value);
       });
@@ -5045,7 +5058,6 @@
 
   // src/View/homePage.tsx
   function HomePage(coreViewModel2, storageViewModel2, settingsViewModel2, connectionViewModel2, fileTransferViewModel2, chatListViewModel2) {
-    const updateText = createProxyState([coreViewModel2.latestVersion], () => coreViewModel2.translations.homePage.updateButton(coreViewModel2.latestVersion.value));
     const overviewSection = /* @__PURE__ */ createElement("div", { id: "overview-section" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.overviewHeadline), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
       "input",
       {
@@ -5130,7 +5142,7 @@
       /* @__PURE__ */ createElement(
         "span",
         {
-          "subscribe:innerText": updateText
+          "subscribe:innerText": coreViewModel2.updateText
         }
       ),
       /* @__PURE__ */ createElement("span", { class: "icon" }, "update")
@@ -5473,7 +5485,7 @@
           taskViewModels,
           categoryName
         );
-        const view = /* @__PURE__ */ createElement("div", { class: "flex-row flex-no large-gap" }, /* @__PURE__ */ createElement("div", { class: "property-input-wrapper" }, /* @__PURE__ */ createElement(
+        const view = /* @__PURE__ */ createElement("div", { class: "flex-row flex-no large-gap" }, /* @__PURE__ */ createElement("div", { class: "property-input-wrapper allow-drag-move" }, /* @__PURE__ */ createElement(
           "input",
           {
             placeholder: coreViewModel2.translations.chatPage.task.renameCategoryInputPlaceholder,
@@ -5552,7 +5564,7 @@
         return /* @__PURE__ */ createElement(
           "div",
           {
-            class: "kanban-board-wrapper zoom",
+            class: "kanban-board-wrapper zoom allow-drag-move",
             "children:append": [categories, categoryNameConverter]
           }
         );
@@ -5981,7 +5993,7 @@
         }
       })
     );
-    const wrapper = /* @__PURE__ */ createElement("div", { class: "content main-content", "children:set": pages });
+    const wrapper = /* @__PURE__ */ createElement("div", { class: "content main-content allow-drag-move", "children:set": pages });
     implementPinchZoom(wrapper, boardViewModel.pinchToZoomData);
     const taskSettingsModal = createProxyState(
       [boardViewModel.selectedTaskViewModel],
@@ -7361,6 +7373,27 @@
       "build",
       coreViewModel2.translations.settings.version,
       settingsViewModel2.coreViewModel.version
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "primary",
+        "on:click": coreViewModel2.update,
+        "toggle:hidden": coreViewModel2.noUpdateAvailable
+      },
+      /* @__PURE__ */ createElement(
+        "span",
+        {
+          "subscribe:innerText": coreViewModel2.updateText
+        }
+      ),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "update")
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard",
+        "on:click": coreViewModel2.checkUpdates
+      },
+      coreViewModel2.translations.settings.checkUpdatesButton
     )));
   }
   function SettingsRegionalPane(coreViewModel2, settingsViewModel2) {

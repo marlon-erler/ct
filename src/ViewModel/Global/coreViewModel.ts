@@ -16,6 +16,7 @@ export default class CoreViewModel {
     noUpdateAvailable: React.State<boolean> = React.createProxyState([this.latestVersion], () => {
 	return (this.latestVersion.value == "" || this.latestVersion.value == this.version.value) 
     })
+    updateText: React.State<string> = new React.State("");
 
     translations: Translations;
 
@@ -107,13 +108,14 @@ export default class CoreViewModel {
 		console.error(`Could not install service worker: ${error}`);
 	    }
 	}
-	
+    }
+
+    checkUpdates = (): void => {
 	fetch("/version").then(async response => {
 	    this.version.value = await response.text();
 	});
 	fetch("/latestVersion").then(async response => {
 	    this.latestVersion.value = (await response.text()).replace("\n", "");
-	    console.log("LATEST", this.latestVersion.value);
 	})
     }
 
@@ -134,6 +136,10 @@ export default class CoreViewModel {
 	this.translations =
 	    allTranslations[settingsModel.language] || allTranslations.en;
 
+	this.latestVersion.subscribe(latestVersion => {
+	    this.updateText.value = this.translations.homePage.updateButton(latestVersion);
+	});
+
 	document.body.addEventListener("keydown", this.handleKeyDown);
 
 	window.onpopstate = () => {
@@ -142,6 +148,7 @@ export default class CoreViewModel {
 	};
 
 	this.configureServiceWorker();
+	this.checkUpdates();
 	this.noUpdateAvailable.subscribe(() => {
 	    console.log(this.noUpdateAvailable.value, this.latestVersion.value, this.version.value);
 	})

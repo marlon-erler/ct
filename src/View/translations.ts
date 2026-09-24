@@ -104,6 +104,8 @@ const englishTranslations = {
 	language: "Language",
 
 	firstDayOfWeekLabel: "First day of week",
+
+	checkUpdatesButton: "Check for updates",
     },
 
     connectionModal: {
@@ -446,6 +448,8 @@ export const allTranslations: {
 	    language: "Sprache",
 
 	    firstDayOfWeekLabel: "Erster Wochentag",
+
+	    checkUpdatesButton: "Nach updates suchen",
 	},
 
 	connectionModal: {
@@ -756,6 +760,8 @@ export const allTranslations: {
 	    language: "Idioma",
 
 	    firstDayOfWeekLabel: "Primer día de la semana",
+
+	    checkUpdatesButton: "Buscar actualizaciones",
 	},
 	connectionModal: {
 	    connectionModalHeadline: "Gestionar Conexiones",

@@ -19,8 +19,6 @@ export function HomePage(
     chatListViewModel: ChatListViewModel,
 ) {
     // sections
-    const updateText = React.createProxyState([coreViewModel.latestVersion], ()=>coreViewModel.translations.homePage.updateButton(coreViewModel.latestVersion.value));
-
     const overviewSection = (
 	<div id="overview-section">
 	    <h2>{coreViewModel.translations.homePage.overviewHeadline}</h2>
@@ -144,7 +142,7 @@ export function HomePage(
 	    toggle:hidden={coreViewModel.noUpdateAvailable}
 	>
 	    <span
-		subscribe:innerText={updateText}
+		subscribe:innerText={coreViewModel.updateText}
 	    ></span>
 	    <span class="icon">update</span>
 	</button>

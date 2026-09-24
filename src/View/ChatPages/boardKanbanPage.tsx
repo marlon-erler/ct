@@ -10,7 +10,6 @@ import { TaskCategoryBulkChangeViewModel } from "../../ViewModel/Utility/taskPro
 import TaskViewModel from "../../ViewModel/Pages/taskViewModel";
 import BoardViewModel from "../../ViewModel/Pages/boardViewModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
-import * as Utility from "../../Model/Utility/utility";
 
 export function BoardKanbanPage(
     coreViewModel: CoreViewModel,
