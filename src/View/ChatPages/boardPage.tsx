@@ -48,7 +48,7 @@ export function BoardPage(
     const wrapper = (
         <div class="content main-content" children:set={pages}></div>
     );
-    Utility.implementPinchZoom(wrapper);
+    Utility.implementPinchZoom(wrapper, boardViewModel.pinchToZoomData);
 
     // task modal
     const taskSettingsModal = React.createProxyState(

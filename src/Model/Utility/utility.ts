@@ -227,16 +227,18 @@ export function localeCompare(a: string, b: string): number {
 }
 
 // ui
-export function implementPinchZoom(canvas: HTMLElement) {
+export interface PinchToZoomData {
+    zoom: number;
+    x: number;
+    y: number;
+}
+export function implementPinchZoom(canvas: HTMLElement, data: React.State<PinchToZoomData>) {
     let pinching = false;
     let dragging = false;
     let lastElement: HTMLElement | undefined = undefined;
 
     let initialDistance: number,
-	currentZoom: number,
 	initialZoom: number,
-	currentX: number,
-	currentY: number,
 	initialX: number,
 	initialY: number,
 	initialTouchX: number,
@@ -245,11 +247,8 @@ export function implementPinchZoom(canvas: HTMLElement) {
     function reset() {
 	initialDistance = 0;
 
-	currentZoom = 1;
 	initialZoom = 1;
 
-	currentX = 0;
-	currentY = 0;
 	initialX = 0;
 	initialY = 0;
 	initialTouchX = 0;
@@ -272,41 +271,41 @@ export function implementPinchZoom(canvas: HTMLElement) {
     const midpoint = (e: TouchEvent, direction: "x" | "y") =>
 	(point(e, direction, 0) + point(e, direction, 1)) / 2;
 
-    function apply(factor: number, _offset?: [number, number]) {
+    function apply(zoom: number, _offset?: [number, number]) {
+	if (zoom < MIN) return apply(MIN, _offset);
+	if (zoom > MAX) return apply(5, _offset);
+
+	let {x, y} = data.value;
+	if (_offset) [x, y] = _offset;
+
+	data.value = {
+	    zoom, x, y
+	}
+    }
+
+    data.subscribe((data) => {
 	const el = element();
 	if (!el) return;
-	if (factor < MIN) return apply(MIN, _offset);
-	if (factor > MAX) return apply(5, _offset);
-
-	let x: number, y: number;
-	if (_offset) [x, y] = _offset;
-	else {
-	    x = currentX;
-	    y = currentY;
-	}
-	el.style.transform = `scale(${factor.toString()}) translate(${x}px, ${y}px)`;
-	currentX = x;
-	currentY = y;
-	currentZoom = factor;
-    }
+	el.style.transform = `scale(${data.zoom.toString()}) translate(${data.x}px, ${data.y}px)`;
+    })
 
     canvas.addEventListener("wheel", (event: WheelEvent) => {
 	event.preventDefault();
 
-	initialZoom = currentZoom;
-	initialX = currentX;
-	initialY = currentY;
+	initialZoom = data.value.zoom;
+	initialX = data.value.x;
+	initialY = data.value.y;
 
-	apply(currentZoom - event.deltaY * 0.005);
+	apply(data.value.zoom - event.deltaY * 0.005);
     });
     canvas.addEventListener("scroll", (event: Event) => {
 	event.preventDefault();
     });
 
     canvas.addEventListener("mousedown", (event: MouseEvent) => {
-	initialZoom = currentZoom;
-	initialX = currentX;
-	initialY = currentY;
+	initialZoom = data.value.zoom;
+	initialX = data.value.x;
+	initialY = data.value.y;
 	initialTouchX = event.clientX;
 	initialTouchY = event.clientY;
 	dragging = true;
@@ -316,7 +315,7 @@ export function implementPinchZoom(canvas: HTMLElement) {
     })
     canvas.addEventListener("mousemove", (event: MouseEvent) => {
 	if (!dragging) return;
-	apply(currentZoom, [
+	apply(data.value.zoom, [
 	    initialX +
 	    (event.clientX - initialTouchX) / initialZoom,
 	    initialY +
@@ -332,9 +331,9 @@ export function implementPinchZoom(canvas: HTMLElement) {
 	if (lastElement != undefined && lastElement != el) reset();
 	lastElement = el;
 
-	initialZoom = currentZoom;
-	initialX = currentX;
-	initialY = currentY;
+	initialZoom = data.value.zoom;
+	initialX = data.value.x;
+	initialY = data.value.y;
 
 	if (event.touches.length != 2) {
 	    pinching = false;
@@ -350,7 +349,7 @@ export function implementPinchZoom(canvas: HTMLElement) {
     });
     canvas.addEventListener("touchmove", (event: TouchEvent) => {
 	if (!pinching) {
-	    apply(currentZoom, [
+	    apply(data.value.zoom, [
 		initialX +
 		(event.touches[0].clientX - initialTouchX) / initialZoom,
 		initialY +
