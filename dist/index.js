@@ -353,6 +353,7 @@
       settingsButton: "Settings",
       manageStorageButton: "Manage storage",
       transferDataButton: "Transfer or export data",
+      updateButton: (version) => `Update to ${version}`,
       scrollToChatButton: "Chats",
       ///
       backToOverviewAudioLabel: "go back to overview",
@@ -596,6 +597,7 @@
         settingsButton: "Einstellungen",
         manageStorageButton: "Daten verwalten",
         transferDataButton: "Daten \xFCbertragen",
+        updateButton: (version) => `Aktualisieren: ${version}`,
         scrollToChatButton: "Chats",
         backToOverviewAudioLabel: "zur\xFCck zur \xFCbersicht",
         chatsHeadline: "Chats",
@@ -820,6 +822,7 @@
         settingsButton: "Ajustes",
         manageStorageButton: "Gestionar almacenamiento",
         transferDataButton: "Enviar o exportar archivos",
+        updateButton: (version) => `Actualizar a ${version}`,
         scrollToChatButton: "Chats",
         backToOverviewAudioLabel: "volver al resumen",
         chatsHeadline: "Chats",
@@ -1314,7 +1317,12 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.24.D";
+      this.swRegistration = void 0;
+      this.version = new State("");
+      this.latestVersion = new State("");
+      this.noUpdateAvailable = createProxyState([this.latestVersion], () => {
+        return this.latestVersion.value == "" || this.latestVersion.value == this.version.value;
+      });
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -1356,12 +1364,46 @@
       };
       // DRAG & DROP
       this.draggedObject = new State(void 0);
+      // OFFLINE MODE & UPDATE
+      this.configureServiceWorker = async () => {
+        if ("serviceWorker" in navigator) {
+          try {
+            this.swRegistration = await navigator.serviceWorker.register(
+              "sw.js",
+              {
+                scope: "/"
+              }
+            );
+            if (this.swRegistration.active) {
+              console.log("Service worker active");
+            }
+          } catch (error) {
+            console.error(`Could not install service worker: ${error}`);
+          }
+        }
+        fetch("/version").then(async (response) => {
+          this.version.value = await response.text();
+        });
+        fetch("/latestVersion").then(async (response) => {
+          this.latestVersion.value = (await response.text()).replace("\n", "");
+          console.log("LATEST", this.latestVersion.value);
+        });
+      };
+      this.update = async () => {
+        if (!this.swRegistration) return;
+        await this.swRegistration.update();
+        window.location.reload();
+      };
       this.translations = allTranslations[settingsModel2.language] || allTranslations.en;
       document.body.addEventListener("keydown", this.handleKeyDown);
       window.onpopstate = () => {
         if (!this.context) return;
         this.closeContext(this.context.contextId, true);
       };
+      this.configureServiceWorker();
+      this.noUpdateAvailable.subscribe(() => {
+        console.log(this.noUpdateAvailable.value, this.latestVersion.value, this.version.value);
+      });
       this.startChron();
       this.chronHandlerManager.setHandler(
         "core-view-model",
@@ -4955,6 +4997,7 @@
 
   // src/View/homePage.tsx
   function HomePage(coreViewModel2, storageViewModel2, settingsViewModel2, connectionViewModel2, fileTransferViewModel2, chatListViewModel2) {
+    const updateText = createProxyState([coreViewModel2.latestVersion], () => coreViewModel2.translations.homePage.updateButton(coreViewModel2.latestVersion.value));
     const overviewSection = /* @__PURE__ */ createElement("div", { id: "overview-section" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.overviewHeadline), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
       "input",
       {
@@ -5029,6 +5072,20 @@
       storageViewModel2.showStorageModal,
       coreViewModel2.translations.homePage.manageStorageButton,
       "hard_drive"
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "primary",
+        "on:click": coreViewModel2.update,
+        "toggle:hidden": coreViewModel2.noUpdateAvailable
+      },
+      /* @__PURE__ */ createElement(
+        "span",
+        {
+          "subscribe:innerText": updateText
+        }
+      ),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "update")
     ), /* @__PURE__ */ createElement("div", { class: "mobile-only" }, /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement("button", { class: "ghost width-50", "on:click": scrollToChat }, coreViewModel2.translations.homePage.scrollToChatButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")))));
     const chatSection = /* @__PURE__ */ createElement("div", { id: "chat-section" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.chatsHeadline), /* @__PURE__ */ createElement("div", { class: "flex-row width-input" }, /* @__PURE__ */ createElement(
       "input",
@@ -7221,7 +7278,7 @@
     return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.appName), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, InfoTile(
       "build",
       coreViewModel2.translations.settings.version,
-      settingsViewModel2.coreViewModel.BUILD
+      settingsViewModel2.coreViewModel.version
     )));
   }
   function SettingsRegionalPane(coreViewModel2, settingsViewModel2) {

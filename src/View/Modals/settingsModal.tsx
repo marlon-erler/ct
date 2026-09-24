@@ -122,7 +122,7 @@ function SettingsInfoPane(
                 {InfoTile(
                     "build",
                     coreViewModel.translations.settings.version,
-                    settingsViewModel.coreViewModel.BUILD,
+                    settingsViewModel.coreViewModel.version,
                 )}
             </div>
         </div>

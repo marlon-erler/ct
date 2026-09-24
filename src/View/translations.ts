@@ -73,6 +73,8 @@ const englishTranslations = {
         manageStorageButton: "Manage storage",
         transferDataButton: "Transfer or export data",
 
+	updateButton: (version: string) => `Update to ${version}`,
+
         scrollToChatButton: "Chats",
 
         ///
@@ -411,6 +413,8 @@ export const allTranslations: {
 	    settingsButton: "Einstellungen",
 	    manageStorageButton: "Daten verwalten",
 	    transferDataButton: "Daten übertragen",
+	
+	    updateButton: (version: string) => `Aktualisieren: ${version}`,
 
 	    scrollToChatButton: "Chats",
 
@@ -716,6 +720,8 @@ export const allTranslations: {
 	    settingsButton: "Ajustes",
 	    manageStorageButton: "Gestionar almacenamiento",
 	    transferDataButton: "Enviar o exportar archivos",
+	    
+	    updateButton: (version: string) => `Actualizar a ${version}`,
 
 	    scrollToChatButton: "Chats",
 
