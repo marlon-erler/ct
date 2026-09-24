@@ -361,8 +361,14 @@ export function implementPinchZoom(canvas: HTMLElement) {
 	if (event.touches.length < 2) return;
 	event.preventDefault();
 	const currentDistance = distance(event);
+	const midX = midpoint(event, "x");
+	const midY = midpoint(event, "y");
 	const ratio = currentDistance / initialDistance;
-	apply(initialZoom * ratio);
+	const difference = currentDistance - initialDistance;
+	apply(initialZoom * ratio, [
+	    initialX + (midX - difference - initialTouchX) / initialZoom / 2,
+	    initialY + (midY - difference - initialTouchY) / initialZoom / 2,
+	]);
     });
 }
 
