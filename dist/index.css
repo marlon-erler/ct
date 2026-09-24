@@ -600,6 +600,9 @@ body[showing-chat] #chat-page-wrapper {
 }
 
 /* src/View/ChatPages/messagePage.css */
+#chat-page #main #message-page[reply-view] .toolbar .title {
+  padding-left: 0px;
+}
 #chat-page #main #message-page .content {
   padding: 0px;
   overflow: hidden;

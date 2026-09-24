@@ -483,7 +483,7 @@
         questionReaction: "Reaction: question mark",
         //
         replyPrefixLabel: "Replies: ",
-        replyHeaderLabel: (sender) => `Replies to ${sender}`
+        replyHeaderLabel: (message) => `Replies to "${message}"`
       },
       task: {
         noBoardSelected: "No board selected",
@@ -716,7 +716,7 @@
           doubleAttentionReaction: "Reaktion: doppeltes Ausrufezeichen",
           questionReaction: "Reaktion: Fragezeichen",
           replyPrefixLabel: "Antworten: ",
-          replyHeaderLabel: (sender) => `Antworten an ${sender}`
+          replyHeaderLabel: (message) => `Antworten an "${message}"`
         },
         task: {
           noBoardSelected: "Kein Board ausgew\xE4hlt",
@@ -940,7 +940,7 @@
           doubleAttentionReaction: "Reaccion: signo de atenci\xF3n doble",
           questionReaction: "Reaccion: signo de interrogaci\xF3n",
           replyPrefixLabel: "Respuestas: ",
-          replyHeaderLabel: (sender) => `Respuestas a ${sender}`
+          replyHeaderLabel: (message) => `Respuestas a "${message}"`
         },
         task: {
           noBoardSelected: "Ning\xFAn tablero seleccionado",
@@ -1305,7 +1305,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.24.A";
+      this.BUILD = "Build 26.09.24.B";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {
@@ -4249,6 +4249,8 @@
       this.chatMessageViewModels = new MapState();
       this.filteredMessageViewModels = new ListState();
       this.replyViewSelectedMessage = new State(void 0);
+      this.isReplyViewActive = createProxyState([this.replyViewSelectedMessage], () => this.replyViewSelectedMessage.value != void 0);
+      this.isReplyViewInactive = createProxyState([this.isReplyViewActive], () => !this.isReplyViewActive.value);
       this.isFilterModalOpen = new State(false);
       this.reactionFilter = new State(void 0);
       this.replyingMessage = new State(
@@ -6401,7 +6403,15 @@
         "description",
         coreViewModel2.translations.chatPage.message.messageContent,
         chatMessageViewModel.body
-      )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement("button", { "on:click": chatMessageViewModel.copyMessage }, coreViewModel2.translations.chatPage.message.copyMessageButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "content_copy")), /* @__PURE__ */ createElement("button", { "on:click": chatMessageViewModel.resendMessage }, coreViewModel2.translations.chatPage.message.resendMessageButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "redo")), /* @__PURE__ */ createElement("button", { "on:click": chatMessageViewModel.decryptMessage }, coreViewModel2.translations.chatPage.message.decryptMessageButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "key")), /* @__PURE__ */ createElement("button", { "on:click": chatMessageViewModel.reply }, coreViewModel2.translations.chatPage.message.replyToMessageButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "reply"))), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, MessageReactionButtonRow(
+      )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement("button", { "on:click": chatMessageViewModel.copyMessage }, coreViewModel2.translations.chatPage.message.copyMessageButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "content_copy")), /* @__PURE__ */ createElement("button", { "on:click": chatMessageViewModel.resendMessage }, coreViewModel2.translations.chatPage.message.resendMessageButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "redo")), /* @__PURE__ */ createElement("button", { "on:click": chatMessageViewModel.decryptMessage }, coreViewModel2.translations.chatPage.message.decryptMessageButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "key")), /* @__PURE__ */ createElement(
+        "button",
+        {
+          "on:click": chatMessageViewModel.reply,
+          "toggle:disabled": chatMessageViewModel.messagePageViewModel.isReplyViewActive
+        },
+        coreViewModel2.translations.chatPage.message.replyToMessageButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "reply")
+      )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, MessageReactionButtonRow(
         coreViewModel2,
         chatMessageViewModel
       ), /* @__PURE__ */ createElement(
@@ -6485,37 +6495,14 @@
         {
           class: "reply-button",
           "on:click": chatMessageViewModel.reply,
-          "aria-label": coreViewModel2.translations.chatPage.message.replyToMessageButton
+          "aria-label": coreViewModel2.translations.chatPage.message.replyToMessageButton,
+          "toggle:hidden": chatMessageViewModel.messagePageViewModel.isReplyViewActive
         },
         /* @__PURE__ */ createElement("span", { class: "icon" }, "reply")
       ))),
       MessageReactionButtonRow(coreViewModel2, chatMessageViewModel),
       ReplyLink(coreViewModel2, chatMessageViewModel),
       ChatMessageInfoModal(coreViewModel2, chatMessageViewModel)
-    );
-  }
-
-  // src/View/Components/replyViewHeader.tsx
-  function ReplyViewHeader(coreViewModel2, messagePageViewModel) {
-    const isHidden = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value == void 0);
-    const label = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value == void 0 ? "" : coreViewModel2.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.sender));
-    const message = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value == void 0 ? "" : messagePageViewModel.replyViewSelectedMessage.value.body.value);
-    return /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "reply-header",
-        "toggle:hidden": isHidden
-      },
-      /* @__PURE__ */ createElement("b", { class: "ellipsis", "subscribe:innerText": label }),
-      /* @__PURE__ */ createElement("span", { class: "secondary ellipsis", "subscribe:innerText": message }),
-      /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "standard square",
-          "on:click": messagePageViewModel.resetReplyView
-        },
-        /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
-      )
     );
   }
 
@@ -6574,7 +6561,22 @@
       ViewController.setFocusWithDelay();
     });
     const isInReplyView = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value != void 0);
-    return /* @__PURE__ */ createElement("div", { id: "message-page", "toggle:reply-view": isInReplyView }, /* @__PURE__ */ createElement("div", { class: "pane-wrapper" }, /* @__PURE__ */ createElement("div", { class: "pane" }, /* @__PURE__ */ createElement("div", { class: "toolbar" }, /* @__PURE__ */ createElement("span", { class: "title" }, coreViewModel2.translations.chatPage.message.messagesHeadline), /* @__PURE__ */ createElement("span", null, /* @__PURE__ */ createElement(
+    const title = createProxyState([messagePageViewModel.isReplyViewActive], () => messagePageViewModel.isReplyViewActive.value ? coreViewModel2.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.body.value) : coreViewModel2.translations.chatPage.message.messagesHeadline);
+    return /* @__PURE__ */ createElement("div", { id: "message-page", "toggle:reply-view": isInReplyView }, /* @__PURE__ */ createElement("div", { class: "pane-wrapper" }, /* @__PURE__ */ createElement("div", { class: "pane" }, /* @__PURE__ */ createElement("div", { class: "toolbar" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "ghost",
+        "on:click": messagePageViewModel.resetReplyView,
+        "toggle:hidden": messagePageViewModel.isReplyViewInactive
+      },
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_back")
+    ), /* @__PURE__ */ createElement(
+      "span",
+      {
+        class: "title ellipsis width-100 flex",
+        "subscribe:innerText": title
+      }
+    ), /* @__PURE__ */ createElement("span", null, /* @__PURE__ */ createElement(
       "button",
       {
         class: "ghost inset-outline",
@@ -6583,7 +6585,7 @@
         "toggle:selected": messagePageViewModel.isFilterActive
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "filter_alt")
-    ))), /* @__PURE__ */ createElement("div", { class: "content" }, ReplyViewHeader(coreViewModel2, messagePageViewModel), messageContainer, /* @__PURE__ */ createElement("div", { id: "composer" }, /* @__PURE__ */ createElement("div", { class: "content-width-constraint" }, /* @__PURE__ */ createElement(
+    ))), /* @__PURE__ */ createElement("div", { class: "content" }, messageContainer, /* @__PURE__ */ createElement("div", { id: "composer" }, /* @__PURE__ */ createElement("div", { class: "content-width-constraint" }, /* @__PURE__ */ createElement(
       "div",
       {
         class: "reply-preview-wrapper",
