@@ -229,6 +229,8 @@ export function localeCompare(a: string, b: string): number {
 // ui
 export function implementPinchZoom(canvas: HTMLElement) {
     let pinching = false;
+    let dragging = false;
+    let scrolling = false;
     let lastElement: HTMLElement | undefined = undefined;
 
     let initialDistance: number,
@@ -292,68 +294,98 @@ export function implementPinchZoom(canvas: HTMLElement) {
     canvas.addEventListener("wheel", (event: WheelEvent) => {
         event.preventDefault();
 
+	if (!scrolling) {
         initialZoom = currentZoom;
         initialX = currentX;
         initialY = currentY;
+	    scrolling = true
+	}
 
-        if (!event.shiftKey) {
-            apply(currentZoom, [
-                currentX - event.deltaX,
-                currentY - event.deltaY,
-            ]);
-            return;
-        }
-        apply(currentZoom - event.deltaY * 0.01);
+	const canvasWidth = canvas.offsetWidth;
+	const canvasHeight = canvas.offsetHeight;
+	const initialWidth = canvasWidth * initialZoom;
+	const initialHeight = canvasHeight * initialZoom;
+	const currentWidth = canvasWidth * currentZoom;
+	const currentHeight = canvasHeight * currentZoom;
+
+	const differenceWidth  = currentWidth - initialWidth;
+	const differenceHeight  = currentHeight - initialHeight;
+
+        apply(currentZoom - event.deltaY * 0.005, [initialX - differenceWidth, initialY - differenceHeight]);
     });
+    canvas.addEventListener("scrollend", () => {
+	scrolling = false;
+    })
     canvas.addEventListener("scroll", (event: Event) => {
         event.preventDefault();
     });
 
+    canvas.addEventListener("mousedown", (event: MouseEvent) => {
+	initialZoom = currentZoom;
+	initialX = currentX;
+	initialY = currentY;
+	initialTouchX = event.clientX;
+	initialTouchY = event.clientY;
+	dragging = true;
+    })
+    canvas.addEventListener("mouseup", () => {
+	dragging = false;
+    })
+    canvas.addEventListener("mousemove", (event: MouseEvent) => {
+	if (!dragging) return;
+	apply(currentZoom, [
+	    initialX +
+	    (event.clientX - initialTouchX) / initialZoom,
+	    initialY +
+	    (event.clientY - initialTouchY) / initialZoom,
+	]);
+    })
+
     canvas.addEventListener("touchstart", (event: TouchEvent) => {
-        (document.activeElement as HTMLElement).blur();
+	(document.activeElement as HTMLElement)?.blur();
 
-        const el = element();
-        if (!el) return;
-        if (lastElement != undefined && lastElement != el) reset();
-        lastElement = el;
+	const el = element();
+	if (!el) return;
+	if (lastElement != undefined && lastElement != el) reset();
+	lastElement = el;
 
-        initialZoom = currentZoom;
-        initialX = currentX;
-        initialY = currentY;
+	initialZoom = currentZoom;
+	initialX = currentX;
+	initialY = currentY;
 
-        if (event.touches.length != 2) {
-            pinching = false;
-            initialTouchX = event.touches[0].clientX;
-            initialTouchY = event.touches[0].clientY;
-            return;
-        }
+	if (event.touches.length != 2) {
+	    pinching = false;
+	    initialTouchX = event.touches[0].clientX;
+	    initialTouchY = event.touches[0].clientY;
+	    return;
+	}
 
-        pinching = true;
-        initialDistance = distance(event);
-        initialTouchX = midpoint(event, "x");
-        initialTouchY = midpoint(event, "y");
+	pinching = true;
+	initialDistance = distance(event);
+	initialTouchX = midpoint(event, "x");
+	initialTouchY = midpoint(event, "y");
     });
     canvas.addEventListener("touchmove", (event: TouchEvent) => {
-        if (!pinching) {
-            apply(currentZoom, [
-                initialX +
-                    (event.touches[0].clientX - initialTouchX) / initialZoom,
-                initialY +
-                    (event.touches[0].clientY - initialTouchY) / initialZoom,
-            ]);
-            return;
-        }
-        if (event.touches.length < 2) return;
-        event.preventDefault();
-        const currentDistance = distance(event);
-        const midX = midpoint(event, "x");
-        const midY = midpoint(event, "y");
-        const ratio = currentDistance / initialDistance;
-        const difference = currentDistance - initialDistance;
-        apply(initialZoom * ratio, [
-            initialX + (midX - difference - initialTouchX) / initialZoom,
-            initialY + (midY - difference - initialTouchY) / initialZoom,
-        ]);
+	if (!pinching) {
+	    apply(currentZoom, [
+		initialX +
+		(event.touches[0].clientX - initialTouchX) / initialZoom,
+		initialY +
+		(event.touches[0].clientY - initialTouchY) / initialZoom,
+	    ]);
+	    return;
+	}
+	if (event.touches.length < 2) return;
+	event.preventDefault();
+	const currentDistance = distance(event);
+	const midX = midpoint(event, "x");
+	const midY = midpoint(event, "y");
+	const ratio = currentDistance / initialDistance;
+	const difference = currentDistance - initialDistance;
+	apply(initialZoom * ratio, [
+	    initialX + (midX - difference - initialTouchX) / initialZoom,
+	    initialY + (midY - difference - initialTouchY) / initialZoom,
+	]);
     });
 }
 
@@ -366,12 +398,12 @@ export function collectObjectValuesForKey<T>(
     const values: Set<string> = new Set();
 
     for (const object of objects) {
-        const stringEntryObject: StringEntryObject = converter(object);
-        const stringEntryObjectValue: Stringifiable | undefined =
-            stringEntryObject[key];
-        if (stringEntryObjectValue == undefined) continue;
+	const stringEntryObject: StringEntryObject = converter(object);
+	const stringEntryObjectValue: Stringifiable | undefined =
+	    stringEntryObject[key];
+	if (stringEntryObjectValue == undefined) continue;
 
-        values.add(stringEntryObjectValue.toString());
+	values.add(stringEntryObjectValue.toString());
     }
 
     return [...values.values()];
@@ -384,50 +416,50 @@ export function checkDoesObjectMatchReference(
     explicitEmptyValue: boolean = false,
 ): boolean {
     reference_entry_loop: for (const referenceEntry of Object.entries(
-        reference,
+	reference,
     )) {
-        const [referenceKey, referenceValue] = referenceEntry;
-        const stringEntryObjectValue: Stringifiable | undefined =
-            stringEntryObject[referenceKey];
+	const [referenceKey, referenceValue] = referenceEntry;
+	const stringEntryObjectValue: Stringifiable | undefined =
+	    stringEntryObject[referenceKey];
 
-        if (referenceValue == undefined) return false;
+	if (referenceValue == undefined) return false;
 
-        if (referenceValue[0] == "-") {
-            const strippedReferenceValue: string = referenceValue
-                .toString()
-                .substring(1);
-            // property may not exist
-            if (
-                strippedReferenceValue == "" &&
-                stringEntryObjectValue != undefined &&
-                stringEntryObjectValue != ""
-            ) {
-                return false;
-            }
+	if (referenceValue[0] == "-") {
+	    const strippedReferenceValue: string = referenceValue
+		.toString()
+		.substring(1);
+	    // property may not exist
+	    if (
+		strippedReferenceValue == "" &&
+		stringEntryObjectValue != undefined &&
+		stringEntryObjectValue != ""
+	    ) {
+		return false;
+	    }
 
-            // property may not match
-            if (stringEntryObjectValue == strippedReferenceValue) {
-                return false;
-            }
-        } else {
-            if (explicitEmptyValue == false) {
-                // property must exist but be anything
-                if (
-                    referenceValue == "" &&
-                    (stringEntryObjectValue == undefined ||
-                        stringEntryObjectValue == "")
-                ) {
-                    return false;
-                } else if (referenceValue == "") {
-                    continue reference_entry_loop;
-                }
-            }
+	    // property may not match
+	    if (stringEntryObjectValue == strippedReferenceValue) {
+		return false;
+	    }
+	} else {
+	    if (explicitEmptyValue == false) {
+		// property must exist but be anything
+		if (
+		    referenceValue == "" &&
+		    (stringEntryObjectValue == undefined ||
+			stringEntryObjectValue == "")
+		) {
+		    return false;
+		} else if (referenceValue == "") {
+		    continue reference_entry_loop;
+		}
+	    }
 
-            // property must match
-            if (stringEntryObjectValue != referenceValue) {
-                return false;
-            }
-        }
+	    // property must match
+	    if (stringEntryObjectValue != referenceValue) {
+		return false;
+	    }
+	}
     }
     return true;
 }
