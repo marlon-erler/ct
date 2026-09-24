@@ -1158,6 +1158,7 @@
   }
   function implementPinchZoom(canvas) {
     let pinching = false;
+    let dragging = false;
     let lastElement = void 0;
     let initialDistance, currentZoom, initialZoom, currentX, currentY, initialX, initialY, initialTouchX, initialTouchY;
     function reset() {
@@ -1202,20 +1203,31 @@
       initialZoom = currentZoom;
       initialX = currentX;
       initialY = currentY;
-      if (!event.shiftKey) {
-        apply(currentZoom, [
-          currentX - event.deltaX,
-          currentY - event.deltaY
-        ]);
-        return;
-      }
-      apply(currentZoom - event.deltaY * 0.01);
+      apply(currentZoom - event.deltaY * 5e-3);
     });
     canvas.addEventListener("scroll", (event) => {
       event.preventDefault();
     });
+    canvas.addEventListener("mousedown", (event) => {
+      initialZoom = currentZoom;
+      initialX = currentX;
+      initialY = currentY;
+      initialTouchX = event.clientX;
+      initialTouchY = event.clientY;
+      dragging = true;
+    });
+    canvas.addEventListener("mouseup", () => {
+      dragging = false;
+    });
+    canvas.addEventListener("mousemove", (event) => {
+      if (!dragging) return;
+      apply(currentZoom, [
+        initialX + (event.clientX - initialTouchX) / initialZoom,
+        initialY + (event.clientY - initialTouchY) / initialZoom
+      ]);
+    });
     canvas.addEventListener("touchstart", (event) => {
-      document.activeElement.blur();
+      document.activeElement?.blur();
       const el = element();
       if (!el) return;
       if (lastElement != void 0 && lastElement != el) reset();
@@ -1245,14 +1257,8 @@
       if (event.touches.length < 2) return;
       event.preventDefault();
       const currentDistance = distance(event);
-      const midX = midpoint(event, "x");
-      const midY = midpoint(event, "y");
       const ratio = currentDistance / initialDistance;
-      const difference = currentDistance - initialDistance;
-      apply(initialZoom * ratio, [
-        initialX + (midX - difference - initialTouchX) / initialZoom,
-        initialY + (midY - difference - initialTouchY) / initialZoom
-      ]);
+      apply(initialZoom * ratio);
     });
   }
   function collectObjectValuesForKey(key, converter, objects) {
@@ -1305,7 +1311,7 @@
       this.connectionModel = connectionModel2;
       this.chatListModel = chatListModel2;
       this.fileTransferModel = fileTransferModel2;
-      this.BUILD = "Build 26.09.24.B";
+      this.BUILD = "Build 26.09.24.C";
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
       this.closeContext = (contextId, fromHistoryEvent = false) => {

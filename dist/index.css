@@ -237,6 +237,15 @@ body[theme=dark] #background-wrapper #grass-2 {
   --color-1: hsl(110, 60%, 30%);
   --color-2: hsl(110, 50%, 24%);
 }
+.zoom {
+  display: flex;
+  align-items: start;
+  gap: var(--large-gap);
+  width: auto;
+  height: auto;
+  transform-origin: center;
+  padding: var(--content-padding);
+}
 
 /* src/View/homePage.css */
 #home-page > div {
@@ -517,15 +526,6 @@ body[showing-chat] #chat-page-wrapper {
   display: flex;
   flex-direction: column;
   gap: var(--gap-between-tiles);
-  padding: var(--content-padding);
-}
-#chat-page > div > #main > #task-page .zoom {
-  display: flex;
-  align-items: start;
-  gap: var(--large-gap);
-  width: auto;
-  height: auto;
-  transform-origin: top left;
   padding: var(--content-padding);
 }
 #board-content .main-content {
