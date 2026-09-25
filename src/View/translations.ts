@@ -53,7 +53,7 @@ const englishTranslations = {
     },
 
     homePage: {
-	appName: "Comms",
+	appName: "Coordination Tool",
 
 	///
 
@@ -91,7 +91,7 @@ const englishTranslations = {
 	pages: {
 	    appearance: "Appearance",
 	    regional: "Language & Region",
-	    info: "About Comms",
+	    info: "About CT",
 	},
 	themes: {
 	    dynamic: "Dynamic",
@@ -406,7 +406,7 @@ export const allTranslations: {
 	},
 
 	homePage: {
-	    appName: "Comms",
+	    appName: "Coordination Tool",
 
 	    overviewHeadline: "Übersicht",
 
@@ -440,7 +440,7 @@ export const allTranslations: {
 	    pages: {
 		appearance: "Erscheinungsbild",
 		regional: "Sprache & Region",
-		info: "Über Comms",
+		info: "Über CT",
 	    },
 	    themes: {
 		dynamic: "Dynamisch",
@@ -721,7 +721,7 @@ export const allTranslations: {
 	},
 
 	homePage: {
-	    appName: "Comms",
+	    appName: "Coordination Tool",
 
 	    overviewHeadline: "Resumen",
 
@@ -755,7 +755,7 @@ export const allTranslations: {
 	    pages: {
 		appearance: "Aspecto",
 		regional: "Idioma y Región",
-		info: "Sobre Comms",
+		info: "Sobre CT",
 	    },
 	    themes: {
 		dynamic: "Dinámico",
