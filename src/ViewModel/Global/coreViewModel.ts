@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import * as React from "../../react";
 import { allTranslations, Translations } from "../../View/translations";
-import { HandlerManager } from "../../Model/Utility/utility";
+import { formatTime, HandlerManager } from "../../Model/Utility/utility";
 import StorageModel from "../../Model/Global/storageModel";
 import SettingsModel from "../../Model/Global/settingsModel";
 import FileTransferModel from "../../Model/Global/fileTransferModel";
@@ -73,8 +73,12 @@ export default class CoreViewModel {
     // CHRON
     chronHandlerManager = new HandlerManager<void>();
     todayDate = new React.State<Date>(new Date());
-    get unwrappedTodayDate() {
+    time = new React.State<[number, number]>([0, 0]);
+    get unwrappedTodayDate(): Date {
         return new Date(this.todayDate.value);
+    }
+    get timeString(): string {
+	return this.time.value.join(":");
     }
 
     startChron = (): void => {
@@ -82,10 +86,11 @@ export default class CoreViewModel {
     };
 
     handleChron = (): void => {
-        const newDate = new Date();
-        if (this.unwrappedTodayDate.toDateString() == newDate.toDateString())
-            return;
-        this.todayDate.value = new Date();
+	const newDate = new Date();
+	if (this.unwrappedTodayDate.toDateString() != newDate.toDateString())
+	    this.todayDate.value = new Date();
+	if (formatTime(newDate) != this.timeString)
+	    this.time.value = [newDate.getHours(), newDate.getMinutes()];
     };
 
     // DRAG & DROP

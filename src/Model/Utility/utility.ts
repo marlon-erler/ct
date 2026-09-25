@@ -18,6 +18,11 @@ export function createTimestamp(): string {
     return new Date().toISOString();
 }
 
+export function formatTime(date: Date): string {
+    const time = [date.getHours(), date.getMinutes()];
+    return time.join(":");
+}
+
 // filters
 export type StringEntryObject = { [key: string]: Stringifiable | undefined };
 
@@ -29,11 +34,11 @@ export function filterObjectsByStringEntries<T>(
     const matches: Set<T> = new Set();
 
     for (const object of objects) {
-        const doesMatch: boolean = checkDoesObjectMatchReference(
-            reference,
-            converter(object),
-        );
-        if (doesMatch) matches.add(object);
+	const doesMatch: boolean = checkDoesObjectMatchReference(
+	    reference,
+	    converter(object),
+	);
+	if (doesMatch) matches.add(object);
     }
 
     return matches;
@@ -47,12 +52,12 @@ export function filterObjectsByWords<T>(
     const matches: Set<T> = new Set();
 
     for (const object of objects) {
-        const doesMatch: boolean = checkDoesObjectMatchSearch(
-            query,
-            getStringsOfObject,
-            object,
-        );
-        if (doesMatch) matches.add(object);
+	const doesMatch: boolean = checkDoesObjectMatchSearch(
+	    query,
+	    getStringsOfObject,
+	    object,
+	);
+	if (doesMatch) matches.add(object);
     }
 
     return matches;
@@ -68,30 +73,30 @@ export function checkDoesObjectMatchSearch<T>(
     const stringsInObject: string[] = getStringsOfObject(object);
     const wordsInObject: string[] = [];
     for (const string of stringsInObject) {
-        const lowercaseWordsInString = string
-            .toString()
-            .toLowerCase()
-            .split(" ")
-            .filter((word) => word != "");
-        wordsInObject.push(...lowercaseWordsInString);
+	const lowercaseWordsInString = string
+	    .toString()
+	    .toLowerCase()
+	    .split(" ")
+	    .filter((word) => word != "");
+	wordsInObject.push(...lowercaseWordsInString);
     }
 
     const lowercaseWordsInQuery = query
-        .toLowerCase()
-        .split(" ")
-        .filter((word) => word != "");
+	.toLowerCase()
+	.split(" ")
+	.filter((word) => word != "");
     for (const queryWord of lowercaseWordsInQuery) {
-        if (queryWord[0] == "-") {
-            // exclusion
-            const wordContent = queryWord.substring(1);
-            if (wordsInObject.includes(wordContent)) {
-                return false;
-            }
-        } else {
-            if (wordsInObject.includes(queryWord) == false) {
-                return false;
-            }
-        }
+	if (queryWord[0] == "-") {
+	    // exclusion
+	    const wordContent = queryWord.substring(1);
+	    if (wordsInObject.includes(wordContent)) {
+		return false;
+	    }
+	} else {
+	    if (wordsInObject.includes(queryWord) == false) {
+		return false;
+	    }
+	}
     }
 
     return true;
@@ -104,14 +109,14 @@ export default function implementFilter<T>(
     itemToString: (item: T) => string,
 ) {
     function update() {
-        matches.clear();
-        allItems.value.forEach((item: T) => {
-            if (!itemToString(item).toLowerCase().includes(query.value.toLowerCase())) return;
-            matches.add(item);
-            allItems.handleRemoval(item, () => {
-                matches.remove(item);
-            });
-        });
+	matches.clear();
+	allItems.value.forEach((item: T) => {
+	    if (!itemToString(item).toLowerCase().includes(query.value.toLowerCase())) return;
+	    matches.add(item);
+	    allItems.handleRemoval(item, () => {
+		matches.remove(item);
+	    });
+	});
     }
     query.subscribe(update);
     allItems.handleAddition(update);
@@ -125,16 +130,16 @@ export class HandlerManager<T> {
 
     // manage
     setHandler = (id: string, handler: Handler<T>): void => {
-        this.handlers.set(id, handler);
+	this.handlers.set(id, handler);
     };
 
     deleteHandler = (id: string): void => {
-        this.handlers.delete(id);
+	this.handlers.delete(id);
     };
 
     // trigger
     trigger = (item: T): void => {
-        [...this.handlers.values()].forEach((handler) => handler(item));
+	[...this.handlers.values()].forEach((handler) => handler(item));
     };
 }
 
@@ -146,26 +151,26 @@ export class IndexManager<T> {
 
     // methods
     update = (items: T[]): void => {
-        this.sortedStrings = [];
+	this.sortedStrings = [];
 
-        let strings: string[] = [];
-        for (const item of items) {
-            const string: string = this.itemToString(item);
-            strings.push(string);
-        }
+	let strings: string[] = [];
+	for (const item of items) {
+	    const string: string = this.itemToString(item);
+	    strings.push(string);
+	}
 
-        this.sortedStrings = strings.sort(localeCompare);
+	this.sortedStrings = strings.sort(localeCompare);
     };
 
     getIndex = (item: T): number => {
-        const string: string = this.itemToString(item);
-        const index: number = this.sortedStrings.indexOf(string);
-        return index;
+	const string: string = this.itemToString(item);
+	const index: number = this.sortedStrings.indexOf(string);
+	return index;
     };
 
     // init
     constructor(itemToString: (item: T) => string) {
-        this.itemToString = itemToString;
+	this.itemToString = itemToString;
     }
 }
 
@@ -192,9 +197,9 @@ export function padZero(string: string | undefined, length: number): string {
 
 export function parse(string: string): any {
     try {
-        return JSON.parse(string);
+	return JSON.parse(string);
     } catch {
-        return {};
+	return {};
     }
 }
 
@@ -203,8 +208,8 @@ export function parseValidObject<T>(string: string, reference: T): T | null {
     if (checkIsValidObject(parsed) == false) return null;
 
     const doesMatchReference: boolean = checkMatchesObjectStructure(
-        parsed,
-        reference,
+	parsed,
+	reference,
     );
     if (doesMatchReference == false) return null;
 
@@ -213,9 +218,9 @@ export function parseValidObject<T>(string: string, reference: T): T | null {
 
 export function parseOrFallback(inputString: string): any {
     try {
-        return JSON.parse(inputString);
+	return JSON.parse(inputString);
     } catch {
-        return inputString;
+	return inputString;
     }
 }
 
