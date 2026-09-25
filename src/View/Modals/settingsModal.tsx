@@ -193,6 +193,10 @@ function SettingsAppearancePane(
 		    ThemeSettings.Dynamic,
 		],
 		[
+		    coreViewModel.translations.settings.themes.system,
+		    ThemeSettings.System,
+		],
+		[
 		    coreViewModel.translations.settings.themes.dark,
 		    ThemeSettings.Dark,
 		],
@@ -201,8 +205,8 @@ function SettingsAppearancePane(
 		    ThemeSettings.Light,
 		],
 		[
-		    coreViewModel.translations.settings.themes.system,
-		    ThemeSettings.System,
+		    coreViewModel.translations.settings.themes.black,
+		    ThemeSettings.Black,
 		],
 	    ]),
 	    settingsViewModel.theme,

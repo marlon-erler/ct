@@ -172,12 +172,13 @@ body[theme=dark] [color]:not([color=standard]).subtle-background {
 }
 #background-wrapper {
   position: fixed;
-  inset: 0px;
-  transform: scale(1.2);
+  top: var(--safe-area-top);
+  left: var(--safe-area-left);
+  right: var(--safe-area-right);
+  bottom: var(--safe-area-bottom);
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
-  filter: blur(40px);
   background: var(--background);
 }
 main {
@@ -187,6 +188,8 @@ main {
   content: "";
   position: absolute;
   inset: 0px;
+  transform: scale(1.2);
+  filter: blur(40px);
   z-index: -1;
   pointer-events: none;
 }

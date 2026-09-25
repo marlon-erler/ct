@@ -53,127 +53,129 @@ export default class SettingsViewModel extends Context {
 
     // view
     applyTheme = (): void => {
-        let theme: string = this.theme.value;
+	let theme: string = this.theme.value;
+	
+	if (theme == ThemeSettings.System)
+	    theme = SettingsViewModel.getSystemTheme();
 
-        if (theme == ThemeSettings.Dynamic) {
-            const scene = this.selectDynamicScene();
-            this.setScene(scene);
-            return;
-        }
-
-        if (theme == ThemeSettings.System) {
-            theme = SettingsViewModel.getSystemTheme();
-        }
-
-        if (theme == ThemeSettings.Dark) {
-            this.setScene(DynamicSceneNight);
-        } else {
-            this.setScene(DynamicSceneDay);
-        }
+	switch (theme) {
+	    case ThemeSettings.Dynamic:
+		const scene = this.selectDynamicScene();
+		this.setScene(scene);
+		break;
+	    case ThemeSettings.Dark:
+		this.setScene(DynamicSceneNight);
+		break;
+	    case ThemeSettings.Black:
+		this.setScene(DynamicSceneBlack);
+		break;
+	    default: 
+		this.setScene(DynamicSceneDay);
+	}
     };
 
     selectDynamicScene = (): DynamicScene => {
-        let hour = new Date().getHours();
+	let hour = new Date().getHours();
 
-        if (hour >= 21 || hour <= 6) {
-            return DynamicSceneNight;
-        } else if (hour > 6 && hour < 10) {
-            return DynamicSceneSunrise;
-        } else if (hour < 14) {
-            return DynamicSceneDay;
-        } else if (hour < 17) {
-            return DynamicSceneAfternoon;
-        } else {
-            return DynamicSceneSunset;
-        }
+	if (hour >= 21 || hour <= 6) {
+	    return DynamicSceneNight;
+	} else if (hour > 6 && hour < 10) {
+	    return DynamicSceneSunrise;
+	} else if (hour < 14) {
+	    return DynamicSceneDay;
+	} else if (hour < 17) {
+	    return DynamicSceneAfternoon;
+	} else {
+	    return DynamicSceneSunset;
+	}
     };
 
     setScene = (scene: DynamicScene): void => {
-        document.body.style.setProperty(
-            "--backdrop-grass-filter",
-            `brightness(${scene.brightness})`,
-        );
+	document.body.style.setProperty(
+	    "--backdrop-grass-filter",
+	    `brightness(${scene.brightness})`,
+	);
 
-        function setSkyColor(
-            tone: 1 | 2,
-            hue: number,
-            saturation: number,
-            luma: number,
-        ) {
-            document.body.style.setProperty(
-                `--sky-${tone}`,
-                `hsl(${hue}, ${saturation}%, ${luma}%)`,
-            );
-        }
-        setSkyColor(1, scene.hue1, scene.saturation, scene.luma);
-        setSkyColor(2, scene.hue2, scene.saturation - 10, scene.luma - 10);
+	function setSkyColor(
+	    tone: 1 | 2,
+	    hue: number,
+	    saturation: number,
+	    luma: number,
+	) {
+	    document.body.style.setProperty(
+		`--sky-${tone}`,
+		`hsl(${hue}, ${saturation}%, ${luma}%)`,
+	    );
+	}
+	setSkyColor(1, scene.hue1, scene.saturation, scene.luma);
+	setSkyColor(2, scene.hue2, scene.saturation - 10, scene.luma - 10);
 
-        document.body.setAttribute("theme", scene.baseTheme);
+	document.body.setAttribute("theme", scene.baseTheme);
     };
 
     // exit
     close = (): void => {
-        this.coreViewModel.closeContext(this.contextId);
+	this.coreViewModel.closeContext(this.contextId);
     };
 
     handleContextClose = (): void => {
-        this.isShowingSettingsModal.value = false;
-        if (this.requiresReload.value == true) {
-            window.location.reload();
-        }
+	this.isShowingSettingsModal.value = false;
+	if (this.requiresReload.value == true) {
+	    window.location.reload();
+	}
     };
 
     // init
     constructor(public readonly coreViewModel: CoreViewModel) {
-        super("settings");
+	super("settings");
 
-        this.username.value = coreViewModel.settingsModel.username;
-        this.usernameInput.value = coreViewModel.settingsModel.username;
-        this.firstDayOfWeek.value = coreViewModel.settingsModel.firstDayOfWeek;
-        this.language.value = coreViewModel.settingsModel.language;
-        this.theme.value = coreViewModel.settingsModel.theme;
+	this.username.value = coreViewModel.settingsModel.username;
+	this.usernameInput.value = coreViewModel.settingsModel.username;
+	this.firstDayOfWeek.value = coreViewModel.settingsModel.firstDayOfWeek;
+	this.language.value = coreViewModel.settingsModel.language;
+	this.theme.value = coreViewModel.settingsModel.theme;
 
-        // subscriptions
-        this.firstDayOfWeek.subscribe(this.setFirstDayofWeek);
-        this.language.subscribeSilent((newValue) => {
-            this.coreViewModel.settingsModel.setLanguage(newValue);
-            this.requiresReload.value = true;
-        });
-        this.theme.subscribeSilent((newValue) => {
-            this.coreViewModel.settingsModel.setTheme(newValue);
-        });
+	// subscriptions
+	this.firstDayOfWeek.subscribe(this.setFirstDayofWeek);
+	this.language.subscribeSilent((newValue) => {
+	    this.coreViewModel.settingsModel.setLanguage(newValue);
+	    this.requiresReload.value = true;
+	});
+	this.theme.subscribeSilent((newValue) => {
+	    this.coreViewModel.settingsModel.setTheme(newValue);
+	});
 
-        // set theme
-        this.theme.subscribe(() => {
-            this.applyTheme();
-        });
-        SettingsViewModel.generateThemeMedia().addEventListener("change", () =>
-            this.applyTheme(),
-        );
-        const seconds = new Date().getSeconds();
-        const secondsUntilNewMinute = 60 - seconds;
-        setTimeout(() => {
-            setInterval(this.applyTheme, 1000 * 60);
-        }, secondsUntilNewMinute);
+	// set theme
+	this.theme.subscribe(() => {
+	    this.applyTheme();
+	});
+	SettingsViewModel.generateThemeMedia().addEventListener("change", () =>
+	    this.applyTheme(),
+	);
+	const seconds = new Date().getSeconds();
+	const secondsUntilNewMinute = 60 - seconds;
+	setTimeout(() => {
+	    setInterval(this.applyTheme, 1000 * 60);
+	}, secondsUntilNewMinute);
 
-        // keystrokes
-        this.registerKeyStroke(CommonKeys.CloseOrCancel, this.close);
+	// keystrokes
+	this.registerKeyStroke(CommonKeys.CloseOrCancel, this.close);
     }
 
     static generateThemeMedia(): MediaQueryList {
-        return window.matchMedia("(prefers-color-scheme: dark)");
+	return window.matchMedia("(prefers-color-scheme: dark)");
     }
 
     static getSystemTheme(): string {
-        const media = SettingsViewModel.generateThemeMedia();
-        return media.matches == true ? ThemeSettings.Dark : ThemeSettings.Light;
+	const media = SettingsViewModel.generateThemeMedia();
+	return media.matches == true ? ThemeSettings.Dark : ThemeSettings.Light;
     }
 }
 
 export enum SettingsModalPages {
     Appearance,
-    Regional,
-    Info,
+	Regional,
+	Info,
 }
 
 export interface DynamicScene {
@@ -222,5 +224,13 @@ export const DynamicSceneSunset: DynamicScene = {
     saturation: 100,
     luma: 50,
     brightness: 0.4,
+    baseTheme: ThemeSettings.Dark,
+};
+export const DynamicSceneBlack: DynamicScene = {
+    hue1: 0,
+    hue2: 0,
+    saturation: 0,
+    luma: 0,
+    brightness: 0,
     baseTheme: ThemeSettings.Dark,
 };

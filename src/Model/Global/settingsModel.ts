@@ -107,4 +107,5 @@ export enum ThemeSettings {
     Light = "light",
     System = "system",
     Dynamic = "dynamic",
+    Black = "black",
 }

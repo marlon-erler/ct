@@ -98,6 +98,7 @@ const englishTranslations = {
 	    dark: "Dark",
 	    light: "Light",
 	    system: "Device theme",
+	    black: "Black",
 	},
 
 	version: "Version",
@@ -442,6 +443,7 @@ export const allTranslations: {
 		dark: "Dunkel",
 		light: "Hell",
 		system: "Geräteeinstellung",
+		black: "Schwarz",
 	    },
 
 	    version: "Version",
@@ -754,6 +756,7 @@ export const allTranslations: {
 		dark: "Oscuro",
 		light: "Claro",
 		system: "Según dispositivo",
+		black: "Negro",
 	    },
 
 	    version: "Versión",
