@@ -1752,7 +1752,10 @@
     return (/* @__PURE__ */ new Date()).toISOString();
   }
   function formatISO(date) {
-    return date.toISOString().split("T")[0];
+    return formatISOFromParts(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  }
+  function formatISOFromParts(year, month, date) {
+    return [year, month, date].map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString())).join("-");
   }
   function formatTime(date) {
     return [date.getHours(), date.getMinutes()].map((x) => CalendarModel.padZero(x.toString())).join(":");
@@ -3126,6 +3129,7 @@
       };
       this.updateMonthGrid = () => {
         const today = formatISO(this.coreViewModel.todayDate.value);
+        console.log(today, this.coreViewModel.todayDate.value);
         if (this.currentTodayDate == today)
           return;
         this.loadMonthTasks();
@@ -3201,7 +3205,7 @@
       );
     }
     get selectedDateString() {
-      return [this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value].map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString())).join("-");
+      return formatISOFromParts(this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value);
     }
   };
 

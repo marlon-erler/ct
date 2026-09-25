@@ -68,6 +68,9 @@ body:is([theme=dark], [theme=black]) [color]:not([color=standard]).tile {
     background: var(--surface);
   }
 }
+body [color] :is(.background-primary, .primary) hr {
+  --border: hsla(0, 0%, var(--accent-text-luma), 10%);
+}
 body [color]:not([color=standard]).subtle-background {
   --luma: var(--subtle-luma);
   background: hsl(var(--hue), 100%, var(--luma), 40%);
