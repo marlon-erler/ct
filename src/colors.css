@@ -89,6 +89,11 @@ body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).tile {
     }
 }
 
+/* lines */
+body [color] :is(.background-primary, .primary) hr {
+    --border: hsla(0, 0%, var(--accent-text-luma), 10%);
+}
+
 /* subtle */
 body [color]:not([color="standard"]).subtle-background {
     --luma: var(--subtle-luma);
