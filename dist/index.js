@@ -340,7 +340,7 @@
       }
     },
     homePage: {
-      appName: "Comms",
+      appName: "Coordination Tool",
       ///
       overviewHeadline: "Overview",
       serverAddress: "Server address",
@@ -367,7 +367,7 @@
       pages: {
         appearance: "Appearance",
         regional: "Language & Region",
-        info: "About Comms"
+        info: "About CT"
       },
       themes: {
         dynamic: "Dynamic",
@@ -592,7 +592,7 @@
         }
       },
       homePage: {
-        appName: "Comms",
+        appName: "Coordination Tool",
         overviewHeadline: "\xDCbersicht",
         serverAddress: "Serveradresse",
         serverAddressPlaceholder: "wss://192.168.0.69:3000",
@@ -617,7 +617,7 @@
         pages: {
           appearance: "Erscheinungsbild",
           regional: "Sprache & Region",
-          info: "\xDCber Comms"
+          info: "\xDCber CT"
         },
         themes: {
           dynamic: "Dynamisch",
@@ -823,7 +823,7 @@
         }
       },
       homePage: {
-        appName: "Comms",
+        appName: "Coordination Tool",
         overviewHeadline: "Resumen",
         serverAddress: "Direcci\xF3n del servidor",
         serverAddressPlaceholder: "wss://192.168.0.69:3000",
@@ -848,7 +848,7 @@
         pages: {
           appearance: "Aspecto",
           regional: "Idioma y Regi\xF3n",
-          info: "Sobre Comms"
+          info: "Sobre CT"
         },
         themes: {
           dynamic: "Din\xE1mico",
