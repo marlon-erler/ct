@@ -1049,6 +1049,698 @@
     return true;
   }
 
+  // src/colors.ts
+  var Colors = /* @__PURE__ */ ((Colors2) => {
+    Colors2["Standard"] = "standard";
+    Colors2["Coral"] = "coral";
+    Colors2["Yellow"] = "yellow";
+    Colors2["Green"] = "green";
+    Colors2["LightBlue"] = "lightblue";
+    Colors2["Blue"] = "blue";
+    Colors2["purple"] = "purple";
+    return Colors2;
+  })(Colors || {});
+
+  // src/Model/Files/boardsAndTasksModel.ts
+  var BoardsAndTasksModel = class _BoardsAndTasksModel {
+    // init
+    constructor(storageModel2, settingsModel2, chatModel, fileModel) {
+      // data
+      this.boardHandlerManager = new HandlerManager();
+      this.taskHandlerManager = new HandlerManager();
+      // paths
+      this.getBasePath = () => {
+        return this.fileModel.getModelContainerPath("tasks" /* ModelTask */);
+      };
+      this.getViewPath = () => {
+        return [...this.getBasePath(), "view" /* ModelView */];
+      };
+      this.getBoardFilePath = (boardId) => {
+        return [...this.fileModel.getFilePath(boardId)];
+      };
+      this.getTaskFilePath = (taskId) => {
+        return [...this.fileModel.getFilePath(taskId)];
+      };
+      this.getBoardContainerPath = () => {
+        return [...this.getBasePath(), "boards" /* Boards */];
+      };
+      this.getBoardDirectoryPath = (boardId) => {
+        return [...this.getBoardContainerPath(), boardId];
+      };
+      this.getTaskContainerPath = (boardId) => {
+        return [
+          ...this.getBoardDirectoryPath(boardId),
+          "tasks" /* BoardTasks */
+        ];
+      };
+      this.getTaskReferencePath = (boardId, fileId) => {
+        return [...this.getTaskContainerPath(boardId), fileId];
+      };
+      // handlers
+      this.handleFileContent = (fileContent) => {
+        if (checkMatchesObjectStructure(
+          fileContent,
+          BoardInfoFileContentReference
+        ) == true) {
+          this.handleBoard(fileContent);
+        } else if (checkMatchesObjectStructure(
+          fileContent,
+          TaskFileContentReference
+        ) == true) {
+          this.handleTask(fileContent);
+        }
+      };
+      this.handleBoard = (boardInfoFileContent) => {
+        this.updateBoard(boardInfoFileContent);
+      };
+      this.handleTask = (taskFileContent) => {
+        this.updateTask(taskFileContent);
+      };
+      // boards
+      this.createBoard = (name) => {
+        const boardInfoFileContent = _BoardsAndTasksModel.createBoardInfoFileContent(
+          v4_default(),
+          name,
+          "standard" /* Standard */
+        );
+        return boardInfoFileContent;
+      };
+      this.updateBoard = (boardInfoFileContent) => {
+        this.storeBoard(boardInfoFileContent);
+        this.boardHandlerManager.trigger(boardInfoFileContent);
+      };
+      this.updateBoardAndSend = (boardInfoFileContent) => {
+        this.updateBoard(boardInfoFileContent);
+        this.chatModel.sendMessage("", void 0, boardInfoFileContent);
+      };
+      this.storeBoard = (boardInfoFileContent) => {
+        this.fileModel.storeFileContent(boardInfoFileContent);
+        const boardDirectoryPath = this.getBoardDirectoryPath(
+          boardInfoFileContent.fileId
+        );
+        this.storageModel.write(boardDirectoryPath, "");
+      };
+      this.deleteBoard = (boardId) => {
+        const boardFilePath = this.getBoardFilePath(boardId);
+        const boardDirectoryPath = this.getBoardDirectoryPath(boardId);
+        this.storageModel.removeRecursively(boardFilePath);
+        this.storageModel.removeRecursively(boardDirectoryPath);
+      };
+      this.listBoardIds = () => {
+        const boardContainerPath = this.getBoardContainerPath();
+        const boardIds = this.storageModel.list(boardContainerPath);
+        return boardIds;
+      };
+      this.getBoardInfo = (fileId) => {
+        const boardInfoFileContentOrNull = this.fileModel.getLatestFileContent(
+          fileId,
+          BoardInfoFileContentReference
+        );
+        return boardInfoFileContentOrNull;
+      };
+      this.getBoardName = (boardId) => {
+        const boardInfo = this.getBoardInfo(boardId);
+        if (boardInfo == null) return "";
+        return boardInfo.name;
+      };
+      //tasks
+      this.createTask = (boardId) => {
+        const taskFileContent = _BoardsAndTasksModel.createTaskFileContent(v4_default(), "", boardId);
+        return taskFileContent;
+      };
+      this.updateTask = (taskFileContent) => {
+        this.storeTask(taskFileContent);
+        this.taskHandlerManager.trigger(taskFileContent);
+      };
+      this.updateTaskAndSend = (taskFileContent) => {
+        this.updateTask(taskFileContent);
+        this.chatModel.sendMessage("", void 0, taskFileContent);
+      };
+      this.storeTask = (taskFileContent) => {
+        this.fileModel.storeFileContent(taskFileContent);
+        const taskReferencePath = this.getTaskReferencePath(
+          taskFileContent.boardId,
+          taskFileContent.fileId
+        );
+        this.storageModel.write(taskReferencePath, "");
+        this.calendarModel.storeTaskReference(taskFileContent);
+      };
+      this.listTaskIds = (boardId) => {
+        const taskContainerPath = this.getTaskContainerPath(boardId);
+        const fileIds = this.storageModel.list(taskContainerPath);
+        return fileIds;
+      };
+      this.listTaskVersionIds = (taskId) => {
+        const versionIds = this.fileModel.listFileContentIds(taskId);
+        return versionIds;
+      };
+      this.getLatestTaskFileContent = (taskId) => {
+        const taskFileContentOrNull = this.fileModel.getLatestFileContent(
+          taskId,
+          TaskFileContentReference
+        );
+        return taskFileContentOrNull;
+      };
+      this.getSpecificTaskFileContent = (taskId, versionId) => {
+        const taskFileContentOrNull = this.fileModel.getFileContent(
+          taskId,
+          versionId,
+          TaskFileContentReference
+        );
+        return taskFileContentOrNull;
+      };
+      this.deleteTask = (boardId, taskId) => {
+        const taskFilePath = this.getTaskFilePath(taskId);
+        this.storageModel.removeRecursively(taskFilePath);
+        this.deleteTaskReference(boardId, taskId);
+      };
+      this.deleteTaskReference = (boardId, taskId) => {
+        const taskReferencePath = this.getTaskReferencePath(
+          boardId,
+          taskId
+        );
+        this.storageModel.removeRecursively(taskReferencePath);
+      };
+      this.storageModel = storageModel2;
+      this.settingsModel = settingsModel2;
+      this.chatModel = chatModel;
+      this.fileModel = fileModel;
+      this.calendarModel = new CalendarModel(
+        this.storageModel,
+        this.settingsModel,
+        this.fileModel
+      );
+    }
+    static {
+      // utility
+      this.createBoardInfoFileContent = (fileId, name, color) => {
+        const fileContent = FileModel.createFileContent(fileId, "board-info");
+        return {
+          ...fileContent,
+          name,
+          color
+        };
+      };
+    }
+    static {
+      this.createTaskFileContent = (fileId, name, boardId) => {
+        const fileContent = FileModel.createFileContent(
+          fileId,
+          "task"
+        );
+        return {
+          ...fileContent,
+          name,
+          boardId
+        };
+      };
+    }
+  };
+  var BoardInfoFileContentReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "string",
+    fileContentId: "",
+    creationDate: "",
+    type: "board-info",
+    name: "",
+    color: ""
+  };
+  var TaskFileContentReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "string",
+    fileContentId: "",
+    creationDate: "",
+    type: "task",
+    name: "",
+    boardId: ""
+  };
+
+  // src/Model/Global/storageModel.ts
+  var PATH_COMPONENT_SEPARATOR = "\\";
+  var StorageModel = class _StorageModel {
+    // init
+    constructor() {
+      this.storageEntryTree = {};
+      // read
+      this.read = (pathComponents) => {
+        const pathString = _StorageModel.pathComponentsToString(
+          ...pathComponents
+        );
+        return localStorage.getItem(pathString);
+      };
+      this.list = (pathComponents) => {
+        let currentParent = this.storageEntryTree;
+        for (const component of pathComponents) {
+          const nextParent = currentParent[component];
+          if (nextParent == void 0) return [];
+          currentParent = nextParent;
+        }
+        return [...Object.keys(currentParent).sort(localeCompare)];
+      };
+      // write
+      this.write = (pathComponents, value) => {
+        const pathString = _StorageModel.pathComponentsToString(
+          ...pathComponents
+        );
+        localStorage.setItem(pathString, value);
+        this.updateTree(...pathComponents);
+      };
+      this.remove = (pathComponents, shouldInitialize = true) => {
+        const pathString = _StorageModel.pathComponentsToString(
+          ...pathComponents
+        );
+        localStorage.removeItem(pathString);
+        if (shouldInitialize == true) {
+          this.initializeTree();
+        }
+      };
+      this.rename = (sourcePathComponents, destinationPathComponents, shouldInitialize = true) => {
+        const content = this.read(sourcePathComponents);
+        if (content == null) return false;
+        this.write(destinationPathComponents, content);
+        this.remove(sourcePathComponents);
+        if (shouldInitialize == true) {
+          this.initializeTree();
+        }
+        return true;
+      };
+      // recursion
+      this.recurse = (rootDirectory, fn) => {
+        loop_over_files: for (const key of Object.keys(localStorage)) {
+          const pathComponentsOfCurrentEntity = _StorageModel.stringToPathComponents(key);
+          loop_over_path_components: for (let i = 0; i < rootDirectory.length; i++) {
+            if (!pathComponentsOfCurrentEntity[i]) continue loop_over_files;
+            if (pathComponentsOfCurrentEntity[i] != rootDirectory[i])
+              continue loop_over_files;
+          }
+          fn(pathComponentsOfCurrentEntity);
+        }
+        this.initializeTree();
+      };
+      this.removeRecursively = (pathComponents) => {
+        this.recurse(
+          pathComponents,
+          (path) => this.remove(path, false)
+        );
+        this.initializeTree();
+      };
+      this.renameRecursively = (sourcePathComponents, destinationPathComponents) => {
+        this.recurse(sourcePathComponents, (path) => {
+          const relativePathOfCurrentEntity = path.slice(
+            sourcePathComponents.length
+          );
+          const destinationPathComponentsOfCurrentEntity = [
+            ...destinationPathComponents,
+            ...relativePathOfCurrentEntity
+          ];
+          this.rename(path, destinationPathComponentsOfCurrentEntity, false);
+        });
+        this.initializeTree();
+      };
+      // stringifiable
+      this.writeStringifiable = (pathComponents, value) => {
+        const valueString = stringify(value);
+        this.write(pathComponents, valueString);
+      };
+      this.readStringifiable = (pathComponents, reference) => {
+        const valueString = this.read(pathComponents);
+        if (!valueString) return null;
+        const object = parseValidObject(valueString, reference);
+        if (object == null) return null;
+        return object;
+      };
+      // cleaning & usage
+      this.removeJunk = () => {
+        this.recurse([], (path) => {
+          if (path[0] == DATA_VERSION) return;
+          this.remove(path);
+        });
+      };
+      this.determineCapacity = () => {
+        const KEY = "storage-capacity-check";
+        let chunk = "0";
+        for (let i = 0; i < 1024 * 256; i++) {
+          chunk += "0";
+        }
+        localStorage.setItem(KEY, "");
+        while (true) {
+          try {
+            const current = localStorage.getItem(KEY);
+            console.log(current);
+            localStorage.setItem(KEY, current + chunk);
+          } catch (e) {
+            const capacity = this.calculateUsage();
+            localStorage.removeItem(KEY);
+            return capacity;
+          }
+        }
+      };
+      this.calculateUsage = () => {
+        let data = JSON.stringify(localStorage);
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(data);
+        const bytes = encoded.byteLength;
+        const mb = bytesToMB(bytes);
+        const rounded = Math.round(mb * 100) / 100;
+        return rounded;
+      };
+      // tree
+      this.initializeTree = () => {
+        console.log("initializing tree");
+        this.storageEntryTree = {};
+        for (const key of Object.keys(localStorage)) {
+          const components = _StorageModel.stringToPathComponents(key);
+          this.updateTree(...components);
+        }
+      };
+      this.updateTree = (...pathComponents) => {
+        let currentParent = this.storageEntryTree;
+        for (const pathPart of pathComponents) {
+          if (!currentParent[pathPart]) {
+            currentParent[pathPart] = {};
+          }
+          currentParent = currentParent[pathPart];
+        }
+      };
+      this.printTree = () => {
+        return stringify(this.storageEntryTree);
+      };
+      this.initializeTree();
+    }
+    static {
+      // utility
+      this.getFileName = (pathComponents) => {
+        return pathComponents[pathComponents.length - 1] || "\\";
+      };
+    }
+    static {
+      this.getFileNameFromString = (pathString) => {
+        const pathComponents = this.stringToPathComponents(pathString);
+        return pathComponents[pathComponents.length - 1] || "\\";
+      };
+    }
+    static {
+      this.pathComponentsToString = (...pathComponents) => {
+        return pathComponents.filter((x) => x != "").join(PATH_COMPONENT_SEPARATOR);
+      };
+    }
+    static {
+      this.stringToPathComponents = (string) => {
+        return string.split(PATH_COMPONENT_SEPARATOR).filter((x) => x != "");
+      };
+    }
+    static {
+      this.join = (...items) => {
+        let allComponents = [];
+        for (const item of items) {
+          const parts = this.stringToPathComponents(item);
+          allComponents.push(...parts);
+        }
+        return _StorageModel.pathComponentsToString(...allComponents);
+      };
+    }
+    static getPath(locationName, filePath) {
+      return [DATA_VERSION, locationName, ...filePath];
+    }
+  };
+  var filePaths = {
+    connectionModel: {
+      socketAddress: ["socket-address"],
+      reconnectAddress: ["reconnect-address"],
+      outbox: ["outbox"],
+      mailboxes: ["mailboxes"],
+      previousAddresses: ["previous-addresses"]
+    },
+    chat: {
+      base: [],
+      chatBase: (id) => [id],
+      info: (id) => [...filePaths.chat.chatBase(id), "info"],
+      color: (id) => [...filePaths.chat.chatBase(id), "color"],
+      messages: (id) => [...filePaths.chat.chatBase(id), "messages"],
+      reactions: (id) => [
+        ...filePaths.chat.chatBase(id),
+        "reactions"
+      ],
+      previousFilter: (id) => [...filePaths.chat.chatBase(id), "previous-filter"],
+      lastUsedPage: (id) => [
+        ...filePaths.chat.chatBase(id),
+        "last-used-page"
+      ],
+      files: (id) => [...filePaths.chat.chatBase(id), "files"]
+    },
+    notificationModel: {
+      base: []
+    },
+    settingsModel: {
+      username: ["user-name"],
+      firstDayOfWeek: ["first-day-of-week"],
+      language: ["language"],
+      theme: ["theme"]
+    }
+  };
+
+  // src/Model/Files/fileModel.ts
+  var FileModel = class _FileModel {
+    // init
+    constructor(storageModel2, settingsModel2, chatModel) {
+      this.getFileContainerPath = () => {
+        return [...this.basePath, "data" /* Data */];
+      };
+      this.getModelContainerPath = (modelName) => {
+        return [...this.basePath, "model" /* Model */, modelName];
+      };
+      this.getFilePath = (fileId) => {
+        return [...this.getFileContainerPath(), fileId];
+      };
+      this.getFileContentPath = (fileId, fileContentId) => {
+        const filePath = this.getFilePath(fileId);
+        return [...filePath, fileContentId];
+      };
+      // handlers
+      this.handleStringifiedFileContent = (stringifiedFileContent) => {
+        const fileContent = parseValidObject(
+          stringifiedFileContent,
+          FileContentReference
+        );
+        if (fileContent == null) return;
+        this.handleFileContent(fileContent);
+      };
+      this.handleFileContent = (fileContent) => {
+        const didStore = this.storeFileContent(fileContent);
+        if (didStore == false) return;
+        switch (fileContent.type) {
+          case "board-info":
+          case "task":
+            this.boardsAndTasksModel.handleFileContent(fileContent);
+            break;
+          case "reaction":
+            this.chatModel.handleReaction(fileContent);
+            break;
+        }
+      };
+      // methods
+      this.addFileContentAndSend = (fileContent) => {
+        this.handleFileContent(fileContent);
+        this.chatModel.sendMessage("", void 0, fileContent);
+      };
+      // storage
+      this.storeFileContent = (fileContent) => {
+        const fileContentPath = this.getFileContentPath(
+          fileContent.fileId,
+          fileContent.fileContentId
+        );
+        const existingFileContent = this.storageModel.read(fileContentPath);
+        if (existingFileContent != null) return false;
+        const stringifiedContent = stringify(fileContent);
+        this.storageModel.write(fileContentPath, stringifiedContent);
+        return true;
+      };
+      this.listFileIds = () => {
+        return this.storageModel.list(this.basePath);
+      };
+      this.listFileContentIds = (fileId) => {
+        const filePath = this.getFilePath(fileId);
+        return this.storageModel.list(filePath);
+      };
+      this.selectLatestFileContentId = (fileContentIds) => {
+        return fileContentIds[fileContentIds.length - 1];
+      };
+      this.getFileContent = (fileId, fileContentName, reference) => {
+        const filePath = this.getFileContentPath(
+          fileId,
+          fileContentName
+        );
+        const fileContentOrNull = this.storageModel.readStringifiable(
+          filePath,
+          reference
+        );
+        return fileContentOrNull;
+      };
+      this.getLatestFileContent = (fileId, reference) => {
+        const fileContentsIds = this.listFileContentIds(fileId);
+        const latestFileContentId = this.selectLatestFileContentId(fileContentsIds);
+        if (latestFileContentId == void 0) return null;
+        const fileContent = this.getFileContent(
+          fileId,
+          latestFileContentId,
+          reference
+        );
+        return fileContent;
+      };
+      this.chatModel = chatModel;
+      this.settingsModel = settingsModel2;
+      this.storageModel = storageModel2;
+      this.boardsAndTasksModel = new BoardsAndTasksModel(
+        this.storageModel,
+        this.settingsModel,
+        chatModel,
+        this
+      );
+    }
+    // paths
+    get basePath() {
+      return StorageModel.getPath(
+        "chat" /* Chat */,
+        filePaths.chat.files(this.chatModel.id)
+      );
+    }
+    static {
+      // utility
+      this.generateFileContentId = (creationDate) => {
+        return creationDate + v4_default();
+      };
+    }
+    static {
+      this.createFileContent = (fileId, type) => {
+        const creationDate = createTimestamp();
+        const fileContentId = _FileModel.generateFileContentId(creationDate);
+        return {
+          dataVersion: DATA_VERSION,
+          fileId,
+          fileContentId,
+          creationDate,
+          type
+        };
+      };
+    }
+  };
+  var FileContentReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: ""
+  };
+
+  // src/Model/Files/calendarModel.ts
+  var CalendarModel = class _CalendarModel {
+    // init
+    constructor(storageModel2, settingsModel2, fileModel) {
+      this.getViewPath = () => {
+        return [...this.basePath, "view" /* ModelView */];
+      };
+      this.getMonthContainerPath = () => {
+        return [...this.basePath, "months" /* Months */];
+      };
+      this.getMonthPath = (monthString) => {
+        return [...this.getMonthContainerPath(), monthString];
+      };
+      // task references
+      this.storeTaskReference = (taskFileContent) => {
+        if (taskFileContent.date == void 0) return;
+        const monthString = _CalendarModel.isoToMonthString(
+          taskFileContent.date
+        );
+        const monthPath = this.getMonthPath(monthString);
+        const referencePath = [...monthPath, taskFileContent.fileId];
+        this.storageModel.write(referencePath, "");
+      };
+      this.deleteTaskReference = (monthString, taskId) => {
+        const monthPath = this.getMonthPath(monthString);
+        const referencePath = [...monthPath, taskId];
+        this.storageModel.write(referencePath, "");
+      };
+      // data
+      this.listTaskIds = (monthString) => {
+        const monthPath = this.getMonthPath(monthString);
+        return this.storageModel.list(monthPath);
+      };
+      // util
+      this.generateMonthGrid = (coreViewModel2, year, month, defaultValueCreator) => {
+        const date = coreViewModel2.unwrappedTodayDate;
+        const isCurrentMonth = year == date.getFullYear() && month == date.getMonth() + 1;
+        date.setDate(1);
+        date.setMonth(month - 1);
+        date.setFullYear(year);
+        const firstWeekdayOfMonth = date.getDay();
+        const firstDayOfWeekSetting = parseInt(
+          this.settingsModel.firstDayOfWeek
+        );
+        const offset = firstWeekdayOfMonth < firstDayOfWeekSetting ? 7 - firstDayOfWeekSetting : firstWeekdayOfMonth - firstDayOfWeekSetting;
+        date.setMonth(month);
+        date.setDate(-1);
+        const daysInMonth = date.getDate() + 1;
+        const grid = {
+          offset,
+          firstDayOfWeek: parseInt(this.settingsModel.firstDayOfWeek),
+          isCurrentMonth,
+          year,
+          month,
+          days: {}
+        };
+        for (let i = 0; i < daysInMonth; i++) {
+          const paddedDate = _CalendarModel.padZero(
+            (i + 1).toString()
+          );
+          grid.days[paddedDate] = defaultValueCreator();
+        }
+        return grid;
+      };
+      this.storageModel = storageModel2;
+      this.settingsModel = settingsModel2;
+      this.fileModel = fileModel;
+    }
+    // paths
+    get basePath() {
+      return this.fileModel.getModelContainerPath(
+        "calendar" /* ModelCalendar */
+      );
+    }
+    static {
+      // utility
+      this.isoToMonthString = (dateISOString) => {
+        const [year, month, _] = dateISOString.split("-");
+        return _CalendarModel.getMonthString(year, month);
+      };
+    }
+    static {
+      this.isoToDateString = (dateISOString) => {
+        const [year, month, date, _] = dateISOString.split("-");
+        const paddedDate = _CalendarModel.padZero(date ?? "");
+        return paddedDate;
+      };
+    }
+    static {
+      this.getMonthString = (year = "", month = "") => {
+        const paddedYear = year.padStart(4, "0");
+        const paddedMonth = _CalendarModel.padZero(month);
+        return `${paddedYear}-${paddedMonth}`;
+      };
+    }
+    static {
+      this.getISODateString = (year, month, date) => {
+        const monthString = _CalendarModel.getMonthString(year, month);
+        const paddedDate = _CalendarModel.padZero(date);
+        return `${monthString}-${paddedDate}`;
+      };
+    }
+    static {
+      this.padZero = (input) => {
+        return input.padStart(2, "0");
+      };
+    }
+  };
+
   // src/Model/Utility/utility.ts
   function generateRandomToken(length) {
     const array = new Uint8Array(length);
@@ -1063,8 +1755,7 @@
     return date.toISOString().split("T")[0];
   }
   function formatTime(date) {
-    const time = [date.getHours(), date.getMinutes()];
-    return time.join(":");
+    return [date.getHours(), date.getMinutes()].map((x) => CalendarModel.padZero(x.toString())).join(":");
   }
   function checkDoesObjectMatchSearch(query, getStringsOfObject, object) {
     if (query == "") return true;
@@ -1429,7 +2120,9 @@
       this.update = async () => {
         if (!this.swRegistration) return;
         await this.swRegistration.update();
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       };
       this.translations = allTranslations[settingsModel2.language] || allTranslations.en;
       this.latestVersion.subscribe((latestVersion) => {
@@ -1548,230 +2241,6 @@
       this.registerKeyStroke("e", this.storageViewModel.showStorageModal);
       this.registerKeyStroke("x", this.connectionViewModel.disconnect);
       this.registerKeyStroke("c", this.connectionViewModel.connect);
-    }
-  };
-
-  // src/Model/Global/storageModel.ts
-  var PATH_COMPONENT_SEPARATOR = "\\";
-  var StorageModel = class _StorageModel {
-    // init
-    constructor() {
-      this.storageEntryTree = {};
-      // read
-      this.read = (pathComponents) => {
-        const pathString = _StorageModel.pathComponentsToString(
-          ...pathComponents
-        );
-        return localStorage.getItem(pathString);
-      };
-      this.list = (pathComponents) => {
-        let currentParent = this.storageEntryTree;
-        for (const component of pathComponents) {
-          const nextParent = currentParent[component];
-          if (nextParent == void 0) return [];
-          currentParent = nextParent;
-        }
-        return [...Object.keys(currentParent).sort(localeCompare)];
-      };
-      // write
-      this.write = (pathComponents, value) => {
-        const pathString = _StorageModel.pathComponentsToString(
-          ...pathComponents
-        );
-        localStorage.setItem(pathString, value);
-        this.updateTree(...pathComponents);
-      };
-      this.remove = (pathComponents, shouldInitialize = true) => {
-        const pathString = _StorageModel.pathComponentsToString(
-          ...pathComponents
-        );
-        localStorage.removeItem(pathString);
-        if (shouldInitialize == true) {
-          this.initializeTree();
-        }
-      };
-      this.rename = (sourcePathComponents, destinationPathComponents, shouldInitialize = true) => {
-        const content = this.read(sourcePathComponents);
-        if (content == null) return false;
-        this.write(destinationPathComponents, content);
-        this.remove(sourcePathComponents);
-        if (shouldInitialize == true) {
-          this.initializeTree();
-        }
-        return true;
-      };
-      // recursion
-      this.recurse = (rootDirectory, fn) => {
-        loop_over_files: for (const key of Object.keys(localStorage)) {
-          const pathComponentsOfCurrentEntity = _StorageModel.stringToPathComponents(key);
-          loop_over_path_components: for (let i = 0; i < rootDirectory.length; i++) {
-            if (!pathComponentsOfCurrentEntity[i]) continue loop_over_files;
-            if (pathComponentsOfCurrentEntity[i] != rootDirectory[i])
-              continue loop_over_files;
-          }
-          fn(pathComponentsOfCurrentEntity);
-        }
-        this.initializeTree();
-      };
-      this.removeRecursively = (pathComponents) => {
-        this.recurse(
-          pathComponents,
-          (path) => this.remove(path, false)
-        );
-        this.initializeTree();
-      };
-      this.renameRecursively = (sourcePathComponents, destinationPathComponents) => {
-        this.recurse(sourcePathComponents, (path) => {
-          const relativePathOfCurrentEntity = path.slice(
-            sourcePathComponents.length
-          );
-          const destinationPathComponentsOfCurrentEntity = [
-            ...destinationPathComponents,
-            ...relativePathOfCurrentEntity
-          ];
-          this.rename(path, destinationPathComponentsOfCurrentEntity, false);
-        });
-        this.initializeTree();
-      };
-      // stringifiable
-      this.writeStringifiable = (pathComponents, value) => {
-        const valueString = stringify(value);
-        this.write(pathComponents, valueString);
-      };
-      this.readStringifiable = (pathComponents, reference) => {
-        const valueString = this.read(pathComponents);
-        if (!valueString) return null;
-        const object = parseValidObject(valueString, reference);
-        if (object == null) return null;
-        return object;
-      };
-      // cleaning & usage
-      this.removeJunk = () => {
-        this.recurse([], (path) => {
-          if (path[0] == DATA_VERSION) return;
-          this.remove(path);
-        });
-      };
-      this.determineCapacity = () => {
-        const KEY = "storage-capacity-check";
-        let chunk = "0";
-        for (let i = 0; i < 1024 * 256; i++) {
-          chunk += "0";
-        }
-        localStorage.setItem(KEY, "");
-        while (true) {
-          try {
-            const current = localStorage.getItem(KEY);
-            console.log(current);
-            localStorage.setItem(KEY, current + chunk);
-          } catch (e) {
-            const capacity = this.calculateUsage();
-            localStorage.removeItem(KEY);
-            return capacity;
-          }
-        }
-      };
-      this.calculateUsage = () => {
-        let data = JSON.stringify(localStorage);
-        const encoder = new TextEncoder();
-        const encoded = encoder.encode(data);
-        const bytes = encoded.byteLength;
-        const mb = bytesToMB(bytes);
-        const rounded = Math.round(mb * 100) / 100;
-        return rounded;
-      };
-      // tree
-      this.initializeTree = () => {
-        console.log("initializing tree");
-        this.storageEntryTree = {};
-        for (const key of Object.keys(localStorage)) {
-          const components = _StorageModel.stringToPathComponents(key);
-          this.updateTree(...components);
-        }
-      };
-      this.updateTree = (...pathComponents) => {
-        let currentParent = this.storageEntryTree;
-        for (const pathPart of pathComponents) {
-          if (!currentParent[pathPart]) {
-            currentParent[pathPart] = {};
-          }
-          currentParent = currentParent[pathPart];
-        }
-      };
-      this.printTree = () => {
-        return stringify(this.storageEntryTree);
-      };
-      this.initializeTree();
-    }
-    static {
-      // utility
-      this.getFileName = (pathComponents) => {
-        return pathComponents[pathComponents.length - 1] || "\\";
-      };
-    }
-    static {
-      this.getFileNameFromString = (pathString) => {
-        const pathComponents = this.stringToPathComponents(pathString);
-        return pathComponents[pathComponents.length - 1] || "\\";
-      };
-    }
-    static {
-      this.pathComponentsToString = (...pathComponents) => {
-        return pathComponents.filter((x) => x != "").join(PATH_COMPONENT_SEPARATOR);
-      };
-    }
-    static {
-      this.stringToPathComponents = (string) => {
-        return string.split(PATH_COMPONENT_SEPARATOR).filter((x) => x != "");
-      };
-    }
-    static {
-      this.join = (...items) => {
-        let allComponents = [];
-        for (const item of items) {
-          const parts = this.stringToPathComponents(item);
-          allComponents.push(...parts);
-        }
-        return _StorageModel.pathComponentsToString(...allComponents);
-      };
-    }
-    static getPath(locationName, filePath) {
-      return [DATA_VERSION, locationName, ...filePath];
-    }
-  };
-  var filePaths = {
-    connectionModel: {
-      socketAddress: ["socket-address"],
-      reconnectAddress: ["reconnect-address"],
-      outbox: ["outbox"],
-      mailboxes: ["mailboxes"],
-      previousAddresses: ["previous-addresses"]
-    },
-    chat: {
-      base: [],
-      chatBase: (id) => [id],
-      info: (id) => [...filePaths.chat.chatBase(id), "info"],
-      color: (id) => [...filePaths.chat.chatBase(id), "color"],
-      messages: (id) => [...filePaths.chat.chatBase(id), "messages"],
-      reactions: (id) => [
-        ...filePaths.chat.chatBase(id),
-        "reactions"
-      ],
-      previousFilter: (id) => [...filePaths.chat.chatBase(id), "previous-filter"],
-      lastUsedPage: (id) => [
-        ...filePaths.chat.chatBase(id),
-        "last-used-page"
-      ],
-      files: (id) => [...filePaths.chat.chatBase(id), "files"]
-    },
-    notificationModel: {
-      base: []
-    },
-    settingsModel: {
-      username: ["user-name"],
-      firstDayOfWeek: ["first-day-of-week"],
-      language: ["language"],
-      theme: ["theme"]
     }
   };
 
@@ -2485,474 +2954,6 @@
     }
   };
 
-  // src/Model/Files/fileModel.ts
-  var FileModel = class _FileModel {
-    // init
-    constructor(storageModel2, settingsModel2, chatModel) {
-      this.getFileContainerPath = () => {
-        return [...this.basePath, "data" /* Data */];
-      };
-      this.getModelContainerPath = (modelName) => {
-        return [...this.basePath, "model" /* Model */, modelName];
-      };
-      this.getFilePath = (fileId) => {
-        return [...this.getFileContainerPath(), fileId];
-      };
-      this.getFileContentPath = (fileId, fileContentId) => {
-        const filePath = this.getFilePath(fileId);
-        return [...filePath, fileContentId];
-      };
-      // handlers
-      this.handleStringifiedFileContent = (stringifiedFileContent) => {
-        const fileContent = parseValidObject(
-          stringifiedFileContent,
-          FileContentReference
-        );
-        if (fileContent == null) return;
-        this.handleFileContent(fileContent);
-      };
-      this.handleFileContent = (fileContent) => {
-        const didStore = this.storeFileContent(fileContent);
-        if (didStore == false) return;
-        switch (fileContent.type) {
-          case "board-info":
-          case "task":
-            this.boardsAndTasksModel.handleFileContent(fileContent);
-            break;
-          case "reaction":
-            this.chatModel.handleReaction(fileContent);
-            break;
-        }
-      };
-      // methods
-      this.addFileContentAndSend = (fileContent) => {
-        this.handleFileContent(fileContent);
-        this.chatModel.sendMessage("", void 0, fileContent);
-      };
-      // storage
-      this.storeFileContent = (fileContent) => {
-        const fileContentPath = this.getFileContentPath(
-          fileContent.fileId,
-          fileContent.fileContentId
-        );
-        const existingFileContent = this.storageModel.read(fileContentPath);
-        if (existingFileContent != null) return false;
-        const stringifiedContent = stringify(fileContent);
-        this.storageModel.write(fileContentPath, stringifiedContent);
-        return true;
-      };
-      this.listFileIds = () => {
-        return this.storageModel.list(this.basePath);
-      };
-      this.listFileContentIds = (fileId) => {
-        const filePath = this.getFilePath(fileId);
-        return this.storageModel.list(filePath);
-      };
-      this.selectLatestFileContentId = (fileContentIds) => {
-        return fileContentIds[fileContentIds.length - 1];
-      };
-      this.getFileContent = (fileId, fileContentName, reference) => {
-        const filePath = this.getFileContentPath(
-          fileId,
-          fileContentName
-        );
-        const fileContentOrNull = this.storageModel.readStringifiable(
-          filePath,
-          reference
-        );
-        return fileContentOrNull;
-      };
-      this.getLatestFileContent = (fileId, reference) => {
-        const fileContentsIds = this.listFileContentIds(fileId);
-        const latestFileContentId = this.selectLatestFileContentId(fileContentsIds);
-        if (latestFileContentId == void 0) return null;
-        const fileContent = this.getFileContent(
-          fileId,
-          latestFileContentId,
-          reference
-        );
-        return fileContent;
-      };
-      this.chatModel = chatModel;
-      this.settingsModel = settingsModel2;
-      this.storageModel = storageModel2;
-      this.boardsAndTasksModel = new BoardsAndTasksModel(
-        this.storageModel,
-        this.settingsModel,
-        chatModel,
-        this
-      );
-    }
-    // paths
-    get basePath() {
-      return StorageModel.getPath(
-        "chat" /* Chat */,
-        filePaths.chat.files(this.chatModel.id)
-      );
-    }
-    static {
-      // utility
-      this.generateFileContentId = (creationDate) => {
-        return creationDate + v4_default();
-      };
-    }
-    static {
-      this.createFileContent = (fileId, type) => {
-        const creationDate = createTimestamp();
-        const fileContentId = _FileModel.generateFileContentId(creationDate);
-        return {
-          dataVersion: DATA_VERSION,
-          fileId,
-          fileContentId,
-          creationDate,
-          type
-        };
-      };
-    }
-  };
-  var FileContentReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "",
-    fileContentId: "",
-    creationDate: "",
-    type: ""
-  };
-
-  // src/Model/Files/calendarModel.ts
-  var CalendarModel = class _CalendarModel {
-    // init
-    constructor(storageModel2, settingsModel2, fileModel) {
-      this.getViewPath = () => {
-        return [...this.basePath, "view" /* ModelView */];
-      };
-      this.getMonthContainerPath = () => {
-        return [...this.basePath, "months" /* Months */];
-      };
-      this.getMonthPath = (monthString) => {
-        return [...this.getMonthContainerPath(), monthString];
-      };
-      // task references
-      this.storeTaskReference = (taskFileContent) => {
-        if (taskFileContent.date == void 0) return;
-        const monthString = _CalendarModel.isoToMonthString(
-          taskFileContent.date
-        );
-        const monthPath = this.getMonthPath(monthString);
-        const referencePath = [...monthPath, taskFileContent.fileId];
-        this.storageModel.write(referencePath, "");
-      };
-      this.deleteTaskReference = (monthString, taskId) => {
-        const monthPath = this.getMonthPath(monthString);
-        const referencePath = [...monthPath, taskId];
-        this.storageModel.write(referencePath, "");
-      };
-      // data
-      this.listTaskIds = (monthString) => {
-        const monthPath = this.getMonthPath(monthString);
-        return this.storageModel.list(monthPath);
-      };
-      // util
-      this.generateMonthGrid = (coreViewModel2, year, month, defaultValueCreator) => {
-        const date = coreViewModel2.unwrappedTodayDate;
-        const isCurrentMonth = year == date.getFullYear() && month == date.getMonth() + 1;
-        date.setDate(1);
-        date.setMonth(month - 1);
-        date.setFullYear(year);
-        const firstWeekdayOfMonth = date.getDay();
-        const firstDayOfWeekSetting = parseInt(
-          this.settingsModel.firstDayOfWeek
-        );
-        const offset = firstWeekdayOfMonth < firstDayOfWeekSetting ? 7 - firstDayOfWeekSetting : firstWeekdayOfMonth - firstDayOfWeekSetting;
-        date.setMonth(month);
-        date.setDate(-1);
-        const daysInMonth = date.getDate() + 1;
-        const grid = {
-          offset,
-          firstDayOfWeek: parseInt(this.settingsModel.firstDayOfWeek),
-          isCurrentMonth,
-          year,
-          month,
-          days: {}
-        };
-        for (let i = 0; i < daysInMonth; i++) {
-          const paddedDate = _CalendarModel.padDateOrMonth(
-            (i + 1).toString()
-          );
-          grid.days[paddedDate] = defaultValueCreator();
-        }
-        return grid;
-      };
-      this.storageModel = storageModel2;
-      this.settingsModel = settingsModel2;
-      this.fileModel = fileModel;
-    }
-    // paths
-    get basePath() {
-      return this.fileModel.getModelContainerPath(
-        "calendar" /* ModelCalendar */
-      );
-    }
-    static {
-      // utility
-      this.isoToMonthString = (dateISOString) => {
-        const [year, month, _] = dateISOString.split("-");
-        return _CalendarModel.getMonthString(year, month);
-      };
-    }
-    static {
-      this.isoToDateString = (dateISOString) => {
-        const [year, month, date, _] = dateISOString.split("-");
-        const paddedDate = _CalendarModel.padDateOrMonth(date ?? "");
-        return paddedDate;
-      };
-    }
-    static {
-      this.getMonthString = (year = "", month = "") => {
-        const paddedYear = year.padStart(4, "0");
-        const paddedMonth = _CalendarModel.padDateOrMonth(month);
-        return `${paddedYear}-${paddedMonth}`;
-      };
-    }
-    static {
-      this.getISODateString = (year, month, date) => {
-        const monthString = _CalendarModel.getMonthString(year, month);
-        const paddedDate = _CalendarModel.padDateOrMonth(date);
-        return `${monthString}-${paddedDate}`;
-      };
-    }
-    static {
-      this.padDateOrMonth = (input) => {
-        return input.padStart(2, "0");
-      };
-    }
-  };
-
-  // src/colors.ts
-  var Colors = /* @__PURE__ */ ((Colors2) => {
-    Colors2["Standard"] = "standard";
-    Colors2["Coral"] = "coral";
-    Colors2["Yellow"] = "yellow";
-    Colors2["Green"] = "green";
-    Colors2["LightBlue"] = "lightblue";
-    Colors2["Blue"] = "blue";
-    Colors2["purple"] = "purple";
-    return Colors2;
-  })(Colors || {});
-
-  // src/Model/Files/boardsAndTasksModel.ts
-  var BoardsAndTasksModel = class _BoardsAndTasksModel {
-    // init
-    constructor(storageModel2, settingsModel2, chatModel, fileModel) {
-      // data
-      this.boardHandlerManager = new HandlerManager();
-      this.taskHandlerManager = new HandlerManager();
-      // paths
-      this.getBasePath = () => {
-        return this.fileModel.getModelContainerPath("tasks" /* ModelTask */);
-      };
-      this.getViewPath = () => {
-        return [...this.getBasePath(), "view" /* ModelView */];
-      };
-      this.getBoardFilePath = (boardId) => {
-        return [...this.fileModel.getFilePath(boardId)];
-      };
-      this.getTaskFilePath = (taskId) => {
-        return [...this.fileModel.getFilePath(taskId)];
-      };
-      this.getBoardContainerPath = () => {
-        return [...this.getBasePath(), "boards" /* Boards */];
-      };
-      this.getBoardDirectoryPath = (boardId) => {
-        return [...this.getBoardContainerPath(), boardId];
-      };
-      this.getTaskContainerPath = (boardId) => {
-        return [
-          ...this.getBoardDirectoryPath(boardId),
-          "tasks" /* BoardTasks */
-        ];
-      };
-      this.getTaskReferencePath = (boardId, fileId) => {
-        return [...this.getTaskContainerPath(boardId), fileId];
-      };
-      // handlers
-      this.handleFileContent = (fileContent) => {
-        if (checkMatchesObjectStructure(
-          fileContent,
-          BoardInfoFileContentReference
-        ) == true) {
-          this.handleBoard(fileContent);
-        } else if (checkMatchesObjectStructure(
-          fileContent,
-          TaskFileContentReference
-        ) == true) {
-          this.handleTask(fileContent);
-        }
-      };
-      this.handleBoard = (boardInfoFileContent) => {
-        this.updateBoard(boardInfoFileContent);
-      };
-      this.handleTask = (taskFileContent) => {
-        this.updateTask(taskFileContent);
-      };
-      // boards
-      this.createBoard = (name) => {
-        const boardInfoFileContent = _BoardsAndTasksModel.createBoardInfoFileContent(
-          v4_default(),
-          name,
-          "standard" /* Standard */
-        );
-        return boardInfoFileContent;
-      };
-      this.updateBoard = (boardInfoFileContent) => {
-        this.storeBoard(boardInfoFileContent);
-        this.boardHandlerManager.trigger(boardInfoFileContent);
-      };
-      this.updateBoardAndSend = (boardInfoFileContent) => {
-        this.updateBoard(boardInfoFileContent);
-        this.chatModel.sendMessage("", void 0, boardInfoFileContent);
-      };
-      this.storeBoard = (boardInfoFileContent) => {
-        this.fileModel.storeFileContent(boardInfoFileContent);
-        const boardDirectoryPath = this.getBoardDirectoryPath(
-          boardInfoFileContent.fileId
-        );
-        this.storageModel.write(boardDirectoryPath, "");
-      };
-      this.deleteBoard = (boardId) => {
-        const boardFilePath = this.getBoardFilePath(boardId);
-        const boardDirectoryPath = this.getBoardDirectoryPath(boardId);
-        this.storageModel.removeRecursively(boardFilePath);
-        this.storageModel.removeRecursively(boardDirectoryPath);
-      };
-      this.listBoardIds = () => {
-        const boardContainerPath = this.getBoardContainerPath();
-        const boardIds = this.storageModel.list(boardContainerPath);
-        return boardIds;
-      };
-      this.getBoardInfo = (fileId) => {
-        const boardInfoFileContentOrNull = this.fileModel.getLatestFileContent(
-          fileId,
-          BoardInfoFileContentReference
-        );
-        return boardInfoFileContentOrNull;
-      };
-      this.getBoardName = (boardId) => {
-        const boardInfo = this.getBoardInfo(boardId);
-        if (boardInfo == null) return "";
-        return boardInfo.name;
-      };
-      //tasks
-      this.createTask = (boardId) => {
-        const taskFileContent = _BoardsAndTasksModel.createTaskFileContent(v4_default(), "", boardId);
-        return taskFileContent;
-      };
-      this.updateTask = (taskFileContent) => {
-        this.storeTask(taskFileContent);
-        this.taskHandlerManager.trigger(taskFileContent);
-      };
-      this.updateTaskAndSend = (taskFileContent) => {
-        this.updateTask(taskFileContent);
-        this.chatModel.sendMessage("", void 0, taskFileContent);
-      };
-      this.storeTask = (taskFileContent) => {
-        this.fileModel.storeFileContent(taskFileContent);
-        const taskReferencePath = this.getTaskReferencePath(
-          taskFileContent.boardId,
-          taskFileContent.fileId
-        );
-        this.storageModel.write(taskReferencePath, "");
-        this.calendarModel.storeTaskReference(taskFileContent);
-      };
-      this.listTaskIds = (boardId) => {
-        const taskContainerPath = this.getTaskContainerPath(boardId);
-        const fileIds = this.storageModel.list(taskContainerPath);
-        return fileIds;
-      };
-      this.listTaskVersionIds = (taskId) => {
-        const versionIds = this.fileModel.listFileContentIds(taskId);
-        return versionIds;
-      };
-      this.getLatestTaskFileContent = (taskId) => {
-        const taskFileContentOrNull = this.fileModel.getLatestFileContent(
-          taskId,
-          TaskFileContentReference
-        );
-        return taskFileContentOrNull;
-      };
-      this.getSpecificTaskFileContent = (taskId, versionId) => {
-        const taskFileContentOrNull = this.fileModel.getFileContent(
-          taskId,
-          versionId,
-          TaskFileContentReference
-        );
-        return taskFileContentOrNull;
-      };
-      this.deleteTask = (boardId, taskId) => {
-        const taskFilePath = this.getTaskFilePath(taskId);
-        this.storageModel.removeRecursively(taskFilePath);
-        this.deleteTaskReference(boardId, taskId);
-      };
-      this.deleteTaskReference = (boardId, taskId) => {
-        const taskReferencePath = this.getTaskReferencePath(
-          boardId,
-          taskId
-        );
-        this.storageModel.removeRecursively(taskReferencePath);
-      };
-      this.storageModel = storageModel2;
-      this.settingsModel = settingsModel2;
-      this.chatModel = chatModel;
-      this.fileModel = fileModel;
-      this.calendarModel = new CalendarModel(
-        this.storageModel,
-        this.settingsModel,
-        this.fileModel
-      );
-    }
-    static {
-      // utility
-      this.createBoardInfoFileContent = (fileId, name, color) => {
-        const fileContent = FileModel.createFileContent(fileId, "board-info");
-        return {
-          ...fileContent,
-          name,
-          color
-        };
-      };
-    }
-    static {
-      this.createTaskFileContent = (fileId, name, boardId) => {
-        const fileContent = FileModel.createFileContent(
-          fileId,
-          "task"
-        );
-        return {
-          ...fileContent,
-          name,
-          boardId
-        };
-      };
-    }
-  };
-  var BoardInfoFileContentReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "string",
-    fileContentId: "",
-    creationDate: "",
-    type: "board-info",
-    name: "",
-    color: ""
-  };
-  var TaskFileContentReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "string",
-    fileContentId: "",
-    creationDate: "",
-    type: "task",
-    name: "",
-    boardId: ""
-  };
-
   // src/ViewModel/Pages/taskContainingPageViewModel.ts
   var TaskContainingPageViewModel = class extends Context {
     // init
@@ -3042,7 +3043,7 @@
         this.updateTaskIndices();
       };
       this.getEventsForDate = () => {
-        const paddedDate = CalendarModel.padDateOrMonth(
+        const paddedDate = CalendarModel.padZero(
           this.selectedDate.toString()
         );
         if (this.monthGrid.value == void 0) {
@@ -3138,7 +3139,9 @@
         }
         const tasks = this.getEventsForDate();
         if (tasks == void 0) return;
-        for (const task of [...tasks.value.values()]) {
+        const taskArray = [...tasks.value.values()];
+        const sorted = taskArray.sort((a, b) => a.index.value - b.index.value);
+        for (const task of sorted) {
           if (task.time.value <= this.coreViewModel.time.value) continue;
           this.nextTask.value = task;
           break;
@@ -3198,7 +3201,7 @@
       );
     }
     get selectedDateString() {
-      return [this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value].map((x, i) => i == 0 ? x : CalendarModel.padDateOrMonth(x.toString())).join("-");
+      return [this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value].map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString())).join("-");
     }
   };
 

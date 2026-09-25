@@ -123,7 +123,9 @@ export default class CoreViewModel {
     update = async (): Promise<void> => {
 	if (!this.swRegistration) return;
 	await this.swRegistration.update();
+	setTimeout(()=>{
 	window.location.reload();
+	}, 500);
     }
 
     // init

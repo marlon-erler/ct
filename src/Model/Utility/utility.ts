@@ -1,5 +1,7 @@
 import { checkIsValidObject, checkMatchesObjectStructure } from "./typeSafety";
 import * as React from "../../react";
+import {CalendarPage} from "../../View/ChatPages/calendarPage";
+import CalendarModel from "../Files/calendarModel";
 
 export interface Stringifiable {
     toString(): string;
@@ -23,8 +25,9 @@ export function formatISO(date: Date): string {
 }
 
 export function formatTime(date: Date): string {
-    const time = [date.getHours(), date.getMinutes()];
-    return time.join(":");
+    return [date.getHours(), date.getMinutes()]
+	.map(x => CalendarModel.padZero(x.toString()))
+	.join(":");
 }
 
 // filters

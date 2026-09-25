@@ -102,7 +102,7 @@ export default class CalendarModel {
         };
 
         for (let i = 0; i < daysInMonth; i++) {
-            const paddedDate: string = CalendarModel.padDateOrMonth(
+            const paddedDate: string = CalendarModel.padZero(
                 (i + 1).toString(),
             );
             grid.days[paddedDate] = defaultValueCreator();
@@ -130,13 +130,13 @@ export default class CalendarModel {
 
     static isoToDateString = (dateISOString: string): string => {
         const [year, month, date, _] = dateISOString.split("-");
-        const paddedDate = CalendarModel.padDateOrMonth(date ?? "");
+        const paddedDate = CalendarModel.padZero(date ?? "");
         return paddedDate;
     };
 
     static getMonthString = (year: string = "", month: string = ""): string => {
         const paddedYear: string = year.padStart(4, "0");
-        const paddedMonth: string = CalendarModel.padDateOrMonth(month);
+        const paddedMonth: string = CalendarModel.padZero(month);
         return `${paddedYear}-${paddedMonth}`;
     };
 
@@ -146,11 +146,11 @@ export default class CalendarModel {
         date: string,
     ): string => {
         const monthString: string = CalendarModel.getMonthString(year, month);
-        const paddedDate: string = CalendarModel.padDateOrMonth(date);
+        const paddedDate: string = CalendarModel.padZero(date);
         return `${monthString}-${paddedDate}`;
     };
 
-    static padDateOrMonth = (input: string): string => {
+    static padZero = (input: string): string => {
         return input.padStart(2, "0");
     };
 }

@@ -23,7 +23,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
 
     get selectedDateString(): string {
 	return [this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value]
-	    .map((x, i) => i == 0 ? x : CalendarModel.padDateOrMonth(x.toString()))
+	    .map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString()))
 	    .join("-");
     }
 
@@ -67,7 +67,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     getEventsForDate = (): React.MapState<TaskViewModel> | undefined => {
-        const paddedDate: string = CalendarModel.padDateOrMonth(
+        const paddedDate: string = CalendarModel.padZero(
             this.selectedDate.toString(),
         );
 
@@ -190,7 +190,9 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
 
 	const tasks = this.getEventsForDate();
 	if (tasks == undefined) return;
-	for (const task of [...tasks.value.values()]) {
+	const taskArray =[...tasks.value.values()];
+	const sorted = taskArray.sort((a, b) => a.index.value - b.index.value);
+	for (const task of sorted) {
 	    if (task.time.value <= this.coreViewModel.time.value) continue;
 	    this.nextTask.value = task;
 	    break;
