@@ -1028,10 +1028,7 @@ html {
     margin: 0px;
     
     position: fixed;
-    top: var(--safe-area-top);
-    left: var(--safe-area-left);
-    right: var(--safe-area-right);
-    bottom: var(--safe-area-bottom);
+    inset: 0px;
 }
 
 body,
