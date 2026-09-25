@@ -42,7 +42,7 @@ main {
 
     background-image: radial-gradient(var(--sky-1), var(--sky-2));
     
-    opacity: 0.5;
+    opacity: 0.4;
 }
 
 body {
@@ -52,11 +52,11 @@ body {
 }
 
 #background-wrapper #grass-1 {
-    --color-1: hsl(150, 60%, 30%);
-    --color-2: hsl(150, 60%, 25%);
+    --color-1: hsl(104.61, 100%, 46.85%);
+    --color-2: hsl(37.43, 88.75%, 53.58%);
 
     filter: var(--backdrop-grass-filter);
-    opacity: 0.4;
+    opacity: 0.3;
 
     background-image: linear-gradient(
         350deg,
@@ -71,7 +71,7 @@ body {
     --color-2: hsl(110, 60%, 35%);
 
     filter: var(--backdrop-grass-filter);
-    opacity: 0.4;
+    opacity: 0.3;
 
     background-image: linear-gradient(
         9deg,

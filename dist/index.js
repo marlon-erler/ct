@@ -2066,15 +2066,15 @@
   };
   var DynamicSceneDay = {
     hue1: 190,
-    hue2: 180,
+    hue2: 230,
     saturation: 100,
     luma: 70,
-    brightness: 1.4,
+    brightness: 1.1,
     baseTheme: "light" /* Light */
   };
   var DynamicSceneAfternoon = {
-    hue1: 195,
-    hue2: 220,
+    hue1: 220,
+    hue2: 250,
     saturation: 100,
     luma: 50,
     brightness: 0.8,

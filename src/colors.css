@@ -77,12 +77,11 @@ body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).tile {
     [color]:not([color="standard"]).background {
         --luma: var(--background-luma);
         --sat: 100%;
-        background: hsl(var(--hue), var(--sat), var(--luma), 20%);
+        background: hsl(var(--hue), var(--sat), var(--luma), 40%);
     }
 
     body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).background {
         --luma: var(--background-luma-dark);
-        --sat: 100%;
     }
 
     [color="standard"].background {
@@ -93,7 +92,7 @@ body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).tile {
 /* subtle */
 body [color]:not([color="standard"]).subtle-background {
     --luma: var(--subtle-luma);
-    background: hsl(var(--hue), 100%, var(--luma), 50%);
+    background: hsl(var(--hue), 100%, var(--luma), 40%);
 }
 
 body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).subtle-background {
@@ -123,9 +122,9 @@ body[theme="black"] * {
 }
 
 [color="yellow"] {
-    --hue: 50;
+    --hue: 60;
 
-    --accent-luma: 50%;
+    --accent-luma: 60%;
     --accent-luma-dark: 60%;
 
     --accent-text-luma: 0%;
