@@ -12,7 +12,7 @@
     --surface-active: hsla(var(--hue), 100%, 5%, 15%);
 }
 
-body[theme="dark"] [color]:not([color="standard"]) {
+body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]) {
     --accent-luma: var(--accent-luma-dark);
     --accent-text-luma: var(--accent-text-luma-dark);
 
@@ -42,7 +42,7 @@ body[theme="dark"] [color]:not([color="standard"]) {
     --text-normal: hsl(var(--hue), 100%, var(--text-luma));
 }
 
-body[theme="dark"] [color]:not([color="standard"]).tile {
+body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).tile {
     --gradient-luma-1: 20%;
     --gradient-luma-2: 15%;
 
@@ -80,7 +80,7 @@ body[theme="dark"] [color]:not([color="standard"]).tile {
         background: hsl(var(--hue), var(--sat), var(--luma), 20%);
     }
 
-    body[theme="dark"] [color]:not([color="standard"]).background {
+    body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).background {
         --luma: var(--background-luma-dark);
         --sat: 100%;
     }
@@ -91,13 +91,18 @@ body[theme="dark"] [color]:not([color="standard"]).tile {
 }
 
 /* subtle */
-[color]:not([color="standard"]).subtle-background {
+body [color]:not([color="standard"]).subtle-background {
     --luma: var(--subtle-luma);
     background: hsl(var(--hue), 100%, var(--luma), 50%);
 }
 
-body[theme="dark"] [color]:not([color="standard"]).subtle-background {
+body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).subtle-background {
     --luma: var(--subtle-luma-dark);
+}
+
+body[theme="black"] * {
+    --subtle-luma: black !important;
+    --subtle-luma-dark: black !important;
 }
 
 /* definitions */

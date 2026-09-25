@@ -232,5 +232,5 @@ export const DynamicSceneBlack: DynamicScene = {
     saturation: 0,
     luma: 0,
     brightness: 0,
-    baseTheme: ThemeSettings.Dark,
+    baseTheme: ThemeSettings.Black,
 };

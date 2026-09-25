@@ -84,7 +84,7 @@ body {
     --danger-active: #750e13;
 }
 
-body[theme="dark"] {
+body[theme="dark"], body[theme="black"] {
     --background: hsla(0, 0%, 9%, 100%);
     --background-glass: hsla(0, 0%, 9%, 20%);
     --background-transparent: hsla(0, 0%, 100%, 5%);
@@ -111,6 +111,11 @@ body[theme="dark"] {
 
     --link: #78a9ff;
     --link-hover: #a6c8ff;
+}
+
+body[theme="black"] {
+    --background: black;
+    --background-glass: hsla(0, 0%, 5%, 10%);
 }
 
 /* basic */

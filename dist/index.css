@@ -9,7 +9,7 @@
   --surface-hover: hsla(var(--hue), 100%, 5%, 10%);
   --surface-active: hsla(var(--hue), 100%, 5%, 15%);
 }
-body[theme=dark] [color]:not([color=standard]) {
+body:is([theme=dark], [theme=black]) [color]:not([color=standard]) {
   --accent-luma: var(--accent-luma-dark);
   --accent-text-luma: var(--accent-text-luma-dark);
   --surface: hsla(var(--hue), 100%, 95%, 5%);
@@ -32,7 +32,7 @@ body[theme=dark] [color]:not([color=standard]) {
   --surface-active: hsl(var(--hue), 100%, var(--active-luma));
   --text-normal: hsl(var(--hue), 100%, var(--text-luma));
 }
-body[theme=dark] [color]:not([color=standard]).tile {
+body:is([theme=dark], [theme=black]) [color]:not([color=standard]).tile {
   --gradient-luma-1: 20%;
   --gradient-luma-2: 15%;
   --hover-luma: 25%;
@@ -61,7 +61,7 @@ body[theme=dark] [color]:not([color=standard]).tile {
     --sat: 100%;
     background: hsl(var(--hue), var(--sat), var(--luma), 20%);
   }
-  body[theme=dark] [color]:not([color=standard]).background {
+  body:is([theme=dark], [theme=black]) [color]:not([color=standard]).background {
     --luma: var(--background-luma-dark);
     --sat: 100%;
   }
@@ -69,12 +69,16 @@ body[theme=dark] [color]:not([color=standard]).tile {
     background: var(--surface);
   }
 }
-[color]:not([color=standard]).subtle-background {
+body [color]:not([color=standard]).subtle-background {
   --luma: var(--subtle-luma);
   background: hsl(var(--hue), 100%, var(--luma), 50%);
 }
-body[theme=dark] [color]:not([color=standard]).subtle-background {
+body:is([theme=dark], [theme=black]) [color]:not([color=standard]).subtle-background {
   --luma: var(--subtle-luma-dark);
+}
+body[theme=black] * {
+  --subtle-luma: black !important;
+  --subtle-luma-dark: black !important;
 }
 [color=coral] {
   --hue: 20;
@@ -172,10 +176,9 @@ body[theme=dark] [color]:not([color=standard]).subtle-background {
 }
 #background-wrapper {
   position: fixed;
-  top: var(--safe-area-top);
-  left: var(--safe-area-left);
-  right: var(--safe-area-right);
-  bottom: var(--safe-area-bottom);
+  inset: 0px;
+  transform: scale(1.2);
+  filter: blur(40px);
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
@@ -188,8 +191,6 @@ main {
   content: "";
   position: absolute;
   inset: 0px;
-  transform: scale(1.2);
-  filter: blur(40px);
   z-index: -1;
   pointer-events: none;
 }

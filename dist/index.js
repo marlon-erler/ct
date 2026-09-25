@@ -373,7 +373,8 @@
         dynamic: "Dynamic",
         dark: "Dark",
         light: "Light",
-        system: "Device theme"
+        system: "Device theme",
+        black: "Black"
       },
       version: "Version",
       language: "Language",
@@ -620,7 +621,8 @@
           dynamic: "Dynamisch",
           dark: "Dunkel",
           light: "Hell",
-          system: "Ger\xE4teeinstellung"
+          system: "Ger\xE4teeinstellung",
+          black: "Schwarz"
         },
         version: "Version",
         language: "Sprache",
@@ -849,7 +851,8 @@
           dynamic: "Din\xE1mico",
           dark: "Oscuro",
           light: "Claro",
-          system: "Seg\xFAn dispositivo"
+          system: "Seg\xFAn dispositivo",
+          black: "Negro"
         },
         version: "Versi\xF3n",
         language: "Idioma",
@@ -1954,18 +1957,21 @@
       // view
       this.applyTheme = () => {
         let theme = this.theme.value;
-        if (theme == "dynamic" /* Dynamic */) {
-          const scene = this.selectDynamicScene();
-          this.setScene(scene);
-          return;
-        }
-        if (theme == "system" /* System */) {
+        if (theme == "system" /* System */)
           theme = _SettingsViewModel.getSystemTheme();
-        }
-        if (theme == "dark" /* Dark */) {
-          this.setScene(DynamicSceneNight);
-        } else {
-          this.setScene(DynamicSceneDay);
+        switch (theme) {
+          case "dynamic" /* Dynamic */:
+            const scene = this.selectDynamicScene();
+            this.setScene(scene);
+            break;
+          case "dark" /* Dark */:
+            this.setScene(DynamicSceneNight);
+            break;
+          case "black" /* Black */:
+            this.setScene(DynamicSceneBlack);
+            break;
+          default:
+            this.setScene(DynamicSceneDay);
         }
       };
       this.selectDynamicScene = () => {
@@ -2081,6 +2087,14 @@
     luma: 50,
     brightness: 0.4,
     baseTheme: "dark" /* Dark */
+  };
+  var DynamicSceneBlack = {
+    hue1: 0,
+    hue2: 0,
+    saturation: 0,
+    luma: 0,
+    brightness: 0,
+    baseTheme: "black" /* Black */
   };
 
   // src/ViewModel/Global/fileTransferViewModel.ts
@@ -7420,6 +7434,10 @@
           "dynamic" /* Dynamic */
         ],
         [
+          coreViewModel2.translations.settings.themes.system,
+          "system" /* System */
+        ],
+        [
           coreViewModel2.translations.settings.themes.dark,
           "dark" /* Dark */
         ],
@@ -7428,8 +7446,8 @@
           "light" /* Light */
         ],
         [
-          coreViewModel2.translations.settings.themes.system,
-          "system" /* System */
+          coreViewModel2.translations.settings.themes.black,
+          "black" /* Black */
         ]
       ]),
       settingsViewModel2.theme
