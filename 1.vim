@@ -12,10 +12,8 @@ inoremap <silent> <expr> <Down> coc#pum#visible() ? coc#pum#next(0) : coc#inline
 inoremap <silent> <expr> <C-P> coc#pum#visible() ? coc#pum#prev(1) : coc#inline#visible() ? coc#inline#prev() : "\"
 inoremap <silent> <expr> <C-N> coc#pum#visible() ? coc#pum#next(1) : coc#inline#visible() ? coc#inline#next() : "\"
 nnoremap  :NERDTreeFind
-snoremap <silent>  c
 nnoremap  :NERDTree
 nmap  <Plug>(ctrlp)
-snoremap  "_c
 nnoremap  :NERDTreeToggle
 xmap \T <Plug>(table-mode-tableize-delimiter)
 xmap \tt <Plug>(table-mode-tableize)
@@ -28,10 +26,6 @@ nnoremap \1 :call SN("1")
 nmap \rn <Plug>(coc-rename)
 xmap gx <Plug>NetrwBrowseXVis
 nmap gx <Plug>NetrwBrowseX
-snoremap <silent> <BS> c
-snoremap <silent> <Del> c
-snoremap <silent> <C-H> c
-snoremap <C-R> "_c
 nnoremap <silent> <Plug>GitGutterPreviewHunk :call gitgutter#utility#warn('Please change your map <Plug>GitGutterPreviewHunk to <Plug>(GitGutterPreviewHunk)')
 nnoremap <silent> <Plug>(GitGutterPreviewHunk) :GitGutterPreviewHunk
 nnoremap <silent> <Plug>GitGutterUndoHunk :call gitgutter#utility#warn('Please change your map <Plug>GitGutterUndoHunk to <Plug>(GitGutterUndoHunk)')
@@ -138,13 +132,11 @@ set shiftwidth=4
 set smarttab
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.snap
 set updatetime=500
-set winminheight=0
-set winminwidth=0
 let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-1 siso=-1
 let v:this_session=expand("<sfile>:p")
 silent only
 silent tabonly
-cd ~/storage/VDMDI/Comms
+cd ~/storage/VDMDI/CT
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -153,32 +145,8 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +132 build/styles.css
-badd +27 src/base.css
-badd +16 package.json
-badd +1 build/version.txt
-badd +6 src/ViewModel/Global/coreViewModel.ts
-badd +194 src/View/Modals/settingsModal.tsx
-badd +8 dist/sw.js
-badd +1 build/sw.js
-badd +80 src/index.tsx
-badd +25 src/react.ts
-badd +175 src/Model/Utility/utility.ts
-badd +683 src/View/translations.ts
-badd +133 src/View/homePage.tsx
-badd +18 build/index.html
-badd +178 src/Model/Global/storageModel.ts
-badd +25 src/Model/Global/settingsModel.ts
-badd +14 src/ViewModel/Global/storageViewModel.ts
-badd +1 src/View/Components/replyLink.tsx
-badd +22 src/View/Components/usageBar.tsx
-badd +1 src/View/Components/messageReactionButtonRow.tsx
-badd +1 src/View/Components/messageReactionButton.tsx
-badd +1 src/View/Components/messageReactionEntry.tsx
-badd +1 src/View/Components/messageReactionFilterButton.tsx
-badd +15 src/View/homePage.css
-badd +133 dist/styles.css
-badd +24 src/View/Modals/storageModal.tsx
+badd +21 build/sw.js
+badd +0 build/version.txt
 argglobal
 %argdel
 edit build/sw.js
@@ -201,12 +169,13 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 31 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 90 + 106) / 213)
-exe 'vert 3resize ' . ((&columns * 90 + 106) / 213)
+exe 'vert 1resize ' . ((&columns * 31 + 111) / 223)
+exe 'vert 2resize ' . ((&columns * 95 + 111) / 223)
+exe 'vert 3resize ' . ((&columns * 95 + 111) / 223)
 argglobal
 enew
-file NERD_tree_tab_2
+file NERD_tree_tab_1
+balt build/sw.js
 let s:cpo_save=&cpo
 set cpo&vim
 nnoremap <buffer> <silent> <NL> :call nerdtree#ui_glue#invokeKeyMap("<C-j>")
@@ -229,14 +198,6 @@ nnoremap <buffer> <silent> R :call nerdtree#ui_glue#invokeKeyMap("R")
 nnoremap <buffer> <silent> T :call nerdtree#ui_glue#invokeKeyMap("T")
 nnoremap <buffer> <silent> U :call nerdtree#ui_glue#invokeKeyMap("U")
 nnoremap <buffer> <silent> X :call nerdtree#ui_glue#invokeKeyMap("X")
-nmap <buffer> [c <Plug>(GitGutterPrevHunk)
-nmap <buffer> \hp <Plug>(GitGutterPreviewHunk)
-nmap <buffer> \hu <Plug>(GitGutterUndoHunk)
-nmap <buffer> \hs <Plug>(GitGutterStageHunk)
-xmap <buffer> \hs <Plug>(GitGutterStageHunk)
-nmap <buffer> ]c <Plug>(GitGutterNextHunk)
-xmap <buffer> ac <Plug>(GitGutterTextObjectOuterVisual)
-omap <buffer> ac <Plug>(GitGutterTextObjectOuterPending)
 nnoremap <buffer> <silent> cd :call nerdtree#ui_glue#invokeKeyMap("cd")
 nnoremap <buffer> <silent> e :call nerdtree#ui_glue#invokeKeyMap("e")
 nnoremap <buffer> <silent> f :call nerdtree#ui_glue#invokeKeyMap("f")
@@ -244,8 +205,6 @@ nnoremap <buffer> <silent> go :call nerdtree#ui_glue#invokeKeyMap("go")
 nnoremap <buffer> <silent> gb :call nerdtree#ui_glue#invokeKeyMap("gb")
 nnoremap <buffer> <silent> gi :call nerdtree#ui_glue#invokeKeyMap("gi")
 nnoremap <buffer> <silent> gs :call nerdtree#ui_glue#invokeKeyMap("gs")
-xmap <buffer> ic <Plug>(GitGutterTextObjectInnerVisual)
-omap <buffer> ic <Plug>(GitGutterTextObjectInnerPending)
 nnoremap <buffer> <silent> i :call nerdtree#ui_glue#invokeKeyMap("i")
 nnoremap <buffer> <silent> m :call nerdtree#ui_glue#invokeKeyMap("m")
 nnoremap <buffer> <silent> o :call nerdtree#ui_glue#invokeKeyMap("o")
@@ -396,7 +355,7 @@ setlocal nowrap
 setlocal wrapmargin=0
 wincmd w
 argglobal
-balt dist/sw.js
+balt build/sw.js
 let s:cpo_save=&cpo
 set cpo&vim
 nmap <buffer> [c <Plug>(GitGutterPrevHunk)
@@ -544,15 +503,16 @@ setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 21 - ((20 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 21
-normal! $
+keepjumps 1
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("build/version.txt", ":p")) | buffer build/version.txt | else | edit build/version.txt | endif
+balt build/sw.js
 let s:cpo_save=&cpo
 set cpo&vim
 nmap <buffer> [c <Plug>(GitGutterPrevHunk)
@@ -700,17 +660,17 @@ setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
-normal! 011|
+normal! 0
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 31 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 90 + 106) / 213)
-exe 'vert 3resize ' . ((&columns * 90 + 106) / 213)
+3wincmd w
+exe 'vert 1resize ' . ((&columns * 31 + 111) / 223)
+exe 'vert 2resize ' . ((&columns * 95 + 111) / 223)
+exe 'vert 3resize ' . ((&columns * 95 + 111) / 223)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
@@ -725,6 +685,7 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

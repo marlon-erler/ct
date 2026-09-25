@@ -21,7 +21,13 @@ export function createTimestamp(): string {
 }
 
 export function formatISO(date: Date): string {
-    return date.toISOString().split("T")[0];
+    return formatISOFromParts(date.getFullYear(), date.getMonth()+1, date.getDate())
+}
+    
+export function formatISOFromParts(year: number, month: number, date: number): string {
+    return [year, month, date]
+	.map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString()))
+	.join("-");
 }
 
 export function formatTime(date: Date): string {

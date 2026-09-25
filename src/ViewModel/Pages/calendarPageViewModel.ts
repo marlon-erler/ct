@@ -8,7 +8,7 @@ import CalendarModel, { MonthGrid } from "../../Model/Files/calendarModel";
 import BoardsAndTasksModel, {
     TaskFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
-import {formatISO, formatTime} from "../../Model/Utility/utility";
+import {formatISO, formatISOFromParts, formatTime} from "../../Model/Utility/utility";
 
 export const CALENDAR_EVENT_BOARD_ID = "events";
 
@@ -22,9 +22,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     }
 
     get selectedDateString(): string {
-	return [this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value]
-	    .map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString()))
-	    .join("-");
+	return formatISOFromParts(this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value);
     }
 
     // paths
@@ -173,6 +171,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
 
     updateMonthGrid = (): void => {
         const today = formatISO(this.coreViewModel.todayDate.value)
+	console.log(today, this.coreViewModel.todayDate.value);
         if (
             this.currentTodayDate == today
         )
