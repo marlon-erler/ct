@@ -244,7 +244,7 @@ function StatusColumn(
 
     const view = (
         <div
-            class="status-column gap"
+            class="status-column gap allow-drag-move"
             on:dragover={ViewController.allowDrop}
             on:drop={drop}
             children:append={[taskViewModels, TaskViewModelToEntry]}

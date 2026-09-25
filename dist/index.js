@@ -1225,6 +1225,7 @@
     });
     canvas.addEventListener("mousedown", (event) => {
       const target = event.target;
+      console.log(target);
       if (!target || !target.classList.contains("allow-drag-move")) return;
       event.preventDefault();
       initialZoom = data.value.zoom;
@@ -5530,7 +5531,7 @@
     const view = /* @__PURE__ */ createElement(
       "div",
       {
-        class: "status-column gap",
+        class: "status-column gap allow-drag-move",
         "on:dragover": ViewController.allowDrop,
         "on:drop": drop,
         "children:append": [taskViewModels, TaskViewModelToEntry]

@@ -308,6 +308,7 @@ export function implementPinchZoom(canvas: HTMLElement, data: React.State<PinchT
 
     canvas.addEventListener("mousedown", (event: MouseEvent) => {
 	const target = event.target as HTMLElement|undefined;
+	console.log(target);
 	if (!target || !target.classList.contains("allow-drag-move")) return;
 	event.preventDefault();
 	initialZoom = data.value.zoom;
