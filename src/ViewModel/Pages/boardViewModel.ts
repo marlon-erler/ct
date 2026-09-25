@@ -153,7 +153,6 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
             this,
             taskFileContent,
         );
-        console.log("STILL HERE", taskFileContent.fileId);
         this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
     };
 

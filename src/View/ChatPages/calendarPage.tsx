@@ -47,7 +47,6 @@ export function CalendarPage(
             calendarPageViewModel.selectedDate,
         ],
         () => {
-            console.log(calendarPageViewModel.selectedDate.value);
             const listState = calendarPageViewModel.getEventsForDate();
 
             if (listState == undefined) {

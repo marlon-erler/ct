@@ -8,6 +8,7 @@ import { localeCompare, padZero } from "../../Model/Utility/utility";
 import BoardsAndTasksModel, {
     TaskFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
+import CalendarPageViewModel from "./calendarPageViewModel";
 
 export default class TaskViewModel extends Context {
     // util
@@ -54,6 +55,8 @@ export default class TaskViewModel extends Context {
 
     date: React.State<string> = new React.State("");
     time: React.State<string> = new React.State("");
+
+    isNotNext: React.State<boolean> = new React.State(true);
 
     selectedVersionId: React.State<string> = new React.State("");
     versionIds: React.ListState<string> = new React.ListState();
@@ -196,6 +199,12 @@ export default class TaskViewModel extends Context {
     loadAllData = (): void => {
         this.loadTaskData();
         this.loadVersionIds();
+
+	if (this.containingViewModel instanceof CalendarPageViewModel) {
+	    this.containingViewModel.nextTask.subscribe((nextTask)=>{
+		this.isNotNext.value = nextTask != this;
+	    })
+	}
     };
 
     loadTaskData = (): void => {

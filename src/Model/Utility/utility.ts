@@ -18,6 +18,10 @@ export function createTimestamp(): string {
     return new Date().toISOString();
 }
 
+export function formatISO(date: Date): string {
+    return date.toISOString().split("T")[0];
+}
+
 export function formatTime(date: Date): string {
     const time = [date.getHours(), date.getMinutes()];
     return time.join(":");

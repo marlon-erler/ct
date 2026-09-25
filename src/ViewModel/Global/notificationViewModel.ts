@@ -35,7 +35,6 @@ export default class NotificationViewModel {
 
     openNotification = () => {
         const notification: Notification | undefined = this.marquee.value;
-	console.log(notification);
         if (notification == undefined) return;
 
         const chat = [

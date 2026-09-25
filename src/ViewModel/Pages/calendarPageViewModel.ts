@@ -8,6 +8,7 @@ import CalendarModel, { MonthGrid } from "../../Model/Files/calendarModel";
 import BoardsAndTasksModel, {
     TaskFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
+import {formatISO, formatTime} from "../../Model/Utility/utility";
 
 export const CALENDAR_EVENT_BOARD_ID = "events";
 
@@ -18,6 +19,12 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
             this.selectedYear.value.toString(),
             this.selectedMonth.value.toString(),
         );
+    }
+
+    get selectedDateString(): string {
+	return [this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value]
+	    .map((x, i) => i == 0 ? x : CalendarModel.padDateOrMonth(x.toString()))
+	    .join("-");
     }
 
     // paths
@@ -34,6 +41,8 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     monthGrid: React.State<
         MonthGrid<React.MapState<TaskViewModel>> | undefined
     > = new React.State<any>(undefined);
+    
+    nextTask: React.State<TaskViewModel|undefined> = new React.State(undefined);
 
     // methods
     createEvent = (): void => {
@@ -157,16 +166,36 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
         draggedObject.setDate(ISOString);
     };
 
+    handleChron = (): void => {
+	this.updateMonthGrid();
+	this.updateNextTask();
+    }
+
     updateMonthGrid = (): void => {
+        const today = formatISO(this.coreViewModel.todayDate.value)
         if (
-            this.currentTodayDate ==
-            this.coreViewModel.todayDate.value.toISOString()
+            this.currentTodayDate == today
         )
             return;
         this.loadMonthTasks();
-        this.currentTodayDate =
-            this.coreViewModel.todayDate.value.toISOString();
+        this.currentTodayDate = today;
+	this.selectedDate.callSubscriptions();
     };
+
+    updateNextTask = (): void => {
+	if (this.selectedDateString != this.currentTodayDate) {
+	    this.nextTask.value = undefined;
+	    return;
+	}
+
+	const tasks = this.getEventsForDate();
+	if (tasks == undefined) return;
+	for (const task of [...tasks.value.values()]) {
+	    if (task.time.value <= this.coreViewModel.time.value) continue;
+	    this.nextTask.value = task;
+	    break;
+	};
+    }
 
     // load
     loadMonthTasks = (): void => {
@@ -189,7 +218,6 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     loadData = (): void => {
-        this.loadMonthTasks();
     };
 
     // init
@@ -209,6 +237,9 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
         React.bulkSubscribe([this.selectedYear, this.selectedMonth], () => {
             this.loadMonthTasks();
         });
+	this.selectedDate.subscribeSilent(()=>{
+	    this.updateNextTask();
+	})
 
         // handlers
         boardsAndTasksModel.taskHandlerManager.setHandler(
@@ -219,7 +250,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
         );
         this.coreViewModel.chronHandlerManager.setHandler(
             `calendar-${this.chatViewModel.chatModel.id}`,
-            this.updateMonthGrid,
+            this.handleChron,
         );
 
         // initiate

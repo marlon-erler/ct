@@ -59,7 +59,6 @@ export default class CoreViewModel {
         if (!(e instanceof KeyboardEvent))
             return console.trace("NOT A KEY EVENT");
         if (CoreViewModel.checkIsKeystroke(e) == false) return;
-        console.log(e.key);
         e.preventDefault();
         const contexts: Context[] = this.contexts;
         while (contexts.length > 0) {
@@ -73,24 +72,21 @@ export default class CoreViewModel {
     // CHRON
     chronHandlerManager = new HandlerManager<void>();
     todayDate = new React.State<Date>(new Date());
-    time = new React.State<[number, number]>([0, 0]);
+    time = new React.State<string>("99:99");
     get unwrappedTodayDate(): Date {
         return new Date(this.todayDate.value);
     }
-    get timeString(): string {
-	return this.time.value.join(":");
-    }
 
     startChron = (): void => {
-        setInterval(this.chronHandlerManager.trigger, 2000);
+        setInterval(this.chronHandlerManager.trigger, 1000);
     };
 
     handleChron = (): void => {
 	const newDate = new Date();
 	if (this.unwrappedTodayDate.toDateString() != newDate.toDateString())
 	    this.todayDate.value = new Date();
-	if (formatTime(newDate) != this.timeString)
-	    this.time.value = [newDate.getHours(), newDate.getMinutes()];
+	if (formatTime(newDate) != this.time.value)
+	    this.time.value = formatTime(newDate);
     };
 
     // DRAG & DROP
@@ -154,9 +150,6 @@ export default class CoreViewModel {
 
 	this.configureServiceWorker();
 	this.checkUpdates();
-	this.noUpdateAvailable.subscribe(() => {
-	    console.log(this.noUpdateAvailable.value, this.latestVersion.value, this.version.value);
-	})
 
 	this.startChron();
 	this.chronHandlerManager.setHandler(

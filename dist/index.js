@@ -538,7 +538,9 @@
         searchEventsHeadline: "Search Events",
         ///
         events: "Events",
-        noEvents: "No events"
+        noEvents: "No events",
+        // 
+        eventNext: "Up next"
       }
     }
   };
@@ -770,7 +772,8 @@
           monthInputPlaceholder: "01",
           searchEventsHeadline: "Ereignisse suchen",
           events: "Ereignisse",
-          noEvents: "Keine Ereignisse"
+          noEvents: "Keine Ereignisse",
+          eventNext: "Als n\xE4chstes"
         }
       }
     },
@@ -1000,7 +1003,8 @@
           monthInputPlaceholder: "01",
           searchEventsHeadline: "Buscar Eventos",
           events: "Eventos",
-          noEvents: "No hay eventos"
+          noEvents: "No hay eventos",
+          eventNext: "A continuaci\xF3n"
         }
       }
     }
@@ -1054,6 +1058,13 @@
   }
   function createTimestamp() {
     return (/* @__PURE__ */ new Date()).toISOString();
+  }
+  function formatISO(date) {
+    return date.toISOString().split("T")[0];
+  }
+  function formatTime(date) {
+    const time = [date.getHours(), date.getMinutes()];
+    return time.join(":");
   }
   function checkDoesObjectMatchSearch(query, getStringsOfObject, object) {
     if (query == "") return true;
@@ -1364,7 +1375,6 @@
         if (!(e instanceof KeyboardEvent))
           return console.trace("NOT A KEY EVENT");
         if (_CoreViewModel.checkIsKeystroke(e) == false) return;
-        console.log(e.key);
         e.preventDefault();
         const contexts = this.contexts;
         while (contexts.length > 0) {
@@ -1377,14 +1387,16 @@
       // CHRON
       this.chronHandlerManager = new HandlerManager();
       this.todayDate = new State(/* @__PURE__ */ new Date());
+      this.time = new State("99:99");
       this.startChron = () => {
-        setInterval(this.chronHandlerManager.trigger, 2e3);
+        setInterval(this.chronHandlerManager.trigger, 1e3);
       };
       this.handleChron = () => {
         const newDate = /* @__PURE__ */ new Date();
-        if (this.unwrappedTodayDate.toDateString() == newDate.toDateString())
-          return;
-        this.todayDate.value = /* @__PURE__ */ new Date();
+        if (this.unwrappedTodayDate.toDateString() != newDate.toDateString())
+          this.todayDate.value = /* @__PURE__ */ new Date();
+        if (formatTime(newDate) != this.time.value)
+          this.time.value = formatTime(newDate);
       };
       // DRAG & DROP
       this.draggedObject = new State(void 0);
@@ -1430,9 +1442,6 @@
       };
       this.configureServiceWorker();
       this.checkUpdates();
-      this.noUpdateAvailable.subscribe(() => {
-        console.log(this.noUpdateAvailable.value, this.latestVersion.value, this.version.value);
-      });
       this.startChron();
       this.chronHandlerManager.setHandler(
         "core-view-model",
@@ -1804,7 +1813,6 @@
       this.calculateUsage = () => {
         this.occupiedSpaceMB.value = this.coreViewModel.storageModel.calculateUsage();
         this.maximumSpaceMB.value = this.coreViewModel.storageModel.determineCapacity();
-        console.log(this.occupiedSpaceMB.value, this.maximumSpaceMB.value);
       };
       // view
       this.showStorageModal = () => {
@@ -2206,7 +2214,7 @@
       };
       this.downloadFile = async () => {
         if (this.cannotExport.value == true) return;
-        const date = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+        const date = formatISO(/* @__PURE__ */ new Date());
         const backup = await this.coreViewModel.fileTransferModel.generateBackup(
           this.selectedPaths.value.values(),
           this.exportKey.value
@@ -2945,6 +2953,255 @@
     boardId: ""
   };
 
+  // src/ViewModel/Pages/taskContainingPageViewModel.ts
+  var TaskContainingPageViewModel = class extends Context {
+    // init
+    constructor(coreViewModel2, chatViewModel, boardsAndTasksModel, contextDebugDescription) {
+      super(contextDebugDescription);
+      this.coreViewModel = coreViewModel2;
+      this.chatViewModel = chatViewModel;
+      this.boardsAndTasksModel = boardsAndTasksModel;
+      // state
+      this.taskIndexManager = new IndexManager(
+        (taskViewModel) => taskViewModel.sortingString
+      );
+      this.selectedTaskViewModel = new State(void 0);
+      this.taskViewModels = new MapState();
+      this.taskCategorySuggestions = new ListState();
+      this.taskStatusSuggestions = new ListState();
+      // methods
+      this.createTaskFromBoardId = (boardId) => {
+        const taskFileContent = this.boardsAndTasksModel.createTask(boardId);
+        const taskViewModel = new TaskViewModel(
+          this.coreViewModel,
+          this.chatViewModel,
+          this.boardsAndTasksModel,
+          this,
+          taskFileContent
+        );
+        taskViewModel.open();
+        this.updateTaskIndices();
+      };
+      // view
+      this.showTask = (taskFileContent) => {
+      };
+      this.removeTaskFromView = (taskFileContent) => {
+      };
+      this.selectTask = (selectedTask) => {
+        this.selectedTaskViewModel.value = selectedTask;
+      };
+      this.closeTask = () => {
+        this.selectedTaskViewModel.value = void 0;
+      };
+      this.updateTaskIndices = () => {
+        this.taskIndexManager.update([...this.taskViewModels.value.values()]);
+        for (const taskViewModel of this.taskViewModels.value.values()) {
+          taskViewModel.updateIndex();
+        }
+      };
+    }
+  };
+
+  // src/ViewModel/Pages/calendarPageViewModel.ts
+  var CALENDAR_EVENT_BOARD_ID = "events";
+  var CalendarPageViewModel = class extends TaskContainingPageViewModel {
+    // init
+    constructor(coreViewModel2, chatViewModel, calendarModel, boardsAndTasksModel) {
+      super(coreViewModel2, chatViewModel, boardsAndTasksModel, "calendar");
+      this.coreViewModel = coreViewModel2;
+      this.chatViewModel = chatViewModel;
+      this.calendarModel = calendarModel;
+      this.boardsAndTasksModel = boardsAndTasksModel;
+      // paths
+      this.getBasePath = () => {
+        return [...this.calendarModel.getViewPath()];
+      };
+      // state
+      this.currentTodayDate = void 0;
+      this.selectedYear = new State(0);
+      this.selectedMonth = new State(0);
+      this.selectedDate = new State(0);
+      this.monthGrid = new State(void 0);
+      this.nextTask = new State(void 0);
+      // methods
+      this.createEvent = () => {
+        const taskFileContent = this.boardsAndTasksModel.createTask(CALENDAR_EVENT_BOARD_ID);
+        taskFileContent.date = CalendarModel.getISODateString(
+          this.selectedYear.value.toString(),
+          this.selectedMonth.value.toString(),
+          this.selectedDate.value.toString()
+        );
+        const taskViewModel = new TaskViewModel(
+          this.coreViewModel,
+          this.chatViewModel,
+          this.boardsAndTasksModel,
+          this,
+          taskFileContent
+        );
+        taskViewModel.open();
+        this.updateTaskIndices();
+      };
+      this.getEventsForDate = () => {
+        const paddedDate = CalendarModel.padDateOrMonth(
+          this.selectedDate.toString()
+        );
+        if (this.monthGrid.value == void 0) {
+          return void 0;
+        }
+        return this.monthGrid.value.days[paddedDate];
+      };
+      // view
+      this.getTaskMapState = (taskFileContent) => {
+        if (this.monthGrid.value == null) return null;
+        const date = CalendarModel.isoToDateString(
+          taskFileContent.date ?? ""
+        );
+        return this.monthGrid.value.days[date];
+      };
+      this.showTask = (taskFileContent) => {
+        const monthString = CalendarModel.isoToMonthString(
+          taskFileContent.date ?? ""
+        );
+        if (monthString == void 0 || monthString != this.monthString) {
+          this.removeTaskFromView(taskFileContent);
+          this.calendarModel.deleteTaskReference(
+            this.monthString,
+            taskFileContent.fileId
+          );
+          return;
+        }
+        const taskViewModel = new TaskViewModel(
+          this.coreViewModel,
+          this.chatViewModel,
+          this.boardsAndTasksModel,
+          this,
+          taskFileContent
+        );
+        const mapState = this.getTaskMapState(taskFileContent);
+        this.taskViewModels.handleRemoval(taskViewModel, () => {
+          mapState?.remove(taskFileContent.fileId);
+        });
+        this.taskViewModels.remove(taskFileContent.fileId);
+        this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
+        mapState?.set(taskFileContent.fileId, taskViewModel);
+        this.updateTaskIndices();
+      };
+      this.removeTaskFromView = (taskFileContent) => {
+        this.taskViewModels.remove(taskFileContent.fileId);
+      };
+      this.showToday = () => {
+        const today = this.coreViewModel.todayDate.value;
+        this.selectedYear.value = today.getFullYear();
+        this.selectedMonth.value = today.getMonth() + 1;
+        this.selectedDate.value = today.getDate();
+      };
+      this.showPreviousMonth = () => {
+        this.selectedMonth.value -= 1;
+        if (this.selectedMonth.value <= 0) {
+          this.selectedYear.value -= 1;
+          this.selectedMonth.value = 12;
+        }
+      };
+      this.showNextMonth = () => {
+        this.selectedMonth.value += 1;
+        if (this.selectedMonth.value >= 13) {
+          this.selectedYear.value += 1;
+          this.selectedMonth.value = 1;
+        }
+      };
+      this.handleDrop = (year, month, date) => {
+        const ISOString = CalendarModel.getISODateString(
+          year,
+          month,
+          date
+        );
+        const draggedObject = this.coreViewModel.draggedObject.value;
+        if (draggedObject instanceof TaskViewModel == false) return;
+        draggedObject.setDate(ISOString);
+      };
+      this.handleChron = () => {
+        this.updateMonthGrid();
+        this.updateNextTask();
+      };
+      this.updateMonthGrid = () => {
+        const today = formatISO(this.coreViewModel.todayDate.value);
+        if (this.currentTodayDate == today)
+          return;
+        this.loadMonthTasks();
+        this.currentTodayDate = today;
+        this.selectedDate.callSubscriptions();
+      };
+      this.updateNextTask = () => {
+        if (this.selectedDateString != this.currentTodayDate) {
+          this.nextTask.value = void 0;
+          return;
+        }
+        const tasks = this.getEventsForDate();
+        if (tasks == void 0) return;
+        for (const task of [...tasks.value.values()]) {
+          if (task.time.value <= this.coreViewModel.time.value) continue;
+          this.nextTask.value = task;
+          break;
+        }
+        ;
+      };
+      // load
+      this.loadMonthTasks = () => {
+        this.monthGrid.value = this.calendarModel.generateMonthGrid(
+          this.coreViewModel,
+          this.selectedYear.value,
+          this.selectedMonth.value,
+          () => new MapState()
+        );
+        const taskIds = this.calendarModel.listTaskIds(
+          this.monthString
+        );
+        for (const taskId of taskIds) {
+          const taskFileContent = this.boardsAndTasksModel.getLatestTaskFileContent(taskId);
+          if (taskFileContent == null) continue;
+          this.showTask(taskFileContent);
+        }
+      };
+      this.loadData = () => {
+      };
+      this.calendarModel = calendarModel;
+      this.boardsAndTasksModel = boardsAndTasksModel;
+      this.chatViewModel = chatViewModel;
+      bulkSubscribe([this.selectedYear, this.selectedMonth], () => {
+        this.loadMonthTasks();
+      });
+      this.selectedDate.subscribeSilent(() => {
+        this.updateNextTask();
+      });
+      boardsAndTasksModel.taskHandlerManager.setHandler(
+        "calendar" + this.chatViewModel.chatModel.id,
+        (taskFileContent) => {
+          this.showTask(taskFileContent);
+        }
+      );
+      this.coreViewModel.chronHandlerManager.setHandler(
+        `calendar-${this.chatViewModel.chatModel.id}`,
+        this.handleChron
+      );
+      this.showToday();
+      this.registerKeyStroke("-" /* Reset */, this.showToday);
+      this.registerKeyStroke("k", this.showPreviousMonth);
+      this.registerKeyStroke("l", this.showNextMonth);
+      this.registerKeyStroke("a" /* Create */, this.createEvent);
+      this.chatViewModel.registerContext("calendar" /* Calendar */, this);
+    }
+    // data
+    get monthString() {
+      return CalendarModel.getMonthString(
+        this.selectedYear.value.toString(),
+        this.selectedMonth.value.toString()
+      );
+    }
+    get selectedDateString() {
+      return [this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value].map((x, i) => i == 0 ? x : CalendarModel.padDateOrMonth(x.toString())).join("-");
+    }
+  };
+
   // src/ViewModel/Pages/taskViewModel.ts
   var TaskViewModel = class extends Context {
     // init
@@ -2969,6 +3226,7 @@
       this.priority = new State("");
       this.date = new State("");
       this.time = new State("");
+      this.isNotNext = new State(true);
       this.selectedVersionId = new State("");
       this.versionIds = new ListState();
       this.isPresentingFullScreenDescription = new State(
@@ -3077,6 +3335,11 @@
       this.loadAllData = () => {
         this.loadTaskData();
         this.loadVersionIds();
+        if (this.containingViewModel instanceof CalendarPageViewModel) {
+          this.containingViewModel.nextTask.subscribe((nextTask) => {
+            this.isNotNext.value = nextTask != this;
+          });
+        }
       };
       this.loadTaskData = () => {
         this.boardId.value = this.task.boardId;
@@ -3127,55 +3390,6 @@
           taskViewModel.task.date ?? "",
           taskViewModel.task.time ?? ""
         ];
-      };
-    }
-  };
-
-  // src/ViewModel/Pages/taskContainingPageViewModel.ts
-  var TaskContainingPageViewModel = class extends Context {
-    // init
-    constructor(coreViewModel2, chatViewModel, boardsAndTasksModel, contextDebugDescription) {
-      super(contextDebugDescription);
-      this.coreViewModel = coreViewModel2;
-      this.chatViewModel = chatViewModel;
-      this.boardsAndTasksModel = boardsAndTasksModel;
-      // state
-      this.taskIndexManager = new IndexManager(
-        (taskViewModel) => taskViewModel.sortingString
-      );
-      this.selectedTaskViewModel = new State(void 0);
-      this.taskViewModels = new MapState();
-      this.taskCategorySuggestions = new ListState();
-      this.taskStatusSuggestions = new ListState();
-      // methods
-      this.createTaskFromBoardId = (boardId) => {
-        const taskFileContent = this.boardsAndTasksModel.createTask(boardId);
-        const taskViewModel = new TaskViewModel(
-          this.coreViewModel,
-          this.chatViewModel,
-          this.boardsAndTasksModel,
-          this,
-          taskFileContent
-        );
-        taskViewModel.open();
-        this.updateTaskIndices();
-      };
-      // view
-      this.showTask = (taskFileContent) => {
-      };
-      this.removeTaskFromView = (taskFileContent) => {
-      };
-      this.selectTask = (selectedTask) => {
-        this.selectedTaskViewModel.value = selectedTask;
-      };
-      this.closeTask = () => {
-        this.selectedTaskViewModel.value = void 0;
-      };
-      this.updateTaskIndices = () => {
-        this.taskIndexManager.update([...this.taskViewModels.value.values()]);
-        for (const taskViewModel of this.taskViewModels.value.values()) {
-          taskViewModel.updateIndex();
-        }
       };
     }
   };
@@ -3365,7 +3579,6 @@
           this,
           taskFileContent
         );
-        console.log("STILL HERE", taskFileContent.fileId);
         this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
       };
       this.removeTaskFromView = (taskFileContent) => {
@@ -4525,180 +4738,6 @@
     }
   };
 
-  // src/ViewModel/Pages/calendarPageViewModel.ts
-  var CALENDAR_EVENT_BOARD_ID = "events";
-  var CalendarPageViewModel = class extends TaskContainingPageViewModel {
-    // init
-    constructor(coreViewModel2, chatViewModel, calendarModel, boardsAndTasksModel) {
-      super(coreViewModel2, chatViewModel, boardsAndTasksModel, "calendar");
-      this.coreViewModel = coreViewModel2;
-      this.chatViewModel = chatViewModel;
-      this.calendarModel = calendarModel;
-      this.boardsAndTasksModel = boardsAndTasksModel;
-      // paths
-      this.getBasePath = () => {
-        return [...this.calendarModel.getViewPath()];
-      };
-      // state
-      this.currentTodayDate = void 0;
-      this.selectedYear = new State(0);
-      this.selectedMonth = new State(0);
-      this.selectedDate = new State(0);
-      this.monthGrid = new State(void 0);
-      // methods
-      this.createEvent = () => {
-        const taskFileContent = this.boardsAndTasksModel.createTask(CALENDAR_EVENT_BOARD_ID);
-        taskFileContent.date = CalendarModel.getISODateString(
-          this.selectedYear.value.toString(),
-          this.selectedMonth.value.toString(),
-          this.selectedDate.value.toString()
-        );
-        const taskViewModel = new TaskViewModel(
-          this.coreViewModel,
-          this.chatViewModel,
-          this.boardsAndTasksModel,
-          this,
-          taskFileContent
-        );
-        taskViewModel.open();
-        this.updateTaskIndices();
-      };
-      this.getEventsForDate = () => {
-        const paddedDate = CalendarModel.padDateOrMonth(
-          this.selectedDate.toString()
-        );
-        if (this.monthGrid.value == void 0) {
-          return void 0;
-        }
-        return this.monthGrid.value.days[paddedDate];
-      };
-      // view
-      this.getTaskMapState = (taskFileContent) => {
-        if (this.monthGrid.value == null) return null;
-        const date = CalendarModel.isoToDateString(
-          taskFileContent.date ?? ""
-        );
-        return this.monthGrid.value.days[date];
-      };
-      this.showTask = (taskFileContent) => {
-        const monthString = CalendarModel.isoToMonthString(
-          taskFileContent.date ?? ""
-        );
-        if (monthString == void 0 || monthString != this.monthString) {
-          this.removeTaskFromView(taskFileContent);
-          this.calendarModel.deleteTaskReference(
-            this.monthString,
-            taskFileContent.fileId
-          );
-          return;
-        }
-        const taskViewModel = new TaskViewModel(
-          this.coreViewModel,
-          this.chatViewModel,
-          this.boardsAndTasksModel,
-          this,
-          taskFileContent
-        );
-        const mapState = this.getTaskMapState(taskFileContent);
-        this.taskViewModels.handleRemoval(taskViewModel, () => {
-          mapState?.remove(taskFileContent.fileId);
-        });
-        this.taskViewModels.remove(taskFileContent.fileId);
-        this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
-        mapState?.set(taskFileContent.fileId, taskViewModel);
-        this.updateTaskIndices();
-      };
-      this.removeTaskFromView = (taskFileContent) => {
-        this.taskViewModels.remove(taskFileContent.fileId);
-      };
-      this.showToday = () => {
-        const today = this.coreViewModel.todayDate.value;
-        this.selectedYear.value = today.getFullYear();
-        this.selectedMonth.value = today.getMonth() + 1;
-        this.selectedDate.value = today.getDate();
-      };
-      this.showPreviousMonth = () => {
-        this.selectedMonth.value -= 1;
-        if (this.selectedMonth.value <= 0) {
-          this.selectedYear.value -= 1;
-          this.selectedMonth.value = 12;
-        }
-      };
-      this.showNextMonth = () => {
-        this.selectedMonth.value += 1;
-        if (this.selectedMonth.value >= 13) {
-          this.selectedYear.value += 1;
-          this.selectedMonth.value = 1;
-        }
-      };
-      this.handleDrop = (year, month, date) => {
-        const ISOString = CalendarModel.getISODateString(
-          year,
-          month,
-          date
-        );
-        const draggedObject = this.coreViewModel.draggedObject.value;
-        if (draggedObject instanceof TaskViewModel == false) return;
-        draggedObject.setDate(ISOString);
-      };
-      this.updateMonthGrid = () => {
-        if (this.currentTodayDate == this.coreViewModel.todayDate.value.toISOString())
-          return;
-        this.loadMonthTasks();
-        this.currentTodayDate = this.coreViewModel.todayDate.value.toISOString();
-      };
-      // load
-      this.loadMonthTasks = () => {
-        this.monthGrid.value = this.calendarModel.generateMonthGrid(
-          this.coreViewModel,
-          this.selectedYear.value,
-          this.selectedMonth.value,
-          () => new MapState()
-        );
-        const taskIds = this.calendarModel.listTaskIds(
-          this.monthString
-        );
-        for (const taskId of taskIds) {
-          const taskFileContent = this.boardsAndTasksModel.getLatestTaskFileContent(taskId);
-          if (taskFileContent == null) continue;
-          this.showTask(taskFileContent);
-        }
-      };
-      this.loadData = () => {
-        this.loadMonthTasks();
-      };
-      this.calendarModel = calendarModel;
-      this.boardsAndTasksModel = boardsAndTasksModel;
-      this.chatViewModel = chatViewModel;
-      bulkSubscribe([this.selectedYear, this.selectedMonth], () => {
-        this.loadMonthTasks();
-      });
-      boardsAndTasksModel.taskHandlerManager.setHandler(
-        "calendar" + this.chatViewModel.chatModel.id,
-        (taskFileContent) => {
-          this.showTask(taskFileContent);
-        }
-      );
-      this.coreViewModel.chronHandlerManager.setHandler(
-        `calendar-${this.chatViewModel.chatModel.id}`,
-        this.updateMonthGrid
-      );
-      this.showToday();
-      this.registerKeyStroke("-" /* Reset */, this.showToday);
-      this.registerKeyStroke("k", this.showPreviousMonth);
-      this.registerKeyStroke("l", this.showNextMonth);
-      this.registerKeyStroke("a" /* Create */, this.createEvent);
-      this.chatViewModel.registerContext("calendar" /* Calendar */, this);
-    }
-    // data
-    get monthString() {
-      return CalendarModel.getMonthString(
-        this.selectedYear.value.toString(),
-        this.selectedMonth.value.toString()
-      );
-    }
-  };
-
   // src/ViewModel/Chat/chatViewModel.ts
   var ChatViewModel6 = class extends ContextHost {
     // init
@@ -4881,7 +4920,6 @@
       };
       this.openNotification = () => {
         const notification = this.marquee.value;
-        console.log(notification);
         if (notification == void 0) return;
         const chat = [
           ...this.chatListViewModel.chatViewModels.value.values()
@@ -5238,16 +5276,28 @@
       calendar_month: taskViewModel.date.value || "---",
       schedule: taskViewModel.time.value || "---"
     };
+    const className = createProxyState(
+      [taskViewModel.isNotNext],
+      () => `${taskViewModel.isNotNext.value ? "standard" : "primary"} tile flex-no`
+    );
     const view = /* @__PURE__ */ createElement(
       "button",
       {
         draggable: "true",
-        class: "tile flex-no",
+        "set:class": className,
         style: "user-select: none; -webkit-user-select: none",
         "on:click": taskViewModel.open,
         "on:dragstart": taskViewModel.dragStart
       },
       /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement(
+        "span",
+        {
+          class: "secondary",
+          "toggle:hidden": taskViewModel.isNotNext
+        },
+        taskViewModel.coreViewModel.translations.chatPage.calendar.eventNext,
+        /* @__PURE__ */ createElement("hr", null)
+      ), /* @__PURE__ */ createElement(
         "b",
         {
           class: "ellipsis",
@@ -6867,7 +6917,6 @@
         calendarPageViewModel.selectedDate
       ],
       () => {
-        console.log(calendarPageViewModel.selectedDate.value);
         const listState = calendarPageViewModel.getEventsForDate();
         if (listState == void 0) {
           return /* @__PURE__ */ createElement("div", null);

@@ -338,6 +338,10 @@ const englishTranslations = {
 
 	    events: "Events",
 	    noEvents: "No events",
+
+	    // 
+
+	    eventNext: "Up next",
 	},
     },
 };
@@ -657,6 +661,8 @@ export const allTranslations: {
 
 		events: "Ereignisse",
 		noEvents: "Keine Ereignisse",
+	    
+		eventNext: "Als nächstes",
 	    },
 	},
     },
@@ -971,6 +977,8 @@ export const allTranslations: {
 
 		events: "Eventos",
 		noEvents: "No hay eventos",
+		
+		eventNext: "A continuación",
 	    },
 	},
     },

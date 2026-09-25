@@ -52,7 +52,6 @@ export default class StorageViewModel extends Context {
     calculateUsage = (): void => {
 	this.occupiedSpaceMB.value = this.coreViewModel.storageModel.calculateUsage();
 	this.maximumSpaceMB.value = this.coreViewModel.storageModel.determineCapacity();
-	console.log(this.occupiedSpaceMB.value, this.maximumSpaceMB.value);
     }
 
     // view

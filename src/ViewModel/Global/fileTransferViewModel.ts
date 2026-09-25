@@ -7,6 +7,7 @@ import StorageModel, {
 } from "../../Model/Global/storageModel";
 import { TransferData } from "../../Model/Global/fileTransferModel";
 import ChatModel from "../../Model/Chat/chatModel";
+import {formatISO} from "../../Model/Utility/utility";
 
 export default class FileTransferViewModel extends Context {
     // state
@@ -142,7 +143,7 @@ export default class FileTransferViewModel extends Context {
 
     downloadFile = async (): Promise<void> => {
         if (this.cannotExport.value == true) return;
-        const date = new Date().toISOString().split("T")[0];
+	const date = formatISO(new Date());
 
         const backup: Blob =
             await this.coreViewModel.fileTransferModel.generateBackup(
