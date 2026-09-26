@@ -59,9 +59,11 @@ export default class SettingsModel {
         return this.storageModel.read(path);
     };
     
-    readonly loadID = (): void => {
+    readonly loadId = (): void => {
         const content: string | null = this.readSetting("userid");
-        this.userid = content ?? UUID();
+	const id = content ?? UUID();
+        if (content) this.userid = content;
+	else this.setId(id);
     };
 
     readonly loadUsername = (): void => {
@@ -88,7 +90,7 @@ export default class SettingsModel {
     constructor(storageModel: StorageModel) {
         this.storageModel = storageModel;
 
-	this.loadID();
+	this.loadId();
         this.loadUsername();
         this.loadFirstDayofWeek();
         this.loadLanguage();
