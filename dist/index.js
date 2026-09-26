@@ -445,17 +445,15 @@
       },
       settings: {
         settingsHeadline: "Settings",
-        primaryChannelLabel: "Primary channel",
-        setPrimaryChannelButtonAudioLabel: "set primary channel",
-        namespaceLabel: "Namespace",
-        namespacePlaceholder: "No namespace",
-        setNamespaceButtonAudioLabel: "set namespace",
+        nameLabel: "Chat name",
+        setNameButtonAudioLabel: "set name",
         newSecondaryChannelPlaceholder: "Add secondary channel",
         newSecondaryChannelAudioLabel: "name of new secondary channel",
         addSecondaryChannelButtonAudioLabel: "add secondary channel",
         encryptionKeyLabel: "Encryption key",
         setEncryptionKeyButtonAudioLabel: "set encryption key",
         showEncryptionKey: "Show encryption key",
+        setColorButtonAudioLabel: "set color",
         deleteChatButton: "Delete entire chat"
       },
       message: {
@@ -689,17 +687,15 @@
         },
         settings: {
           settingsHeadline: "Einstellungen",
-          primaryChannelLabel: "Hauptkanal",
-          setPrimaryChannelButtonAudioLabel: "Hauptkanal festlegen",
-          namespaceLabel: "Namensraum",
-          namespacePlaceholder: "Ohne Namensraum",
-          setNamespaceButtonAudioLabel: "Namensraum festlegen",
+          nameLabel: "Name",
+          setNameButtonAudioLabel: "namen festlegen",
           newSecondaryChannelPlaceholder: "Sekund\xE4ren Kanal hinzuf\xFCgen",
           newSecondaryChannelAudioLabel: "Name des neuen sekund\xE4ren Kanals",
           addSecondaryChannelButtonAudioLabel: "Sekund\xE4ren Kanal hinzuf\xFCgen",
           encryptionKeyLabel: "Schl\xFCssel",
           setEncryptionKeyButtonAudioLabel: "Schl\xFCssel festlegen",
           showEncryptionKey: "Schl\xFCssel anzeigen",
+          setColorButtonAudioLabel: "Farbe festlegen",
           deleteChatButton: "Gesamten Chat l\xF6schen"
         },
         message: {
@@ -920,17 +916,15 @@
         },
         settings: {
           settingsHeadline: "Configuraci\xF3n",
-          primaryChannelLabel: "Canal principal",
-          setPrimaryChannelButtonAudioLabel: "establecer canal principal",
-          namespaceLabel: "Espacio de nombres",
-          namespacePlaceholder: "Sin espacio de nombres",
-          setNamespaceButtonAudioLabel: "establecer espacio de nombres",
+          nameLabel: "Nombre del chat",
+          setNameButtonAudioLabel: "establecer nombre",
           newSecondaryChannelPlaceholder: "A\xF1adir canal secundario",
           newSecondaryChannelAudioLabel: "nombre del nuevo canal secundario",
           addSecondaryChannelButtonAudioLabel: "a\xF1adir canal secundario",
           encryptionKeyLabel: "Clave de encriptaci\xF3n",
           setEncryptionKeyButtonAudioLabel: "establecer clave de encriptaci\xF3n",
           showEncryptionKey: "Mostrar clave de encriptaci\xF3n",
+          setColorButtonAudioLabel: "establecer color",
           deleteChatButton: "Eliminar todo el chat"
         },
         message: {
@@ -1258,7 +1252,7 @@
   };
   var BoardInfoFileContentReference = {
     dataVersion: DATA_VERSION,
-    fileId: "string",
+    fileId: "",
     fileContentId: "",
     creationDate: "",
     type: "board-info",
@@ -1499,6 +1493,444 @@
     }
   };
 
+  // src/Model/Utility/crypto.ts
+  var IV_SIZE = 12;
+  var ENCRYPTION_ALG = "AES-GCM";
+  async function encryptString(plaintext, passphrase) {
+    if (!window.crypto.subtle) return plaintext;
+    const iv = generateIV();
+    const key = await importKey(passphrase, "encrypt");
+    const encryptedArray = await encrypt(iv, key, plaintext);
+    const encryptionData = {
+      iv: uInt8ToArray(iv),
+      encryptedArray: uInt8ToArray(encryptedArray)
+    };
+    return btoa(JSON.stringify(encryptionData));
+  }
+  async function decryptString(cyphertext, passphrase) {
+    try {
+      const encrypionData = JSON.parse(atob(cyphertext));
+      const iv = arrayToUint8(encrypionData.iv);
+      const encryptedArray = arrayToUint8(encrypionData.encryptedArray);
+      const key = await importKey(passphrase, "decrypt");
+      return await decrypt(iv, key, encryptedArray);
+    } catch {
+      return cyphertext;
+    }
+  }
+  function encode(string) {
+    return new TextEncoder().encode(string);
+  }
+  function decode(array) {
+    return new TextDecoder("utf-8").decode(array);
+  }
+  async function encrypt(iv, key, message) {
+    const arrayBuffer = await window.crypto.subtle.encrypt(
+      { name: ENCRYPTION_ALG, iv },
+      key,
+      encode(message)
+    );
+    return new Uint8Array(arrayBuffer);
+  }
+  async function decrypt(iv, key, cyphertext) {
+    const arrayBuffer = await crypto.subtle.decrypt(
+      { name: ENCRYPTION_ALG, iv },
+      key,
+      cyphertext
+    );
+    return arrayBufferToString(arrayBuffer);
+  }
+  async function hash(encoded) {
+    return await crypto.subtle.digest("SHA-256", encoded);
+  }
+  function generateIV() {
+    return crypto.getRandomValues(new Uint8Array(IV_SIZE));
+  }
+  async function importKey(passphrase, purpose) {
+    return await crypto.subtle.importKey(
+      "raw",
+      await hash(encode(passphrase)),
+      { name: ENCRYPTION_ALG },
+      false,
+      [purpose]
+    );
+  }
+  function arrayBufferToString(arrayBuffer) {
+    const uInt8Array = new Uint8Array(arrayBuffer);
+    return decode(uInt8Array);
+  }
+  function uInt8ToArray(uInt8Array) {
+    return Array.from(uInt8Array);
+  }
+  function arrayToUint8(array) {
+    return new Uint8Array(array);
+  }
+
+  // src/Model/Chat/chatModel.ts
+  var ChatModel = class _ChatModel {
+    // init
+    constructor(storageModel2, connectionModel2, settingsModel2, chatListModel2, chatId) {
+      // handler managers
+      this.chatMessageHandlerManager = new HandlerManager();
+      this.reactionHandlerManager = new HandlerManager();
+      this.changeHandlerManager = new HandlerManager();
+      // paths
+      this.getBasePath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.chatBase(this.id)
+        );
+      };
+      this.getInfoPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.info(this.id)
+        );
+      };
+      this.getColorPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.color(this.id)
+        );
+      };
+      this.getMessageDirPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.messages(this.id)
+        );
+      };
+      this.getMessagePath = (id) => {
+        return [...this.getMessageDirPath(), id];
+      };
+      this.getReactionDirPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.reactions(this.id)
+        );
+      };
+      this.getReactionPath = (id) => {
+        return [...this.getReactionDirPath(), id];
+      };
+      this.getPreviousFilterPath = () => {
+        return ["chat" /* Chat */, ...filePaths.chat.previousFilter(this.id)];
+      };
+      // handlers
+      this.handleMessage = (body) => {
+        const chatMessage = parseValidObject(
+          body,
+          ChatMessageReference
+        );
+        if (chatMessage == null) return;
+        chatMessage.status = "received" /* Received */;
+        this.addMessage(chatMessage);
+        if (chatMessage.stringifiedFile) return;
+        this.setReadStatus(true);
+      };
+      this.handleReaction = (reaction) => {
+        if (!checkMatchesObjectStructure(reaction, ChatMessageReactionReference))
+          return;
+        const reactionPath = this.getReactionPath(reaction.fileId);
+        if (reaction.isDeleting == true) {
+          this.storageModel.remove(reactionPath);
+        } else {
+          this.storageModel.writeStringifiable(reactionPath, reaction);
+        }
+        this.reactionHandlerManager.trigger(reaction);
+      };
+      this.handleMessageSent = (chatMessage) => {
+        chatMessage.status = "sent" /* Sent */;
+        this.addMessage(chatMessage);
+      };
+      // settings
+      this.setName = (name) => {
+        this.info.name = name;
+        this.storeInfo();
+        this.syncInfo();
+        this.subscribe();
+      };
+      this.setSecondaryChannels = (secondaryChannels) => {
+        this.info.secondaryChannels = secondaryChannels;
+        this.storeInfo();
+      };
+      this.setEncryptionKey = (key) => {
+        this.info.encryptionKey = key;
+        this.storeInfo();
+      };
+      this.setColor = (color) => {
+        this.info.color = color;
+        this.syncInfo();
+        this.storeInfo();
+      };
+      // messaging
+      this.addMessage = async (chatMessage) => {
+        await this.decryptMessage(chatMessage);
+        if (chatMessage.body != "") {
+          const messagePath = this.getMessagePath(chatMessage.id);
+          this.storageModel.writeStringifiable(messagePath, chatMessage);
+          this.chatMessageHandlerManager.trigger(chatMessage);
+        }
+        this.fileModel.handleStringifiedFileContent(
+          chatMessage.stringifiedFile
+        );
+      };
+      this.getNameAndChannel = () => {
+        const senderName = this.settingsModel.username;
+        if (senderName == "") return false;
+        const allChannels = [this.id];
+        for (const secondaryChannel of this.info.secondaryChannels) {
+          allChannels.push(secondaryChannel);
+        }
+        const combinedChannel = allChannels.join("/");
+        return [senderName, combinedChannel];
+      };
+      this.sendMessage = async (body, inlineReplyId, fileContent) => {
+        const nameAndChannel = this.getNameAndChannel();
+        if (nameAndChannel == false) return false;
+        const [senderName, combinedChannel] = nameAndChannel;
+        const chatMessage = await _ChatModel.createChatMessage(
+          combinedChannel,
+          senderName,
+          this.info.encryptionKey,
+          body,
+          inlineReplyId,
+          fileContent
+        );
+        this.addMessage(chatMessage);
+        this.connectionModel.sendMessageOrStore(chatMessage);
+        return chatMessage.id;
+      };
+      this.decryptMessage = async (chatMessage) => {
+        const decryptedBody = await decryptString(
+          chatMessage.body,
+          this.info.encryptionKey
+        );
+        const decryptedFile = await decryptString(
+          chatMessage.stringifiedFile ?? "",
+          this.info.encryptionKey
+        );
+        chatMessage.body = decryptedBody;
+        chatMessage.stringifiedFile = decryptedFile;
+      };
+      this.sendReaction = async (messageId, content, isDeleting = false) => {
+        const nameAndChannel = this.getNameAndChannel();
+        if (nameAndChannel == false) return;
+        const [senderName] = nameAndChannel;
+        const reaction = _ChatModel.createMessageReaction(
+          messageId,
+          senderName,
+          content,
+          isDeleting
+        );
+        this.sendMessage("", void 0, reaction);
+        this.handleReaction(reaction);
+      };
+      this.subscribe = () => {
+        this.connectionModel.addChannel(this.id);
+      };
+      this.setReadStatus = (hasUnreadMessages) => {
+        this.info.hasUnreadMessages = hasUnreadMessages;
+        this.storeInfo();
+      };
+      // storage
+      this.storeInfo = () => {
+        this.storageModel.writeStringifiable(this.getInfoPath(), this.info);
+      };
+      this.syncInfo = () => {
+        this.sendMessage("", void 0, this.info);
+      };
+      this.storeFilter = (filter) => {
+        this.storageModel.write(this.getPreviousFilterPath(), filter);
+      };
+      this.getFilter = () => {
+        return this.storageModel.read(this.getPreviousFilterPath()) || "";
+      };
+      this.delete = () => {
+        this.chatListModel.untrackChat(this);
+        const dirPath = this.getBasePath();
+        this.storageModel.removeRecursively(dirPath);
+      };
+      // load
+      this.loadInfo = () => {
+        const info = this.storageModel.readStringifiable(
+          this.getInfoPath(),
+          ChatInfoReference
+        );
+        this.info = info || _ChatModel.generateChatInfo("0", "0", "standard" /* Standard */);
+      };
+      this.handleInfo = (info) => {
+        this.info = info;
+        this.changeHandlerManager.trigger(null);
+        this.storeInfo();
+      };
+      this.id = chatId;
+      this.connectionModel = connectionModel2;
+      this.settingsModel = settingsModel2;
+      this.storageModel = storageModel2;
+      this.chatListModel = chatListModel2;
+      this.loadInfo();
+      this.subscribe();
+      this.fileModel = new FileModel(
+        this.storageModel,
+        this.settingsModel,
+        this
+      );
+    }
+    /* load function called in constructor */
+    get secondaryChannels() {
+      return this.info.secondaryChannels.sort(localeCompare);
+    }
+    get color() {
+      const color = this.info.color;
+      if ([...Object.values(Colors)].includes(color)) return color;
+      return "standard" /* Standard */;
+    }
+    get messages() {
+      const messageIds = this.storageModel.list(
+        this.getMessageDirPath()
+      );
+      if (!Array.isArray(messageIds)) return [];
+      const chatMessages = [];
+      for (const messageId of messageIds) {
+        const messagePath = this.getMessagePath(messageId);
+        const chatMessage = this.storageModel.readStringifiable(
+          messagePath,
+          ChatMessageReference
+        );
+        if (chatMessage == null) continue;
+        chatMessages.push(chatMessage);
+      }
+      const sorted = chatMessages.sort(
+        (a, b) => a.dateSent.localeCompare(b.dateSent)
+      );
+      return sorted;
+    }
+    get reactions() {
+      const reactionIds = this.storageModel.list(
+        this.getReactionDirPath()
+      );
+      if (!Array.isArray(reactionIds)) return [];
+      const reactions = [];
+      for (const reactionId of reactionIds) {
+        const reactionPath = this.getReactionPath(reactionId);
+        const reaction = this.storageModel.readStringifiable(
+          reactionPath,
+          ChatMessageReactionReference
+        );
+        if (reaction == null) continue;
+        reactions.push(reaction);
+      }
+      return reactions;
+    }
+    // utility
+    static splitChannel(channelString) {
+      return channelString.split("/");
+    }
+    static {
+      this.generateChatInfo = (name, id, color) => {
+        const file = FileModel.createFileContent(id, "chat-info");
+        return {
+          ...file,
+          name,
+          secondaryChannels: [],
+          encryptionKey: "",
+          color,
+          hasUnreadMessages: false
+        };
+      };
+    }
+    static {
+      this.createChatMessage = async (channel, sender, encryptionKey, body, inlineReplyId, fileContent) => {
+        const chatMessage = {
+          dataVersion: DATA_VERSION,
+          id: v4_default(),
+          channel,
+          sender,
+          body,
+          dateSent: createTimestamp(),
+          inlineReplyId,
+          status: "outbox" /* Outbox */,
+          stringifiedFile: ""
+        };
+        if (fileContent != void 0) {
+          const stringifiedFile = stringify(fileContent);
+          chatMessage.stringifiedFile = stringifiedFile;
+        }
+        if (encryptionKey != "") {
+          chatMessage.body = await encryptString(
+            chatMessage.body,
+            encryptionKey
+          );
+          chatMessage.stringifiedFile = await encryptString(
+            chatMessage.stringifiedFile,
+            encryptionKey
+          );
+        }
+        return chatMessage;
+      };
+    }
+    static {
+      this.createMessageReaction = (messageId, sender, content, isDeleting) => {
+        const fileContent = FileModel.createFileContent(v4_default(), "reaction");
+        const reaction = {
+          ...fileContent,
+          fileId: _ChatModel.createMessageReactionId(messageId, sender),
+          messageId,
+          sender,
+          content,
+          isDeleting
+        };
+        return reaction;
+      };
+    }
+    static {
+      this.createMessageReactionId = (messageId, sender) => {
+        return messageId + sender;
+      };
+    }
+  };
+  var ReactionSymbols = /* @__PURE__ */ ((ReactionSymbols2) => {
+    ReactionSymbols2["ThumbsUp"] = "\u{1F44D}";
+    ReactionSymbols2["Check"] = "\u2705";
+    ReactionSymbols2["Stop"] = "\u{1F6D1}";
+    ReactionSymbols2["Attention"] = "\u2757\uFE0F";
+    ReactionSymbols2["DoubleAttention"] = "\u203C\uFE0F";
+    ReactionSymbols2["Question"] = "\u2753";
+    return ReactionSymbols2;
+  })(ReactionSymbols || {});
+  var ChatInfoReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: "chat-info",
+    name: "",
+    secondaryChannels: [""],
+    encryptionKey: "",
+    color: "",
+    hasUnreadMessages: true
+  };
+  var ChatMessageReference = {
+    dataVersion: DATA_VERSION,
+    id: "",
+    channel: "",
+    sender: "",
+    body: "",
+    dateSent: "",
+    status: "",
+    stringifiedFile: ""
+  };
+  var ChatMessageReactionReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: "reaction",
+    messageId: "",
+    sender: "",
+    content: "",
+    isDeleting: false
+  };
+
   // src/Model/Files/fileModel.ts
   var FileModel = class _FileModel {
     // init
@@ -1526,6 +1958,10 @@
         this.handleFileContent(fileContent);
       };
       this.handleFileContent = (fileContent) => {
+        if (fileContent.type == "chat-info") {
+          if (checkMatchesObjectStructure(fileContent, ChatInfoReference) == false) return;
+          this.chatModel.handleInfo(fileContent);
+        }
         const didStore = this.storeFileContent(fileContent);
         if (didStore == false) return;
         switch (fileContent.type) {
@@ -2674,7 +3110,7 @@
         const chatModels = this.coreViewModel.chatListModel.chatModels;
         for (const chatModel of chatModels) {
           this.chatFileOptions.add({
-            label: chatModel.unwrappedPrimaryChannel,
+            label: chatModel.info.name,
             path: chatModel.getBasePath()
           });
         }
@@ -3882,10 +4318,8 @@
       this.coreViewModel = coreViewModel2;
       this.chatViewModel = chatViewModel;
       // state
-      this.primaryChannel = new State("");
-      this.primaryChannelInput = new State("");
-      this.namespace = new State("");
-      this.namespaceInput = new State("");
+      this.name = new State("");
+      this.nameInput = new State("");
       this.secondaryChannels = new ListState();
       this.newSecondaryChannelInput = new State("");
       this.encryptionKeyInput = new State("");
@@ -3895,30 +4329,27 @@
         () => this.shouldShowEncryptionKey.value == true ? "text" : "password"
       );
       this.color = new State("standard" /* Standard */);
+      this.appliedColor = new State("standard" /* Standard */);
       // guards
       this.cannotSetPrimaryChannel = createProxyState(
-        [this.primaryChannel, this.primaryChannelInput],
-        () => this.primaryChannelInput.value == "" || this.primaryChannelInput.value == this.primaryChannel.value
+        [this.name, this.nameInput],
+        () => this.nameInput.value == "" || this.nameInput.value == this.name.value
       );
-      this.cannotSetNamespace = createProxyState(
-        [this.namespace, this.namespaceInput],
-        () => this.namespaceInput.value == this.namespace.value
+      this.cannotSetColor = createProxyState(
+        [this.color, this.appliedColor],
+        () => this.color.value == this.appliedColor.value
       );
       this.cannotAddSecondaryChannel = createProxyState(
         [this.newSecondaryChannelInput],
         () => this.newSecondaryChannelInput.value == ""
       );
       // methods
-      this.setPrimaryChannel = () => {
-        this.chatViewModel.chatModel.setPrimaryChannel(
-          this.primaryChannelInput.value
+      this.setName = () => {
+        this.chatViewModel.chatModel.setName(
+          this.nameInput.value
         );
-        this.primaryChannel.value = this.chatViewModel.chatModel.info.primaryChannel;
+        this.name.value = this.chatViewModel.chatModel.info.name;
         this.chatViewModel.chatListViewModel.updateIndices();
-      };
-      this.setNamespace = () => {
-        this.chatViewModel.chatModel.setNamespace(this.namespaceInput.value);
-        this.namespace.value = this.chatViewModel.chatModel.info.namespace;
       };
       this.addSecondaryChannel = () => {
         this.secondaryChannels.add(this.newSecondaryChannelInput.value);
@@ -3941,8 +4372,9 @@
         );
         this.encryptionKeyInput.callSubscriptions();
       };
-      this.applyColor = (newColor) => {
-        this.chatViewModel.setColor(newColor);
+      this.applyColor = () => {
+        this.chatViewModel.setColor(this.color.value);
+        this.appliedColor.value = this.color.value;
       };
       this.remove = () => {
         this.chatViewModel.close();
@@ -3951,13 +4383,17 @@
       };
       // load
       this.preloadData = () => {
-        this.primaryChannel.value = this.chatViewModel.chatModel.info.primaryChannel;
-        this.namespace.value = this.chatViewModel.chatModel.info.namespace;
+        this.name.value = this.chatViewModel.chatModel.info.name;
         this.color.value = this.chatViewModel.chatModel.color;
+        this.appliedColor.value = this.color.value;
+      };
+      this.updateData = () => {
+        this.preloadData();
+        this.nameInput.value = this.name.value;
+        this.chatViewModel.resetColor();
       };
       this.loadData = () => {
-        this.primaryChannelInput.value = this.primaryChannel.value;
-        this.namespaceInput.value = this.namespace.value;
+        this.nameInput.value = this.name.value;
         this.loadSecondaryChannels();
         this.encryptionKeyInput.value = this.chatViewModel.chatModel.info.encryptionKey;
       };
@@ -3972,454 +4408,8 @@
         [this.encryptionKeyInput],
         () => this.encryptionKeyInput.value == this.chatViewModel.chatModel.info.encryptionKey
       );
-      this.color.subscribe((newColor) => {
-        this.applyColor(newColor);
-      });
       this.chatViewModel.registerContext("settings" /* Settings */, this);
     }
-  };
-
-  // src/Model/Utility/crypto.ts
-  var IV_SIZE = 12;
-  var ENCRYPTION_ALG = "AES-GCM";
-  async function encryptString(plaintext, passphrase) {
-    if (!window.crypto.subtle) return plaintext;
-    const iv = generateIV();
-    const key = await importKey(passphrase, "encrypt");
-    const encryptedArray = await encrypt(iv, key, plaintext);
-    const encryptionData = {
-      iv: uInt8ToArray(iv),
-      encryptedArray: uInt8ToArray(encryptedArray)
-    };
-    return btoa(JSON.stringify(encryptionData));
-  }
-  async function decryptString(cyphertext, passphrase) {
-    try {
-      const encrypionData = JSON.parse(atob(cyphertext));
-      const iv = arrayToUint8(encrypionData.iv);
-      const encryptedArray = arrayToUint8(encrypionData.encryptedArray);
-      const key = await importKey(passphrase, "decrypt");
-      return await decrypt(iv, key, encryptedArray);
-    } catch {
-      return cyphertext;
-    }
-  }
-  function encode(string) {
-    return new TextEncoder().encode(string);
-  }
-  function decode(array) {
-    return new TextDecoder("utf-8").decode(array);
-  }
-  async function encrypt(iv, key, message) {
-    const arrayBuffer = await window.crypto.subtle.encrypt(
-      { name: ENCRYPTION_ALG, iv },
-      key,
-      encode(message)
-    );
-    return new Uint8Array(arrayBuffer);
-  }
-  async function decrypt(iv, key, cyphertext) {
-    const arrayBuffer = await crypto.subtle.decrypt(
-      { name: ENCRYPTION_ALG, iv },
-      key,
-      cyphertext
-    );
-    return arrayBufferToString(arrayBuffer);
-  }
-  async function hash(encoded) {
-    return await crypto.subtle.digest("SHA-256", encoded);
-  }
-  function generateIV() {
-    return crypto.getRandomValues(new Uint8Array(IV_SIZE));
-  }
-  async function importKey(passphrase, purpose) {
-    return await crypto.subtle.importKey(
-      "raw",
-      await hash(encode(passphrase)),
-      { name: ENCRYPTION_ALG },
-      false,
-      [purpose]
-    );
-  }
-  function arrayBufferToString(arrayBuffer) {
-    const uInt8Array = new Uint8Array(arrayBuffer);
-    return decode(uInt8Array);
-  }
-  function uInt8ToArray(uInt8Array) {
-    return Array.from(uInt8Array);
-  }
-  function arrayToUint8(array) {
-    return new Uint8Array(array);
-  }
-
-  // src/Model/Chat/chatModel.ts
-  var ChatModel = class _ChatModel {
-    // init
-    constructor(storageModel2, connectionModel2, settingsModel2, chatListModel2, chatId) {
-      /* load function called in constructor */
-      this.color = "standard" /* Standard */;
-      // handler managers
-      this.chatMessageHandlerManager = new HandlerManager();
-      this.reactionHandlerManager = new HandlerManager();
-      // paths
-      this.getBasePath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.chatBase(this.id)
-        );
-      };
-      this.getInfoPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.info(this.id)
-        );
-      };
-      this.getColorPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.color(this.id)
-        );
-      };
-      this.getMessageDirPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.messages(this.id)
-        );
-      };
-      this.getMessagePath = (id) => {
-        return [...this.getMessageDirPath(), id];
-      };
-      this.getReactionDirPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.reactions(this.id)
-        );
-      };
-      this.getReactionPath = (id) => {
-        return [...this.getReactionDirPath(), id];
-      };
-      this.getPreviousFilterPath = () => {
-        return ["chat" /* Chat */, ...filePaths.chat.previousFilter(this.id)];
-      };
-      // handlers
-      this.handleMessage = (body) => {
-        const chatMessage = parseValidObject(
-          body,
-          ChatMessageReference
-        );
-        if (chatMessage == null) return;
-        chatMessage.status = "received" /* Received */;
-        this.addMessage(chatMessage);
-        if (chatMessage.stringifiedFile) return;
-        this.setReadStatus(true);
-      };
-      this.handleReaction = (reaction) => {
-        if (!checkMatchesObjectStructure(reaction, ChatMessageReactionReference))
-          return;
-        const reactionPath = this.getReactionPath(reaction.fileId);
-        if (reaction.isDeleting == true) {
-          this.storageModel.remove(reactionPath);
-        } else {
-          this.storageModel.writeStringifiable(reactionPath, reaction);
-        }
-        this.reactionHandlerManager.trigger(reaction);
-      };
-      this.handleMessageSent = (chatMessage) => {
-        chatMessage.status = "sent" /* Sent */;
-        this.addMessage(chatMessage);
-      };
-      // settings
-      this.setPrimaryChannel = (primaryChannel) => {
-        this.info.primaryChannel = primaryChannel;
-        this.storeInfo();
-        this.subscribe();
-      };
-      this.setNamespace = (namespace) => {
-        this.info.namespace = namespace;
-        this.storeInfo();
-        this.subscribe();
-      };
-      this.setSecondaryChannels = (secondaryChannels) => {
-        this.info.secondaryChannels = secondaryChannels;
-        this.storeInfo();
-      };
-      this.setEncryptionKey = (key) => {
-        this.info.encryptionKey = key;
-        this.storeInfo();
-      };
-      this.setColor = (color) => {
-        this.color = color;
-        this.storeColor();
-      };
-      // messaging
-      this.addMessage = async (chatMessage) => {
-        await this.decryptMessage(chatMessage);
-        if (chatMessage.body != "") {
-          const messagePath = this.getMessagePath(chatMessage.id);
-          this.storageModel.writeStringifiable(messagePath, chatMessage);
-          this.chatMessageHandlerManager.trigger(chatMessage);
-        }
-        this.fileModel.handleStringifiedFileContent(
-          chatMessage.stringifiedFile
-        );
-      };
-      this.getNameAndChannel = () => {
-        const senderName = this.settingsModel.username;
-        if (senderName == "") return false;
-        const allChannels = [this.unwrappedPrimaryChannel];
-        for (const secondaryChannel of this.info.secondaryChannels) {
-          allChannels.push(secondaryChannel);
-        }
-        const combinedChannel = allChannels.join("/");
-        return [senderName, combinedChannel];
-      };
-      this.sendMessage = async (body, inlineReplyId, fileContent) => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return false;
-        const [senderName, combinedChannel] = nameAndChannel;
-        const chatMessage = await _ChatModel.createChatMessage(
-          combinedChannel,
-          senderName,
-          this.info.encryptionKey,
-          body,
-          inlineReplyId,
-          fileContent
-        );
-        this.addMessage(chatMessage);
-        this.connectionModel.sendMessageOrStore(chatMessage);
-        return chatMessage.id;
-      };
-      this.decryptMessage = async (chatMessage) => {
-        const decryptedBody = await decryptString(
-          chatMessage.body,
-          this.info.encryptionKey
-        );
-        const decryptedFile = await decryptString(
-          chatMessage.stringifiedFile ?? "",
-          this.info.encryptionKey
-        );
-        chatMessage.body = decryptedBody;
-        chatMessage.stringifiedFile = decryptedFile;
-      };
-      this.sendReaction = async (messageId, content, isDeleting = false) => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return;
-        const [senderName] = nameAndChannel;
-        const reaction = _ChatModel.createMessageReaction(
-          messageId,
-          senderName,
-          content,
-          isDeleting
-        );
-        this.sendMessage("", void 0, reaction);
-        this.handleReaction(reaction);
-      };
-      this.subscribe = () => {
-        this.connectionModel.addChannel(this.unwrappedPrimaryChannel);
-      };
-      this.setReadStatus = (hasUnreadMessages) => {
-        this.info.hasUnreadMessages = hasUnreadMessages;
-        this.storeInfo();
-      };
-      // storage
-      this.storeInfo = () => {
-        this.storageModel.writeStringifiable(this.getInfoPath(), this.info);
-      };
-      this.storeColor = () => {
-        this.storageModel.write(this.getColorPath(), this.color);
-      };
-      this.storeFilter = (filter) => {
-        this.storageModel.write(this.getPreviousFilterPath(), filter);
-      };
-      this.getFilter = () => {
-        return this.storageModel.read(this.getPreviousFilterPath());
-      };
-      this.delete = () => {
-        this.chatListModel.untrackChat(this);
-        const dirPath = this.getBasePath();
-        this.storageModel.removeRecursively(dirPath);
-      };
-      // load
-      this.loadInfo = () => {
-        const info = this.storageModel.readStringifiable(
-          this.getInfoPath(),
-          ChatInfoReference
-        );
-        if (info != null) {
-          this.info = info;
-        } else {
-          this.info = _ChatModel.generateChatInfo("0");
-        }
-      };
-      this.loadColor = () => {
-        const path = this.getColorPath();
-        const color = this.storageModel.read(path);
-        if (!color) {
-          this.color = "standard" /* Standard */;
-        } else {
-          this.color = color;
-        }
-      };
-      this.id = chatId;
-      this.connectionModel = connectionModel2;
-      this.settingsModel = settingsModel2;
-      this.storageModel = storageModel2;
-      this.chatListModel = chatListModel2;
-      this.loadInfo();
-      this.loadColor();
-      this.subscribe();
-      this.fileModel = new FileModel(
-        this.storageModel,
-        this.settingsModel,
-        this
-      );
-    }
-    get unwrappedPrimaryChannel() {
-      return this.info.namespace + this.info.primaryChannel;
-    }
-    get secondaryChannels() {
-      return this.info.secondaryChannels.sort(localeCompare);
-    }
-    get messages() {
-      const messageIds = this.storageModel.list(
-        this.getMessageDirPath()
-      );
-      if (!Array.isArray(messageIds)) return [];
-      const chatMessages = [];
-      for (const messageId of messageIds) {
-        const messagePath = this.getMessagePath(messageId);
-        const chatMessage = this.storageModel.readStringifiable(
-          messagePath,
-          ChatMessageReference
-        );
-        if (chatMessage == null) continue;
-        chatMessages.push(chatMessage);
-      }
-      const sorted = chatMessages.sort(
-        (a, b) => a.dateSent.localeCompare(b.dateSent)
-      );
-      return sorted;
-    }
-    get reactions() {
-      const reactionIds = this.storageModel.list(
-        this.getReactionDirPath()
-      );
-      if (!Array.isArray(reactionIds)) return [];
-      const reactions = [];
-      for (const reactionId of reactionIds) {
-        const reactionPath = this.getReactionPath(reactionId);
-        const reaction = this.storageModel.readStringifiable(
-          reactionPath,
-          ChatMessageReactionReference
-        );
-        if (reaction == null) continue;
-        reactions.push(reaction);
-      }
-      return reactions;
-    }
-    // utility
-    static splitChannel(channelString) {
-      return channelString.split("/");
-    }
-    static {
-      this.generateChatInfo = (primaryChannel) => {
-        return {
-          dataVersion: DATA_VERSION,
-          primaryChannel,
-          namespace: "",
-          secondaryChannels: [],
-          encryptionKey: "",
-          hasUnreadMessages: false
-        };
-      };
-    }
-    static {
-      this.createChatMessage = async (channel, sender, encryptionKey, body, inlineReplyId, fileContent) => {
-        const chatMessage = {
-          dataVersion: DATA_VERSION,
-          id: v4_default(),
-          channel,
-          sender,
-          body,
-          dateSent: createTimestamp(),
-          inlineReplyId,
-          status: "outbox" /* Outbox */,
-          stringifiedFile: ""
-        };
-        if (fileContent != void 0) {
-          const stringifiedFile = stringify(fileContent);
-          chatMessage.stringifiedFile = stringifiedFile;
-        }
-        if (encryptionKey != "") {
-          chatMessage.body = await encryptString(
-            chatMessage.body,
-            encryptionKey
-          );
-          chatMessage.stringifiedFile = await encryptString(
-            chatMessage.stringifiedFile,
-            encryptionKey
-          );
-        }
-        return chatMessage;
-      };
-    }
-    static {
-      this.createMessageReaction = (messageId, sender, content, isDeleting) => {
-        const fileContent = FileModel.createFileContent(v4_default(), "reaction");
-        const reaction = {
-          ...fileContent,
-          fileId: _ChatModel.createMessageReactionId(messageId, sender),
-          messageId,
-          sender,
-          content,
-          isDeleting
-        };
-        return reaction;
-      };
-    }
-    static {
-      this.createMessageReactionId = (messageId, sender) => {
-        return messageId + sender;
-      };
-    }
-  };
-  var ReactionSymbols = /* @__PURE__ */ ((ReactionSymbols2) => {
-    ReactionSymbols2["ThumbsUp"] = "\u{1F44D}";
-    ReactionSymbols2["Check"] = "\u2705";
-    ReactionSymbols2["Stop"] = "\u{1F6D1}";
-    ReactionSymbols2["Attention"] = "\u2757\uFE0F";
-    ReactionSymbols2["DoubleAttention"] = "\u203C\uFE0F";
-    ReactionSymbols2["Question"] = "\u2753";
-    return ReactionSymbols2;
-  })(ReactionSymbols || {});
-  var ChatInfoReference = {
-    dataVersion: DATA_VERSION,
-    primaryChannel: "",
-    namespace: "",
-    secondaryChannels: [""],
-    encryptionKey: "",
-    hasUnreadMessages: true
-  };
-  var ChatMessageReference = {
-    dataVersion: DATA_VERSION,
-    id: "",
-    channel: "",
-    sender: "",
-    body: "",
-    dateSent: "",
-    status: "",
-    stringifiedFile: ""
-  };
-  var ChatMessageReactionReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "",
-    fileContentId: "",
-    creationDate: "",
-    type: "reaction",
-    messageId: "",
-    sender: "",
-    content: "",
-    isDeleting: false
   };
 
   // src/ViewModel/Chat/chatMessageViewModel.ts
@@ -4574,7 +4564,7 @@
           this.inlineReply = this.messagePageViewModel.chatMessageViewModels.value.get(
             this.chatMessage.inlineReplyId
           );
-          this.inlineReply.replies.set(this.chatMessage.id, this);
+          this.inlineReply?.replies.set(this.chatMessage.id, this);
         }
       };
       this.chatMessage = chatMessage;
@@ -4874,6 +4864,7 @@
           this.messagePageViewModel.handleReaction(reaction);
         }
       );
+      chatModel.changeHandlerManager.setHandler(this.chatModel.id, this.settingsPageViewModel.updateData);
       this.loadPageSelection();
       this.resetColor();
       this.loadInfo();
@@ -4922,7 +4913,7 @@
         if (this.seenMessageIds.has(message.id)) return;
         if (this.chatListViewModel.selectedChat.value == void 0) return;
         const notification = this.createNotification(message);
-        const currentChat = this.chatListViewModel.selectedChat.value.chatModel.unwrappedPrimaryChannel;
+        const currentChat = this.chatListViewModel.selectedChat.value.chatModel.id;
         const currentPage = this.chatListViewModel.selectedChat.value.selectedPage.value;
         if (notification.fullChannel == currentChat && currentPage == "messages" /* Messages */)
           return;
@@ -4935,7 +4926,7 @@
         const chat = [
           ...this.chatListViewModel.chatViewModels.value.values()
         ].find(
-          (chat2) => chat2.chatModel.unwrappedPrimaryChannel == notification.fullChannel
+          (chat2) => chat2.chatModel.id == notification.fullChannel
         );
         if (!chat) return;
         chat.open();
@@ -4971,7 +4962,7 @@
     // util
     createNotification(message) {
       const fullChannel = ChatModel.splitChannel(message.channel)[0];
-      const chat = this.chatListViewModel.stripNamespace(fullChannel);
+      const chat = this.chatListViewModel.getDisplayName(fullChannel);
       return {
         messageId: message.id,
         chat,
@@ -4991,7 +4982,7 @@
       this.connectionViewModel = connectionViewModel2;
       // data
       this.chatIndexManager = new IndexManager(
-        (chatViewModel) => chatViewModel.settingsPageViewModel.primaryChannel.value
+        (chatViewModel) => chatViewModel.settingsPageViewModel.name.value
       );
       // state
       this.newChatPrimaryChannel = new State("");
@@ -5055,10 +5046,10 @@
         this.updateIndices();
       };
       // utility
-      this.stripNamespace = (fullChannel) => {
+      this.getDisplayName = (fullChannel) => {
         for (const vm of this.chatViewModels.value) {
-          const fullReference = vm.chatModel.unwrappedPrimaryChannel;
-          if (fullReference == fullChannel) return vm.chatModel.info.primaryChannel;
+          const fullReference = vm.chatModel.id;
+          if (fullReference == fullChannel) return vm.chatModel.info.name;
         }
         return fullChannel;
       };
@@ -5101,13 +5092,13 @@
         "span",
         {
           class: "shadow",
-          "subscribe:innerText": chatViewModel.settingsPageViewModel.primaryChannel
+          "subscribe:innerText": chatViewModel.settingsPageViewModel.name
         }
       ),
       /* @__PURE__ */ createElement(
         "h2",
         {
-          "subscribe:innerText": chatViewModel.settingsPageViewModel.primaryChannel
+          "subscribe:innerText": chatViewModel.settingsPageViewModel.name
         }
       )
     );
@@ -6283,35 +6274,19 @@
         }
       );
     };
-    return /* @__PURE__ */ createElement("div", { id: "settings-page" }, /* @__PURE__ */ createElement("div", { class: "pane-wrapper" }, /* @__PURE__ */ createElement("div", { class: "pane" }, /* @__PURE__ */ createElement("div", { class: "toolbar" }, /* @__PURE__ */ createElement("span", { class: "title" }, coreViewModel2.translations.chatPage.settings.settingsHeadline)), /* @__PURE__ */ createElement("div", { class: "content" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "forum"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.settings.primaryChannelLabel), /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { id: "settings-page" }, /* @__PURE__ */ createElement("div", { class: "pane-wrapper" }, /* @__PURE__ */ createElement("div", { class: "pane" }, /* @__PURE__ */ createElement("div", { class: "toolbar" }, /* @__PURE__ */ createElement("span", { class: "title" }, coreViewModel2.translations.chatPage.settings.settingsHeadline)), /* @__PURE__ */ createElement("div", { class: "content" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "forum"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.settings.nameLabel), /* @__PURE__ */ createElement(
       "input",
       {
-        "bind:value": settingsPageViewModel.primaryChannelInput,
-        "on:enter": settingsPageViewModel.setPrimaryChannel
+        "bind:value": settingsPageViewModel.nameInput,
+        "on:enter": settingsPageViewModel.setName
       }
     ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end width-input" }, /* @__PURE__ */ createElement(
       "button",
       {
         class: "width-50",
-        "aria-label": coreViewModel2.translations.chatPage.settings.setPrimaryChannelButtonAudioLabel,
-        "on:click": settingsPageViewModel.setPrimaryChannel,
+        "aria-label": coreViewModel2.translations.chatPage.settings.setNameButtonAudioLabel,
+        "on:click": settingsPageViewModel.setName,
         "toggle:disabled": settingsPageViewModel.cannotSetPrimaryChannel
-      },
-      coreViewModel2.translations.general.setButton,
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
-    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "category"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.settings.namespaceLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        "bind:value": settingsPageViewModel.namespaceInput,
-        "on:enter": settingsPageViewModel.setNamespace
-      }
-    ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end width-input" }, /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "width-50",
-        "aria-label": coreViewModel2.translations.chatPage.settings.setNamespaceButtonAudioLabel,
-        "on:click": settingsPageViewModel.setNamespace,
-        "toggle:disabled": settingsPageViewModel.cannotSetNamespace
       },
       coreViewModel2.translations.general.setButton,
       /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
@@ -6364,7 +6339,17 @@
         type: "checkbox",
         "bind:checked": settingsPageViewModel.shouldShowEncryptionKey
       }
-    ), coreViewModel2.translations.chatPage.settings.showEncryptionKey), /* @__PURE__ */ createElement("hr", null), ColorPicker(settingsPageViewModel.color), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, DangerousActionButton(
+    ), coreViewModel2.translations.chatPage.settings.showEncryptionKey), /* @__PURE__ */ createElement("hr", null), ColorPicker(settingsPageViewModel.color), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end width-input" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "width-50",
+        "aria-label": coreViewModel2.translations.chatPage.settings.setColorButtonAudioLabel,
+        "on:click": settingsPageViewModel.applyColor,
+        "toggle:disabled": settingsPageViewModel.cannotSetColor
+      },
+      coreViewModel2.translations.general.setButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
+    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, DangerousActionButton(
       coreViewModel2,
       coreViewModel2.translations.chatPage.settings.deleteChatButton,
       "chat_error",
@@ -8663,7 +8648,7 @@
           this,
           id
         );
-        chatModel.setPrimaryChannel(primaryChannel);
+        chatModel.setName(primaryChannel);
         this.addChatModel(chatModel);
         return chatModel;
       };
@@ -8693,7 +8678,7 @@
         const allChannels = channel.split("/");
         for (const chatModel of this.chatModels) {
           for (const channel2 of allChannels) {
-            if (channel2 != chatModel.unwrappedPrimaryChannel) continue;
+            if (channel2 != chatModel.id) continue;
             fn(chatModel);
             break;
           }
