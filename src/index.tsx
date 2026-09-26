@@ -15,7 +15,6 @@ import { StorageModal } from "./View/Modals/storageModal";
 import { SettingsModal } from "./View/Modals/settingsModal";
 import { DataTransferModalWrapper } from "./View/Modals/dataTransferModal";
 import { ConnectionModal } from "./View/Modals/connectionModal";
-import v1Upgrader from "./Upgrader/v1";
 import StorageModel from "./Model/Global/storageModel";
 import SettingsModel from "./Model/Global/settingsModel";
 import FileTransferModel from "./Model/Global/fileTransferModel";
@@ -41,9 +40,6 @@ const coreViewModel = new CoreViewModel(
     chatListModel,
     fileTransferModel,
 );
-
-// upgrade
-new v1Upgrader(coreViewModel);
 
 const storageViewModel = new StorageViewModel(coreViewModel);
 const settingsViewModel = new SettingsViewModel(coreViewModel);

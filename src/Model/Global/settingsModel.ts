@@ -1,5 +1,5 @@
-import {UUID} from "../../react";
 import StorageModel, { StorageModelSubPaths, filePaths } from "./storageModel";
+import { UUID } from "../../react";
 
 export default class SettingsModel {
     readonly storageModel: StorageModel;
@@ -27,7 +27,7 @@ export default class SettingsModel {
         this.userid = newValue;
         this.storeSetting("userid", newValue);
     };
-    
+
     readonly setName = (newValue: string): void => {
         this.username = newValue;
         this.storeSetting("username", newValue);
@@ -58,12 +58,12 @@ export default class SettingsModel {
         );
         return this.storageModel.read(path);
     };
-    
+
     readonly loadId = (): void => {
         const content: string | null = this.readSetting("userid");
-	const id = content ?? UUID();
+        const id = content ?? UUID();
         if (content) this.userid = content;
-	else this.setId(id);
+        else this.setId(id);
     };
 
     readonly loadUsername = (): void => {
@@ -90,7 +90,7 @@ export default class SettingsModel {
     constructor(storageModel: StorageModel) {
         this.storageModel = storageModel;
 
-	this.loadId();
+        this.loadId();
         this.loadUsername();
         this.loadFirstDayofWeek();
         this.loadLanguage();

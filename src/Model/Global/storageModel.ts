@@ -306,7 +306,7 @@ export const filePaths = {
 
     settingsModel: {
         username: ["user-name"],
-	userid: ["user-id"],
+        userid: ["user-id"],
         firstDayOfWeek: ["first-day-of-week"],
         language: ["language"],
         theme: ["theme"],

@@ -182,7 +182,7 @@ export default class ChatModel {
 
     readonly getSendingData = (): [string, string, string] => {
         const senderName: string = this.settingsModel.username || "?";
-	const id: string = this.settingsModel.userid;
+        const id: string = this.settingsModel.userid;
 
         const allChannels: string[] = [this.id];
         for (const secondaryChannel of this.info.secondaryChannels) {
@@ -203,7 +203,7 @@ export default class ChatModel {
 
         const chatMessage: ChatMessage = await ChatModel.createChatMessage(
             combinedChannel,
-	    senderId,
+            senderId,
             senderName,
             this.info.encryptionKey,
             body,
@@ -240,7 +240,7 @@ export default class ChatModel {
 
         const reaction = ChatModel.createMessageReaction(
             messageId,
-	    senderId,
+            senderId,
             content,
             isDeleting,
         );
@@ -396,7 +396,7 @@ export default class ChatModel {
     static createChatMessage = async (
         channel: string,
         sender: string,
-	senderId: string,
+        senderId: string,
         encryptionKey: string,
         body: string,
         inlineReplyId?: string,
@@ -409,7 +409,7 @@ export default class ChatModel {
 
             channel,
             sender,
-	    senderId,
+            senderId,
             body,
             dateSent: createTimestamp(),
             inlineReplyId,
@@ -438,7 +438,7 @@ export default class ChatModel {
 
     static createMessageReaction = (
         messageId: string,
-	senderId: string,
+        senderId: string,
         content: ReactionSymbols,
         isDeleting: boolean,
     ): ChatMessageReaction => {
@@ -449,7 +449,7 @@ export default class ChatModel {
             fileId: ChatModel.createMessageReactionId(messageId, senderId),
 
             messageId,
-	    senderId,
+            senderId,
             content,
             isDeleting,
         };
