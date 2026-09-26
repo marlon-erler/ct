@@ -189,7 +189,7 @@ export default class ChatViewModel extends ContextHost<ChatPageTypes> {
 		this.messagePageViewModel.handleReaction(reaction);
 	    },
 	);
-	chatModel.changeHandlerManager.setHandler(this.chatModel.id, this.settingsPageViewModel.preloadData);
+	chatModel.changeHandlerManager.setHandler(this.chatModel.id, this.settingsPageViewModel.updateData);
 
 	// load
 	this.loadPageSelection();

@@ -85,9 +85,15 @@ export default class SettingsPageViewModel extends Context {
     preloadData = (): void => {
         this.name.value =
             this.chatViewModel.chatModel.info.name;
-
+        
         this.color.value = this.chatViewModel.chatModel.color;
     };
+
+    updateData = (): void => {
+	this.preloadData();
+	this.nameInput.value = this.name.value;
+	this.chatViewModel.resetColor();
+    }
 
     loadData = (): void => {
         this.nameInput.value = this.name.value;
