@@ -80,7 +80,8 @@ body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).tile {
         background: hsl(var(--hue), var(--sat), var(--luma), 40%);
     }
 
-    body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).background {
+    body:is([theme="dark"], [theme="black"])
+        [color]:not([color="standard"]).background {
         --luma: var(--background-luma-dark);
     }
 
@@ -100,7 +101,8 @@ body [color]:not([color="standard"]).subtle-background {
     background: hsl(var(--hue), 100%, var(--luma), 40%);
 }
 
-body:is([theme="dark"], [theme="black"]) [color]:not([color="standard"]).subtle-background {
+body:is([theme="dark"], [theme="black"])
+    [color]:not([color="standard"]).subtle-background {
     --luma: var(--subtle-luma-dark);
 }
 

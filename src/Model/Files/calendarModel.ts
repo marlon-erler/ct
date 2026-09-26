@@ -2,10 +2,10 @@
 
 import FileModel, { FileModelSubPath } from "./fileModel";
 import { TaskFileContent } from "./boardsAndTasksModel";
+import { isoToMonthString, padZero } from "../Utility/utility";
 import StorageModel from "../Global/storageModel";
 import SettingsModel from "../Global/settingsModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
-import {isoToMonthString, padZero} from "../Utility/utility";
 
 export default class CalendarModel {
     readonly storageModel: StorageModel;
@@ -35,9 +35,7 @@ export default class CalendarModel {
     readonly storeTaskReference = (taskFileContent: TaskFileContent): void => {
         if (taskFileContent.date == undefined) return;
 
-        const monthString: string = isoToMonthString(
-            taskFileContent.date,
-        );
+        const monthString: string = isoToMonthString(taskFileContent.date);
 
         const monthPath: string[] = this.getMonthPath(monthString);
         const referencePath: string[] = [...monthPath, taskFileContent.fileId];
@@ -103,9 +101,7 @@ export default class CalendarModel {
         };
 
         for (let i = 0; i < daysInMonth; i++) {
-            const paddedDate: string = padZero(
-                (i + 1).toString(), 2
-            );
+            const paddedDate: string = padZero((i + 1).toString(), 2);
             grid.days[paddedDate] = defaultValueCreator();
         }
 

@@ -1,5 +1,9 @@
-
-import { bytesToMB, localeCompare, parseValidObject, stringify } from "../Utility/utility";
+import {
+    bytesToMB,
+    localeCompare,
+    parseValidObject,
+    stringify,
+} from "../Utility/utility";
 import { DATA_VERSION, ValidObject } from "../Utility/typeSafety";
 
 export const PATH_COMPONENT_SEPARATOR = "\\";
@@ -152,36 +156,36 @@ export default class StorageModel {
     };
 
     readonly determineCapacity = (): number => {
-	const KEY = "storage-capacity-check";
+        const KEY = "storage-capacity-check";
 
-	let chunk = "0";
-	for (let i = 0; i < 1024*256; i++) {
-	    chunk += "0";
-	} 
+        let chunk = "0";
+        for (let i = 0; i < 1024 * 256; i++) {
+            chunk += "0";
+        }
 
-	localStorage.setItem(KEY, "");
-	while (true) {
-	    try {
-		const current = localStorage.getItem(KEY);
-		console.log(current);
-		localStorage.setItem(KEY, current + chunk);
-	    } catch (e) {
-		const capacity = this.calculateUsage();
-		localStorage.removeItem(KEY);
-		return capacity;
-	    }
-	}
-    }
+        localStorage.setItem(KEY, "");
+        while (true) {
+            try {
+                const current = localStorage.getItem(KEY);
+                console.log(current);
+                localStorage.setItem(KEY, current + chunk);
+            } catch (e) {
+                const capacity = this.calculateUsage();
+                localStorage.removeItem(KEY);
+                return capacity;
+            }
+        }
+    };
 
     readonly calculateUsage = (): number => {
-	let data = JSON.stringify(localStorage);
-	const encoder = new TextEncoder();
-	const encoded = encoder.encode(data);
-	const bytes = encoded.byteLength;
-	const mb = bytesToMB(bytes);
-	const rounded = Math.round(mb * 100)/100;
-	return rounded;
-    }
+        let data = JSON.stringify(localStorage);
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(data);
+        const bytes = encoded.byteLength;
+        const mb = bytesToMB(bytes);
+        const rounded = Math.round(mb * 100) / 100;
+        return rounded;
+    };
 
     // tree
     readonly initializeTree = (): void => {
@@ -285,7 +289,10 @@ export const filePaths = {
             ...filePaths.chat.chatBase(id),
             "reactions",
         ],
-	previousFilter: (id: string) => [...filePaths.chat.chatBase(id), "previous-filter"],
+        previousFilter: (id: string) => [
+            ...filePaths.chat.chatBase(id),
+            "previous-filter",
+        ],
         lastUsedPage: (id: string) => [
             ...filePaths.chat.chatBase(id),
             "last-used-page",

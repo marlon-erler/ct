@@ -1,7 +1,7 @@
 import { checkIsValidObject, checkMatchesObjectStructure } from "./typeSafety";
-import * as React from "../../react";
-import {CalendarPage} from "../../View/ChatPages/calendarPage";
 import CalendarModel from "../Files/calendarModel";
+import * as React from "../../react";
+import { CalendarPage } from "../../View/ChatPages/calendarPage";
 
 export interface Stringifiable {
     toString(): string;
@@ -20,37 +20,48 @@ export function createTimestamp(): string {
     return new Date().toISOString();
 }
 
-export function isoToDateString (dateISOString: string): string {
+export function isoToDateString(dateISOString: string): string {
     const [year, month, date] = dateISOString.split("-");
     const paddedDate = padZero(date ?? "", 2);
     return paddedDate;
-};
+}
 
-export function isoToMonthString (dateISOString: string): string  {
+export function isoToMonthString(dateISOString: string): string {
     const [year, month, _] = dateISOString.split("-");
     return formatMonthStringFromParts(year, month);
-};
+}
 
 export function formatISO(date: Date): string {
-    return formatISOFromParts(date.getFullYear(), date.getMonth()+1, date.getDate())
+    return formatISOFromParts(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate(),
+    );
 }
 
-export function formatISOFromParts(year: number|string, month: number|string, date: number|string): string {
+export function formatISOFromParts(
+    year: number | string,
+    month: number | string,
+    date: number | string,
+): string {
     return [year, month, date]
-	.map((x, i) => i == 0 ? x : padZero(x.toString(), 2))
-	.join("-");
+        .map((x, i) => (i == 0 ? x : padZero(x.toString(), 2)))
+        .join("-");
 }
-    
-export function formatMonthStringFromParts (year: string = "", month: string = ""): string {
-        const paddedYear: string = padZero(year, 4);
-        const paddedMonth: string = padZero(month, 2);
-        return `${paddedYear}-${paddedMonth}`;
-    };
+
+export function formatMonthStringFromParts(
+    year: string = "",
+    month: string = "",
+): string {
+    const paddedYear: string = padZero(year, 4);
+    const paddedMonth: string = padZero(month, 2);
+    return `${paddedYear}-${paddedMonth}`;
+}
 
 export function formatTime(date: Date): string {
     return [date.getHours(), date.getMinutes()]
-	.map(x => padZero(x.toString(), 2))
-	.join(":");
+        .map((x) => padZero(x.toString(), 2))
+        .join(":");
 }
 
 // filters
@@ -64,11 +75,11 @@ export function filterObjectsByStringEntries<T>(
     const matches: Set<T> = new Set();
 
     for (const object of objects) {
-	const doesMatch: boolean = checkDoesObjectMatchReference(
-	    reference,
-	    converter(object),
-	);
-	if (doesMatch) matches.add(object);
+        const doesMatch: boolean = checkDoesObjectMatchReference(
+            reference,
+            converter(object),
+        );
+        if (doesMatch) matches.add(object);
     }
 
     return matches;
@@ -82,12 +93,12 @@ export function filterObjectsByWords<T>(
     const matches: Set<T> = new Set();
 
     for (const object of objects) {
-	const doesMatch: boolean = checkDoesObjectMatchSearch(
-	    query,
-	    getStringsOfObject,
-	    object,
-	);
-	if (doesMatch) matches.add(object);
+        const doesMatch: boolean = checkDoesObjectMatchSearch(
+            query,
+            getStringsOfObject,
+            object,
+        );
+        if (doesMatch) matches.add(object);
     }
 
     return matches;
@@ -103,50 +114,55 @@ export function checkDoesObjectMatchSearch<T>(
     const stringsInObject: string[] = getStringsOfObject(object);
     const wordsInObject: string[] = [];
     for (const string of stringsInObject) {
-	const lowercaseWordsInString = string
-	    .toString()
-	    .toLowerCase()
-	    .split(" ")
-	    .filter((word) => word != "");
-	wordsInObject.push(...lowercaseWordsInString);
+        const lowercaseWordsInString = string
+            .toString()
+            .toLowerCase()
+            .split(" ")
+            .filter((word) => word != "");
+        wordsInObject.push(...lowercaseWordsInString);
     }
 
     const lowercaseWordsInQuery = query
-	.toLowerCase()
-	.split(" ")
-	.filter((word) => word != "");
+        .toLowerCase()
+        .split(" ")
+        .filter((word) => word != "");
     for (const queryWord of lowercaseWordsInQuery) {
-	if (queryWord[0] == "-") {
-	    // exclusion
-	    const wordContent = queryWord.substring(1);
-	    if (wordsInObject.includes(wordContent)) {
-		return false;
-	    }
-	} else {
-	    if (wordsInObject.includes(queryWord) == false) {
-		return false;
-	    }
-	}
+        if (queryWord[0] == "-") {
+            // exclusion
+            const wordContent = queryWord.substring(1);
+            if (wordsInObject.includes(wordContent)) {
+                return false;
+            }
+        } else {
+            if (wordsInObject.includes(queryWord) == false) {
+                return false;
+            }
+        }
     }
 
     return true;
 }
 
 export default function implementFilter<T>(
-    allItems: React.ListState<T>|React.MapState<T>,
+    allItems: React.ListState<T> | React.MapState<T>,
     matches: React.ListState<T>,
     query: React.State<string>,
     itemToString: (item: T) => string,
 ) {
     function update() {
-	matches.clear();
-	allItems.value.forEach((item: T) => {
-	    if (!itemToString(item).toLowerCase().includes(query.value.toLowerCase())) return;
-	    matches.add(item);
-	    allItems.handleRemoval(item, () => {
-		matches.remove(item);
-	    });
-	});
+        matches.clear();
+        allItems.value.forEach((item: T) => {
+            if (
+                !itemToString(item)
+                    .toLowerCase()
+                    .includes(query.value.toLowerCase())
+            )
+                return;
+            matches.add(item);
+            allItems.handleRemoval(item, () => {
+                matches.remove(item);
+            });
+        });
     }
     query.subscribe(update);
     allItems.handleAddition(update);
@@ -160,16 +176,16 @@ export class HandlerManager<T> {
 
     // manage
     setHandler = (id: string, handler: Handler<T>): void => {
-	this.handlers.set(id, handler);
+        this.handlers.set(id, handler);
     };
 
     deleteHandler = (id: string): void => {
-	this.handlers.delete(id);
+        this.handlers.delete(id);
     };
 
     // trigger
     trigger = (item: T): void => {
-	[...this.handlers.values()].forEach((handler) => handler(item));
+        [...this.handlers.values()].forEach((handler) => handler(item));
     };
 }
 
@@ -181,26 +197,26 @@ export class IndexManager<T> {
 
     // methods
     update = (items: T[]): void => {
-	this.sortedStrings = [];
+        this.sortedStrings = [];
 
-	let strings: string[] = [];
-	for (const item of items) {
-	    const string: string = this.itemToString(item);
-	    strings.push(string);
-	}
+        let strings: string[] = [];
+        for (const item of items) {
+            const string: string = this.itemToString(item);
+            strings.push(string);
+        }
 
-	this.sortedStrings = strings.sort(localeCompare);
+        this.sortedStrings = strings.sort(localeCompare);
     };
 
     getIndex = (item: T): number => {
-	const string: string = this.itemToString(item);
-	const index: number = this.sortedStrings.indexOf(string);
-	return index;
+        const string: string = this.itemToString(item);
+        const index: number = this.sortedStrings.indexOf(string);
+        return index;
     };
 
     // init
     constructor(itemToString: (item: T) => string) {
-	this.itemToString = itemToString;
+        this.itemToString = itemToString;
     }
 }
 
@@ -213,7 +229,7 @@ export function getLocalStorageItemAndClear(key: string): string | null {
 }
 
 export function bytesToMB(bytes: number): number {
-    return bytes / (1024*1024);
+    return bytes / (1024 * 1024);
 }
 
 // string & parsing
@@ -227,9 +243,9 @@ export function padZero(string: string | undefined, length: number): string {
 
 export function parse(string: string): any {
     try {
-	return JSON.parse(string);
+        return JSON.parse(string);
     } catch {
-	return {};
+        return {};
     }
 }
 
@@ -238,8 +254,8 @@ export function parseValidObject<T>(string: string, reference: T): T | null {
     if (checkIsValidObject(parsed) == false) return null;
 
     const doesMatchReference: boolean = checkMatchesObjectStructure(
-	parsed,
-	reference,
+        parsed,
+        reference,
     );
     if (doesMatchReference == false) return null;
 
@@ -248,9 +264,9 @@ export function parseValidObject<T>(string: string, reference: T): T | null {
 
 export function parseOrFallback(inputString: string): any {
     try {
-	return JSON.parse(inputString);
+        return JSON.parse(inputString);
     } catch {
-	return inputString;
+        return inputString;
     }
 }
 
@@ -271,27 +287,30 @@ export interface PinchToZoomData {
     x: number;
     y: number;
 }
-export function implementPinchZoom(canvas: HTMLElement, data: React.State<PinchToZoomData>) {
+export function implementPinchZoom(
+    canvas: HTMLElement,
+    data: React.State<PinchToZoomData>,
+) {
     let pinching = false;
     let dragging = false;
     let lastElement: HTMLElement | undefined = undefined;
 
     let initialDistance: number,
-	initialZoom: number,
-	initialX: number,
-	initialY: number,
-	initialTouchX: number,
-	initialTouchY: number;
+        initialZoom: number,
+        initialX: number,
+        initialY: number,
+        initialTouchX: number,
+        initialTouchY: number;
 
     function reset() {
-	initialDistance = 0;
+        initialDistance = 0;
 
-	initialZoom = 1;
+        initialZoom = 1;
 
-	initialX = 0;
-	initialY = 0;
-	initialTouchX = 0;
-	initialTouchY = 0;
+        initialX = 0;
+        initialY = 0;
+        initialTouchX = 0;
+        initialTouchY = 0;
     }
 
     reset();
@@ -301,117 +320,117 @@ export function implementPinchZoom(canvas: HTMLElement, data: React.State<PinchT
 
     const element = (): HTMLElement | null => canvas.querySelector(".zoom");
     const distance = (e: TouchEvent) =>
-	Math.hypot(
-	    e.touches[0].pageX - e.touches[1].pageX,
-	    e.touches[0].pageY - e.touches[1].pageY,
-	);
+        Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY,
+        );
     const point = (e: TouchEvent, direction: "x" | "y", i: number) =>
-	e.touches[i][direction == "x" ? "clientX" : "clientY"];
+        e.touches[i][direction == "x" ? "clientX" : "clientY"];
     const midpoint = (e: TouchEvent, direction: "x" | "y") =>
-	(point(e, direction, 0) + point(e, direction, 1)) / 2;
+        (point(e, direction, 0) + point(e, direction, 1)) / 2;
 
     function apply(zoom: number, _offset?: [number, number]) {
-	if (zoom < MIN) return apply(MIN, _offset);
-	if (zoom > MAX) return apply(5, _offset);
+        if (zoom < MIN) return apply(MIN, _offset);
+        if (zoom > MAX) return apply(5, _offset);
 
-	let {x, y} = data.value;
-	if (_offset) [x, y] = _offset;
+        let { x, y } = data.value;
+        if (_offset) [x, y] = _offset;
 
-	data.value = {
-	    zoom, x, y
-	}
+        data.value = {
+            zoom,
+            x,
+            y,
+        };
     }
 
     data.subscribe((data) => {
-	const el = element();
-	if (!el) return;
-	el.style.transform = `scale(${data.zoom.toString()}) translate(${data.x}px, ${data.y}px)`;
-    })
+        const el = element();
+        if (!el) return;
+        el.style.transform = `scale(${data.zoom.toString()}) translate(${data.x}px, ${data.y}px)`;
+    });
 
     canvas.addEventListener("wheel", (event: WheelEvent) => {
-	event.preventDefault();
+        event.preventDefault();
 
-	initialZoom = data.value.zoom;
-	initialX = data.value.x;
-	initialY = data.value.y;
+        initialZoom = data.value.zoom;
+        initialX = data.value.x;
+        initialY = data.value.y;
 
-	apply(data.value.zoom - event.deltaY * 0.005);
+        apply(data.value.zoom - event.deltaY * 0.005);
     });
     canvas.addEventListener("scroll", (event: Event) => {
-	event.preventDefault();
+        event.preventDefault();
     });
 
     canvas.addEventListener("mousedown", (event: MouseEvent) => {
-	const target = event.target as HTMLElement|undefined;
-	console.log(target);
-	if (!target || !target.classList.contains("allow-drag-move")) return;
-	event.preventDefault();
-	initialZoom = data.value.zoom;
-	initialX = data.value.x;
-	initialY = data.value.y;
-	initialTouchX = event.clientX;
-	initialTouchY = event.clientY;
-	dragging = true;
-    })
+        const target = event.target as HTMLElement | undefined;
+        console.log(target);
+        if (!target || !target.classList.contains("allow-drag-move")) return;
+        event.preventDefault();
+        initialZoom = data.value.zoom;
+        initialX = data.value.x;
+        initialY = data.value.y;
+        initialTouchX = event.clientX;
+        initialTouchY = event.clientY;
+        dragging = true;
+    });
     canvas.addEventListener("mouseup", () => {
-	dragging = false;
-    })
+        dragging = false;
+    });
     canvas.addEventListener("mousemove", (event: MouseEvent) => {
-	if (!dragging) return;
-	event.preventDefault();
-	apply(data.value.zoom, [
-	    initialX +
-	    (event.clientX - initialTouchX) / initialZoom,
-	    initialY +
-	    (event.clientY - initialTouchY) / initialZoom,
-	]);
-    })
+        if (!dragging) return;
+        event.preventDefault();
+        apply(data.value.zoom, [
+            initialX + (event.clientX - initialTouchX) / initialZoom,
+            initialY + (event.clientY - initialTouchY) / initialZoom,
+        ]);
+    });
 
     canvas.addEventListener("touchstart", (event: TouchEvent) => {
-	(document.activeElement as HTMLElement)?.blur();
+        (document.activeElement as HTMLElement)?.blur();
 
-	const el = element();
-	if (!el) return;
-	if (lastElement != undefined && lastElement != el) reset();
-	lastElement = el;
+        const el = element();
+        if (!el) return;
+        if (lastElement != undefined && lastElement != el) reset();
+        lastElement = el;
 
-	initialZoom = data.value.zoom;
-	initialX = data.value.x;
-	initialY = data.value.y;
+        initialZoom = data.value.zoom;
+        initialX = data.value.x;
+        initialY = data.value.y;
 
-	if (event.touches.length != 2) {
-	    pinching = false;
-	    initialTouchX = event.touches[0].clientX;
-	    initialTouchY = event.touches[0].clientY;
-	    return;
-	}
+        if (event.touches.length != 2) {
+            pinching = false;
+            initialTouchX = event.touches[0].clientX;
+            initialTouchY = event.touches[0].clientY;
+            return;
+        }
 
-	pinching = true;
-	initialDistance = distance(event);
-	initialTouchX = midpoint(event, "x");
-	initialTouchY = midpoint(event, "y");
+        pinching = true;
+        initialDistance = distance(event);
+        initialTouchX = midpoint(event, "x");
+        initialTouchY = midpoint(event, "y");
     });
     canvas.addEventListener("touchmove", (event: TouchEvent) => {
-	if (!pinching) {
-	    apply(data.value.zoom, [
-		initialX +
-		(event.touches[0].clientX - initialTouchX) / initialZoom,
-		initialY +
-		(event.touches[0].clientY - initialTouchY) / initialZoom,
-	    ]);
-	    return;
-	}
-	if (event.touches.length < 2) return;
-	event.preventDefault();
-	const currentDistance = distance(event);
-	const midX = midpoint(event, "x");
-	const midY = midpoint(event, "y");
-	const ratio = currentDistance / initialDistance;
-	const difference = currentDistance - initialDistance;
-	apply(initialZoom * ratio, [
-	    initialX + (midX - difference - initialTouchX) / initialZoom / 2,
-	    initialY + (midY - difference - initialTouchY) / initialZoom / 2,
-	]);
+        if (!pinching) {
+            apply(data.value.zoom, [
+                initialX +
+                    (event.touches[0].clientX - initialTouchX) / initialZoom,
+                initialY +
+                    (event.touches[0].clientY - initialTouchY) / initialZoom,
+            ]);
+            return;
+        }
+        if (event.touches.length < 2) return;
+        event.preventDefault();
+        const currentDistance = distance(event);
+        const midX = midpoint(event, "x");
+        const midY = midpoint(event, "y");
+        const ratio = currentDistance / initialDistance;
+        const difference = currentDistance - initialDistance;
+        apply(initialZoom * ratio, [
+            initialX + (midX - difference - initialTouchX) / initialZoom / 2,
+            initialY + (midY - difference - initialTouchY) / initialZoom / 2,
+        ]);
     });
 }
 
@@ -424,12 +443,12 @@ export function collectObjectValuesForKey<T>(
     const values: Set<string> = new Set();
 
     for (const object of objects) {
-	const stringEntryObject: StringEntryObject = converter(object);
-	const stringEntryObjectValue: Stringifiable | undefined =
-	    stringEntryObject[key];
-	if (stringEntryObjectValue == undefined) continue;
+        const stringEntryObject: StringEntryObject = converter(object);
+        const stringEntryObjectValue: Stringifiable | undefined =
+            stringEntryObject[key];
+        if (stringEntryObjectValue == undefined) continue;
 
-	values.add(stringEntryObjectValue.toString());
+        values.add(stringEntryObjectValue.toString());
     }
 
     return [...values.values()];
@@ -442,50 +461,50 @@ export function checkDoesObjectMatchReference(
     explicitEmptyValue: boolean = false,
 ): boolean {
     reference_entry_loop: for (const referenceEntry of Object.entries(
-	reference,
+        reference,
     )) {
-	const [referenceKey, referenceValue] = referenceEntry;
-	const stringEntryObjectValue: Stringifiable | undefined =
-	    stringEntryObject[referenceKey];
+        const [referenceKey, referenceValue] = referenceEntry;
+        const stringEntryObjectValue: Stringifiable | undefined =
+            stringEntryObject[referenceKey];
 
-	if (referenceValue == undefined) return false;
+        if (referenceValue == undefined) return false;
 
-	if (referenceValue[0] == "-") {
-	    const strippedReferenceValue: string = referenceValue
-		.toString()
-		.substring(1);
-	    // property may not exist
-	    if (
-		strippedReferenceValue == "" &&
-		stringEntryObjectValue != undefined &&
-		stringEntryObjectValue != ""
-	    ) {
-		return false;
-	    }
+        if (referenceValue[0] == "-") {
+            const strippedReferenceValue: string = referenceValue
+                .toString()
+                .substring(1);
+            // property may not exist
+            if (
+                strippedReferenceValue == "" &&
+                stringEntryObjectValue != undefined &&
+                stringEntryObjectValue != ""
+            ) {
+                return false;
+            }
 
-	    // property may not match
-	    if (stringEntryObjectValue == strippedReferenceValue) {
-		return false;
-	    }
-	} else {
-	    if (explicitEmptyValue == false) {
-		// property must exist but be anything
-		if (
-		    referenceValue == "" &&
-		    (stringEntryObjectValue == undefined ||
-			stringEntryObjectValue == "")
-		) {
-		    return false;
-		} else if (referenceValue == "") {
-		    continue reference_entry_loop;
-		}
-	    }
+            // property may not match
+            if (stringEntryObjectValue == strippedReferenceValue) {
+                return false;
+            }
+        } else {
+            if (explicitEmptyValue == false) {
+                // property must exist but be anything
+                if (
+                    referenceValue == "" &&
+                    (stringEntryObjectValue == undefined ||
+                        stringEntryObjectValue == "")
+                ) {
+                    return false;
+                } else if (referenceValue == "") {
+                    continue reference_entry_loop;
+                }
+            }
 
-	    // property must match
-	    if (stringEntryObjectValue != referenceValue) {
-		return false;
-	    }
-	}
+            // property must match
+            if (stringEntryObjectValue != referenceValue) {
+                return false;
+            }
+        }
     }
     return true;
 }

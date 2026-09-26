@@ -105,11 +105,11 @@ export default class ChatListViewModel {
 
     // utility
     getDisplayName = (fullChannel: string): string => {
-    	for (const vm of this.chatViewModels.value) {
-	    const fullReference = vm.chatModel.id;
-	    if (fullReference == fullChannel) return vm.chatModel.info.name;
-	}
+        for (const vm of this.chatViewModels.value) {
+            const fullReference = vm.chatModel.id;
+            if (fullReference == fullChannel) return vm.chatModel.info.name;
+        }
 
-	return fullChannel;
-    }
+        return fullChannel;
+    };
 }

@@ -10,7 +10,7 @@
 #background-wrapper {
     position: fixed;
     inset: 0px;
-    
+
     transform: scale(1.2);
     filter: blur(40px);
 
@@ -41,7 +41,7 @@ main {
     bottom: -50%;
 
     background-image: radial-gradient(var(--sky-1), var(--sky-2));
-    
+
     opacity: 0.4;
 }
 
@@ -113,4 +113,3 @@ body[theme="dark"] #background-wrapper #grass-2 {
 
     padding: var(--content-padding);
 }
-

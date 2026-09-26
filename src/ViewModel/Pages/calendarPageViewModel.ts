@@ -4,11 +4,19 @@ import CoreViewModel from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
 import * as React from "../../react";
 import { CommonKeys } from "../../View/keystrokes";
+import {
+    formatISO,
+    formatISOFromParts,
+    formatMonthStringFromParts,
+    formatTime,
+    isoToDateString,
+    isoToMonthString,
+    padZero,
+} from "../../Model/Utility/utility";
 import CalendarModel, { MonthGrid } from "../../Model/Files/calendarModel";
 import BoardsAndTasksModel, {
     TaskFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
-import {formatISO, formatISOFromParts, formatMonthStringFromParts, formatTime, isoToDateString, isoToMonthString, padZero} from "../../Model/Utility/utility";
 
 export const CALENDAR_EVENT_BOARD_ID = "events";
 
@@ -22,7 +30,11 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     }
 
     get selectedDateString(): string {
-	return formatISOFromParts(this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value);
+        return formatISOFromParts(
+            this.selectedYear.value,
+            this.selectedMonth.value,
+            this.selectedDate.value,
+        );
     }
 
     // paths
@@ -39,8 +51,8 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     monthGrid: React.State<
         MonthGrid<React.MapState<TaskViewModel>> | undefined
     > = new React.State<any>(undefined);
-    
-    nextTask = new React.State<TaskViewModel|undefined>(undefined);
+
+    nextTask = new React.State<TaskViewModel | undefined>(undefined);
 
     // methods
     createEvent = (): void => {
@@ -65,9 +77,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     getEventsForDate = (): React.MapState<TaskViewModel> | undefined => {
-        const paddedDate: string = padZero(
-            this.selectedDate.toString(), 2
-        );
+        const paddedDate: string = padZero(this.selectedDate.toString(), 2);
 
         if (this.monthGrid.value == undefined) {
             return undefined;
@@ -82,9 +92,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     ): React.MapState<TaskViewModel> | null => {
         if (this.monthGrid.value == null) return null;
 
-        const date: string = isoToDateString(
-            taskFileContent.date ?? "",
-        );
+        const date: string = isoToDateString(taskFileContent.date ?? "");
         return this.monthGrid.value.days[date];
     };
 
@@ -152,11 +160,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     handleDrop = (year: string, month: string, date: string): void => {
-        const ISOString: string = formatISOFromParts(
-            year,
-            month,
-            date,
-        );
+        const ISOString: string = formatISOFromParts(year, month, date);
 
         const draggedObject: any = this.coreViewModel.draggedObject.value;
         if (draggedObject instanceof TaskViewModel == false) return;
@@ -165,37 +169,34 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     handleChron = (): void => {
-	this.updateMonthGrid();
-	this.updateNextTask();
-    }
+        this.updateMonthGrid();
+        this.updateNextTask();
+    };
 
     updateMonthGrid = (): void => {
-        const today = formatISO(this.coreViewModel.todayDate.value)
-        if (
-            this.currentTodayDate == today
-        )
-            return;
+        const today = formatISO(this.coreViewModel.todayDate.value);
+        if (this.currentTodayDate == today) return;
         this.loadMonthTasks();
         this.currentTodayDate = today;
-	this.selectedDate.callSubscriptions();
+        this.selectedDate.callSubscriptions();
     };
 
     updateNextTask = (): void => {
-	if (this.selectedDateString != this.currentTodayDate) {
-	    this.nextTask.value = undefined;
-	    return;
-	}
+        if (this.selectedDateString != this.currentTodayDate) {
+            this.nextTask.value = undefined;
+            return;
+        }
 
-	const tasks = this.getEventsForDate();
-	if (tasks == undefined) return;
-	const taskArray =[...tasks.value.values()];
-	const sorted = taskArray.sort((a, b) => a.index.value - b.index.value);
-	for (const task of sorted) {
-	    if (task.time.value <= this.coreViewModel.time.value) continue;
-	    this.nextTask.value = task;
-	    break;
-	};
-    }
+        const tasks = this.getEventsForDate();
+        if (tasks == undefined) return;
+        const taskArray = [...tasks.value.values()];
+        const sorted = taskArray.sort((a, b) => a.index.value - b.index.value);
+        for (const task of sorted) {
+            if (task.time.value <= this.coreViewModel.time.value) continue;
+            this.nextTask.value = task;
+            break;
+        }
+    };
 
     // load
     loadMonthTasks = (): void => {
@@ -217,8 +218,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
         }
     };
 
-    loadData = (): void => {
-    };
+    loadData = (): void => {};
 
     // init
     constructor(
@@ -237,9 +237,9 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
         React.bulkSubscribe([this.selectedYear, this.selectedMonth], () => {
             this.loadMonthTasks();
         });
-	this.selectedDate.subscribeSilent(()=>{
-	    this.updateNextTask();
-	})
+        this.selectedDate.subscribeSilent(() => {
+            this.updateNextTask();
+        });
 
         // handlers
         boardsAndTasksModel.taskHandlerManager.setHandler(

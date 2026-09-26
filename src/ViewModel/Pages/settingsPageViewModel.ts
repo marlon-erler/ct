@@ -30,8 +30,7 @@ export default class SettingsPageViewModel extends Context {
     );
     cannotSetColor: React.State<boolean> = React.createProxyState(
         [this.color, this.appliedColor],
-        () =>
-            this.color.value == this.appliedColor.value,
+        () => this.color.value == this.appliedColor.value,
     );
     cannotAddSecondaryChannel: React.State<boolean> = React.createProxyState(
         [this.newSecondaryChannelInput],
@@ -41,11 +40,8 @@ export default class SettingsPageViewModel extends Context {
 
     // methods
     setName = (): void => {
-        this.chatViewModel.chatModel.setName(
-            this.nameInput.value,
-        );
-        this.name.value =
-            this.chatViewModel.chatModel.info.name;
+        this.chatViewModel.chatModel.setName(this.nameInput.value);
+        this.name.value = this.chatViewModel.chatModel.info.name;
 
         this.chatViewModel.chatListViewModel.updateIndices();
     };
@@ -79,7 +75,7 @@ export default class SettingsPageViewModel extends Context {
 
     applyColor = (): void => {
         this.chatViewModel.setColor(this.color.value);
-	this.appliedColor.value = this.color.value;
+        this.appliedColor.value = this.color.value;
     };
 
     remove = (): void => {
@@ -90,18 +86,17 @@ export default class SettingsPageViewModel extends Context {
 
     // load
     preloadData = (): void => {
-        this.name.value =
-            this.chatViewModel.chatModel.info.name;
-        
+        this.name.value = this.chatViewModel.chatModel.info.name;
+
         this.color.value = this.chatViewModel.chatModel.color;
-	this.appliedColor.value = this.color.value;
+        this.appliedColor.value = this.color.value;
     };
 
     updateData = (): void => {
-	this.preloadData();
-	this.nameInput.value = this.name.value;
-	this.chatViewModel.resetColor();
-    }
+        this.preloadData();
+        this.nameInput.value = this.name.value;
+        this.chatViewModel.resetColor();
+    };
 
     loadData = (): void => {
         this.nameInput.value = this.name.value;

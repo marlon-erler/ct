@@ -125,25 +125,20 @@ function SettingsInfoPane(
                     settingsViewModel.coreViewModel.version,
                 )}
 
-		<button
-		    class="primary"
-		    on:click={coreViewModel.update}
-		    toggle:hidden={coreViewModel.noUpdateAvailable}
-		>
-		    <span
-			subscribe:innerText={coreViewModel.updateText}
-		    ></span>
-		    <span class="icon">update</span>
-		</button>
+                <button
+                    class="primary"
+                    on:click={coreViewModel.update}
+                    toggle:hidden={coreViewModel.noUpdateAvailable}
+                >
+                    <span subscribe:innerText={coreViewModel.updateText}></span>
+                    <span class="icon">update</span>
+                </button>
 
-		<button
-		    class="standard"
-		    on:click={coreViewModel.checkUpdates}
-		>
-		    {coreViewModel.translations.settings.checkUpdatesButton}
-		</button>
-	    </div>
-	</div>
+                <button class="standard" on:click={coreViewModel.checkUpdates}>
+                    {coreViewModel.translations.settings.checkUpdatesButton}
+                </button>
+            </div>
+        </div>
     );
 }
 
@@ -152,30 +147,30 @@ function SettingsRegionalPane(
     settingsViewModel: SettingsViewModel,
 ) {
     return (
-	<div class="slide-up">
-	    <h2>{coreViewModel.translations.settings.pages.regional}</h2>
+        <div class="slide-up">
+            <h2>{coreViewModel.translations.settings.pages.regional}</h2>
 
-	    <hr></hr>
-	    <h3>{coreViewModel.translations.settings.language}</h3>
-	{OptionButtonList(
-	    new React.ListState<[string, string]>(
-		Object.values(Languages).map((x) => [languageNames[x], x]),
-	    ),
-	    settingsViewModel.language,
-	)}
+            <hr></hr>
+            <h3>{coreViewModel.translations.settings.language}</h3>
+            {OptionButtonList(
+                new React.ListState<[string, string]>(
+                    Object.values(Languages).map((x) => [languageNames[x], x]),
+                ),
+                settingsViewModel.language,
+            )}
 
-	<hr></hr>
-	<h3>{coreViewModel.translations.settings.firstDayOfWeekLabel}</h3>
-	{OptionButtonList(
-	    new React.ListState<[string, string]>(
-		coreViewModel.translations.regional.weekdays.full.map(
-		    (x, i) => [x, i.toString()],
-		),
-	    ),
-	    settingsViewModel.firstDayOfWeek,
-	)}
-    </div>
-);
+            <hr></hr>
+            <h3>{coreViewModel.translations.settings.firstDayOfWeekLabel}</h3>
+            {OptionButtonList(
+                new React.ListState<[string, string]>(
+                    coreViewModel.translations.regional.weekdays.full.map(
+                        (x, i) => [x, i.toString()],
+                    ),
+                ),
+                settingsViewModel.firstDayOfWeek,
+            )}
+        </div>
+    );
 }
 
 function SettingsAppearancePane(
@@ -183,34 +178,34 @@ function SettingsAppearancePane(
     settingsViewModel: SettingsViewModel,
 ) {
     return (
-	<div class="slide-up">
-	    <h2>{coreViewModel.translations.settings.pages.appearance}</h2>
-	    <hr></hr>
-	{OptionButtonList(
-	    new React.ListState<[string, string]>([
-		[
-		    coreViewModel.translations.settings.themes.dynamic,
-		    ThemeSettings.Dynamic,
-		],
-		[
-		    coreViewModel.translations.settings.themes.system,
-		    ThemeSettings.System,
-		],
-		[
-		    coreViewModel.translations.settings.themes.dark,
-		    ThemeSettings.Dark,
-		],
-		[
-		    coreViewModel.translations.settings.themes.light,
-		    ThemeSettings.Light,
-		],
-		[
-		    coreViewModel.translations.settings.themes.black,
-		    ThemeSettings.Black,
-		],
-	    ]),
-	    settingsViewModel.theme,
-	)}
-    </div>
-);
+        <div class="slide-up">
+            <h2>{coreViewModel.translations.settings.pages.appearance}</h2>
+            <hr></hr>
+            {OptionButtonList(
+                new React.ListState<[string, string]>([
+                    [
+                        coreViewModel.translations.settings.themes.dynamic,
+                        ThemeSettings.Dynamic,
+                    ],
+                    [
+                        coreViewModel.translations.settings.themes.system,
+                        ThemeSettings.System,
+                    ],
+                    [
+                        coreViewModel.translations.settings.themes.dark,
+                        ThemeSettings.Dark,
+                    ],
+                    [
+                        coreViewModel.translations.settings.themes.light,
+                        ThemeSettings.Light,
+                    ],
+                    [
+                        coreViewModel.translations.settings.themes.black,
+                        ThemeSettings.Black,
+                    ],
+                ]),
+                settingsViewModel.theme,
+            )}
+        </div>
+    );
 }

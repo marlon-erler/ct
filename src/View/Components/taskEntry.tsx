@@ -11,9 +11,11 @@ export function TaskEntry(taskViewModel: TaskViewModel) {
         schedule: taskViewModel.time.value || "---",
     };
 
-    const className = React.createProxyState([taskViewModel.isNotNext], ()=>
-	`${taskViewModel.isNotNext.value ? "standard" : "primary"} tile flex-no` 
-    )
+    const className = React.createProxyState(
+        [taskViewModel.isNotNext],
+        () =>
+            `${taskViewModel.isNotNext.value ? "standard" : "primary"} tile flex-no`,
+    );
 
     const view = (
         <button
@@ -22,45 +24,45 @@ export function TaskEntry(taskViewModel: TaskViewModel) {
             style="user-select: none; -webkit-user-select: none"
             on:click={taskViewModel.open}
             on:dragstart={taskViewModel.dragStart}
-	>
-	    <div>
-		<span
-		    class="secondary"
-		    toggle:hidden={taskViewModel.isNotNext}
-		>
-		    {taskViewModel.coreViewModel.translations.chatPage.calendar.eventNext}
-		    <hr></hr>
-		</span>
-		<b
-		    class="ellipsis"
-		    subscribe:innerText={taskViewModel.name}
-		></b>
-		<hr></hr>
-		<div
-		    class="grid secondary"
-		    style="grid-template-columns: repeat(2, 1fr); column-gap: 1rem;  row-gap: .5rem"
-		>
-		    {...Object.entries(details).map((entry) => (
-			<span
-			    class="flex-row align-center width-100 flex-no clip"
-			    style="gap: 1rem"
-			>
-			    <span class="icon" style="font-size: 1.1rem">
-				{entry[0]}
-			    </span>
-			    <span class="ellipsis">{entry[1]}</span>
-			</span>
-		))}
-	    </div>
-	</div>
-    </button>
-);
+        >
+            <div>
+                <span class="secondary" toggle:hidden={taskViewModel.isNotNext}>
+                    {
+                        taskViewModel.coreViewModel.translations.chatPage
+                            .calendar.eventNext
+                    }
+                    <hr></hr>
+                </span>
+                <b
+                    class="ellipsis"
+                    subscribe:innerText={taskViewModel.name}
+                ></b>
+                <hr></hr>
+                <div
+                    class="grid secondary"
+                    style="grid-template-columns: repeat(2, 1fr); column-gap: 1rem;  row-gap: .5rem"
+                >
+                    {...Object.entries(details).map((entry) => (
+                        <span
+                            class="flex-row align-center width-100 flex-no clip"
+                            style="gap: 1rem"
+                        >
+                            <span class="icon" style="font-size: 1.1rem">
+                                {entry[0]}
+                            </span>
+                            <span class="ellipsis">{entry[1]}</span>
+                        </span>
+                    ))}
+                </div>
+            </div>
+        </button>
+    );
 
-taskViewModel.index.subscribe((newIndex) => {
-    view.style.order = newIndex;
-});
+    taskViewModel.index.subscribe((newIndex) => {
+        view.style.order = newIndex;
+    });
 
-return view;
+    return view;
 }
 
 export const TaskViewModelToEntry: React.StateItemConverter<TaskViewModel> = (

@@ -16,11 +16,9 @@ export default class NotificationViewModel {
         if (this.seenMessageIds.has(message.id)) return;
         if (this.chatListViewModel.selectedChat.value == undefined) return;
 
-        const notification: Notification =
-            this.createNotification(message);
+        const notification: Notification = this.createNotification(message);
         const currentChat =
-            this.chatListViewModel.selectedChat.value.chatModel
-                .id;
+            this.chatListViewModel.selectedChat.value.chatModel.id;
         const currentPage =
             this.chatListViewModel.selectedChat.value.selectedPage.value;
         if (
@@ -39,10 +37,7 @@ export default class NotificationViewModel {
 
         const chat = [
             ...this.chatListViewModel.chatViewModels.value.values(),
-        ].find(
-            (chat) =>
-                chat.chatModel.id == notification.fullChannel,
-        );
+        ].find((chat) => chat.chatModel.id == notification.fullChannel);
         if (!chat) return;
         chat.open();
         chat.openPage(ChatPageTypes.Messages);
@@ -86,12 +81,12 @@ export default class NotificationViewModel {
 
     // util
     createNotification(message: ChatMessage): Notification {
-	const fullChannel = ChatModel.splitChannel(message.channel)[0];
-	const chat = this.chatListViewModel.getDisplayName(fullChannel);
+        const fullChannel = ChatModel.splitChannel(message.channel)[0];
+        const chat = this.chatListViewModel.getDisplayName(fullChannel);
         return {
             messageId: message.id,
             chat,
-	    fullChannel,
+            fullChannel,
             sender: message.sender,
             body: message.body,
         };

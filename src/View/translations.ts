@@ -1,346 +1,346 @@
 const englishTranslations = {
     updater: {
-	migrated: "Migrated",
+        migrated: "Migrated",
     },
 
     general: {
-	deleteItemButtonAudioLabel: "delete item",
-	searchButtonAudioLabel: "search",
-	searchButtonClearAudioLabel: "clear search query",
+        deleteItemButtonAudioLabel: "delete item",
+        searchButtonAudioLabel: "search",
+        searchButtonClearAudioLabel: "clear search query",
 
-	abortButton: "Abort",
-	applyButton: "Apply",
-	backButton: "Back",
-	cancelButton: "Cancel",
-	confirmButton: "Confirm",
-	continueButton: "Continue",
-	closeButton: "Close",
-	deleteButton: "Delete",
-	exitButton: "Exit",
-	fullscreenButton: "Fullscreen",
-	refreshButton: "Refresh",
-	saveButton: "Save",
-	setButton: "Set",
+        abortButton: "Abort",
+        applyButton: "Apply",
+        backButton: "Back",
+        cancelButton: "Cancel",
+        confirmButton: "Confirm",
+        continueButton: "Continue",
+        closeButton: "Close",
+        deleteButton: "Delete",
+        exitButton: "Exit",
+        fullscreenButton: "Fullscreen",
+        refreshButton: "Refresh",
+        saveButton: "Save",
+        setButton: "Set",
 
-	filterOrCreateLabel: "Search or create",
-	createLabel: (query: string) => `Create "${query}"`,
+        filterOrCreateLabel: "Search or create",
+        createLabel: (query: string) => `Create "${query}"`,
 
-	reloadAppButton: "Reload App",
+        reloadAppButton: "Reload App",
 
-	fileVersionLabel: "Version",
-	searchLabel: "Search",
-	searchSuggestionsLabel: "Recent searches",
-	waitingLabel: "Waiting...",
+        fileVersionLabel: "Version",
+        searchLabel: "Search",
+        searchSuggestionsLabel: "Recent searches",
+        waitingLabel: "Waiting...",
 
-	restoreConnection: "Restore connection",
+        restoreConnection: "Restore connection",
 
-	noPageSelected: "No page selected",
+        noPageSelected: "No page selected",
     },
 
     regional: {
-	weekdays: {
-	    full: [
-		"Sunday",
-		"Monday",
-		"Tuesday",
-		"Wednesday",
-		"Thursday",
-		"Friday",
-		"Saturday",
-	    ],
-	    abbreviated: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-	},
+        weekdays: {
+            full: [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+            ],
+            abbreviated: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        },
     },
 
     homePage: {
-	appName: "Coordination Tool",
+        appName: "Coordination Tool",
 
-	///
+        ///
 
-	overviewHeadline: "Overview",
+        overviewHeadline: "Overview",
 
-	serverAddress: "Server address",
-	serverAddressPlaceholder: "wss://192.168.0.69:3000",
-	connectAudioLabel: "connect to server",
-	disconnectAudioLabel: "disconnect from server",
-	manageConnectionsAudioLabel: "manage connections",
+        serverAddress: "Server address",
+        serverAddressPlaceholder: "wss://192.168.0.69:3000",
+        connectAudioLabel: "connect to server",
+        disconnectAudioLabel: "disconnect from server",
+        manageConnectionsAudioLabel: "manage connections",
 
-	yourNameLabel: "Your name",
-	yourNamePlaceholder: "Jane Doe",
-	setNameButtonAudioLabel: "set name",
+        yourNameLabel: "Your name",
+        yourNamePlaceholder: "Jane Doe",
+        setNameButtonAudioLabel: "set name",
 
-	settingsButton: "Settings",
-	manageStorageButton: "Manage storage",
-	transferDataButton: "Transfer or export data",
+        settingsButton: "Settings",
+        manageStorageButton: "Manage storage",
+        transferDataButton: "Transfer or export data",
 
-	updateButton: (version: string) => `Update to ${version}`,
+        updateButton: (version: string) => `Update to ${version}`,
 
-	scrollToChatButton: "Chats",
+        scrollToChatButton: "Chats",
 
-	///
+        ///
 
-	backToOverviewAudioLabel: "go back to overview",
-	chatsHeadline: "Chats",
+        backToOverviewAudioLabel: "go back to overview",
+        chatsHeadline: "Chats",
 
-	addChatAudioLabel: "name of new chat",
-	addChatPlaceholder: "Add chat",
-	addChatButton: "Add chat",
+        addChatAudioLabel: "name of new chat",
+        addChatPlaceholder: "Add chat",
+        addChatButton: "Add chat",
     },
 
     settings: {
-	pages: {
-	    appearance: "Appearance",
-	    regional: "Language & Region",
-	    info: "About CT",
-	},
-	themes: {
-	    dynamic: "Dynamic",
-	    dark: "Dark",
-	    light: "Light",
-	    system: "Device theme",
-	    black: "Black",
-	},
+        pages: {
+            appearance: "Appearance",
+            regional: "Language & Region",
+            info: "About CT",
+        },
+        themes: {
+            dynamic: "Dynamic",
+            dark: "Dark",
+            light: "Light",
+            system: "Device theme",
+            black: "Black",
+        },
 
-	version: "Version",
-	language: "Language",
+        version: "Version",
+        language: "Language",
 
-	firstDayOfWeekLabel: "First day of week",
+        firstDayOfWeekLabel: "First day of week",
 
-	checkUpdatesButton: "Check for updates",
+        checkUpdatesButton: "Check for updates",
     },
 
     connectionModal: {
-	connectionModalHeadline: "Manage Connections",
+        connectionModalHeadline: "Manage Connections",
 
-	///
+        ///
 
-	connectButtonAudioLabel: "connect",
+        connectButtonAudioLabel: "connect",
     },
 
     dataTransferModal: {
-	transferDataHeadline: "Data Transfer",
-	sendHeadline: "Transfer to other device",
-	receiveHeadline: "Transfer to This Device",
-	exportHeadline: "Export Data",
-	importHeadline: "Import Data",
-	selectionDescription: "Select the data that you want to transfer.",
-	exportSelectionDescription: "Select the data that you want to export.",
-	dataEntryDescription: "Enter this data on the other device.",
-	dataEntryInputDescription:
-	"Enter the data displayed on the other device.",
+        transferDataHeadline: "Data Transfer",
+        sendHeadline: "Transfer to other device",
+        receiveHeadline: "Transfer to This Device",
+        exportHeadline: "Export Data",
+        importHeadline: "Import Data",
+        selectionDescription: "Select the data that you want to transfer.",
+        exportSelectionDescription: "Select the data that you want to export.",
+        dataEntryDescription: "Enter this data on the other device.",
+        dataEntryInputDescription:
+            "Enter the data displayed on the other device.",
 
-	///
+        ///
 
-	fromThisDeviceButton: "Send to other device",
-	toThisDeviceButton: "Send to this device",
-	exportButton: "Export to file",
-	importButton: "Import from file",
+        fromThisDeviceButton: "Send to other device",
+        toThisDeviceButton: "Send to this device",
+        exportButton: "Export to file",
+        importButton: "Import from file",
 
-	///
+        ///
 
-	generalHeadline: "General",
+        generalHeadline: "General",
 
-	connectionData: "Connection Data",
-	settingsData: "Settings Data",
+        connectionData: "Connection Data",
+        settingsData: "Settings Data",
 
-	chatsHeadline: "Chats",
+        chatsHeadline: "Chats",
 
-	///
+        ///
 
-	transferChannelHeadline: "Transfer Chanel",
-	transferKeyHeadline: "Transfer Encryption Key",
+        transferChannelHeadline: "Transfer Chanel",
+        transferKeyHeadline: "Transfer Encryption Key",
 
-	sendButton: "Send",
-	sendAgainButton: "Send again",
+        sendButton: "Send",
+        sendAgainButton: "Send again",
 
-	///
+        ///
 
-	filesSentCount: (count: number) => `Files sent: ${count}.`,
-	allFilesSent: "Done.",
+        filesSentCount: (count: number) => `Files sent: ${count}.`,
+        allFilesSent: "Done.",
 
-	filesReceivedCount: (count: number) => `Files processed: ${count}.`,
+        filesReceivedCount: (count: number) => `Files processed: ${count}.`,
 
-	//
+        //
 
-	exportKey: "Encryption key",
-	exportKeyConfirmation: "Confirm",
-	downloadFileButton: "Download",
-	importFileButton: "Import",
-	decryptImportButton: "Decrypt",
-	incorrectPassphraseError: "The encryption key is incorrect",
+        exportKey: "Encryption key",
+        exportKeyConfirmation: "Confirm",
+        downloadFileButton: "Download",
+        importFileButton: "Import",
+        decryptImportButton: "Decrypt",
+        incorrectPassphraseError: "The encryption key is incorrect",
     },
 
     storage: {
-	noItemSelected: "No item selected",
-	notAFile: "(not a file)",
-	contentEmpty: "(empty)",
+        noItemSelected: "No item selected",
+        notAFile: "(not a file)",
+        contentEmpty: "(empty)",
 
-	usageLabel: "Usage",
-	usageVauleLabel: (used: number, max: number) => `${used} of ${max} MB`,
+        usageLabel: "Usage",
+        usageVauleLabel: (used: number, max: number) => `${used} of ${max} MB`,
 
-	path: "Path",
-	content: "Content",
+        path: "Path",
+        content: "Content",
 
-	deleteItem: "Delete item",
+        deleteItem: "Delete item",
 
-	removeJunkButton: "Delete junk files",
+        removeJunkButton: "Delete junk files",
     },
 
     chatPage: {
-	closeChatAudioLabe: "close chat",
-	chatSettingsAudioLabel: "chat settings",
+        closeChatAudioLabe: "close chat",
+        chatSettingsAudioLabel: "chat settings",
 
-	pages: {
-	    settings: "Settings",
-	    messages: "Messages",
-	    tasks: "Tasks",
-	    calendar: "Calendar",
-	},
+        pages: {
+            settings: "Settings",
+            messages: "Messages",
+            tasks: "Tasks",
+            calendar: "Calendar",
+        },
 
-	settings: {
-	    settingsHeadline: "Settings",
+        settings: {
+            settingsHeadline: "Settings",
 
-	    nameLabel: "Chat name",
-	    setNameButtonAudioLabel: "set name",
+            nameLabel: "Chat name",
+            setNameButtonAudioLabel: "set name",
 
-	    newSecondaryChannelPlaceholder: "Add secondary channel",
-	    newSecondaryChannelAudioLabel: "name of new secondary channel",
-	    addSecondaryChannelButtonAudioLabel: "add secondary channel",
+            newSecondaryChannelPlaceholder: "Add secondary channel",
+            newSecondaryChannelAudioLabel: "name of new secondary channel",
+            addSecondaryChannelButtonAudioLabel: "add secondary channel",
 
-	    encryptionKeyLabel: "Encryption key",
-	    setEncryptionKeyButtonAudioLabel: "set encryption key",
-	    showEncryptionKey: "Show encryption key",
+            encryptionKeyLabel: "Encryption key",
+            setEncryptionKeyButtonAudioLabel: "set encryption key",
+            showEncryptionKey: "Show encryption key",
 
-	    setColorButtonAudioLabel: "set color",
+            setColorButtonAudioLabel: "set color",
 
-	    deleteChatButton: "Delete entire chat",
-	},
+            deleteChatButton: "Delete entire chat",
+        },
 
-	message: {
-	    messagesHeadline: "Messages",
+        message: {
+            messagesHeadline: "Messages",
 
-	    messageFilterHeadline: "Filter messages",
-	    messageFilterReactionsHadline: "Reactions",
-	    messageFilterAllReactionsButton: "Show all",
+            messageFilterHeadline: "Filter messages",
+            messageFilterReactionsHadline: "Reactions",
+            messageFilterAllReactionsButton: "Show all",
 
-	    ///
+            ///
 
-	    composerInputPlaceholder: "Type a message...",
-	    sendMessageButtonAudioLabel: "send message",
-	    filterMessagesButtonAudioLabel: "filter messages",
+            composerInputPlaceholder: "Type a message...",
+            sendMessageButtonAudioLabel: "send message",
+            filterMessagesButtonAudioLabel: "filter messages",
 
-	    ///
+            ///
 
-	    showMessageInfoButtonAudioLabel: "show message info",
-	    messageInfoHeadline: "Message Info",
-	    cancelReplyAudioLabel: "cancel reply",
+            showMessageInfoButtonAudioLabel: "show message info",
+            messageInfoHeadline: "Message Info",
+            cancelReplyAudioLabel: "cancel reply",
 
-	    sentBy: "Sent by",
-	    timeSent: "Time sent",
-	    channel: "Channel",
-	    messageContent: "Message content",
+            sentBy: "Sent by",
+            timeSent: "Time sent",
+            channel: "Channel",
+            messageContent: "Message content",
 
-	    copyMessageButton: "Copy message",
-	    resendMessageButton: "Resend message",
-	    decryptMessageButton: "Decrypt message",
-	    replyToMessageButton: "Reply to message",
-	    deleteMessageButton: "Delete message",
+            copyMessageButton: "Copy message",
+            resendMessageButton: "Resend message",
+            decryptMessageButton: "Decrypt message",
+            replyToMessageButton: "Reply to message",
+            deleteMessageButton: "Delete message",
 
-	    //
+            //
 
-	    thumbsUpReaction: "Reaction: thumbs up",
-	    checkReaction: "Reaction: check",
-	    stopReaction: "Reaction: stop sign",
-	    attentionReaction: "Reaction: exclamation mark",
-	    doubleAttentionReaction: "Reaction: double exclamation mark",
-	    questionReaction: "Reaction: question mark",
+            thumbsUpReaction: "Reaction: thumbs up",
+            checkReaction: "Reaction: check",
+            stopReaction: "Reaction: stop sign",
+            attentionReaction: "Reaction: exclamation mark",
+            doubleAttentionReaction: "Reaction: double exclamation mark",
+            questionReaction: "Reaction: question mark",
 
-	    //
+            //
 
-	    replyPrefixLabel: "Replies: ",
-	    replyHeaderLabel: (message: string) => `Replies to "${message}"`,
-	},
+            replyPrefixLabel: "Replies: ",
+            replyHeaderLabel: (message: string) => `Replies to "${message}"`,
+        },
 
-	task: {
-	    noBoardSelected: "No board selected",
-	    boardNotFound: "Board not found",
+        task: {
+            noBoardSelected: "No board selected",
+            boardNotFound: "Board not found",
 
-	    ///
+            ///
 
-	    closeBoardButtonAudioLabel: "close board",
-	    toggleBoardButtonAudioLabel: "toggle board list",
-	    showBoardSettingsButtonAudioLabel: "show board settigns",
+            closeBoardButtonAudioLabel: "close board",
+            toggleBoardButtonAudioLabel: "toggle board list",
+            showBoardSettingsButtonAudioLabel: "show board settigns",
 
-	    listViewButtonAudioLabel: "list view",
-	    kanbanViewButtonAudioLabel: "kanban view",
-	    statusViewButtonAudioLabel: "status grid view",
+            listViewButtonAudioLabel: "list view",
+            kanbanViewButtonAudioLabel: "kanban view",
+            statusViewButtonAudioLabel: "status grid view",
 
-	    filterTasksButtonAudioLabel: "filter tasks",
-	    createTaskButtonAudioLabel: "create new task",
+            filterTasksButtonAudioLabel: "filter tasks",
+            createTaskButtonAudioLabel: "create new task",
 
-	    ///
+            ///
 
-	    boardSettingsHeadline: "Board Settings",
-	    boardNameInputLabel: "Board name",
-	    deleteBoardButton: "Delete board and all tasks",
+            boardSettingsHeadline: "Board Settings",
+            boardNameInputLabel: "Board name",
+            deleteBoardButton: "Delete board and all tasks",
 
-	    ///
+            ///
 
-	    taskSettingsHeadline: "Edit Task",
+            taskSettingsHeadline: "Edit Task",
 
-	    taskNameLabel: "Title",
-	    taskBoardLabel: "Board",
+            taskNameLabel: "Title",
+            taskBoardLabel: "Board",
 
-	    taskCategoryLabel: "Category",
-	    taskStatusLabel: "Status",
-	    taskPriorityLabel: "Priority",
+            taskCategoryLabel: "Category",
+            taskStatusLabel: "Status",
+            taskPriorityLabel: "Priority",
 
-	    taskDescriptionLabel: "Description",
+            taskDescriptionLabel: "Description",
 
-	    taskDateLabel: "Date",
-	    taskTimeLabel: "Time",
+            taskDateLabel: "Date",
+            taskTimeLabel: "Time",
 
-	    deleteTaskButton: "Delete task",
+            deleteTaskButton: "Delete task",
 
-	    ///
+            ///
 
-	    filterTasksHeadline: "Filter Tasks",
+            filterTasksHeadline: "Filter Tasks",
 
-	    ///
+            ///
 
-	    renameCategoryInputPlaceholder: "Rename category",
-	    renameStatusInputPlaceholder: "Rename status",
-	},
+            renameCategoryInputPlaceholder: "Rename category",
+            renameStatusInputPlaceholder: "Rename status",
+        },
 
-	calendar: {
-	    eventsBoard: "Events",
+        calendar: {
+            eventsBoard: "Events",
 
-	    ///
+            ///
 
-	    todayButtonAudioLabel: "go to today",
+            todayButtonAudioLabel: "go to today",
 
-	    previousMonthButtonAudioLabel: "previous month",
-	    nextMonthButtonAudioLabel: "next month",
+            previousMonthButtonAudioLabel: "previous month",
+            nextMonthButtonAudioLabel: "next month",
 
-	    yearInputAudioLabel: "year",
-	    monthInputAudioLabel: "month",
+            yearInputAudioLabel: "year",
+            monthInputAudioLabel: "month",
 
-	    yearInputPlaceholder: "2000",
-	    monthInputPlaceholder: "01",
+            yearInputPlaceholder: "2000",
+            monthInputPlaceholder: "01",
 
-	    ///
+            ///
 
-	    searchEventsHeadline: "Search Events",
+            searchEventsHeadline: "Search Events",
 
-	    ///
+            ///
 
-	    events: "Events",
-	    noEvents: "No events",
+            events: "Events",
+            noEvents: "No events",
 
-	    // 
+            //
 
-	    eventNext: "Up next",
-	},
+            eventNext: "Up next",
+        },
     },
 };
 
@@ -350,631 +350,635 @@ export const allTranslations: {
     en: englishTranslations,
 
     de: {
-	updater: {
-	    migrated: "Migriert",
-	},
-
-	general: {
-	    deleteItemButtonAudioLabel: "element löschen",
-	    searchButtonAudioLabel: "suchen",
-	    searchButtonClearAudioLabel: "suche zurücksetzen",
-
-	    abortButton: "Abbrechen",
-	    applyButton: "Anwenden",
-	    backButton: "Zurück",
-	    cancelButton: "Abbrechen",
-	    continueButton: "Weiter",
-	    confirmButton: "Bestätigen",
-	    closeButton: "Schließen",
-	    deleteButton: "Löschen",
-	    exitButton: "Schließen",
-	    fullscreenButton: "Vollbild",
-	    refreshButton: "Aktualisieren",
-	    saveButton: "Speichern",
-	    setButton: "OK",
-
-	    filterOrCreateLabel: "Suchen oder erstellen",
-	    createLabel: (query: string) => `"${query}" erstellen`,
-
-	    reloadAppButton: "Neu laden",
-
-	    fileVersionLabel: "Version",
-	    searchLabel: "Suche",
-	    searchSuggestionsLabel: "Vorherige Suchen",
-	    waitingLabel: "Warten...",
-
-	    restoreConnection: "Verbindung wiederherstellen",
-
-	    noPageSelected: "Keine Seite ausgewählt",
-	},
-
-	regional: {
-	    weekdays: {
-		full: [
-		    "Sonntag",
-		    "Montag",
-		    "Dienstag",
-		    "Mittwoch",
-		    "Donnerstag",
-		    "Freitag",
-		    "Samstag",
-		],
-		abbreviated: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
-	    },
-	},
-
-	homePage: {
-	    appName: "Coordination Tool",
-
-	    overviewHeadline: "Übersicht",
-
-	    serverAddress: "Serveradresse",
-	    serverAddressPlaceholder: "wss://192.168.0.69:3000",
-	    connectAudioLabel: "mit Server verbinden",
-	    disconnectAudioLabel: "vom Server trennen",
-	    manageConnectionsAudioLabel: "Verbindungen verwalten",
-
-	    yourNameLabel: "Dein Name",
-	    yourNamePlaceholder: "Max Mustermann",
-	    setNameButtonAudioLabel: "Name speichern",
-
-	    settingsButton: "Einstellungen",
-	    manageStorageButton: "Daten verwalten",
-	    transferDataButton: "Daten übertragen",
-
-	    updateButton: (version: string) => `Aktualisieren: ${version}`,
-
-	    scrollToChatButton: "Chats",
-
-	    backToOverviewAudioLabel: "zurück zur übersicht",
-	    chatsHeadline: "Chats",
-
-	    addChatAudioLabel: "Name des neuen Chats",
-	    addChatPlaceholder: "Chat hinzufügen",
-	    addChatButton: "Chat hinzufügen",
-	},
-
-	settings: {
-	    pages: {
-		appearance: "Erscheinungsbild",
-		regional: "Sprache & Region",
-		info: "Über CT",
-	    },
-	    themes: {
-		dynamic: "Dynamisch",
-		dark: "Dunkel",
-		light: "Hell",
-		system: "Geräteeinstellung",
-		black: "Schwarz",
-	    },
-
-	    version: "Version",
-	    language: "Sprache",
-
-	    firstDayOfWeekLabel: "Erster Wochentag",
-
-	    checkUpdatesButton: "Nach updates suchen",
-	},
-
-	connectionModal: {
-	    connectionModalHeadline: "Verbindungen verwalten",
+        updater: {
+            migrated: "Migriert",
+        },
+
+        general: {
+            deleteItemButtonAudioLabel: "element löschen",
+            searchButtonAudioLabel: "suchen",
+            searchButtonClearAudioLabel: "suche zurücksetzen",
+
+            abortButton: "Abbrechen",
+            applyButton: "Anwenden",
+            backButton: "Zurück",
+            cancelButton: "Abbrechen",
+            continueButton: "Weiter",
+            confirmButton: "Bestätigen",
+            closeButton: "Schließen",
+            deleteButton: "Löschen",
+            exitButton: "Schließen",
+            fullscreenButton: "Vollbild",
+            refreshButton: "Aktualisieren",
+            saveButton: "Speichern",
+            setButton: "OK",
+
+            filterOrCreateLabel: "Suchen oder erstellen",
+            createLabel: (query: string) => `"${query}" erstellen`,
+
+            reloadAppButton: "Neu laden",
+
+            fileVersionLabel: "Version",
+            searchLabel: "Suche",
+            searchSuggestionsLabel: "Vorherige Suchen",
+            waitingLabel: "Warten...",
+
+            restoreConnection: "Verbindung wiederherstellen",
+
+            noPageSelected: "Keine Seite ausgewählt",
+        },
+
+        regional: {
+            weekdays: {
+                full: [
+                    "Sonntag",
+                    "Montag",
+                    "Dienstag",
+                    "Mittwoch",
+                    "Donnerstag",
+                    "Freitag",
+                    "Samstag",
+                ],
+                abbreviated: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+            },
+        },
+
+        homePage: {
+            appName: "Coordination Tool",
+
+            overviewHeadline: "Übersicht",
+
+            serverAddress: "Serveradresse",
+            serverAddressPlaceholder: "wss://192.168.0.69:3000",
+            connectAudioLabel: "mit Server verbinden",
+            disconnectAudioLabel: "vom Server trennen",
+            manageConnectionsAudioLabel: "Verbindungen verwalten",
+
+            yourNameLabel: "Dein Name",
+            yourNamePlaceholder: "Max Mustermann",
+            setNameButtonAudioLabel: "Name speichern",
+
+            settingsButton: "Einstellungen",
+            manageStorageButton: "Daten verwalten",
+            transferDataButton: "Daten übertragen",
+
+            updateButton: (version: string) => `Aktualisieren: ${version}`,
+
+            scrollToChatButton: "Chats",
+
+            backToOverviewAudioLabel: "zurück zur übersicht",
+            chatsHeadline: "Chats",
+
+            addChatAudioLabel: "Name des neuen Chats",
+            addChatPlaceholder: "Chat hinzufügen",
+            addChatButton: "Chat hinzufügen",
+        },
+
+        settings: {
+            pages: {
+                appearance: "Erscheinungsbild",
+                regional: "Sprache & Region",
+                info: "Über CT",
+            },
+            themes: {
+                dynamic: "Dynamisch",
+                dark: "Dunkel",
+                light: "Hell",
+                system: "Geräteeinstellung",
+                black: "Schwarz",
+            },
+
+            version: "Version",
+            language: "Sprache",
+
+            firstDayOfWeekLabel: "Erster Wochentag",
 
-	    connectButtonAudioLabel: "verbinden",
-	},
+            checkUpdatesButton: "Nach updates suchen",
+        },
 
-	dataTransferModal: {
-	    transferDataHeadline: "Datenübertragung",
-	    sendHeadline: "An anderes Gerät senden",
-	    receiveHeadline: "An dieses Gerät senden",
-	    exportHeadline: "Daten exportieren",
-	    importHeadline: "Daten importieren",
-	    selectionDescription:
-	    "Wähle die Daten aus, die du übertragen möchtest.",
-	    exportSelectionDescription:
-	    "Wähle die Daten aus, die du exportieren möchtest.",
-	    dataEntryDescription:
-	    "Gib diese Informationen auf dem anderen Gerät ein.",
-	    dataEntryInputDescription:
-	    "Gib die auf dem anderen Gerät angezeigten Informationen ein.",
+        connectionModal: {
+            connectionModalHeadline: "Verbindungen verwalten",
 
-	    fromThisDeviceButton: "An anderes Gerät senden",
-	    toThisDeviceButton: "An dieses Gerät senden",
-	    exportButton: "Als Datei exportieren",
-	    importButton: "Aus Datei importieren",
-
-	    generalHeadline: "Allgemein",
-
-	    connectionData: "Verbindungsdaten",
-	    settingsData: "Einstellungen",
+            connectButtonAudioLabel: "verbinden",
+        },
 
-	    chatsHeadline: "Chats",
-
-	    transferChannelHeadline: "Übertragungskanal",
-	    transferKeyHeadline: "Schlüssel",
-
-	    sendButton: "Senden",
-	    sendAgainButton: "Erneut senden",
-
-	    filesSentCount: (count) => `Dateien gesendet: ${count}.`,
-	    allFilesSent: "Fertig.",
-
-	    filesReceivedCount: (count) => `Dateien empfangen: ${count}.`,
-
-	    exportKey: "Schlüssel",
-	    exportKeyConfirmation: "Schlüssel bestätigen",
-	    downloadFileButton: "Herunterladen",
-	    importFileButton: "Importieren",
-	    decryptImportButton: "Entschlüsseln",
-	    incorrectPassphraseError: "Der Schlüssel ist nicht korrekt",
-	},
-
-	storage: {
-	    noItemSelected: "Kein Element ausgewählt",
-	    notAFile: "(keine Datei)",
-	    contentEmpty: "(leer)",
-
-	    usageLabel: "Speicher",
-	    usageVauleLabel: (used: number, max: number) => `${used} von ${max} MB belegt`,
-
-	    path: "Pfad",
-	    content: "Inhalt",
+        dataTransferModal: {
+            transferDataHeadline: "Datenübertragung",
+            sendHeadline: "An anderes Gerät senden",
+            receiveHeadline: "An dieses Gerät senden",
+            exportHeadline: "Daten exportieren",
+            importHeadline: "Daten importieren",
+            selectionDescription:
+                "Wähle die Daten aus, die du übertragen möchtest.",
+            exportSelectionDescription:
+                "Wähle die Daten aus, die du exportieren möchtest.",
+            dataEntryDescription:
+                "Gib diese Informationen auf dem anderen Gerät ein.",
+            dataEntryInputDescription:
+                "Gib die auf dem anderen Gerät angezeigten Informationen ein.",
 
-	    deleteItem: "Element löschen",
+            fromThisDeviceButton: "An anderes Gerät senden",
+            toThisDeviceButton: "An dieses Gerät senden",
+            exportButton: "Als Datei exportieren",
+            importButton: "Aus Datei importieren",
 
-	    removeJunkButton: "Datenmüll löschen",
-	},
-
-	chatPage: {
-	    closeChatAudioLabe: "Chat schließen",
-	    chatSettingsAudioLabel: "Chateinstellungen",
+            generalHeadline: "Allgemein",
 
-	    pages: {
-		settings: "Einstellungen",
-		messages: "Nachrichten",
-		tasks: "Aufgaben",
-		calendar: "Kalender",
-	    },
+            connectionData: "Verbindungsdaten",
+            settingsData: "Einstellungen",
 
-	    settings: {
-		settingsHeadline: "Einstellungen",
+            chatsHeadline: "Chats",
 
-		nameLabel: "Name",
-		setNameButtonAudioLabel: "namen festlegen",
+            transferChannelHeadline: "Übertragungskanal",
+            transferKeyHeadline: "Schlüssel",
+
+            sendButton: "Senden",
+            sendAgainButton: "Erneut senden",
 
-		newSecondaryChannelPlaceholder: "Sekundären Kanal hinzufügen",
-		newSecondaryChannelAudioLabel:
-		"Name des neuen sekundären Kanals",
-		addSecondaryChannelButtonAudioLabel:
-		"Sekundären Kanal hinzufügen",
+            filesSentCount: (count) => `Dateien gesendet: ${count}.`,
+            allFilesSent: "Fertig.",
 
-		encryptionKeyLabel: "Schlüssel",
-		setEncryptionKeyButtonAudioLabel: "Schlüssel festlegen",
-		showEncryptionKey: "Schlüssel anzeigen",
-	    
-		setColorButtonAudioLabel: "Farbe festlegen",
+            filesReceivedCount: (count) => `Dateien empfangen: ${count}.`,
+
+            exportKey: "Schlüssel",
+            exportKeyConfirmation: "Schlüssel bestätigen",
+            downloadFileButton: "Herunterladen",
+            importFileButton: "Importieren",
+            decryptImportButton: "Entschlüsseln",
+            incorrectPassphraseError: "Der Schlüssel ist nicht korrekt",
+        },
+
+        storage: {
+            noItemSelected: "Kein Element ausgewählt",
+            notAFile: "(keine Datei)",
+            contentEmpty: "(leer)",
+
+            usageLabel: "Speicher",
+            usageVauleLabel: (used: number, max: number) =>
+                `${used} von ${max} MB belegt`,
+
+            path: "Pfad",
+            content: "Inhalt",
 
-		deleteChatButton: "Gesamten Chat löschen",
-	    },
+            deleteItem: "Element löschen",
 
-	    message: {
-		messagesHeadline: "Nachrichten",
+            removeJunkButton: "Datenmüll löschen",
+        },
 
-		messageFilterHeadline: "Nachrichten filtern",
-		messageFilterReactionsHadline: "Reaktionen",
-		messageFilterAllReactionsButton: "Alle anzeigen",
+        chatPage: {
+            closeChatAudioLabe: "Chat schließen",
+            chatSettingsAudioLabel: "Chateinstellungen",
 
-		composerInputPlaceholder: "Schreib eine Nachricht...",
-		sendMessageButtonAudioLabel: "nachricht senden",
-		filterMessagesButtonAudioLabel: "nachrichten filtern",
+            pages: {
+                settings: "Einstellungen",
+                messages: "Nachrichten",
+                tasks: "Aufgaben",
+                calendar: "Kalender",
+            },
 
-		showMessageInfoButtonAudioLabel: "nachrichteninfo anzeigen",
-		messageInfoHeadline: "Nachrichteninfo",
-		cancelReplyAudioLabel: "antwort abbrechen",
+            settings: {
+                settingsHeadline: "Einstellungen",
 
-		sentBy: "Gesendet von",
-		timeSent: "Sendezeit",
-		channel: "Kanal",
-		messageContent: "Nachrichteninhalt",
+                nameLabel: "Name",
+                setNameButtonAudioLabel: "namen festlegen",
 
-		copyMessageButton: "Nachricht kopieren",
-		resendMessageButton: "Nachricht erneut senden",
-		decryptMessageButton: "Nachricht entschlüsseln",
-		replyToMessageButton: "Auf Nachricht antworten",
-		deleteMessageButton: "Nachricht löschen",
+                newSecondaryChannelPlaceholder: "Sekundären Kanal hinzufügen",
+                newSecondaryChannelAudioLabel:
+                    "Name des neuen sekundären Kanals",
+                addSecondaryChannelButtonAudioLabel:
+                    "Sekundären Kanal hinzufügen",
 
-		//
+                encryptionKeyLabel: "Schlüssel",
+                setEncryptionKeyButtonAudioLabel: "Schlüssel festlegen",
+                showEncryptionKey: "Schlüssel anzeigen",
 
-		thumbsUpReaction: "Reaktion: Daumen hoch",
-		checkReaction: "Reaktion: Haken",
-		stopReaction: "Reaktion: Stopp",
-		attentionReaction: "Reaktion: Ausrufezeichen",
-		doubleAttentionReaction: "Reaktion: doppeltes Ausrufezeichen",
-		questionReaction: "Reaktion: Fragezeichen",
+                setColorButtonAudioLabel: "Farbe festlegen",
 
-		replyPrefixLabel: "Antworten: ",
-		replyHeaderLabel: (message: string) => `Antworten an "${message}"`,
-	    },
+                deleteChatButton: "Gesamten Chat löschen",
+            },
 
-	    task: {
-		noBoardSelected: "Kein Board ausgewählt",
-		boardNotFound: "Board nicht gefunden",
+            message: {
+                messagesHeadline: "Nachrichten",
 
-		closeBoardButtonAudioLabel: "board schließen",
-		toggleBoardButtonAudioLabel: "board-liste ein/ausblenden",
-		showBoardSettingsButtonAudioLabel:
-		"Board-Einstellungen anzeigen",
+                messageFilterHeadline: "Nachrichten filtern",
+                messageFilterReactionsHadline: "Reaktionen",
+                messageFilterAllReactionsButton: "Alle anzeigen",
 
-		listViewButtonAudioLabel: "Listenansicht",
-		kanbanViewButtonAudioLabel: "Kanban-Ansicht",
-		statusViewButtonAudioLabel: "Statusrasteransicht",
+                composerInputPlaceholder: "Schreib eine Nachricht...",
+                sendMessageButtonAudioLabel: "nachricht senden",
+                filterMessagesButtonAudioLabel: "nachrichten filtern",
 
-		filterTasksButtonAudioLabel: "Aufgaben filtern",
-		createTaskButtonAudioLabel: "Neue Aufgabe erstellen",
+                showMessageInfoButtonAudioLabel: "nachrichteninfo anzeigen",
+                messageInfoHeadline: "Nachrichteninfo",
+                cancelReplyAudioLabel: "antwort abbrechen",
 
-		boardSettingsHeadline: "Board-Einstellungen",
-		boardNameInputLabel: "Boardname",
-		deleteBoardButton: "Board und alle Aufgaben löschen",
+                sentBy: "Gesendet von",
+                timeSent: "Sendezeit",
+                channel: "Kanal",
+                messageContent: "Nachrichteninhalt",
 
-		taskSettingsHeadline: "Aufgabe bearbeiten",
+                copyMessageButton: "Nachricht kopieren",
+                resendMessageButton: "Nachricht erneut senden",
+                decryptMessageButton: "Nachricht entschlüsseln",
+                replyToMessageButton: "Auf Nachricht antworten",
+                deleteMessageButton: "Nachricht löschen",
 
-		taskNameLabel: "Titel",
-		taskBoardLabel: "Board",
+                //
 
-		taskCategoryLabel: "Kategorie",
-		taskStatusLabel: "Status",
-		taskPriorityLabel: "Priorität",
+                thumbsUpReaction: "Reaktion: Daumen hoch",
+                checkReaction: "Reaktion: Haken",
+                stopReaction: "Reaktion: Stopp",
+                attentionReaction: "Reaktion: Ausrufezeichen",
+                doubleAttentionReaction: "Reaktion: doppeltes Ausrufezeichen",
+                questionReaction: "Reaktion: Fragezeichen",
 
-		taskDescriptionLabel: "Beschreibung",
+                replyPrefixLabel: "Antworten: ",
+                replyHeaderLabel: (message: string) =>
+                    `Antworten an "${message}"`,
+            },
 
-		taskDateLabel: "Datum",
-		taskTimeLabel: "Uhrzeit",
+            task: {
+                noBoardSelected: "Kein Board ausgewählt",
+                boardNotFound: "Board nicht gefunden",
 
-		deleteTaskButton: "Aufgabe löschen",
+                closeBoardButtonAudioLabel: "board schließen",
+                toggleBoardButtonAudioLabel: "board-liste ein/ausblenden",
+                showBoardSettingsButtonAudioLabel:
+                    "Board-Einstellungen anzeigen",
 
-		filterTasksHeadline: "Aufgaben filtern",
+                listViewButtonAudioLabel: "Listenansicht",
+                kanbanViewButtonAudioLabel: "Kanban-Ansicht",
+                statusViewButtonAudioLabel: "Statusrasteransicht",
 
-		renameCategoryInputPlaceholder: "Kategorie umbenennen",
-		renameStatusInputPlaceholder: "Status umbenennen",
-	    },
+                filterTasksButtonAudioLabel: "Aufgaben filtern",
+                createTaskButtonAudioLabel: "Neue Aufgabe erstellen",
 
-	    calendar: {
-		eventsBoard: "Ereignisse",
+                boardSettingsHeadline: "Board-Einstellungen",
+                boardNameInputLabel: "Boardname",
+                deleteBoardButton: "Board und alle Aufgaben löschen",
 
-		///
+                taskSettingsHeadline: "Aufgabe bearbeiten",
 
-		todayButtonAudioLabel: "gehe zu heute",
+                taskNameLabel: "Titel",
+                taskBoardLabel: "Board",
 
-		previousMonthButtonAudioLabel: "vorheriger monat",
-		nextMonthButtonAudioLabel: "nächster monat",
+                taskCategoryLabel: "Kategorie",
+                taskStatusLabel: "Status",
+                taskPriorityLabel: "Priorität",
 
-		yearInputAudioLabel: "Jahr",
-		monthInputAudioLabel: "Monat",
+                taskDescriptionLabel: "Beschreibung",
 
-		yearInputPlaceholder: "2000",
-		monthInputPlaceholder: "01",
+                taskDateLabel: "Datum",
+                taskTimeLabel: "Uhrzeit",
 
-		searchEventsHeadline: "Ereignisse suchen",
+                deleteTaskButton: "Aufgabe löschen",
 
-		events: "Ereignisse",
-		noEvents: "Keine Ereignisse",
-	    
-		eventNext: "Als nächstes",
-	    },
-	},
+                filterTasksHeadline: "Aufgaben filtern",
+
+                renameCategoryInputPlaceholder: "Kategorie umbenennen",
+                renameStatusInputPlaceholder: "Status umbenennen",
+            },
+
+            calendar: {
+                eventsBoard: "Ereignisse",
+
+                ///
+
+                todayButtonAudioLabel: "gehe zu heute",
+
+                previousMonthButtonAudioLabel: "vorheriger monat",
+                nextMonthButtonAudioLabel: "nächster monat",
+
+                yearInputAudioLabel: "Jahr",
+                monthInputAudioLabel: "Monat",
+
+                yearInputPlaceholder: "2000",
+                monthInputPlaceholder: "01",
+
+                searchEventsHeadline: "Ereignisse suchen",
+
+                events: "Ereignisse",
+                noEvents: "Keine Ereignisse",
+
+                eventNext: "Als nächstes",
+            },
+        },
     },
     es: {
-	updater: {
-	    migrated: "Migrado",
-	},
-
-	general: {
-	    deleteItemButtonAudioLabel: "eliminar elemento",
-	    searchButtonAudioLabel: "buscar",
-	    searchButtonClearAudioLabel: "borrar büsqueda",
-
-	    abortButton: "Abortar",
-	    applyButton: "Guardar",
-	    backButton: "Atrás",
-	    cancelButton: "Cancelar",
-	    continueButton: "Continuar",
-	    confirmButton: "Confirmar",
-	    closeButton: "Cerrar",
-	    deleteButton: "Borrar",
-	    exitButton: "Salir",
-	    fullscreenButton: "Pantalla completa",
-	    refreshButton: "Actualizar",
-	    saveButton: "Guardar",
-	    setButton: "OK",
-
-	    filterOrCreateLabel: "Buscar o crear",
-	    createLabel: (query: string) => `Crear "${query}"`,
-
-	    reloadAppButton: "Recargar app",
-
-	    fileVersionLabel: "Versión",
-	    searchLabel: "Buscar",
-	    searchSuggestionsLabel: "Búsquedas anteriores",
-	    waitingLabel: "Esperando...",
-
-	    restoreConnection: "Conectar de nuevo",
-
-	    noPageSelected: "No página seleccionada",
-	},
-
-	regional: {
-	    weekdays: {
-		full: [
-		    "Domingo",
-		    "Lunes",
-		    "Martes",
-		    "Miércoles",
-		    "Jueves",
-		    "Viernes",
-		    "Sábado",
-		],
-		abbreviated: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
-	    },
-	},
-
-	homePage: {
-	    appName: "Coordination Tool",
-
-	    overviewHeadline: "Resumen",
-
-	    serverAddress: "Dirección del servidor",
-	    serverAddressPlaceholder: "wss://192.168.0.69:3000",
-	    connectAudioLabel: "conectar al servidor",
-	    disconnectAudioLabel: "desconectar del servidor",
-	    manageConnectionsAudioLabel: "gestionar conexiones",
-
-	    yourNameLabel: "Tu nombre",
-	    yourNamePlaceholder: "Juan Pérez",
-	    setNameButtonAudioLabel: "establecer nombre",
-
-	    settingsButton: "Ajustes",
-	    manageStorageButton: "Gestionar almacenamiento",
-	    transferDataButton: "Enviar o exportar archivos",
-
-	    updateButton: (version: string) => `Actualizar a ${version}`,
-
-	    scrollToChatButton: "Chats",
-
-	    backToOverviewAudioLabel: "volver al resumen",
-	    chatsHeadline: "Chats",
-
-	    addChatAudioLabel: "nombre del nuevo chat",
-	    addChatPlaceholder: "Añadir chat",
-	    addChatButton: "Añadir chat",
-	},
-
-	settings: {
-	    pages: {
-		appearance: "Aspecto",
-		regional: "Idioma y Región",
-		info: "Sobre CT",
-	    },
-	    themes: {
-		dynamic: "Dinámico",
-		dark: "Oscuro",
-		light: "Claro",
-		system: "Según dispositivo",
-		black: "Negro",
-	    },
-
-	    version: "Versión",
-	    language: "Idioma",
-
-	    firstDayOfWeekLabel: "Primer día de la semana",
-
-	    checkUpdatesButton: "Buscar actualizaciones",
-	},
-	connectionModal: {
-	    connectionModalHeadline: "Gestionar Conexiones",
-
-	    connectButtonAudioLabel: "conectar",
-	},
-
-	dataTransferModal: {
-	    transferDataHeadline: "Transferencia de datos",
-	    sendHeadline: "Enviar a otro dispositivo",
-	    receiveHeadline: "Enviar a este dispositivo",
-	    exportHeadline: "Exportar archivo",
-	    importHeadline: "Importar archivo",
-	    selectionDescription:
-	    "Selecciona los datos que quieres transferir.",
-	    exportSelectionDescription:
-	    "Selecciona los datos que quieres exportar.",
-	    dataEntryDescription:
-	    "Introduce estos datos en el otro dispositivo.",
-	    dataEntryInputDescription:
-	    "Introduce los datos mostrados en el otro dispositivo.",
-
-	    fromThisDeviceButton: "Enviar a otro dispositivo",
-	    toThisDeviceButton: "Enviar a este dispositivo",
-	    exportButton: "Exportar archivo",
-	    importButton: "Importar archivo",
-
-	    generalHeadline: "General",
-
-	    connectionData: "Datos de Conexión",
-	    settingsData: "Datos de Configuración",
-
-	    chatsHeadline: "Chats",
-
-	    transferChannelHeadline: "Canal de Transferencia",
-	    transferKeyHeadline: "Clave de encriptación de transferencia",
-
-	    sendButton: "Enviar",
-	    sendAgainButton: "Enviar otra vez",
-
-	    filesSentCount: (count) => `Archivos enviados: ${count}.`,
-	    allFilesSent: "Hecho.",
-
-	    filesReceivedCount: (count) => `Archivos recibidos: ${count}.`,
-
-	    exportKey: "Clave de encriptación",
-	    exportKeyConfirmation: "Confirmar clave",
-	    downloadFileButton: "Descargar",
-	    importFileButton: "Importar",
-	    decryptImportButton: "Descifrar",
-	    incorrectPassphraseError: "La clave no es correcta",
-	},
-
-	storage: {
-	    noItemSelected: "Ningún elemento seleccionado",
-	    notAFile: "(no es un archivo)",
-	    contentEmpty: "(vacío)",
-
-	    usageLabel: "Almacenamiento",
-	    usageVauleLabel: (used: number, max: number) => `${used} de ${max} MB en uso`,
-
-	    path: "Ruta",
-	    content: "Contenido",
-
-	    deleteItem: "Eliminar elemento",
-
-	    removeJunkButton: "Eliminar archivos basura",
-	},
-
-	chatPage: {
-	    closeChatAudioLabe: "cerrar chat",
-	    chatSettingsAudioLabel: "configuración del chat",
-
-	    pages: {
-		settings: "Configuración",
-		messages: "Mensajes",
-		tasks: "Tareas",
-		calendar: "Calendario",
-	    },
+        updater: {
+            migrated: "Migrado",
+        },
+
+        general: {
+            deleteItemButtonAudioLabel: "eliminar elemento",
+            searchButtonAudioLabel: "buscar",
+            searchButtonClearAudioLabel: "borrar büsqueda",
+
+            abortButton: "Abortar",
+            applyButton: "Guardar",
+            backButton: "Atrás",
+            cancelButton: "Cancelar",
+            continueButton: "Continuar",
+            confirmButton: "Confirmar",
+            closeButton: "Cerrar",
+            deleteButton: "Borrar",
+            exitButton: "Salir",
+            fullscreenButton: "Pantalla completa",
+            refreshButton: "Actualizar",
+            saveButton: "Guardar",
+            setButton: "OK",
+
+            filterOrCreateLabel: "Buscar o crear",
+            createLabel: (query: string) => `Crear "${query}"`,
+
+            reloadAppButton: "Recargar app",
+
+            fileVersionLabel: "Versión",
+            searchLabel: "Buscar",
+            searchSuggestionsLabel: "Búsquedas anteriores",
+            waitingLabel: "Esperando...",
+
+            restoreConnection: "Conectar de nuevo",
+
+            noPageSelected: "No página seleccionada",
+        },
+
+        regional: {
+            weekdays: {
+                full: [
+                    "Domingo",
+                    "Lunes",
+                    "Martes",
+                    "Miércoles",
+                    "Jueves",
+                    "Viernes",
+                    "Sábado",
+                ],
+                abbreviated: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+            },
+        },
+
+        homePage: {
+            appName: "Coordination Tool",
+
+            overviewHeadline: "Resumen",
+
+            serverAddress: "Dirección del servidor",
+            serverAddressPlaceholder: "wss://192.168.0.69:3000",
+            connectAudioLabel: "conectar al servidor",
+            disconnectAudioLabel: "desconectar del servidor",
+            manageConnectionsAudioLabel: "gestionar conexiones",
+
+            yourNameLabel: "Tu nombre",
+            yourNamePlaceholder: "Juan Pérez",
+            setNameButtonAudioLabel: "establecer nombre",
+
+            settingsButton: "Ajustes",
+            manageStorageButton: "Gestionar almacenamiento",
+            transferDataButton: "Enviar o exportar archivos",
+
+            updateButton: (version: string) => `Actualizar a ${version}`,
+
+            scrollToChatButton: "Chats",
+
+            backToOverviewAudioLabel: "volver al resumen",
+            chatsHeadline: "Chats",
+
+            addChatAudioLabel: "nombre del nuevo chat",
+            addChatPlaceholder: "Añadir chat",
+            addChatButton: "Añadir chat",
+        },
+
+        settings: {
+            pages: {
+                appearance: "Aspecto",
+                regional: "Idioma y Región",
+                info: "Sobre CT",
+            },
+            themes: {
+                dynamic: "Dinámico",
+                dark: "Oscuro",
+                light: "Claro",
+                system: "Según dispositivo",
+                black: "Negro",
+            },
+
+            version: "Versión",
+            language: "Idioma",
+
+            firstDayOfWeekLabel: "Primer día de la semana",
+
+            checkUpdatesButton: "Buscar actualizaciones",
+        },
+        connectionModal: {
+            connectionModalHeadline: "Gestionar Conexiones",
 
-	    settings: {
-		settingsHeadline: "Configuración",
+            connectButtonAudioLabel: "conectar",
+        },
 
-		nameLabel: "Nombre del chat",
-		setNameButtonAudioLabel: "establecer nombre",
+        dataTransferModal: {
+            transferDataHeadline: "Transferencia de datos",
+            sendHeadline: "Enviar a otro dispositivo",
+            receiveHeadline: "Enviar a este dispositivo",
+            exportHeadline: "Exportar archivo",
+            importHeadline: "Importar archivo",
+            selectionDescription:
+                "Selecciona los datos que quieres transferir.",
+            exportSelectionDescription:
+                "Selecciona los datos que quieres exportar.",
+            dataEntryDescription:
+                "Introduce estos datos en el otro dispositivo.",
+            dataEntryInputDescription:
+                "Introduce los datos mostrados en el otro dispositivo.",
+
+            fromThisDeviceButton: "Enviar a otro dispositivo",
+            toThisDeviceButton: "Enviar a este dispositivo",
+            exportButton: "Exportar archivo",
+            importButton: "Importar archivo",
+
+            generalHeadline: "General",
+
+            connectionData: "Datos de Conexión",
+            settingsData: "Datos de Configuración",
 
-		newSecondaryChannelPlaceholder: "Añadir canal secundario",
-		newSecondaryChannelAudioLabel:
-		"nombre del nuevo canal secundario",
-		addSecondaryChannelButtonAudioLabel: "añadir canal secundario",
+            chatsHeadline: "Chats",
+
+            transferChannelHeadline: "Canal de Transferencia",
+            transferKeyHeadline: "Clave de encriptación de transferencia",
+
+            sendButton: "Enviar",
+            sendAgainButton: "Enviar otra vez",
+
+            filesSentCount: (count) => `Archivos enviados: ${count}.`,
+            allFilesSent: "Hecho.",
+
+            filesReceivedCount: (count) => `Archivos recibidos: ${count}.`,
+
+            exportKey: "Clave de encriptación",
+            exportKeyConfirmation: "Confirmar clave",
+            downloadFileButton: "Descargar",
+            importFileButton: "Importar",
+            decryptImportButton: "Descifrar",
+            incorrectPassphraseError: "La clave no es correcta",
+        },
+
+        storage: {
+            noItemSelected: "Ningún elemento seleccionado",
+            notAFile: "(no es un archivo)",
+            contentEmpty: "(vacío)",
+
+            usageLabel: "Almacenamiento",
+            usageVauleLabel: (used: number, max: number) =>
+                `${used} de ${max} MB en uso`,
+
+            path: "Ruta",
+            content: "Contenido",
+
+            deleteItem: "Eliminar elemento",
+
+            removeJunkButton: "Eliminar archivos basura",
+        },
+
+        chatPage: {
+            closeChatAudioLabe: "cerrar chat",
+            chatSettingsAudioLabel: "configuración del chat",
+
+            pages: {
+                settings: "Configuración",
+                messages: "Mensajes",
+                tasks: "Tareas",
+                calendar: "Calendario",
+            },
 
-		encryptionKeyLabel: "Clave de encriptación",
-		setEncryptionKeyButtonAudioLabel:
-		"establecer clave de encriptación",
-		showEncryptionKey: "Mostrar clave de encriptación",
-	    
-		setColorButtonAudioLabel: "establecer color",
+            settings: {
+                settingsHeadline: "Configuración",
 
-		deleteChatButton: "Eliminar todo el chat",
-	    },
+                nameLabel: "Nombre del chat",
+                setNameButtonAudioLabel: "establecer nombre",
 
-	    message: {
-		messagesHeadline: "Mensajes",
+                newSecondaryChannelPlaceholder: "Añadir canal secundario",
+                newSecondaryChannelAudioLabel:
+                    "nombre del nuevo canal secundario",
+                addSecondaryChannelButtonAudioLabel: "añadir canal secundario",
 
-		messageFilterHeadline: "Filtrar mensajes",
-		messageFilterReactionsHadline: "Reacciones",
-		messageFilterAllReactionsButton: "Mostrar todas",
+                encryptionKeyLabel: "Clave de encriptación",
+                setEncryptionKeyButtonAudioLabel:
+                    "establecer clave de encriptación",
+                showEncryptionKey: "Mostrar clave de encriptación",
 
-		composerInputPlaceholder: "Escribe un mensaje...",
-		sendMessageButtonAudioLabel: "enviar mensaje",
-		filterMessagesButtonAudioLabel: "filtrar mensajes",
+                setColorButtonAudioLabel: "establecer color",
 
-		showMessageInfoButtonAudioLabel:
-		"mostrar información del mensaje",
-		messageInfoHeadline: "Información del Mensaje",
-		cancelReplyAudioLabel: "abortar la respuesta",
+                deleteChatButton: "Eliminar todo el chat",
+            },
 
-		sentBy: "Enviado por",
-		timeSent: "Hora de envío",
-		channel: "Canal",
-		messageContent: "Contenido del mensaje",
+            message: {
+                messagesHeadline: "Mensajes",
 
-		copyMessageButton: "Copiar mensaje",
-		resendMessageButton: "Reenviar mensaje",
-		decryptMessageButton: "Desencriptar mensaje",
-		replyToMessageButton: "Responder al mensaje",
-		deleteMessageButton: "Eliminar mensaje",
+                messageFilterHeadline: "Filtrar mensajes",
+                messageFilterReactionsHadline: "Reacciones",
+                messageFilterAllReactionsButton: "Mostrar todas",
 
-		//
+                composerInputPlaceholder: "Escribe un mensaje...",
+                sendMessageButtonAudioLabel: "enviar mensaje",
+                filterMessagesButtonAudioLabel: "filtrar mensajes",
 
-		thumbsUpReaction: "Reacción: pulgar hacia arriba",
-		checkReaction: "Reacción: marca de verificación",
-		stopReaction: "Reacción: signo de parada",
-		attentionReaction: "Reaccion: signo de atención",
-		doubleAttentionReaction: "Reaccion: signo de atención doble",
-		questionReaction: "Reaccion: signo de interrogación",
+                showMessageInfoButtonAudioLabel:
+                    "mostrar información del mensaje",
+                messageInfoHeadline: "Información del Mensaje",
+                cancelReplyAudioLabel: "abortar la respuesta",
 
-		replyPrefixLabel: "Respuestas: ",
-		replyHeaderLabel: (message: string) => `Respuestas a "${message}"`,
-	    },
+                sentBy: "Enviado por",
+                timeSent: "Hora de envío",
+                channel: "Canal",
+                messageContent: "Contenido del mensaje",
 
-	    task: {
-		noBoardSelected: "Ningún tablero seleccionado",
-		boardNotFound: "Tablero no encontrado",
+                copyMessageButton: "Copiar mensaje",
+                resendMessageButton: "Reenviar mensaje",
+                decryptMessageButton: "Desencriptar mensaje",
+                replyToMessageButton: "Responder al mensaje",
+                deleteMessageButton: "Eliminar mensaje",
 
-		closeBoardButtonAudioLabel: "cerrar tablero",
-		toggleBoardButtonAudioLabel:
-		"mostrar o ocultar lista de tableros",
-		showBoardSettingsButtonAudioLabel:
-		"mostrar configuración del tablero",
+                //
 
-		listViewButtonAudioLabel: "vista de lista",
-		kanbanViewButtonAudioLabel: "vista kanban",
-		statusViewButtonAudioLabel: "vista de cuadrícula de estado",
+                thumbsUpReaction: "Reacción: pulgar hacia arriba",
+                checkReaction: "Reacción: marca de verificación",
+                stopReaction: "Reacción: signo de parada",
+                attentionReaction: "Reaccion: signo de atención",
+                doubleAttentionReaction: "Reaccion: signo de atención doble",
+                questionReaction: "Reaccion: signo de interrogación",
 
-		filterTasksButtonAudioLabel: "filtrar tareas",
-		createTaskButtonAudioLabel: "crear nueva tarea",
+                replyPrefixLabel: "Respuestas: ",
+                replyHeaderLabel: (message: string) =>
+                    `Respuestas a "${message}"`,
+            },
 
-		boardSettingsHeadline: "Configuración del Tablero",
-		boardNameInputLabel: "Nombre del tablero",
-		deleteBoardButton: "Eliminar tablero y todas las tareas",
+            task: {
+                noBoardSelected: "Ningún tablero seleccionado",
+                boardNotFound: "Tablero no encontrado",
 
-		taskSettingsHeadline: "Editar Tarea",
+                closeBoardButtonAudioLabel: "cerrar tablero",
+                toggleBoardButtonAudioLabel:
+                    "mostrar o ocultar lista de tableros",
+                showBoardSettingsButtonAudioLabel:
+                    "mostrar configuración del tablero",
 
-		taskNameLabel: "Título",
-		taskBoardLabel: "Tablero",
+                listViewButtonAudioLabel: "vista de lista",
+                kanbanViewButtonAudioLabel: "vista kanban",
+                statusViewButtonAudioLabel: "vista de cuadrícula de estado",
 
-		taskCategoryLabel: "Categoría",
-		taskStatusLabel: "Estado",
-		taskPriorityLabel: "Prioridad",
+                filterTasksButtonAudioLabel: "filtrar tareas",
+                createTaskButtonAudioLabel: "crear nueva tarea",
 
-		taskDescriptionLabel: "Descripción",
+                boardSettingsHeadline: "Configuración del Tablero",
+                boardNameInputLabel: "Nombre del tablero",
+                deleteBoardButton: "Eliminar tablero y todas las tareas",
 
-		taskDateLabel: "Fecha",
-		taskTimeLabel: "Hora",
+                taskSettingsHeadline: "Editar Tarea",
 
-		deleteTaskButton: "Eliminar tarea",
+                taskNameLabel: "Título",
+                taskBoardLabel: "Tablero",
 
-		filterTasksHeadline: "Filtrar Tareas",
+                taskCategoryLabel: "Categoría",
+                taskStatusLabel: "Estado",
+                taskPriorityLabel: "Prioridad",
 
-		renameCategoryInputPlaceholder: "Renombrar categoría",
-		renameStatusInputPlaceholder: "Renombrar estado",
-	    },
+                taskDescriptionLabel: "Descripción",
 
-	    calendar: {
-		eventsBoard: "Eventos",
+                taskDateLabel: "Fecha",
+                taskTimeLabel: "Hora",
 
-		///
+                deleteTaskButton: "Eliminar tarea",
 
-		todayButtonAudioLabel: "ir a hoy",
+                filterTasksHeadline: "Filtrar Tareas",
 
-		previousMonthButtonAudioLabel: "mes anterior",
-		nextMonthButtonAudioLabel: "mes siguiente",
+                renameCategoryInputPlaceholder: "Renombrar categoría",
+                renameStatusInputPlaceholder: "Renombrar estado",
+            },
 
-		yearInputAudioLabel: "año",
-		monthInputAudioLabel: "mes",
+            calendar: {
+                eventsBoard: "Eventos",
 
-		yearInputPlaceholder: "2000",
-		monthInputPlaceholder: "01",
+                ///
 
-		searchEventsHeadline: "Buscar Eventos",
+                todayButtonAudioLabel: "ir a hoy",
 
-		events: "Eventos",
-		noEvents: "No hay eventos",
-		
-		eventNext: "A continuación",
-	    },
-	},
+                previousMonthButtonAudioLabel: "mes anterior",
+                nextMonthButtonAudioLabel: "mes siguiente",
+
+                yearInputAudioLabel: "año",
+                monthInputAudioLabel: "mes",
+
+                yearInputPlaceholder: "2000",
+                monthInputPlaceholder: "01",
+
+                searchEventsHeadline: "Buscar Eventos",
+
+                events: "Eventos",
+                noEvents: "No hay eventos",
+
+                eventNext: "A continuación",
+            },
+        },
     },
 };
 

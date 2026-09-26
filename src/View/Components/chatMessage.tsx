@@ -1,3 +1,4 @@
+import { ReplyLink } from "./replyLink";
 import { MessageReactionButtonRow } from "./messageReactionButtonRow";
 import { InlineReply } from "./inlineReply";
 import { ChatMessageInfoModal } from "../Modals/chatMessageInfoModal";
@@ -5,7 +6,6 @@ import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
 import { ChatMessageStatuses } from "../../Model/Chat/chatModel";
-import {ReplyLink} from "./replyLink";
 
 export function ChatMessage(
     coreViewModel: CoreViewModel,
@@ -69,8 +69,11 @@ export function ChatMessage(
                         aria-label={
                             coreViewModel.translations.chatPage.message
                                 .replyToMessageButton
-			    }
-			    toggle:hidden={chatMessageViewModel.messagePageViewModel.isReplyViewActive}
+                        }
+                        toggle:hidden={
+                            chatMessageViewModel.messagePageViewModel
+                                .isReplyViewActive
+                        }
                     >
                         <span class="icon">reply</span>
                     </button>

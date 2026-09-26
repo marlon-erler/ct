@@ -36,11 +36,11 @@
     width: 100%;
     padding-left: var(--content-padding);
     gap: var(--gap-in-controls);
-	
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
+
     background: var(--surface);
 }
 
@@ -285,7 +285,8 @@
     padding: var(--gap-between-tiles);
 }
 
-#message-page[reply-view] :is(.reply-link, .inline-reply, #composer .reply-preview-wrapper) {
+#message-page[reply-view]
+    :is(.reply-link, .inline-reply, #composer .reply-preview-wrapper) {
     display: none;
 }
 

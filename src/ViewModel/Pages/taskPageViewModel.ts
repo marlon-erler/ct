@@ -178,8 +178,13 @@ export default class TaskPageViewModel extends ContextHost<string> {
 
         this.chatViewModel = chatViewModel;
 
-	// filter 
-	implementFilter(this.boardViewModels, this.boardMatches, this.boardQuery, (board) => board.name.value);
+        // filter
+        implementFilter(
+            this.boardViewModels,
+            this.boardMatches,
+            this.boardQuery,
+            (board) => board.name.value,
+        );
 
         // context
         this.chatViewModel.registerContext(ChatPageTypes.Tasks, this);

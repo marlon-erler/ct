@@ -1,4 +1,5 @@
 import TaskContainingPageViewModel from "./taskContainingPageViewModel";
+import CalendarPageViewModel from "./calendarPageViewModel";
 import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel from "../Chat/chatViewModel";
 import * as React from "../../react";
@@ -8,7 +9,6 @@ import { localeCompare, padZero } from "../../Model/Utility/utility";
 import BoardsAndTasksModel, {
     TaskFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
-import CalendarPageViewModel from "./calendarPageViewModel";
 
 export default class TaskViewModel extends Context {
     // util
@@ -200,11 +200,11 @@ export default class TaskViewModel extends Context {
         this.loadTaskData();
         this.loadVersionIds();
 
-	if (this.containingViewModel instanceof CalendarPageViewModel) {
-	    this.containingViewModel.nextTask.subscribe((nextTask)=>{
-		this.isNotNext.value = nextTask != this;
-	    })
-	}
+        if (this.containingViewModel instanceof CalendarPageViewModel) {
+            this.containingViewModel.nextTask.subscribe((nextTask) => {
+                this.isNotNext.value = nextTask != this;
+            });
+        }
     };
 
     loadTaskData = (): void => {

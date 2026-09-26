@@ -50,15 +50,17 @@ export default class StorageViewModel extends Context {
     };
 
     calculateUsage = (): void => {
-	this.occupiedSpaceMB.value = this.coreViewModel.storageModel.calculateUsage();
-	this.maximumSpaceMB.value = this.coreViewModel.storageModel.determineCapacity();
-    }
+        this.occupiedSpaceMB.value =
+            this.coreViewModel.storageModel.calculateUsage();
+        this.maximumSpaceMB.value =
+            this.coreViewModel.storageModel.determineCapacity();
+    };
 
     // view
     showStorageModal = (): void => {
         this.coreViewModel.context = this;
         this.isShowingStorageModal.value = true;
-	this.calculateUsage();
+        this.calculateUsage();
     };
 
     // exit

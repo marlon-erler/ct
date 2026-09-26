@@ -72,10 +72,13 @@ export function ChatMessageInfoModal(
                             }
                             <span class="icon">key</span>
                         </button>
-			<button 
-			    on:click={chatMessageViewModel.reply}
-			    toggle:disabled={chatMessageViewModel.messagePageViewModel.isReplyViewActive}
-			>
+                        <button
+                            on:click={chatMessageViewModel.reply}
+                            toggle:disabled={
+                                chatMessageViewModel.messagePageViewModel
+                                    .isReplyViewActive
+                            }
+                        >
                             {
                                 coreViewModel.translations.chatPage.message
                                     .replyToMessageButton

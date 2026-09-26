@@ -47,12 +47,8 @@ export function SettingsPage(
                                     }
                                 </span>
                                 <input
-                                    bind:value={
-                                        settingsPageViewModel.nameInput
-                                    }
-                                    on:enter={
-                                        settingsPageViewModel.setName
-                                    }
+                                    bind:value={settingsPageViewModel.nameInput}
+                                    on:enter={settingsPageViewModel.setName}
                                 ></input>
                             </div>
                         </label>
@@ -63,9 +59,7 @@ export function SettingsPage(
                                     coreViewModel.translations.chatPage.settings
                                         .setNameButtonAudioLabel
                                 }
-                                on:click={
-                                    settingsPageViewModel.setName
-                                }
+                                on:click={settingsPageViewModel.setName}
                                 toggle:disabled={
                                     settingsPageViewModel.cannotSetPrimaryChannel
                                 }
@@ -177,7 +171,7 @@ export function SettingsPage(
 
                         <hr></hr>
 
-			{ColorPicker(settingsPageViewModel.color)}
+                        {ColorPicker(settingsPageViewModel.color)}
 
                         <div class="flex-row justify-end width-input">
                             <button
@@ -186,16 +180,15 @@ export function SettingsPage(
                                     coreViewModel.translations.chatPage.settings
                                         .setColorButtonAudioLabel
                                 }
-                                on:click={
-                                    settingsPageViewModel.applyColor
-				}
-				toggle:disabled={settingsPageViewModel.cannotSetColor}
+                                on:click={settingsPageViewModel.applyColor}
+                                toggle:disabled={
+                                    settingsPageViewModel.cannotSetColor
+                                }
                             >
                                 {coreViewModel.translations.general.setButton}
                                 <span class="icon">check</span>
                             </button>
                         </div>
-
 
                         <hr></hr>
 

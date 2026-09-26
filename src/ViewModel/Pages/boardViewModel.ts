@@ -7,11 +7,11 @@ import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
 import * as React from "../../react";
 import { Colors } from "../../colors";
 import { CommonKeys } from "../../View/keystrokes";
+import { PinchToZoomData } from "../../Model/Utility/utility";
 import BoardsAndTasksModel, {
     BoardInfoFileContent,
     TaskFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
-import {PinchToZoomData} from "../../Model/Utility/utility";
 
 export default class BoardViewModel extends TaskContainingPageViewModel {
     // state
@@ -34,7 +34,11 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
         new React.ListState();
     isFilterActive: React.State<boolean>;
 
-    pinchToZoomData: React.State<PinchToZoomData> = new React.State({zoom: 1, x: 0, y: 0});
+    pinchToZoomData: React.State<PinchToZoomData> = new React.State({
+        zoom: 1,
+        x: 0,
+        y: 0,
+    });
 
     // paths
     getBasePath = (): string[] => {
