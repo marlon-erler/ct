@@ -8,14 +8,14 @@ import CalendarModel, { MonthGrid } from "../../Model/Files/calendarModel";
 import BoardsAndTasksModel, {
     TaskFileContent,
 } from "../../Model/Files/boardsAndTasksModel";
-import {formatISO, formatISOFromParts, formatTime} from "../../Model/Utility/utility";
+import {formatISO, formatISOFromParts, formatMonthStringFromParts, formatTime, isoToDateString, isoToMonthString, padZero} from "../../Model/Utility/utility";
 
 export const CALENDAR_EVENT_BOARD_ID = "events";
 
 export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     // data
     get monthString(): string {
-        return CalendarModel.getMonthString(
+        return formatMonthStringFromParts(
             this.selectedYear.value.toString(),
             this.selectedMonth.value.toString(),
         );
@@ -46,7 +46,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     createEvent = (): void => {
         const taskFileContent: TaskFileContent =
             this.boardsAndTasksModel.createTask(CALENDAR_EVENT_BOARD_ID);
-        taskFileContent.date = CalendarModel.getISODateString(
+        taskFileContent.date = formatISOFromParts(
             this.selectedYear.value.toString(),
             this.selectedMonth.value.toString(),
             this.selectedDate.value.toString(),
@@ -65,8 +65,8 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     getEventsForDate = (): React.MapState<TaskViewModel> | undefined => {
-        const paddedDate: string = CalendarModel.padZero(
-            this.selectedDate.toString(),
+        const paddedDate: string = padZero(
+            this.selectedDate.toString(), 2
         );
 
         if (this.monthGrid.value == undefined) {
@@ -82,14 +82,14 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     ): React.MapState<TaskViewModel> | null => {
         if (this.monthGrid.value == null) return null;
 
-        const date: string = CalendarModel.isoToDateString(
+        const date: string = isoToDateString(
             taskFileContent.date ?? "",
         );
         return this.monthGrid.value.days[date];
     };
 
     showTask = (taskFileContent: TaskFileContent): void => {
-        const monthString: string | undefined = CalendarModel.isoToMonthString(
+        const monthString: string | undefined = isoToMonthString(
             taskFileContent.date ?? "",
         );
         if (monthString == undefined || monthString != this.monthString) {
@@ -152,7 +152,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     handleDrop = (year: string, month: string, date: string): void => {
-        const ISOString: string = CalendarModel.getISODateString(
+        const ISOString: string = formatISOFromParts(
             year,
             month,
             date,

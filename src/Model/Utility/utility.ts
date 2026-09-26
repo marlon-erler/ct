@@ -20,19 +20,36 @@ export function createTimestamp(): string {
     return new Date().toISOString();
 }
 
+export function isoToDateString (dateISOString: string): string {
+    const [year, month, date] = dateISOString.split("-");
+    const paddedDate = padZero(date ?? "", 2);
+    return paddedDate;
+};
+
+export function isoToMonthString (dateISOString: string): string  {
+    const [year, month, _] = dateISOString.split("-");
+    return formatMonthStringFromParts(year, month);
+};
+
 export function formatISO(date: Date): string {
     return formatISOFromParts(date.getFullYear(), date.getMonth()+1, date.getDate())
 }
-    
-export function formatISOFromParts(year: number, month: number, date: number): string {
+
+export function formatISOFromParts(year: number|string, month: number|string, date: number|string): string {
     return [year, month, date]
-	.map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString()))
+	.map((x, i) => i == 0 ? x : padZero(x.toString(), 2))
 	.join("-");
 }
+    
+export function formatMonthStringFromParts (year: string = "", month: string = ""): string {
+        const paddedYear: string = padZero(year, 4);
+        const paddedMonth: string = padZero(month, 2);
+        return `${paddedYear}-${paddedMonth}`;
+    };
 
 export function formatTime(date: Date): string {
     return [date.getHours(), date.getMinutes()]
-	.map(x => CalendarModel.padZero(x.toString()))
+	.map(x => padZero(x.toString(), 2))
 	.join(":");
 }
 
@@ -224,7 +241,7 @@ export function parseValidObject<T>(string: string, reference: T): T | null {
 	parsed,
 	reference,
     );
-   if (doesMatchReference == false) return null;
+    if (doesMatchReference == false) return null;
 
     return parsed;
 }

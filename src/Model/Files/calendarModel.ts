@@ -5,6 +5,7 @@ import { TaskFileContent } from "./boardsAndTasksModel";
 import StorageModel from "../Global/storageModel";
 import SettingsModel from "../Global/settingsModel";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
+import {isoToMonthString, padZero} from "../Utility/utility";
 
 export default class CalendarModel {
     readonly storageModel: StorageModel;
@@ -34,7 +35,7 @@ export default class CalendarModel {
     readonly storeTaskReference = (taskFileContent: TaskFileContent): void => {
         if (taskFileContent.date == undefined) return;
 
-        const monthString: string = CalendarModel.isoToMonthString(
+        const monthString: string = isoToMonthString(
             taskFileContent.date,
         );
 
@@ -102,8 +103,8 @@ export default class CalendarModel {
         };
 
         for (let i = 0; i < daysInMonth; i++) {
-            const paddedDate: string = CalendarModel.padZero(
-                (i + 1).toString(),
+            const paddedDate: string = padZero(
+                (i + 1).toString(), 2
             );
             grid.days[paddedDate] = defaultValueCreator();
         }
@@ -121,38 +122,6 @@ export default class CalendarModel {
         this.settingsModel = settingsModel;
         this.fileModel = fileModel;
     }
-
-    // utility
-    static isoToMonthString = (dateISOString: string): string => {
-        const [year, month, _] = dateISOString.split("-");
-        return CalendarModel.getMonthString(year, month);
-    };
-
-    static isoToDateString = (dateISOString: string): string => {
-        const [year, month, date, _] = dateISOString.split("-");
-        const paddedDate = CalendarModel.padZero(date ?? "");
-        return paddedDate;
-    };
-
-    static getMonthString = (year: string = "", month: string = ""): string => {
-        const paddedYear: string = year.padStart(4, "0");
-        const paddedMonth: string = CalendarModel.padZero(month);
-        return `${paddedYear}-${paddedMonth}`;
-    };
-
-    static getISODateString = (
-        year: string,
-        month: string,
-        date: string,
-    ): string => {
-        const monthString: string = CalendarModel.getMonthString(year, month);
-        const paddedDate: string = CalendarModel.padZero(date);
-        return `${monthString}-${paddedDate}`;
-    };
-
-    static padZero = (input: string): string => {
-        return input.padStart(2, "0");
-    };
 }
 
 export enum CalendarModelSubPaths {
