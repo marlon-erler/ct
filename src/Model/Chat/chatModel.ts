@@ -180,9 +180,9 @@ export default class ChatModel {
         );
     };
 
-    readonly getNameAndChannel = (): [string, string] | false => {
-        const senderName: string = this.settingsModel.username;
-        if (senderName == "") return false;
+    readonly getSendingData = (): [string, string, string] => {
+        const senderName: string = this.settingsModel.username || "?";
+	const id: string = this.settingsModel.userid;
 
         const allChannels: string[] = [this.id];
         for (const secondaryChannel of this.info.secondaryChannels) {
@@ -191,7 +191,7 @@ export default class ChatModel {
 
         const combinedChannel: string = allChannels.join("/");
 
-        return [senderName, combinedChannel];
+        return [id, senderName, combinedChannel];
     };
 
     readonly sendMessage = async (
@@ -199,12 +199,11 @@ export default class ChatModel {
         inlineReplyId?: string,
         fileContent?: FileContent<string>,
     ): Promise<string | false> => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return false;
-        const [senderName, combinedChannel] = nameAndChannel;
+        const [senderId, senderName, combinedChannel] = this.getSendingData();
 
         const chatMessage: ChatMessage = await ChatModel.createChatMessage(
             combinedChannel,
+	    senderId,
             senderName,
             this.info.encryptionKey,
             body,
@@ -237,13 +236,11 @@ export default class ChatModel {
         content: ReactionSymbols,
         isDeleting: boolean = false,
     ): Promise<void> => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return;
-        const [senderName] = nameAndChannel;
+        const [senderId, senderName, combinedChannel] = this.getSendingData();
 
         const reaction = ChatModel.createMessageReaction(
             messageId,
-            senderName,
+	    senderId,
             content,
             isDeleting,
         );
@@ -399,6 +396,7 @@ export default class ChatModel {
     static createChatMessage = async (
         channel: string,
         sender: string,
+	senderId: string,
         encryptionKey: string,
         body: string,
         inlineReplyId?: string,
@@ -411,6 +409,7 @@ export default class ChatModel {
 
             channel,
             sender,
+	    senderId,
             body,
             dateSent: createTimestamp(),
             inlineReplyId,
@@ -439,7 +438,7 @@ export default class ChatModel {
 
     static createMessageReaction = (
         messageId: string,
-        sender: string,
+	senderId: string,
         content: ReactionSymbols,
         isDeleting: boolean,
     ): ChatMessageReaction => {
@@ -447,10 +446,10 @@ export default class ChatModel {
             FileModel.createFileContent(v4(), "reaction");
         const reaction: ChatMessageReaction = {
             ...fileContent,
-            fileId: ChatModel.createMessageReactionId(messageId, sender),
+            fileId: ChatModel.createMessageReactionId(messageId, senderId),
 
             messageId,
-            sender,
+	    senderId,
             content,
             isDeleting,
         };
@@ -459,9 +458,9 @@ export default class ChatModel {
 
     static createMessageReactionId = (
         messageId: string,
-        sender: string,
+        senderId: string,
     ): string => {
-        return messageId + sender;
+        return messageId + senderId;
     };
 }
 
@@ -497,6 +496,7 @@ export interface ChatMessage extends ValidObject {
 
     readonly channel: string;
     readonly sender: string;
+    readonly senderId: string;
     body: string;
     readonly dateSent: string;
     readonly inlineReplyId?: string;
@@ -509,7 +509,7 @@ export interface ChatMessage extends ValidObject {
 export interface ChatMessageReaction
     extends ValidObject, FileContent<"reaction"> {
     readonly messageId: string;
-    readonly sender: string;
+    readonly senderId: string;
     readonly content: ReactionSymbols | string;
     isDeleting: boolean;
 }
@@ -540,6 +540,7 @@ export const ChatMessageReference: ChatMessage = {
 
     channel: "",
     sender: "",
+    senderId: "",
     body: "",
     dateSent: "",
 
@@ -557,7 +558,7 @@ export const ChatMessageReactionReference: ChatMessageReaction = {
     type: "reaction",
 
     messageId: "",
-    sender: "",
+    senderId: "",
     content: "",
 
     isDeleting: false,

@@ -160,12 +160,12 @@ export default class ChatMessageViewModel {
     // reactions
     handleReaction = (reaction: ChatMessageReaction): void => {
         if (reaction.isDeleting) {
-            this.allReactions.remove(reaction.sender);
+            this.allReactions.remove(reaction.senderId);
         } else {
-            this.allReactions.set(reaction.sender, reaction);
+            this.allReactions.set(reaction.senderId, reaction);
         }
 
-        if (reaction.sender != this.coreViewModel.settingsModel.username)
+        if (reaction.senderId != this.coreViewModel.settingsModel.username)
             return;
         this.userReaction.value = reaction.isDeleting
             ? undefined
