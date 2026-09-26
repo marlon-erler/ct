@@ -224,7 +224,7 @@ export function parseValidObject<T>(string: string, reference: T): T | null {
 	parsed,
 	reference,
     );
-    if (doesMatchReference == false) return null;
+   if (doesMatchReference == false) return null;
 
     return parsed;
 }

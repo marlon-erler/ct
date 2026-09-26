@@ -103,7 +103,7 @@ export default class FileTransferModel {
     };
 
     readonly handleDecryptedFile = (data: string): void => {
-        const parsed: any = parse(data);
+        const parsed: any = parse(data); 
         const isFileData: boolean = checkMatchesObjectStructure(
             parsed,
             FileDataReference,

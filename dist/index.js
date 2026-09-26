@@ -1751,11 +1751,12 @@
       };
       // load
       this.loadInfo = () => {
-        const info = this.storageModel.readStringifiable(
+        let info = this.storageModel.readStringifiable(
           this.getInfoPath(),
           ChatInfoReference
         );
         this.info = info || _ChatModel.generateChatInfo("0", "0", "standard" /* Standard */);
+        this.storeInfo();
       };
       this.handleInfo = (info) => {
         this.info = info;
@@ -1958,6 +1959,7 @@
         this.handleFileContent(fileContent);
       };
       this.handleFileContent = (fileContent) => {
+        console.log(fileContent.type);
         if (fileContent.type == "chat-info") {
           if (checkMatchesObjectStructure(fileContent, ChatInfoReference) == false) return;
           this.chatModel.handleInfo(fileContent);

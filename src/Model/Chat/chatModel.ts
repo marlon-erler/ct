@@ -285,11 +285,12 @@ export default class ChatModel {
 
     // load
     readonly loadInfo = (): void => {
-	const info: ChatInfoFileContent | null = this.storageModel.readStringifiable(
+	let info: ChatInfoFileContent | null = this.storageModel.readStringifiable(
 	    this.getInfoPath(),
 	    ChatInfoReference,
 	);
 	this.info = (info || ChatModel.generateChatInfo("0", "0", Colors.Standard));
+	this.storeInfo();
     };
 
     readonly handleInfo = (info: ChatInfoFileContent): void => {
