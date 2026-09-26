@@ -200,12 +200,8 @@ const englishTranslations = {
 	settings: {
 	    settingsHeadline: "Settings",
 
-	    primaryChannelLabel: "Primary channel",
-	    setPrimaryChannelButtonAudioLabel: "set primary channel",
-
-	    namespaceLabel: "Namespace",
-	    namespacePlaceholder: "No namespace",
-	    setNamespaceButtonAudioLabel: "set namespace",
+	    nameLabel: "Chat name",
+	    setNameButtonAudioLabel: "set name",
 
 	    newSecondaryChannelPlaceholder: "Add secondary channel",
 	    newSecondaryChannelAudioLabel: "name of new secondary channel",
@@ -540,12 +536,8 @@ export const allTranslations: {
 	    settings: {
 		settingsHeadline: "Einstellungen",
 
-		primaryChannelLabel: "Hauptkanal",
-		setPrimaryChannelButtonAudioLabel: "Hauptkanal festlegen",
-
-		namespaceLabel: "Namensraum",
-		namespacePlaceholder: "Ohne Namensraum",
-		setNamespaceButtonAudioLabel: "Namensraum festlegen",
+		nameLabel: "Name",
+		setNameButtonAudioLabel: "namen festlegen",
 
 		newSecondaryChannelPlaceholder: "Sekundären Kanal hinzufügen",
 		newSecondaryChannelAudioLabel:
@@ -854,12 +846,8 @@ export const allTranslations: {
 	    settings: {
 		settingsHeadline: "Configuración",
 
-		primaryChannelLabel: "Canal principal",
-		setPrimaryChannelButtonAudioLabel: "establecer canal principal",
-
-		namespaceLabel: "Espacio de nombres",
-		namespacePlaceholder: "Sin espacio de nombres",
-		setNamespaceButtonAudioLabel: "establecer espacio de nombres",
+		nameLabel: "Nombre del chat",
+		setNameButtonAudioLabel: "establecer nombre",
 
 		newSecondaryChannelPlaceholder: "Añadir canal secundario",
 		newSecondaryChannelAudioLabel:

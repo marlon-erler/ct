@@ -43,7 +43,7 @@ export function SettingsPage(
                                 <span>
                                     {
                                         coreViewModel.translations.chatPage
-                                            .settings.primaryChannelLabel
+                                            .settings.nameLabel
                                     }
                                 </span>
                                 <input
@@ -61,7 +61,7 @@ export function SettingsPage(
                                 class="width-50"
                                 aria-label={
                                     coreViewModel.translations.chatPage.settings
-                                        .setPrimaryChannelButtonAudioLabel
+                                        .setNameButtonAudioLabel
                                 }
                                 on:click={
                                     settingsPageViewModel.setName
