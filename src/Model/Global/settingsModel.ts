@@ -1,5 +1,4 @@
-// cleanup: Phase A
-
+import {UUID} from "../../react";
 import StorageModel, { StorageModelSubPaths, filePaths } from "./storageModel";
 
 export default class SettingsModel {
@@ -7,6 +6,7 @@ export default class SettingsModel {
 
     // data
     username: string = "";
+    userid: string = "";
     firstDayOfWeek: string = "";
     language: string = "";
     theme: string = "";
@@ -23,6 +23,11 @@ export default class SettingsModel {
         this.storageModel.write(path, value);
     };
 
+    readonly setId = (newValue: string): void => {
+        this.userid = newValue;
+        this.storeSetting("userid", newValue);
+    };
+    
     readonly setName = (newValue: string): void => {
         this.username = newValue;
         this.storeSetting("username", newValue);
@@ -53,6 +58,11 @@ export default class SettingsModel {
         );
         return this.storageModel.read(path);
     };
+    
+    readonly loadID = (): void => {
+        const content: string | null = this.readSetting("userid");
+        this.userid = content ?? UUID();
+    };
 
     readonly loadUsername = (): void => {
         const content: string | null = this.readSetting("username");
@@ -78,6 +88,7 @@ export default class SettingsModel {
     constructor(storageModel: StorageModel) {
         this.storageModel = storageModel;
 
+	this.loadID();
         this.loadUsername();
         this.loadFirstDayofWeek();
         this.loadLanguage();
