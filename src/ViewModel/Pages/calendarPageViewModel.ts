@@ -171,7 +171,6 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
 
     updateMonthGrid = (): void => {
         const today = formatISO(this.coreViewModel.todayDate.value)
-	console.log(today, this.coreViewModel.todayDate.value);
         if (
             this.currentTodayDate == today
         )

@@ -198,7 +198,7 @@ export default class ChatModel {
         body: string,
         inlineReplyId?: string,
         fileContent?: FileContent<string>,
-    ): Promise<boolean> => {
+    ): Promise<string|false> => {
         const nameAndChannel = this.getNameAndChannel();
         if (nameAndChannel == false) return false;
         const [senderName, combinedChannel] = nameAndChannel;
@@ -214,7 +214,7 @@ export default class ChatModel {
 
         this.addMessage(chatMessage);
         this.connectionModel.sendMessageOrStore(chatMessage);
-        return true;
+        return chatMessage.id;
     };
 
     readonly decryptMessage = async (

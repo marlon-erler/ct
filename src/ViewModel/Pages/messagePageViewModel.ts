@@ -35,111 +35,118 @@ export default class MessagePageViewModel extends Context {
     cannotSendMessage: React.State<boolean>;
 
     // methods
-    sendMessage = (): void => {
+    sendMessage = async (): Promise<void> => {
         if (this.cannotSendMessage.value == true) return;
 
-        this.sendMessageFromBody(this.composingMessage.value);
-        this.composingMessage.value = "";
+        const idPromise = this.sendMessageFromBody(this.composingMessage.value);
+	this.composingMessage.value = "";
+
+	const id = await idPromise;
+	if (id && this.reactionFilter.value != undefined) {
+	    this.sendReaction(id, this.reactionFilter.value, false);
+	}
     };
 
-    sendMessageFromBody = (body: string): void => {
-        let replyId: string | undefined = undefined;
-        if (this.replyingMessage.value) {
-            replyId = this.replyingMessage.value.chatMessage.id;
-        }
-        this.chatViewModel.chatModel.sendMessage(body, replyId);
+    sendMessageFromBody = (body: string): Promise<string|false>=> {
+	let replyId: string | undefined = undefined;
+	if (this.replyingMessage.value) {
+	    replyId = this.replyingMessage.value.chatMessage.id;
+	}
+	const id = this.chatViewModel.chatModel.sendMessage(body, replyId);
 
-	if (this.replyViewSelectedMessage.value != undefined) return;
-        this.replyingMessage.value = undefined;
+	if (this.replyViewSelectedMessage.value == undefined) 
+	    this.replyingMessage.value = undefined;
+
+	return id;
     };
 
     decryptMessage = async (
-        messageViewModel: ChatMessageViewModel,
+	messageViewModel: ChatMessageViewModel,
     ): Promise<void> => {
-        const chatMessage: ChatMessage = messageViewModel.chatMessage;
-        await this.chatViewModel.chatModel.decryptMessage(chatMessage);
-        this.chatViewModel.chatModel.addMessage(chatMessage);
-        messageViewModel.loadData();
+	const chatMessage: ChatMessage = messageViewModel.chatMessage;
+	await this.chatViewModel.chatModel.decryptMessage(chatMessage);
+	this.chatViewModel.chatModel.addMessage(chatMessage);
+	messageViewModel.loadData();
     };
 
     sendReaction = (
-        messageId: string,
-        content: ReactionSymbols,
-        isDeleting: boolean,
+	messageId: string,
+	content: ReactionSymbols,
+	isDeleting: boolean,
     ): void => {
-        this.chatViewModel.chatModel.sendReaction(
-            messageId,
-            content,
-            isDeleting,
-        );
+	this.chatViewModel.chatModel.sendReaction(
+	    messageId,
+	    content,
+	    isDeleting,
+	);
     };
 
     setReply = (
-        chatMessageViewModel: ChatMessageViewModel | undefined,
+	chatMessageViewModel: ChatMessageViewModel | undefined,
 	setFocus: boolean = true,
     ): void => {
-        this.replyingMessage.value = chatMessageViewModel;
+	this.replyingMessage.value = chatMessageViewModel;
 	if (setFocus == false || chatMessageViewModel == undefined) return;
-        this.setFocus();
+	this.setFocus();
     };
 
     resetReply = (setFocus: boolean = true): void => {
-        this.replyingMessage.value = undefined;
+	this.replyingMessage.value = undefined;
 	if (setFocus == false) return;
-        this.setFocus();
+	this.setFocus();
     };
 
     // view
     showChatMessage = (chatMessage: ChatMessage): void => {
-        const chatMessageViewModel = new ChatMessageViewModel(
-            this.coreViewModel,
-            this,
-            chatMessage,
-            chatMessage.sender ==
-                this.chatViewModel.settingsViewModel.username.value,
-        );
+	const chatMessageViewModel = new ChatMessageViewModel(
+	    this.coreViewModel,
+	    this,
+	    chatMessage,
+	    chatMessage.sender ==
+	    this.chatViewModel.settingsViewModel.username.value,
+	);
 
-        const existingChatMessageViewModel: ChatMessageViewModel | undefined =
-            this.chatMessageViewModels.value.get(chatMessage.id);
-        if (existingChatMessageViewModel != undefined) {
-            existingChatMessageViewModel.body.value = chatMessage.body;
-            existingChatMessageViewModel.status.value = chatMessage.status;
-        } else {
-            this.chatMessageViewModels.set(
-                chatMessage.id,
-                chatMessageViewModel,
-            );
-        }
+	const existingChatMessageViewModel: ChatMessageViewModel | undefined =
+	    this.chatMessageViewModels.value.get(chatMessage.id);
+	if (existingChatMessageViewModel != undefined) {
+	    existingChatMessageViewModel.body.value = chatMessage.body;
+	    existingChatMessageViewModel.status.value = chatMessage.status;
+	} else {
+	    this.chatMessageViewModels.set(
+		chatMessage.id,
+		chatMessageViewModel,
+	    );
+	}
     };
 
     handleReaction = (reaction: ChatMessageReaction): void => {
-        const messageViewModel: ChatMessageViewModel | undefined =
-            this.chatMessageViewModels.value.get(reaction.messageId);
-        if (messageViewModel == undefined) return;
-        messageViewModel.handleReaction(reaction);
+	const messageViewModel: ChatMessageViewModel | undefined =
+	    this.chatMessageViewModels.value.get(reaction.messageId);
+	if (messageViewModel == undefined) return;
+	messageViewModel.handleReaction(reaction);
     };
 
     showFilterModal = (): void => {
-        this.isFilterModalOpen.value = true;
+	this.isFilterModalOpen.value = true;
     };
 
     hideFilterModal = (): void => {
-        this.isFilterModalOpen.value = false;
+	this.isFilterModalOpen.value = false;
     };
 
     revokeReactionFilter = (persist: boolean = true): void => {
-        this.reactionFilter.value = undefined;
+	this.reactionFilter.value = undefined;
 	if (persist) this.chatViewModel.chatModel.storeFilter("");
     };
 
     setReactionFilter = (content: ReactionSymbols): void => {
-        this.reactionFilter.value = content;
+	this.reactionFilter.value = content;
 	this.chatViewModel.chatModel.storeFilter(content);
     };
 
     resetFilter = (): void => {
-        this.revokeReactionFilter();
-        this.searchViewModel.search("");
+	this.revokeReactionFilter();
+	this.searchViewModel.search("");
     };
 
     setReplyView = (message: ChatMessageViewModel): void => {
@@ -155,18 +162,18 @@ export default class MessagePageViewModel extends Context {
     }
 
     setFocus = (): void => {
-        this.focusSetter.callSubscriptions();
+	this.focusSetter.callSubscriptions();
     };
 
     // load
     loadData = (): void => {
-        this.chatMessageViewModels.clear();
-        for (const chatMessage of this.chatViewModel.chatModel.messages) {
-            this.showChatMessage(chatMessage);
-        }
-        for (const reaction of this.chatViewModel.chatModel.reactions) {
-            this.handleReaction(reaction);
-        }
+	this.chatMessageViewModels.clear();
+	for (const chatMessage of this.chatViewModel.chatModel.messages) {
+	    this.showChatMessage(chatMessage);
+	}
+	for (const reaction of this.chatViewModel.chatModel.reactions) {
+	    this.handleReaction(reaction);
+	}
     };
 
     restoreFilter = (): void => {
@@ -176,49 +183,49 @@ export default class MessagePageViewModel extends Context {
 
     // init
     constructor(
-        public readonly coreViewModel: CoreViewModel,
-        public readonly chatViewModel: ChatViewModel,
+	public readonly coreViewModel: CoreViewModel,
+	public readonly chatViewModel: ChatViewModel,
     ) {
-        super("message-page");
+	super("message-page");
 	this.restoreFilter();
 
-        // states
-        this.cannotSendMessage = React.createProxyState(
-            [
-                this.chatViewModel.settingsViewModel.username,
-                this.composingMessage,
-            ],
-            () =>
-                this.chatViewModel.settingsViewModel.username.value == "" ||
-                this.composingMessage.value == "",
-        );
+	// states
+	this.cannotSendMessage = React.createProxyState(
+	    [
+		this.chatViewModel.settingsViewModel.username,
+		this.composingMessage,
+	    ],
+	    () =>
+	    this.chatViewModel.settingsViewModel.username.value == "" ||
+	    this.composingMessage.value == "",
+	);
 
-        this.searchViewModel = new SearchViewModel(
-            this.chatMessageViewModels,
-            this.filteredMessageViewModels,
-            (chatMessageViewModel) => [chatMessageViewModel.body.value],
-            new React.ListState(),
-        );
+	this.searchViewModel = new SearchViewModel(
+	    this.chatMessageViewModels,
+	    this.filteredMessageViewModels,
+	    (chatMessageViewModel) => [chatMessageViewModel.body.value],
+	    new React.ListState(),
+	);
 
-        this.isFilterActive = React.createProxyState(
-            [this.searchViewModel.appliedQuery, this.reactionFilter],
-            () =>
-                this.searchViewModel.appliedQuery.value != "" ||
-                this.reactionFilter.value != undefined,
-        );
+	this.isFilterActive = React.createProxyState(
+	    [this.searchViewModel.appliedQuery, this.reactionFilter],
+	    () =>
+	    this.searchViewModel.appliedQuery.value != "" ||
+	    this.reactionFilter.value != undefined,
+	);
 
-        // keystrokes
-        this.registerKeyStroke(CommonKeys.Filter, this.showFilterModal);
-        this.registerKeyStroke(CommonKeys.CloseOrCancel, () => {
-            if (this.isFilterModalOpen.value == true) {
-                this.hideFilterModal();
-            } else {
-                this.replyingMessage.value = undefined;
-            }
-        });
-        this.registerKeyStroke(CommonKeys.Reset, this.resetFilter);
-        this.registerKeyStroke(CommonKeys.Create, this.setFocus);
+	// keystrokes
+	this.registerKeyStroke(CommonKeys.Filter, this.showFilterModal);
+	this.registerKeyStroke(CommonKeys.CloseOrCancel, () => {
+	    if (this.isFilterModalOpen.value == true) {
+		this.hideFilterModal();
+	    } else {
+		this.replyingMessage.value = undefined;
+	    }
+	});
+	this.registerKeyStroke(CommonKeys.Reset, this.resetFilter);
+	this.registerKeyStroke(CommonKeys.Create, this.setFocus);
 
-        this.chatViewModel.registerContext(ChatPageTypes.Messages, this);
+	this.chatViewModel.registerContext(ChatPageTypes.Messages, this);
     }
 }
