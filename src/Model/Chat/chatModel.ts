@@ -37,10 +37,6 @@ export default class ChatModel {
     info: ChatInfo; /* load function called in constructor */
     color: Colors = Colors.Standard;
 
-    get unwrappedPrimaryChannel(): string {
-        return this.info.namespace + this.info.primaryChannel;
-    }
-
     get secondaryChannels(): string[] {
         return this.info.secondaryChannels.sort(localeCompare);
     }
@@ -136,14 +132,8 @@ export default class ChatModel {
     };
 
     // settings
-    readonly setPrimaryChannel = (primaryChannel: string): void => {
-        this.info.primaryChannel = primaryChannel;
-        this.storeInfo();
-        this.subscribe();
-    };
-
-    readonly setNamespace = (namespace: string): void => {
-        this.info.namespace = namespace;
+    readonly setName = (name: string): void => {
+        this.info.name = name;
         this.storeInfo();
         this.subscribe();
     };
@@ -184,7 +174,7 @@ export default class ChatModel {
         const senderName: string = this.settingsModel.username;
         if (senderName == "") return false;
 
-        const allChannels: string[] = [this.unwrappedPrimaryChannel];
+        const allChannels: string[] = [this.id];
         for (const secondaryChannel of this.info.secondaryChannels) {
             allChannels.push(secondaryChannel);
         }
@@ -252,7 +242,7 @@ export default class ChatModel {
     };
 
     readonly subscribe = (): void => {
-        this.connectionModel.addChannel(this.unwrappedPrimaryChannel);
+        this.connectionModel.addChannel(this.id);
     };
 
     readonly setReadStatus = (hasUnreadMessages: boolean): void => {
@@ -273,211 +263,209 @@ export default class ChatModel {
 	this.storageModel.write(this.getPreviousFilterPath(), filter);
     }
     
-    readonly getFilter = (): string => {
-	return this.storageModel.read(this.getPreviousFilterPath());
+    readonly getFilter = (): string=> {
+	return this.storageModel.read(this.getPreviousFilterPath()) || "";
     }
 
     readonly delete = () => {
-        // untrack
-        this.chatListModel.untrackChat(this);
+	// untrack
+	this.chatListModel.untrackChat(this);
 
-        // delete
-        const dirPath: string[] = this.getBasePath();
-        this.storageModel.removeRecursively(dirPath);
+	// delete
+	const dirPath: string[] = this.getBasePath();
+	this.storageModel.removeRecursively(dirPath);
     };
 
     // load
     readonly loadInfo = (): void => {
-        const info: ChatInfo | null = this.storageModel.readStringifiable(
-            this.getInfoPath(),
-            ChatInfoReference,
-        );
-        if (info != null) {
-            this.info = info;
-        } else {
-            this.info = ChatModel.generateChatInfo("0");
-        }
+	const info: ChatInfo | null = this.storageModel.readStringifiable(
+	    this.getInfoPath(),
+	    ChatInfoReference,
+	);
+	if (info != null) {
+	    this.info = info;
+	} else {
+	    this.info = ChatModel.generateChatInfo("0", "0");
+	}
     };
 
     readonly loadColor = (): void => {
-        const path: string[] = this.getColorPath();
-        const color: string | null = this.storageModel.read(path);
-        if (!color) {
-            this.color = Colors.Standard;
-        } else {
-            this.color = color as any;
-        }
+	const path: string[] = this.getColorPath();
+	const color: string | null = this.storageModel.read(path);
+	if (!color) {
+	    this.color = Colors.Standard;
+	} else {
+	    this.color = color as any;
+	}
     };
 
     get messages(): ChatMessage[] {
-        const messageIds: string[] = this.storageModel.list(
-            this.getMessageDirPath(),
-        );
-        if (!Array.isArray(messageIds)) return [];
+	const messageIds: string[] = this.storageModel.list(
+	    this.getMessageDirPath(),
+	);
+	if (!Array.isArray(messageIds)) return [];
 
-        const chatMessages: ChatMessage[] = [];
-        for (const messageId of messageIds) {
-            const messagePath: string[] = this.getMessagePath(messageId);
-            const chatMessage: ChatMessage | null =
-                this.storageModel.readStringifiable(
-                    messagePath,
-                    ChatMessageReference,
-                );
-            if (chatMessage == null) continue;
-            chatMessages.push(chatMessage);
-        }
+	const chatMessages: ChatMessage[] = [];
+	for (const messageId of messageIds) {
+	    const messagePath: string[] = this.getMessagePath(messageId);
+	    const chatMessage: ChatMessage | null =
+		this.storageModel.readStringifiable(
+		    messagePath,
+		    ChatMessageReference,
+		);
+	    if (chatMessage == null) continue;
+	    chatMessages.push(chatMessage);
+	}
 
-        const sorted = chatMessages.sort((a, b) =>
-            a.dateSent.localeCompare(b.dateSent),
-        );
-        return sorted;
+	const sorted = chatMessages.sort((a, b) =>
+	    a.dateSent.localeCompare(b.dateSent),
+	);
+	return sorted;
     }
 
     get reactions(): ChatMessageReaction[] {
-        const reactionIds: string[] = this.storageModel.list(
-            this.getReactionDirPath(),
-        );
-        if (!Array.isArray(reactionIds)) return [];
+	const reactionIds: string[] = this.storageModel.list(
+	    this.getReactionDirPath(),
+	);
+	if (!Array.isArray(reactionIds)) return [];
 
-        const reactions: ChatMessageReaction[] = [];
-        for (const reactionId of reactionIds) {
-            const reactionPath: string[] = this.getReactionPath(reactionId);
-            const reaction: ChatMessageReaction | null =
-                this.storageModel.readStringifiable(
-                    reactionPath,
-                    ChatMessageReactionReference,
-                );
-            if (reaction == null) continue;
-            reactions.push(reaction);
-        }
+	const reactions: ChatMessageReaction[] = [];
+	for (const reactionId of reactionIds) {
+	    const reactionPath: string[] = this.getReactionPath(reactionId);
+	    const reaction: ChatMessageReaction | null =
+		this.storageModel.readStringifiable(
+		    reactionPath,
+		    ChatMessageReactionReference,
+		);
+	    if (reaction == null) continue;
+	    reactions.push(reaction);
+	}
 
-        return reactions;
+	return reactions;
     }
 
     // init
     constructor(
-        storageModel: StorageModel,
-        connectionModel: ConnectionModel,
-        settingsModel: SettingsModel,
-        chatListModel: ChatListModel,
-        chatId: string,
+	storageModel: StorageModel,
+	connectionModel: ConnectionModel,
+	settingsModel: SettingsModel,
+	chatListModel: ChatListModel,
+	chatId: string,
     ) {
-        this.id = chatId;
-        this.connectionModel = connectionModel;
-        this.settingsModel = settingsModel;
-        this.storageModel = storageModel;
-        this.chatListModel = chatListModel;
+	this.id = chatId;
+	this.connectionModel = connectionModel;
+	this.settingsModel = settingsModel;
+	this.storageModel = storageModel;
+	this.chatListModel = chatListModel;
 
-        this.loadInfo();
-        this.loadColor();
-        this.subscribe();
+	this.loadInfo();
+	this.loadColor();
+	this.subscribe();
 
-        this.fileModel = new FileModel(
-            this.storageModel,
-            this.settingsModel,
-            this,
-        );
+	this.fileModel = new FileModel(
+	    this.storageModel,
+	    this.settingsModel,
+	    this,
+	);
     }
 
     // utility
     static splitChannel(channelString: string): string[] {
-        return channelString.split("/");
+	return channelString.split("/");
     }
 
-    static generateChatInfo = (primaryChannel: string): ChatInfo => {
-        return {
-            dataVersion: DATA_VERSION,
+    static generateChatInfo = (name: string, id: string): ChatInfo => {
+	return {
+	    dataVersion: DATA_VERSION,
 
-            primaryChannel,
-            namespace: "",
-            secondaryChannels: [],
-            encryptionKey: "",
-            hasUnreadMessages: false,
-        };
+	    name,
+	    secondaryChannels: [],
+	    encryptionKey: "",
+	    hasUnreadMessages: false,
+	};
     };
 
     static createChatMessage = async (
-        channel: string,
-        sender: string,
-        encryptionKey: string,
-        body: string,
-        inlineReplyId?: string,
-        fileContent?: FileContent<string>,
+	channel: string,
+	sender: string,
+	encryptionKey: string,
+	body: string,
+	inlineReplyId?: string,
+	fileContent?: FileContent<string>,
     ): Promise<ChatMessage> => {
-        const chatMessage: ChatMessage = {
-            dataVersion: DATA_VERSION,
+	const chatMessage: ChatMessage = {
+	    dataVersion: DATA_VERSION,
 
-            id: v4(),
+	    id: v4(),
 
-            channel,
-            sender,
-            body,
-            dateSent: createTimestamp(),
-            inlineReplyId,
+	    channel,
+	    sender,
+	    body,
+	    dateSent: createTimestamp(),
+	    inlineReplyId,
 
-            status: ChatMessageStatuses.Outbox,
-            stringifiedFile: "",
-        };
-        if (fileContent != undefined) {
-            const stringifiedFile: string = stringify(fileContent);
-            chatMessage.stringifiedFile = stringifiedFile;
-        }
+	    status: ChatMessageStatuses.Outbox,
+	    stringifiedFile: "",
+	};
+	if (fileContent != undefined) {
+	    const stringifiedFile: string = stringify(fileContent);
+	    chatMessage.stringifiedFile = stringifiedFile;
+	}
 
-        if (encryptionKey != "") {
-            chatMessage.body = await encryptString(
-                chatMessage.body,
-                encryptionKey,
-            );
-            chatMessage.stringifiedFile = await encryptString(
-                chatMessage.stringifiedFile,
-                encryptionKey,
-            );
-        }
+	if (encryptionKey != "") {
+	    chatMessage.body = await encryptString(
+		chatMessage.body,
+		encryptionKey,
+	    );
+	    chatMessage.stringifiedFile = await encryptString(
+		chatMessage.stringifiedFile,
+		encryptionKey,
+	    );
+	}
 
-        return chatMessage;
+	return chatMessage;
     };
 
     static createMessageReaction = (
-        messageId: string,
-        sender: string,
-        content: ReactionSymbols,
-        isDeleting: boolean,
+	messageId: string,
+	sender: string,
+	content: ReactionSymbols,
+	isDeleting: boolean,
     ): ChatMessageReaction => {
-        const fileContent: FileContent<"reaction"> =
-            FileModel.createFileContent(v4(), "reaction");
-        const reaction: ChatMessageReaction = {
-            ...fileContent,
-            fileId: ChatModel.createMessageReactionId(messageId, sender),
+	const fileContent: FileContent<"reaction"> =
+	    FileModel.createFileContent(v4(), "reaction");
+	const reaction: ChatMessageReaction = {
+	    ...fileContent,
+	    fileId: ChatModel.createMessageReactionId(messageId, sender),
 
-            messageId,
-            sender,
-            content,
-            isDeleting,
-        };
-        return reaction;
+	    messageId,
+	    sender,
+	    content,
+	    isDeleting,
+	};
+	return reaction;
     };
 
     static createMessageReactionId = (
-        messageId: string,
-        sender: string,
+	messageId: string,
+	sender: string,
     ): string => {
-        return messageId + sender;
+	return messageId + sender;
     };
 }
 
 // types
 export enum ReactionSymbols {
     ThumbsUp = "👍",
-    Check = "✅",
-    Stop = "🛑",
-    Attention = "❗️",
-    DoubleAttention = "‼️",
-    Question = "❓",
+	Check = "✅",
+	Stop = "🛑",
+	Attention = "❗️",
+	DoubleAttention = "‼️",
+	Question = "❓",
 }
 
 export interface ChatInfo extends ValidObject {
-    primaryChannel: string;
-    namespace: string;
+    name: string;
     secondaryChannels: string[];
     encryptionKey: string;
 
@@ -486,9 +474,9 @@ export interface ChatInfo extends ValidObject {
 
 export enum ChatMessageStatuses {
     Outbox = "outbox",
-    Sent = "sent",
-    Received = "received",
-    Other = "other",
+	Sent = "sent",
+	Received = "received",
+	Other = "other",
 }
 
 export interface ChatMessage extends ValidObject {
@@ -506,7 +494,7 @@ export interface ChatMessage extends ValidObject {
 }
 
 export interface ChatMessageReaction
-    extends ValidObject, FileContent<"reaction"> {
+extends ValidObject, FileContent<"reaction"> {
     readonly messageId: string;
     readonly sender: string;
     readonly content: ReactionSymbols | string;
@@ -517,8 +505,7 @@ export interface ChatMessageReaction
 export const ChatInfoReference: ChatInfo = {
     dataVersion: DATA_VERSION,
 
-    primaryChannel: "",
-    namespace: "",
+    name: "",
     secondaryChannels: [""],
     encryptionKey: "",
 

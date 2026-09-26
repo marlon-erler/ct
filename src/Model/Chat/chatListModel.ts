@@ -34,7 +34,7 @@ export default class ChatListModel {
             this,
             id,
         );
-        chatModel.setPrimaryChannel(primaryChannel);
+        chatModel.setName(primaryChannel);
 
         this.addChatModel(chatModel);
         return chatModel;
@@ -73,7 +73,7 @@ export default class ChatListModel {
 
         for (const chatModel of this.chatModels) {
             for (const channel of allChannels) {
-                if (channel != chatModel.unwrappedPrimaryChannel) continue;
+                if (channel != chatModel.id) continue;
                 fn(chatModel);
                 break;
             }

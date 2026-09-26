@@ -78,7 +78,7 @@ messagePageViewModel.focusSetter.subscribeSilent(() => {
 
 const isInReplyView = React.createProxyState([messagePageViewModel.replyViewSelectedMessage], ()=>messagePageViewModel.replyViewSelectedMessage.value != undefined);
 
-const title = React.createProxyState([messagePageViewModel.isReplyViewActive], ()=>messagePageViewModel.isReplyViewActive.value ? coreViewModel.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.body.value) : coreViewModel.translations.chatPage.message.messagesHeadline);
+const title = React.createProxyState([messagePageViewModel.isReplyViewActive], ()=>messagePageViewModel.isReplyViewActive.value ? coreViewModel.translations.chatPage.message.replyHeaderLabel((messagePageViewModel.replyViewSelectedMessage.value!).body.value) : coreViewModel.translations.chatPage.message.messagesHeadline);
 
 return (
     <div id="message-page" toggle:reply-view={isInReplyView}>

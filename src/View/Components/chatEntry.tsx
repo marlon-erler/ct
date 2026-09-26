@@ -13,12 +13,12 @@ export function ChatEntry(chatViewModel: ChatViewModel) {
             <span
                 class="shadow"
                 subscribe:innerText={
-                    chatViewModel.settingsPageViewModel.primaryChannel
+                    chatViewModel.settingsPageViewModel.name
                 }
             ></span>
             <h2
                 subscribe:innerText={
-                    chatViewModel.settingsPageViewModel.primaryChannel
+                    chatViewModel.settingsPageViewModel.name
                 }
             ></h2>
         </button>

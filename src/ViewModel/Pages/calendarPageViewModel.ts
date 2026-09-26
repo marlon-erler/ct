@@ -40,7 +40,7 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
         MonthGrid<React.MapState<TaskViewModel>> | undefined
     > = new React.State<any>(undefined);
     
-    nextTask: React.State<TaskViewModel|undefined> = new React.State(undefined);
+    nextTask = new React.State<TaskViewModel|undefined>(undefined);
 
     // methods
     createEvent = (): void => {

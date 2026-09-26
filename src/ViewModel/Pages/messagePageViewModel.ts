@@ -16,7 +16,7 @@ export default class MessagePageViewModel extends Context {
         new React.MapState();
     filteredMessageViewModels: React.ListState<ChatMessageViewModel> =
         new React.ListState();
-    replyViewSelectedMessage: React.State<ChatMessageViewModel|undefined> = new React.State(undefined);
+    replyViewSelectedMessage = new React.State<ChatMessageViewModel|undefined>(undefined);
     isReplyViewActive: React.State<boolean> = React.createProxyState([this.replyViewSelectedMessage], ()=>this.replyViewSelectedMessage.value != undefined);
     isReplyViewInactive = React.createProxyState([this.isReplyViewActive], ()=>!this.isReplyViewActive.value);
     searchViewModel: SearchViewModel<ChatMessageViewModel>;

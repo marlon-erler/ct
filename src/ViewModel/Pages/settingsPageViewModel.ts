@@ -5,11 +5,8 @@ import { Colors } from "../../colors";
 
 export default class SettingsPageViewModel extends Context {
     // state
-    primaryChannel: React.State<string> = new React.State("");
-    primaryChannelInput: React.State<string> = new React.State("");
-
-    namespace: React.State<string> = new React.State("");
-    namespaceInput: React.State<string> = new React.State("");
+    name: React.State<string> = new React.State("");
+    nameInput: React.State<string> = new React.State("");
 
     secondaryChannels: React.ListState<string> = new React.ListState();
     newSecondaryChannelInput: React.State<string> = new React.State("");
@@ -25,14 +22,10 @@ export default class SettingsPageViewModel extends Context {
 
     // guards
     cannotSetPrimaryChannel: React.State<boolean> = React.createProxyState(
-        [this.primaryChannel, this.primaryChannelInput],
+        [this.name, this.nameInput],
         () =>
-            this.primaryChannelInput.value == "" ||
-            this.primaryChannelInput.value == this.primaryChannel.value,
-    );
-    cannotSetNamespace: React.State<boolean> = React.createProxyState(
-        [this.namespace, this.namespaceInput],
-        () => this.namespaceInput.value == this.namespace.value,
+            this.nameInput.value == "" ||
+            this.nameInput.value == this.name.value,
     );
     cannotAddSecondaryChannel: React.State<boolean> = React.createProxyState(
         [this.newSecondaryChannelInput],
@@ -41,19 +34,14 @@ export default class SettingsPageViewModel extends Context {
     cannotSetEncryptionKey: React.State<boolean>;
 
     // methods
-    setPrimaryChannel = (): void => {
-        this.chatViewModel.chatModel.setPrimaryChannel(
-            this.primaryChannelInput.value,
+    setName = (): void => {
+        this.chatViewModel.chatModel.setName(
+            this.nameInput.value,
         );
-        this.primaryChannel.value =
-            this.chatViewModel.chatModel.info.primaryChannel;
+        this.name.value =
+            this.chatViewModel.chatModel.info.name;
 
         this.chatViewModel.chatListViewModel.updateIndices();
-    };
-
-    setNamespace = (): void => {
-        this.chatViewModel.chatModel.setNamespace(this.namespaceInput.value);
-        this.namespace.value = this.chatViewModel.chatModel.info.namespace;
     };
 
     addSecondaryChannel = (): void => {
@@ -95,16 +83,14 @@ export default class SettingsPageViewModel extends Context {
 
     // load
     preloadData = (): void => {
-        this.primaryChannel.value =
-            this.chatViewModel.chatModel.info.primaryChannel;
-        this.namespace.value = this.chatViewModel.chatModel.info.namespace;
+        this.name.value =
+            this.chatViewModel.chatModel.info.name;
 
         this.color.value = this.chatViewModel.chatModel.color;
     };
 
     loadData = (): void => {
-        this.primaryChannelInput.value = this.primaryChannel.value;
-        this.namespaceInput.value = this.namespace.value;
+        this.nameInput.value = this.name.value;
 
         this.loadSecondaryChannels();
 

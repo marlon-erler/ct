@@ -48,10 +48,10 @@ export function SettingsPage(
                                 </span>
                                 <input
                                     bind:value={
-                                        settingsPageViewModel.primaryChannelInput
+                                        settingsPageViewModel.nameInput
                                     }
                                     on:enter={
-                                        settingsPageViewModel.setPrimaryChannel
+                                        settingsPageViewModel.setName
                                     }
                                 ></input>
                             </div>
@@ -64,48 +64,10 @@ export function SettingsPage(
                                         .setPrimaryChannelButtonAudioLabel
                                 }
                                 on:click={
-                                    settingsPageViewModel.setPrimaryChannel
+                                    settingsPageViewModel.setName
                                 }
                                 toggle:disabled={
                                     settingsPageViewModel.cannotSetPrimaryChannel
-                                }
-                            >
-                                {coreViewModel.translations.general.setButton}
-                                <span class="icon">check</span>
-                            </button>
-                        </div>
-
-                        <hr></hr>
-
-                        <label class="tile flex-no">
-                            <span class="icon">category</span>
-                            <div>
-                                <span>
-                                    {
-                                        coreViewModel.translations.chatPage
-                                            .settings.namespaceLabel
-                                    }
-                                </span>
-                                <input
-                                    bind:value={
-                                        settingsPageViewModel.namespaceInput
-                                    }
-                                    on:enter={
-                                        settingsPageViewModel.setNamespace
-                                    }
-                                ></input>
-                            </div>
-                        </label>
-                        <div class="flex-row justify-end width-input">
-                            <button
-                                class="width-50"
-                                aria-label={
-                                    coreViewModel.translations.chatPage.settings
-                                        .setNamespaceButtonAudioLabel
-                                }
-                                on:click={settingsPageViewModel.setNamespace}
-                                toggle:disabled={
-                                    settingsPageViewModel.cannotSetNamespace
                                 }
                             >
                                 {coreViewModel.translations.general.setButton}

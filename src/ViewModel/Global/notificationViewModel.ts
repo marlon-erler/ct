@@ -20,7 +20,7 @@ export default class NotificationViewModel {
             this.createNotification(message);
         const currentChat =
             this.chatListViewModel.selectedChat.value.chatModel
-                .unwrappedPrimaryChannel;
+                .id;
         const currentPage =
             this.chatListViewModel.selectedChat.value.selectedPage.value;
         if (
@@ -41,7 +41,7 @@ export default class NotificationViewModel {
             ...this.chatListViewModel.chatViewModels.value.values(),
         ].find(
             (chat) =>
-                chat.chatModel.unwrappedPrimaryChannel == notification.fullChannel,
+                chat.chatModel.id == notification.fullChannel,
         );
         if (!chat) return;
         chat.open();
@@ -87,7 +87,7 @@ export default class NotificationViewModel {
     // util
     createNotification(message: ChatMessage): Notification {
 	const fullChannel = ChatModel.splitChannel(message.channel)[0];
-	const chat = this.chatListViewModel.stripNamespace(fullChannel);
+	const chat = this.chatListViewModel.getDisplayName(fullChannel);
         return {
             messageId: message.id,
             chat,

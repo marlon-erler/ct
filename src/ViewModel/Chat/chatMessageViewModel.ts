@@ -184,7 +184,7 @@ export default class ChatMessageViewModel {
 		this.messagePageViewModel.chatMessageViewModels.value.get(
 		    this.chatMessage.inlineReplyId,
 		);
-	    this.inlineReply.replies.set(this.chatMessage.id, this);
+	    this.inlineReply?.replies.set(this.chatMessage.id, this);
 	}
     };
 
