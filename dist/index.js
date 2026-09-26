@@ -3129,7 +3129,6 @@
       };
       this.updateMonthGrid = () => {
         const today = formatISO(this.coreViewModel.todayDate.value);
-        console.log(today, this.coreViewModel.todayDate.value);
         if (this.currentTodayDate == today)
           return;
         this.loadMonthTasks();
@@ -4188,7 +4187,7 @@
         );
         this.addMessage(chatMessage);
         this.connectionModel.sendMessageOrStore(chatMessage);
-        return true;
+        return chatMessage.id;
       };
       this.decryptMessage = async (chatMessage) => {
         const decryptedBody = await decryptString(
@@ -4607,19 +4606,24 @@
       this.composingMessage = new State("");
       this.focusSetter = new State(null);
       // methods
-      this.sendMessage = () => {
+      this.sendMessage = async () => {
         if (this.cannotSendMessage.value == true) return;
-        this.sendMessageFromBody(this.composingMessage.value);
+        const idPromise = this.sendMessageFromBody(this.composingMessage.value);
         this.composingMessage.value = "";
+        const id = await idPromise;
+        if (id && this.reactionFilter.value != void 0) {
+          this.sendReaction(id, this.reactionFilter.value, false);
+        }
       };
       this.sendMessageFromBody = (body) => {
         let replyId = void 0;
         if (this.replyingMessage.value) {
           replyId = this.replyingMessage.value.chatMessage.id;
         }
-        this.chatViewModel.chatModel.sendMessage(body, replyId);
-        if (this.replyViewSelectedMessage.value != void 0) return;
-        this.replyingMessage.value = void 0;
+        const id = this.chatViewModel.chatModel.sendMessage(body, replyId);
+        if (this.replyViewSelectedMessage.value == void 0)
+          this.replyingMessage.value = void 0;
+        return id;
       };
       this.decryptMessage = async (messageViewModel) => {
         const chatMessage = messageViewModel.chatMessage;
@@ -6751,6 +6755,7 @@
     messagePageViewModel.filteredMessageViewModels.subscribeSilent(
       scrollDownIfApplicable
     );
+    bulkSubscribe([messagePageViewModel.reactionFilter, messagePageViewModel.searchViewModel.appliedQuery], scrollDown);
     messagePageViewModel.replyViewSelectedMessage.subscribeSilent((selectedMessage) => {
       if (selectedMessage != void 0) return;
       setTimeout(scrollDown, 100);
