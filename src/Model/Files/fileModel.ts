@@ -69,7 +69,6 @@ export default class FileModel {
     readonly handleFileContent = (fileContent: FileContent<string>): void => {
 	if (fileContent.type == "chat-info") {
 	    if (checkMatchesObjectStructure(fileContent, ChatInfoReference) == false) return;
-	    console.log("CHANGING");
 	    this.chatModel.handleInfo(fileContent as ChatInfoFileContent);
 	}
 

@@ -19,6 +19,7 @@ export default class SettingsPageViewModel extends Context {
         );
 
     color: React.State<Colors> = new React.State<any>(Colors.Standard);
+    appliedColor: React.State<Colors> = new React.State<any>(Colors.Standard);
 
     // guards
     cannotSetPrimaryChannel: React.State<boolean> = React.createProxyState(
@@ -26,6 +27,11 @@ export default class SettingsPageViewModel extends Context {
         () =>
             this.nameInput.value == "" ||
             this.nameInput.value == this.name.value,
+    );
+    cannotSetColor: React.State<boolean> = React.createProxyState(
+        [this.color, this.appliedColor],
+        () =>
+            this.color.value == this.appliedColor.value,
     );
     cannotAddSecondaryChannel: React.State<boolean> = React.createProxyState(
         [this.newSecondaryChannelInput],
@@ -73,6 +79,7 @@ export default class SettingsPageViewModel extends Context {
 
     applyColor = (): void => {
         this.chatViewModel.setColor(this.color.value);
+	this.appliedColor.value = this.color.value;
     };
 
     remove = (): void => {
@@ -87,6 +94,7 @@ export default class SettingsPageViewModel extends Context {
             this.chatViewModel.chatModel.info.name;
         
         this.color.value = this.chatViewModel.chatModel.color;
+	this.appliedColor.value = this.color.value;
     };
 
     updateData = (): void => {

@@ -211,6 +211,8 @@ const englishTranslations = {
 	    setEncryptionKeyButtonAudioLabel: "set encryption key",
 	    showEncryptionKey: "Show encryption key",
 
+	    setColorButtonAudioLabel: "set color",
+
 	    deleteChatButton: "Delete entire chat",
 	},
 
@@ -548,6 +550,8 @@ export const allTranslations: {
 		encryptionKeyLabel: "Schlüssel",
 		setEncryptionKeyButtonAudioLabel: "Schlüssel festlegen",
 		showEncryptionKey: "Schlüssel anzeigen",
+	    
+		setColorButtonAudioLabel: "Farbe festlegen",
 
 		deleteChatButton: "Gesamten Chat löschen",
 	    },
@@ -858,6 +862,8 @@ export const allTranslations: {
 		setEncryptionKeyButtonAudioLabel:
 		"establecer clave de encriptación",
 		showEncryptionKey: "Mostrar clave de encriptación",
+	    
+		setColorButtonAudioLabel: "establecer color",
 
 		deleteChatButton: "Eliminar todo el chat",
 	    },

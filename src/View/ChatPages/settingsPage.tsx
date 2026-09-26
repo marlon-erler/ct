@@ -184,11 +184,12 @@ export function SettingsPage(
                                 class="width-50"
                                 aria-label={
                                     coreViewModel.translations.chatPage.settings
-                                        .setNameButtonAudioLabel
+                                        .setColorButtonAudioLabel
                                 }
                                 on:click={
                                     settingsPageViewModel.applyColor
-                                }
+				}
+				toggle:disabled={settingsPageViewModel.cannotSetColor}
                             >
                                 {coreViewModel.translations.general.setButton}
                                 <span class="icon">check</span>

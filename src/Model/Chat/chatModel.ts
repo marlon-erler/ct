@@ -92,7 +92,6 @@ export default class ChatModel {
 	    filePaths.chat.reactions(this.id),
 	);
     };
-
     readonly getReactionPath = (id: string): string[] => {
 	return [...this.getReactionDirPath(), id];
     };
