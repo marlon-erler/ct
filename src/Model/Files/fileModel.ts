@@ -1,5 +1,3 @@
-// cleanup: Phase A
-
 import { v4 } from "uuid";
 import BoardsAndTasksModel from "./boardsAndTasksModel";
 import {
@@ -9,7 +7,6 @@ import {
     stringify,
 } from "../Utility/utility";
 import {
-    checkIsValidObject,
     checkMatchesObjectStructure,
     DATA_VERSION,
     ValidObject,

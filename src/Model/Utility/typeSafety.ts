@@ -1,5 +1,3 @@
-export const DATA_VERSION = "v2";
-
 export function checkIsValidObject(object: any): boolean {
     return object.dataVersion == DATA_VERSION;
 }
@@ -43,6 +41,7 @@ export function checkMatchesObjectStructure(
     return true;
 }
 
+export const DATA_VERSION = "2610";
 export interface ValidObject {
-    dataVersion: "v2";
+    dataVersion: "2610";
 }
