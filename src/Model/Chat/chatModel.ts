@@ -35,10 +35,15 @@ export default class ChatModel {
     // data
     readonly id: string;
     info: ChatInfoFileContent; /* load function called in constructor */
-    color: Colors = Colors.Standard;
 
     get secondaryChannels(): string[] {
         return this.info.secondaryChannels.sort(localeCompare);
+    }
+
+    get color(): Colors {
+	const color = this.info.color as Colors;
+	if ([...Object.values(Colors)].includes(color)) return color;
+	return Colors.Standard;
     }
 
     // handler managers
@@ -149,8 +154,8 @@ export default class ChatModel {
     };
 
     readonly setColor = (color: Colors): void => {
-        this.color = color;
-        this.storeColor();
+        this.info.color = color;
+        this.storeInfo();
     };
 
     // messaging
@@ -255,10 +260,6 @@ export default class ChatModel {
         this.storageModel.writeStringifiable(this.getInfoPath(), this.info);
     };
 
-    readonly storeColor = (): void => {
-        this.storageModel.write(this.getColorPath(), this.color);
-    };
-
     readonly storeFilter = (filter: string): void => {
 	this.storageModel.write(this.getPreviousFilterPath(), filter);
     }
@@ -285,17 +286,7 @@ export default class ChatModel {
 	if (info != null) {
 	    this.info = info;
 	} else {
-	    this.info = ChatModel.generateChatInfo("0", "0");
-	}
-    };
-
-    readonly loadColor = (): void => {
-	const path: string[] = this.getColorPath();
-	const color: string | null = this.storageModel.read(path);
-	if (!color) {
-	    this.color = Colors.Standard;
-	} else {
-	    this.color = color as any;
+	    this.info = ChatModel.generateChatInfo("0", "0", Colors.Standard );
 	}
     };
 
@@ -359,7 +350,6 @@ export default class ChatModel {
 	this.chatListModel = chatListModel;
 
 	this.loadInfo();
-	this.loadColor();
 	this.subscribe();
 
 	this.fileModel = new FileModel(
@@ -374,7 +364,7 @@ export default class ChatModel {
 	return channelString.split("/");
     }
 
-    static generateChatInfo = (name: string, id: string): ChatInfoFileContent => {
+    static generateChatInfo = (name: string, id: string, color: Colors): ChatInfoFileContent => {
 	const file = FileModel.createFileContent(id, "chat-info");
 
 	return {
@@ -383,6 +373,7 @@ export default class ChatModel {
 	    name,
 	    secondaryChannels: [],
 	    encryptionKey: "",
+	    color,
 	    hasUnreadMessages: false,
 	};
     };
@@ -471,6 +462,8 @@ export interface ChatInfoFileContent extends FileContent<"chat-info"> {
     secondaryChannels: string[];
     encryptionKey: string;
 
+    color: string;
+
     hasUnreadMessages: boolean;
 }
 
@@ -516,6 +509,8 @@ export const ChatInfoReference: ChatInfoFileContent = {
     name: "",
     secondaryChannels: [""],
     encryptionKey: "",
+
+    color: "",
 
     hasUnreadMessages: true,
 };
