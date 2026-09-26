@@ -177,7 +177,24 @@ export function SettingsPage(
 
                         <hr></hr>
 
-                        {ColorPicker(settingsPageViewModel.color)}
+			{ColorPicker(settingsPageViewModel.color)}
+
+                        <div class="flex-row justify-end width-input">
+                            <button
+                                class="width-50"
+                                aria-label={
+                                    coreViewModel.translations.chatPage.settings
+                                        .setNameButtonAudioLabel
+                                }
+                                on:click={
+                                    settingsPageViewModel.applyColor
+                                }
+                            >
+                                {coreViewModel.translations.general.setButton}
+                                <span class="icon">check</span>
+                            </button>
+                        </div>
+
 
                         <hr></hr>
 

@@ -37,7 +37,7 @@ export default class ChatModel {
     info: ChatInfoFileContent; /* load function called in constructor */
 
     get secondaryChannels(): string[] {
-        return this.info.secondaryChannels.sort(localeCompare);
+	return this.info.secondaryChannels.sort(localeCompare);
     }
 
     get color(): Colors {
@@ -47,53 +47,54 @@ export default class ChatModel {
     }
 
     // handler managers
-    chatMessageHandlerManager: HandlerManager<ChatMessage> =
-        new HandlerManager();
+    readonly chatMessageHandlerManager: HandlerManager<ChatMessage> =
+	new HandlerManager();
     readonly reactionHandlerManager: HandlerManager<ChatMessageReaction> =
-        new HandlerManager();
+	new HandlerManager();
+    readonly changeHandlerManager: HandlerManager<null> = new HandlerManager();
 
     // paths
     readonly getBasePath = (): string[] => {
-        return StorageModel.getPath(
-            StorageModelSubPaths.Chat,
-            filePaths.chat.chatBase(this.id),
-        );
+	return StorageModel.getPath(
+	    StorageModelSubPaths.Chat,
+	    filePaths.chat.chatBase(this.id),
+	);
     };
 
     readonly getInfoPath = (): string[] => {
-        return StorageModel.getPath(
-            StorageModelSubPaths.Chat,
-            filePaths.chat.info(this.id),
-        );
+	return StorageModel.getPath(
+	    StorageModelSubPaths.Chat,
+	    filePaths.chat.info(this.id),
+	);
     };
 
     readonly getColorPath = (): string[] => {
-        return StorageModel.getPath(
-            StorageModelSubPaths.Chat,
-            filePaths.chat.color(this.id),
-        );
+	return StorageModel.getPath(
+	    StorageModelSubPaths.Chat,
+	    filePaths.chat.color(this.id),
+	);
     };
 
     readonly getMessageDirPath = (): string[] => {
-        return StorageModel.getPath(
-            StorageModelSubPaths.Chat,
-            filePaths.chat.messages(this.id),
-        );
+	return StorageModel.getPath(
+	    StorageModelSubPaths.Chat,
+	    filePaths.chat.messages(this.id),
+	);
     };
 
     readonly getMessagePath = (id: string): string[] => {
-        return [...this.getMessageDirPath(), id];
+	return [...this.getMessageDirPath(), id];
     };
 
     readonly getReactionDirPath = (): string[] => {
-        return StorageModel.getPath(
-            StorageModelSubPaths.Chat,
-            filePaths.chat.reactions(this.id),
-        );
+	return StorageModel.getPath(
+	    StorageModelSubPaths.Chat,
+	    filePaths.chat.reactions(this.id),
+	);
     };
 
     readonly getReactionPath = (id: string): string[] => {
-        return [...this.getReactionDirPath(), id];
+	return [...this.getReactionDirPath(), id];
     };
 
     readonly getPreviousFilterPath = (): string[] => {
@@ -102,168 +103,174 @@ export default class ChatModel {
 
     // handlers
     readonly handleMessage = (body: string): void => {
-        const chatMessage: ChatMessage | null = parseValidObject(
-            body,
-            ChatMessageReference,
-        );
-        if (chatMessage == null) return;
+	const chatMessage: ChatMessage | null = parseValidObject(
+	    body,
+	    ChatMessageReference,
+	);
+	if (chatMessage == null) return;
 
-        chatMessage.status = ChatMessageStatuses.Received;
+	chatMessage.status = ChatMessageStatuses.Received;
 
-        this.addMessage(chatMessage);
+	this.addMessage(chatMessage);
 
-        if (chatMessage.stringifiedFile) return;
-        this.setReadStatus(true);
+	if (chatMessage.stringifiedFile) return;
+	this.setReadStatus(true);
     };
 
     readonly handleReaction = (reaction: ChatMessageReaction | any): void => {
-        if (
-            !checkMatchesObjectStructure(reaction, ChatMessageReactionReference)
-        )
-            return;
-        const reactionPath: string[] = this.getReactionPath(reaction.fileId);
+	if (
+	    !checkMatchesObjectStructure(reaction, ChatMessageReactionReference)
+	)
+	    return;
+	const reactionPath: string[] = this.getReactionPath(reaction.fileId);
 
-        if (reaction.isDeleting == true) {
-            this.storageModel.remove(reactionPath);
-        } else {
-            this.storageModel.writeStringifiable(reactionPath, reaction);
-        }
-        this.reactionHandlerManager.trigger(reaction);
+	if (reaction.isDeleting == true) {
+	    this.storageModel.remove(reactionPath);
+	} else {
+	    this.storageModel.writeStringifiable(reactionPath, reaction);
+	}
+	this.reactionHandlerManager.trigger(reaction);
     };
 
     readonly handleMessageSent = (chatMessage: ChatMessage): void => {
-        chatMessage.status = ChatMessageStatuses.Sent;
-        this.addMessage(chatMessage);
+	chatMessage.status = ChatMessageStatuses.Sent;
+	this.addMessage(chatMessage);
     };
 
     // settings
     readonly setName = (name: string): void => {
-        this.info.name = name;
-        this.storeInfo();
-        this.subscribe();
+	this.info.name = name;
+	this.storeInfo();
+	this.syncInfo();
+	this.subscribe();
     };
 
     readonly setSecondaryChannels = (secondaryChannels: string[]): void => {
-        this.info.secondaryChannels = secondaryChannels;
-        this.storeInfo();
+	this.info.secondaryChannels = secondaryChannels;
+	this.storeInfo();
     };
 
     readonly setEncryptionKey = (key: string): void => {
-        this.info.encryptionKey = key;
-        this.storeInfo();
+	this.info.encryptionKey = key;
+	this.storeInfo();
     };
 
     readonly setColor = (color: Colors): void => {
-        this.info.color = color;
-        this.storeInfo();
+	this.info.color = color;
+	this.syncInfo();
+	this.storeInfo();
     };
 
     // messaging
     readonly addMessage = async (chatMessage: ChatMessage): Promise<void> => {
-        await this.decryptMessage(chatMessage);
+	await this.decryptMessage(chatMessage);
 
-        // message
-        if (chatMessage.body != "") {
-            const messagePath: string[] = this.getMessagePath(chatMessage.id);
-            this.storageModel.writeStringifiable(messagePath, chatMessage);
-            this.chatMessageHandlerManager.trigger(chatMessage);
-        }
+	// message
+	if (chatMessage.body != "") {
+	    const messagePath: string[] = this.getMessagePath(chatMessage.id);
+	    this.storageModel.writeStringifiable(messagePath, chatMessage);
+	    this.chatMessageHandlerManager.trigger(chatMessage);
+	}
 
-        // file
-        this.fileModel.handleStringifiedFileContent(
-            chatMessage.stringifiedFile,
-        );
+	// file
+	this.fileModel.handleStringifiedFileContent(
+	    chatMessage.stringifiedFile,
+	);
     };
 
     readonly getNameAndChannel = (): [string, string] | false => {
-        const senderName: string = this.settingsModel.username;
-        if (senderName == "") return false;
+	const senderName: string = this.settingsModel.username;
+	if (senderName == "") return false;
 
-        const allChannels: string[] = [this.id];
-        for (const secondaryChannel of this.info.secondaryChannels) {
-            allChannels.push(secondaryChannel);
-        }
+	const allChannels: string[] = [this.id];
+	for (const secondaryChannel of this.info.secondaryChannels) {
+	    allChannels.push(secondaryChannel);
+	}
 
-        const combinedChannel: string = allChannels.join("/");
+	const combinedChannel: string = allChannels.join("/");
 
-        return [senderName, combinedChannel];
+	return [senderName, combinedChannel];
     };
 
     readonly sendMessage = async (
-        body: string,
-        inlineReplyId?: string,
-        fileContent?: FileContent<string>,
+	body: string,
+	inlineReplyId?: string,
+	fileContent?: FileContent<string>,
     ): Promise<string|false> => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return false;
-        const [senderName, combinedChannel] = nameAndChannel;
+	const nameAndChannel = this.getNameAndChannel();
+	if (nameAndChannel == false) return false;
+	const [senderName, combinedChannel] = nameAndChannel;
 
-        const chatMessage: ChatMessage = await ChatModel.createChatMessage(
-            combinedChannel,
-            senderName,
-            this.info.encryptionKey,
-            body,
-            inlineReplyId,
-            fileContent,
-        );
+	const chatMessage: ChatMessage = await ChatModel.createChatMessage(
+	    combinedChannel,
+	    senderName,
+	    this.info.encryptionKey,
+	    body,
+	    inlineReplyId,
+	    fileContent,
+	);
 
-        this.addMessage(chatMessage);
-        this.connectionModel.sendMessageOrStore(chatMessage);
-        return chatMessage.id;
+	this.addMessage(chatMessage);
+	this.connectionModel.sendMessageOrStore(chatMessage);
+	return chatMessage.id;
     };
 
     readonly decryptMessage = async (
-        chatMessage: ChatMessage,
+	chatMessage: ChatMessage,
     ): Promise<void> => {
-        const decryptedBody: string = await decryptString(
-            chatMessage.body,
-            this.info.encryptionKey,
-        );
-        const decryptedFile: string = await decryptString(
-            chatMessage.stringifiedFile ?? "",
-            this.info.encryptionKey,
-        );
-        chatMessage.body = decryptedBody;
-        chatMessage.stringifiedFile = decryptedFile;
+	const decryptedBody: string = await decryptString(
+	    chatMessage.body,
+	    this.info.encryptionKey,
+	);
+	const decryptedFile: string = await decryptString(
+	    chatMessage.stringifiedFile ?? "",
+	    this.info.encryptionKey,
+	);
+	chatMessage.body = decryptedBody;
+	chatMessage.stringifiedFile = decryptedFile;
     };
 
     readonly sendReaction = async (
-        messageId: string,
-        content: ReactionSymbols,
-        isDeleting: boolean = false,
+	messageId: string,
+	content: ReactionSymbols,
+	isDeleting: boolean = false,
     ): Promise<void> => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return;
-        const [senderName] = nameAndChannel;
+	const nameAndChannel = this.getNameAndChannel();
+	if (nameAndChannel == false) return;
+	const [senderName] = nameAndChannel;
 
-        const reaction = ChatModel.createMessageReaction(
-            messageId,
-            senderName,
-            content,
-            isDeleting,
-        );
-        this.sendMessage("", undefined, reaction);
-        this.handleReaction(reaction);
+	const reaction = ChatModel.createMessageReaction(
+	    messageId,
+	    senderName,
+	    content,
+	    isDeleting,
+	);
+	this.sendMessage("", undefined, reaction);
+	this.handleReaction(reaction);
     };
 
     readonly subscribe = (): void => {
-        this.connectionModel.addChannel(this.id);
+	this.connectionModel.addChannel(this.id);
     };
 
     readonly setReadStatus = (hasUnreadMessages: boolean): void => {
-        this.info.hasUnreadMessages = hasUnreadMessages;
-        this.storeInfo();
+	this.info.hasUnreadMessages = hasUnreadMessages;
+	this.storeInfo();
     };
 
     // storage
     readonly storeInfo = (): void => {
-        this.storageModel.writeStringifiable(this.getInfoPath(), this.info);
+	this.storageModel.writeStringifiable(this.getInfoPath(), this.info);
     };
+
+    readonly syncInfo = (): void => {
+	this.sendMessage("", undefined, this.info);
+    }
 
     readonly storeFilter = (filter: string): void => {
 	this.storageModel.write(this.getPreviousFilterPath(), filter);
     }
-    
+
     readonly getFilter = (): string=> {
 	return this.storageModel.read(this.getPreviousFilterPath()) || "";
     }
@@ -283,12 +290,14 @@ export default class ChatModel {
 	    this.getInfoPath(),
 	    ChatInfoReference,
 	);
-	if (info != null) {
-	    this.info = info;
-	} else {
-	    this.info = ChatModel.generateChatInfo("0", "0", Colors.Standard );
-	}
+	this.info = (info || ChatModel.generateChatInfo("0", "0", Colors.Standard));
     };
+
+    readonly handleInfo = (info: ChatInfoFileContent): void => {
+	this.info = info;
+	this.changeHandlerManager.trigger(null);
+	this.storeInfo();
+    }
 
     get messages(): ChatMessage[] {
 	const messageIds: string[] = this.storageModel.list(
@@ -499,7 +508,7 @@ extends ValidObject, FileContent<"reaction"> {
 // references
 export const ChatInfoReference: ChatInfoFileContent = {
     dataVersion: DATA_VERSION,
-    
+
     fileId: "",
     fileContentId: "",
     creationDate: "",

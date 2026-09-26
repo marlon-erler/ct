@@ -71,8 +71,8 @@ export default class SettingsPageViewModel extends Context {
         this.encryptionKeyInput.callSubscriptions();
     };
 
-    applyColor = (newColor: Colors): void => {
-        this.chatViewModel.setColor(newColor);
+    applyColor = (): void => {
+        this.chatViewModel.setColor(this.color.value);
     };
 
     remove = (): void => {
@@ -121,10 +121,6 @@ export default class SettingsPageViewModel extends Context {
                 this.encryptionKeyInput.value ==
                 this.chatViewModel.chatModel.info.encryptionKey,
         );
-
-        this.color.subscribe((newColor) => {
-            this.applyColor(newColor);
-        });
 
         this.chatViewModel.registerContext(ChatPageTypes.Settings, this);
     }
