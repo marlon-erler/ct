@@ -34,7 +34,7 @@ export default class ChatModel {
 
     // data
     readonly id: string;
-    info: ChatInfo; /* load function called in constructor */
+    info: ChatInfoFileContent; /* load function called in constructor */
     color: Colors = Colors.Standard;
 
     get secondaryChannels(): string[] {
@@ -278,7 +278,7 @@ export default class ChatModel {
 
     // load
     readonly loadInfo = (): void => {
-	const info: ChatInfo | null = this.storageModel.readStringifiable(
+	const info: ChatInfoFileContent | null = this.storageModel.readStringifiable(
 	    this.getInfoPath(),
 	    ChatInfoReference,
 	);
@@ -374,9 +374,11 @@ export default class ChatModel {
 	return channelString.split("/");
     }
 
-    static generateChatInfo = (name: string, id: string): ChatInfo => {
+    static generateChatInfo = (name: string, id: string): ChatInfoFileContent => {
+	const file = FileModel.createFileContent(id, "chat-info");
+
 	return {
-	    dataVersion: DATA_VERSION,
+	    ...file,
 
 	    name,
 	    secondaryChannels: [],
@@ -464,7 +466,7 @@ export enum ReactionSymbols {
 	Question = "❓",
 }
 
-export interface ChatInfo extends ValidObject {
+export interface ChatInfoFileContent extends FileContent<"chat-info"> {
     name: string;
     secondaryChannels: string[];
     encryptionKey: string;
@@ -502,8 +504,14 @@ extends ValidObject, FileContent<"reaction"> {
 }
 
 // references
-export const ChatInfoReference: ChatInfo = {
+export const ChatInfoReference: ChatInfoFileContent = {
     dataVersion: DATA_VERSION,
+    
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+
+    type: "chat-info",
 
     name: "",
     secondaryChannels: [""],

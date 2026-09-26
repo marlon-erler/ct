@@ -324,7 +324,7 @@ export interface TaskFileContent extends FileContent<"task"> {
 export const BoardInfoFileContentReference: BoardInfoFileContent = {
     dataVersion: DATA_VERSION,
 
-    fileId: "string",
+    fileId: "",
     fileContentId: "",
     creationDate: "",
 
