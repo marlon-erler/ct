@@ -65,6 +65,7 @@ function scrollDownIfApplicable() {
 messagePageViewModel.filteredMessageViewModels.subscribeSilent(
     scrollDownIfApplicable,
 );
+React.bulkSubscribe([messagePageViewModel.reactionFilter, messagePageViewModel.searchViewModel.appliedQuery], scrollDown)
 messagePageViewModel.replyViewSelectedMessage.subscribeSilent(selectedMessage => {
     if (selectedMessage != undefined) return;
     setTimeout(scrollDown, 100);
