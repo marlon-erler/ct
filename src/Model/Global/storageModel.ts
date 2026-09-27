@@ -267,6 +267,7 @@ export enum StorageModelSubPaths {
     ConnectionModel = "connection",
     NotificationModel = "notifications",
     SettingsModel = "settings",
+    ContactsModel = "contacts",
 }
 
 export const filePaths = {
