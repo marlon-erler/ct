@@ -1,6 +1,6 @@
 import StorageModel, {StorageModelSubPaths} from "./storageModel";
 
-export default class ContactsModel {
+export default class ContactListModel {
     private getContactPath = (contactId: string): string[] => {
 	return [StorageModelSubPaths.ContactsModel, contactId];
     }
@@ -16,6 +16,5 @@ export default class ContactsModel {
 	this.storageModel.write(path, name)
     }
 
-    constructor(public storageModel: StorageModel) {
-    }
+    constructor(public storageModel: StorageModel) {}
 }
