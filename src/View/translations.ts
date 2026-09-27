@@ -140,8 +140,8 @@ const englishTranslations = {
 
         generalHeadline: "General",
 
-        connectionData: "Connection Data",
-        settingsData: "Settings Data",
+        connectionData: "Connection data",
+        settingsData: "Identity & personal data",
 
         chatsHeadline: "Chats",
 
@@ -485,7 +485,7 @@ export const allTranslations: {
             generalHeadline: "Allgemein",
 
             connectionData: "Verbindungsdaten",
-            settingsData: "Einstellungen",
+            settingsData: "Identität und persönliche Daten",
 
             chatsHeadline: "Chats",
 
@@ -798,8 +798,8 @@ export const allTranslations: {
 
             generalHeadline: "General",
 
-            connectionData: "Datos de Conexión",
-            settingsData: "Datos de Configuración",
+            connectionData: "Datos de conexión",
+            settingsData: "Identidad y datos personales",
 
             chatsHeadline: "Chats",
 
