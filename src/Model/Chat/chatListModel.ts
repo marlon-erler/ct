@@ -9,13 +9,9 @@ import StorageModel, {
 } from "../Global/storageModel";
 import SettingsModel from "../Global/settingsModel";
 import ConnectionModel from "../Global/connectionModel";
+import ContactListModel from "../Global/contactListModel";
 
 export default class ChatListModel {
-    // models
-    readonly storageModel: StorageModel;
-    readonly settingsModel: SettingsModel;
-    readonly connectionModel: ConnectionModel;
-
     // data
     readonly chatModels = new Set<ChatModel>();
 
@@ -32,6 +28,7 @@ export default class ChatListModel {
             this.connectionModel,
             this.settingsModel,
             this,
+	    this.contactListModel,
             id,
         );
         chatModel.setName(primaryChannel);
@@ -93,6 +90,7 @@ export default class ChatListModel {
                 this.connectionModel,
                 this.settingsModel,
                 this,
+		this.contactListModel,
                 chatId,
             );
             this.addChatModel(chatModel);
@@ -101,20 +99,18 @@ export default class ChatListModel {
 
     // init
     constructor(
-        storageModel: StorageModel,
-        settingsModel: SettingsModel,
-        connectionModel: ConnectionModel,
+        public storageModel: StorageModel,
+        public settingsModel: SettingsModel,
+        public connectionModel: ConnectionModel,
+	public contactListModel: ContactListModel
     ) {
-        this.storageModel = storageModel;
-        this.settingsModel = settingsModel;
-        this.connectionModel = connectionModel;
         this.loadChats();
 
-        connectionModel.messageHandlerManager.setHandler(
+        this.connectionModel.messageHandlerManager.setHandler(
             "chat-list",
             this.messageHandler,
         );
-        connectionModel.messageSentHandlerManager.setHandler(
+        this.connectionModel.messageSentHandlerManager.setHandler(
             "chat-list",
             this.messageSentHandler,
         );

@@ -1,6 +1,9 @@
+import {HandlerManager} from "../Utility/utility";
 import StorageModel, {StorageModelSubPaths} from "./storageModel";
 
 export default class ContactListModel {
+    contactHandlerManager = new HandlerManager<[string, string]>();
+
     private getContactPath = (contactId: string): string[] => {
 	return [StorageModelSubPaths.ContactsModel, contactId];
     }
@@ -14,6 +17,7 @@ export default class ContactListModel {
     storeContact = (id: string, name: string) => {
 	const path = this.getContactPath(id);
 	this.storageModel.write(path, name)
+	this.contactHandlerManager.trigger([id, name]);
     }
 
     constructor(public storageModel: StorageModel) {}

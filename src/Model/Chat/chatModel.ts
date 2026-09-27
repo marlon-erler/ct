@@ -1,5 +1,3 @@
-// cleanup: Phase A
-
 import { v4 } from "uuid";
 import ChatListModel from "./chatListModel";
 import {
@@ -23,13 +21,10 @@ import SettingsModel from "../Global/settingsModel";
 import ConnectionModel from "../Global/connectionModel";
 import FileModel, { FileContent } from "../Files/fileModel";
 import { Colors } from "../../colors";
+import ContactListModel from "../Global/contactListModel";
 
 export default class ChatModel {
     // models
-    readonly connectionModel: ConnectionModel;
-    readonly storageModel: StorageModel;
-    readonly settingsModel: SettingsModel;
-    readonly chatListModel: ChatListModel;
     readonly fileModel: FileModel;
 
     // data
@@ -166,6 +161,8 @@ export default class ChatModel {
     // messaging
     readonly addMessage = async (chatMessage: ChatMessage): Promise<void> => {
         await this.decryptMessage(chatMessage);
+
+	this.contactListModel.storeContact(chatMessage.senderId, chatMessage.senderName);
 
         // message
         if (chatMessage.body != "") {
@@ -349,17 +346,14 @@ export default class ChatModel {
 
     // init
     constructor(
-        storageModel: StorageModel,
-        connectionModel: ConnectionModel,
-        settingsModel: SettingsModel,
-        chatListModel: ChatListModel,
+        public storageModel: StorageModel,
+        public connectionModel: ConnectionModel,
+        public settingsModel: SettingsModel,
+        public chatListModel: ChatListModel,
+	public contactListModel: ContactListModel,
         chatId: string,
     ) {
         this.id = chatId;
-        this.connectionModel = connectionModel;
-        this.settingsModel = settingsModel;
-        this.storageModel = storageModel;
-        this.chatListModel = chatListModel;
 
         this.loadInfo();
         this.subscribe();

@@ -13,7 +13,10 @@ export default class ContactListViewModel {
 	}
 	const vm = new ContactViewModel(id, name);
 	this.contacts.set(id, vm);
-	this.contactListModel.storeContact(id, name);
+    }
+
+    handleContact = (contact: [string, string]): void => {
+	this.updateContact(...contact);
     }
 
     // load
@@ -28,6 +31,7 @@ export default class ContactListViewModel {
     // init
     constructor(public contactListModel: ContactListModel) {
 	this.loadData();
+	this.contactListModel.contactHandlerManager.setHandler("contact-list-view-model", this.handleContact);
     }
 }
 

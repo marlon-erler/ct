@@ -20,15 +20,19 @@ import SettingsModel from "./Model/Global/settingsModel";
 import FileTransferModel from "./Model/Global/fileTransferModel";
 import ConnectionModel from "./Model/Global/connectionModel";
 import ChatListModel from "./Model/Chat/chatListModel";
+import ContactListModel from "./Model/Global/contactListModel";
+import ContactListViewModel from "./ViewModel/Global/contactViewModel";
 
 // models
 const storageModel = new StorageModel();
 const settingsModel = new SettingsModel(storageModel);
+const contactListModel = new ContactListModel(storageModel);
 const connectionModel = new ConnectionModel(storageModel);
 const chatListModel = new ChatListModel(
     storageModel,
     settingsModel,
     connectionModel,
+    contactListModel,
 );
 const fileTransferModel = new FileTransferModel(storageModel, connectionModel);
 
@@ -43,6 +47,7 @@ const coreViewModel = new CoreViewModel(
 
 const storageViewModel = new StorageViewModel(coreViewModel);
 const settingsViewModel = new SettingsViewModel(coreViewModel);
+const contactListViewModel = new ContactListViewModel(contactListModel);
 const connectionViewModel = new ConnectionViewModel(coreViewModel);
 const chatListViewModel = new ChatListViewModel(
     coreViewModel,
