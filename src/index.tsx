@@ -25,8 +25,8 @@ import ContactListViewModel from "./ViewModel/Global/contactViewModel";
 
 // models
 const storageModel = new StorageModel();
-const settingsModel = new SettingsModel(storageModel);
 const contactListModel = new ContactListModel(storageModel);
+const settingsModel = new SettingsModel(storageModel, contactListModel);
 const connectionModel = new ConnectionModel(storageModel);
 const chatListModel = new ChatListModel(
     storageModel,
@@ -46,8 +46,8 @@ const coreViewModel = new CoreViewModel(
 );
 
 const storageViewModel = new StorageViewModel(coreViewModel);
-const settingsViewModel = new SettingsViewModel(coreViewModel, settingsModel);
 const contactListViewModel = new ContactListViewModel(contactListModel);
+const settingsViewModel = new SettingsViewModel(coreViewModel, settingsModel);
 const connectionViewModel = new ConnectionViewModel(coreViewModel);
 const chatListViewModel = new ChatListViewModel(
     coreViewModel,
