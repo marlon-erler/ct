@@ -181,8 +181,8 @@ export default class ChatModel {
     };
 
     readonly getSendingData = (): [string, string, string] => {
-        const senderName: string = this.settingsModel.username || "?";
         const id: string = this.settingsModel.userid;
+        const senderName: string = this.settingsModel.username || "?";
 
         const allChannels: string[] = [this.id];
         for (const secondaryChannel of this.info.secondaryChannels) {
@@ -395,8 +395,8 @@ export default class ChatModel {
 
     static createChatMessage = async (
         channel: string,
-        sender: string,
         senderId: string,
+        senderName: string,
         encryptionKey: string,
         body: string,
         inlineReplyId?: string,
@@ -408,7 +408,7 @@ export default class ChatModel {
             id: v4(),
 
             channel,
-            sender,
+            senderName,
             senderId,
             body,
             dateSent: createTimestamp(),
@@ -495,8 +495,8 @@ export interface ChatMessage extends ValidObject {
     readonly id: string;
 
     readonly channel: string;
-    readonly sender: string;
     readonly senderId: string;
+    readonly senderName: string;
     body: string;
     readonly dateSent: string;
     readonly inlineReplyId?: string;
@@ -539,7 +539,7 @@ export const ChatMessageReference: ChatMessage = {
     id: "",
 
     channel: "",
-    sender: "",
+    senderName: "",
     senderId: "",
     body: "",
     dateSent: "",

@@ -18,7 +18,7 @@ export function ReplyViewHeader(
                 ? ""
                 : coreViewModel.translations.chatPage.message.replyHeaderLabel(
                       messagePageViewModel.replyViewSelectedMessage.value
-                          .sender,
+                          .senderId,
                   ),
     );
     const message = React.createProxyState(

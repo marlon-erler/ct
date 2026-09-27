@@ -12,7 +12,8 @@ export default class ChatMessageViewModel {
     // data
     chatMessage: ChatMessage;
     channel: string = "";
-    sender: string = "";
+    senderId: string = "";
+    senderName: string = "";
     dateSent: string = "";
     body: React.State<string> = new React.State("");
     inlineReply: ChatMessageViewModel | undefined = undefined;
@@ -165,7 +166,7 @@ export default class ChatMessageViewModel {
             this.allReactions.set(reaction.senderId, reaction);
         }
 
-        if (reaction.senderId != this.coreViewModel.settingsModel.username)
+        if (reaction.senderId != this.coreViewModel.settingsModel.userid)
             return;
         this.userReaction.value = reaction.isDeleting
             ? undefined
@@ -183,7 +184,8 @@ export default class ChatMessageViewModel {
     // load
     loadData = (): void => {
         this.channel = this.chatMessage.channel;
-        this.sender = this.chatMessage.sender;
+        this.senderId = this.chatMessage.senderId;
+        this.senderName = this.chatMessage.senderName;
         this.dateSent = new Date(this.chatMessage.dateSent).toLocaleString();
         this.body.value = this.chatMessage.body;
         this.status.value = this.chatMessage.status;

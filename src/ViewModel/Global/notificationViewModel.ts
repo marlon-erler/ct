@@ -87,7 +87,7 @@ export default class NotificationViewModel {
             messageId: message.id,
             chat,
             fullChannel,
-            sender: message.sender,
+            sender: message.senderName,
             body: message.body,
         };
     }

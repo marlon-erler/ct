@@ -9,7 +9,7 @@ export function ReplyPreview(
     return (
         <div class="reply-preview">
             <div class="surface blur">
-                <span class="secondary">{chatMessageViewModel.sender}</span>
+                <span class="secondary">{chatMessageViewModel.senderId}</span>
                 <b
                     class="ellipsis"
                     subscribe:innerText={chatMessageViewModel.body}

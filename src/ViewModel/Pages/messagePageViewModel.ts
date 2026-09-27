@@ -110,7 +110,7 @@ export default class MessagePageViewModel extends Context {
             this.coreViewModel,
             this,
             chatMessage,
-            chatMessage.sender ==
+            chatMessage.senderName ==
                 this.chatViewModel.settingsViewModel.username.value,
         );
 

@@ -27,7 +27,7 @@ export function ChatMessageInfoModal(
                         {InfoTile(
                             "account_circle",
                             coreViewModel.translations.chatPage.message.sentBy,
-                            chatMessageViewModel.sender,
+                            chatMessageViewModel.senderId,
                         )}
                         {InfoTile(
                             "schedule",

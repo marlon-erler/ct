@@ -12,7 +12,7 @@ export function InlineReply(chatMessageViewModel: ChatMessageViewModel) {
 
     return (
         <div class="inline-reply" on:click={scroll}>
-            <span>{reply.sender}</span>
+            <span>{reply.senderId}</span>
             <b class="ellipsis" subscribe:innerText={reply.body}></b>
         </div>
     );

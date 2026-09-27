@@ -38,7 +38,7 @@ export function ChatMessage(
             <div class="main tile">
                 <div class="text-container">
                     <span class="sender-name ellipsis">
-                        {chatMessageViewModel.sender}
+                        {chatMessageViewModel.senderName}
                     </span>
                     <span
                         class="body"
