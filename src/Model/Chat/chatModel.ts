@@ -241,6 +241,7 @@ export default class ChatModel {
         const reaction = ChatModel.createMessageReaction(
             messageId,
             senderId,
+	    senderName,
             content,
             isDeleting,
         );
@@ -439,6 +440,7 @@ export default class ChatModel {
     static createMessageReaction = (
         messageId: string,
         senderId: string,
+        senderName: string,
         content: ReactionSymbols,
         isDeleting: boolean,
     ): ChatMessageReaction => {
@@ -450,6 +452,7 @@ export default class ChatModel {
 
             messageId,
             senderId,
+	    senderName,
             content,
             isDeleting,
         };
@@ -510,6 +513,7 @@ export interface ChatMessageReaction
     extends ValidObject, FileContent<"reaction"> {
     readonly messageId: string;
     readonly senderId: string;
+    readonly senderName: string;
     readonly content: ReactionSymbols | string;
     isDeleting: boolean;
 }
@@ -559,6 +563,7 @@ export const ChatMessageReactionReference: ChatMessageReaction = {
 
     messageId: "",
     senderId: "",
+    senderName: "",
     content: "",
 
     isDeleting: false,
