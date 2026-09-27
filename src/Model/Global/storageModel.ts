@@ -6,6 +6,7 @@ import {
     stringify,
 } from "../Utility/utility";
 import { DATA_VERSION, ValidObject } from "../Utility/typeSafety";
+import ChatModel from "../Chat/chatModel";
 
 export const PATH_COMPONENT_SEPARATOR = "\\";
 
@@ -217,21 +218,12 @@ export default class StorageModel {
 
     // upgrade 
     readonly upgrade = (): void => {
-	const v2To2610 = () => {
-	    this.recurse(["v2"], (path) => {
-		const body = this.read(path);
-		if (!body) return;
-		const parsed = parse(body);
-		console.log(parsed.type);
-	    });
-	}	
-
-	v2To2610();
+	// function used to upgrade data versions
     }
 
     // init
     constructor() {
-        this.initializeTree();
+	this.initializeTree();
 	this.upgrade();
     }
 

@@ -30,7 +30,7 @@ export function ChatMessage(
     return (
         <div
             class="message-bubble"
-            id={chatMessageViewModel.chatMessage.id}
+            id={chatMessageViewModel.chatMessage.fileId}
             toggle:sentbyuser={chatMessageViewModel.sentByUser}
             toggle:hidden={chatMessageViewModel.isHidden}
         >

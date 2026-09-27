@@ -44,6 +44,9 @@
   var v4_default = v4;
 
   // src/react.ts
+  function UUID() {
+    return v4_default();
+  }
   var State = class {
     // init
     constructor(initialValue) {
@@ -403,8 +406,8 @@
       importButton: "Import from file",
       ///
       generalHeadline: "General",
-      connectionData: "Connection Data",
-      settingsData: "Settings Data",
+      connectionData: "Connection data",
+      settingsData: "Identity & personal data",
       chatsHeadline: "Chats",
       ///
       transferChannelHeadline: "Transfer Chanel",
@@ -537,7 +540,7 @@
         ///
         events: "Events",
         noEvents: "No events",
-        // 
+        //
         eventNext: "Up next"
       }
     }
@@ -649,7 +652,7 @@
         importButton: "Aus Datei importieren",
         generalHeadline: "Allgemein",
         connectionData: "Verbindungsdaten",
-        settingsData: "Einstellungen",
+        settingsData: "Identit\xE4t und pers\xF6nliche Daten",
         chatsHeadline: "Chats",
         transferChannelHeadline: "\xDCbertragungskanal",
         transferKeyHeadline: "Schl\xFCssel",
@@ -877,8 +880,8 @@
         exportButton: "Exportar archivo",
         importButton: "Importar archivo",
         generalHeadline: "General",
-        connectionData: "Datos de Conexi\xF3n",
-        settingsData: "Datos de Configuraci\xF3n",
+        connectionData: "Datos de conexi\xF3n",
+        settingsData: "Identidad y datos personales",
         chatsHeadline: "Chats",
         transferChannelHeadline: "Canal de Transferencia",
         transferKeyHeadline: "Clave de encriptaci\xF3n de transferencia",
@@ -1010,7 +1013,6 @@
   };
 
   // src/Model/Utility/typeSafety.ts
-  var DATA_VERSION = "v2";
   function checkIsValidObject(object) {
     return object.dataVersion == DATA_VERSION;
   }
@@ -1042,1142 +1044,7 @@
     }
     return true;
   }
-
-  // src/colors.ts
-  var Colors = /* @__PURE__ */ ((Colors2) => {
-    Colors2["Standard"] = "standard";
-    Colors2["Coral"] = "coral";
-    Colors2["Yellow"] = "yellow";
-    Colors2["Green"] = "green";
-    Colors2["LightBlue"] = "lightblue";
-    Colors2["Blue"] = "blue";
-    Colors2["purple"] = "purple";
-    return Colors2;
-  })(Colors || {});
-
-  // src/Model/Files/boardsAndTasksModel.ts
-  var BoardsAndTasksModel = class _BoardsAndTasksModel {
-    // init
-    constructor(storageModel2, settingsModel2, chatModel, fileModel) {
-      // data
-      this.boardHandlerManager = new HandlerManager();
-      this.taskHandlerManager = new HandlerManager();
-      // paths
-      this.getBasePath = () => {
-        return this.fileModel.getModelContainerPath("tasks" /* ModelTask */);
-      };
-      this.getViewPath = () => {
-        return [...this.getBasePath(), "view" /* ModelView */];
-      };
-      this.getBoardFilePath = (boardId) => {
-        return [...this.fileModel.getFilePath(boardId)];
-      };
-      this.getTaskFilePath = (taskId) => {
-        return [...this.fileModel.getFilePath(taskId)];
-      };
-      this.getBoardContainerPath = () => {
-        return [...this.getBasePath(), "boards" /* Boards */];
-      };
-      this.getBoardDirectoryPath = (boardId) => {
-        return [...this.getBoardContainerPath(), boardId];
-      };
-      this.getTaskContainerPath = (boardId) => {
-        return [
-          ...this.getBoardDirectoryPath(boardId),
-          "tasks" /* BoardTasks */
-        ];
-      };
-      this.getTaskReferencePath = (boardId, fileId) => {
-        return [...this.getTaskContainerPath(boardId), fileId];
-      };
-      // handlers
-      this.handleFileContent = (fileContent) => {
-        if (checkMatchesObjectStructure(
-          fileContent,
-          BoardInfoFileContentReference
-        ) == true) {
-          this.handleBoard(fileContent);
-        } else if (checkMatchesObjectStructure(
-          fileContent,
-          TaskFileContentReference
-        ) == true) {
-          this.handleTask(fileContent);
-        }
-      };
-      this.handleBoard = (boardInfoFileContent) => {
-        this.updateBoard(boardInfoFileContent);
-      };
-      this.handleTask = (taskFileContent) => {
-        this.updateTask(taskFileContent);
-      };
-      // boards
-      this.createBoard = (name) => {
-        const boardInfoFileContent = _BoardsAndTasksModel.createBoardInfoFileContent(
-          v4_default(),
-          name,
-          "standard" /* Standard */
-        );
-        return boardInfoFileContent;
-      };
-      this.updateBoard = (boardInfoFileContent) => {
-        this.storeBoard(boardInfoFileContent);
-        this.boardHandlerManager.trigger(boardInfoFileContent);
-      };
-      this.updateBoardAndSend = (boardInfoFileContent) => {
-        this.updateBoard(boardInfoFileContent);
-        this.chatModel.sendMessage("", void 0, boardInfoFileContent);
-      };
-      this.storeBoard = (boardInfoFileContent) => {
-        this.fileModel.storeFileContent(boardInfoFileContent);
-        const boardDirectoryPath = this.getBoardDirectoryPath(
-          boardInfoFileContent.fileId
-        );
-        this.storageModel.write(boardDirectoryPath, "");
-      };
-      this.deleteBoard = (boardId) => {
-        const boardFilePath = this.getBoardFilePath(boardId);
-        const boardDirectoryPath = this.getBoardDirectoryPath(boardId);
-        this.storageModel.removeRecursively(boardFilePath);
-        this.storageModel.removeRecursively(boardDirectoryPath);
-      };
-      this.listBoardIds = () => {
-        const boardContainerPath = this.getBoardContainerPath();
-        const boardIds = this.storageModel.list(boardContainerPath);
-        return boardIds;
-      };
-      this.getBoardInfo = (fileId) => {
-        const boardInfoFileContentOrNull = this.fileModel.getLatestFileContent(
-          fileId,
-          BoardInfoFileContentReference
-        );
-        return boardInfoFileContentOrNull;
-      };
-      this.getBoardName = (boardId) => {
-        const boardInfo = this.getBoardInfo(boardId);
-        if (boardInfo == null) return "";
-        return boardInfo.name;
-      };
-      //tasks
-      this.createTask = (boardId) => {
-        const taskFileContent = _BoardsAndTasksModel.createTaskFileContent(v4_default(), "", boardId);
-        return taskFileContent;
-      };
-      this.updateTask = (taskFileContent) => {
-        this.storeTask(taskFileContent);
-        this.taskHandlerManager.trigger(taskFileContent);
-      };
-      this.updateTaskAndSend = (taskFileContent) => {
-        this.updateTask(taskFileContent);
-        this.chatModel.sendMessage("", void 0, taskFileContent);
-      };
-      this.storeTask = (taskFileContent) => {
-        this.fileModel.storeFileContent(taskFileContent);
-        const taskReferencePath = this.getTaskReferencePath(
-          taskFileContent.boardId,
-          taskFileContent.fileId
-        );
-        this.storageModel.write(taskReferencePath, "");
-        this.calendarModel.storeTaskReference(taskFileContent);
-      };
-      this.listTaskIds = (boardId) => {
-        const taskContainerPath = this.getTaskContainerPath(boardId);
-        const fileIds = this.storageModel.list(taskContainerPath);
-        return fileIds;
-      };
-      this.listTaskVersionIds = (taskId) => {
-        const versionIds = this.fileModel.listFileContentIds(taskId);
-        return versionIds;
-      };
-      this.getLatestTaskFileContent = (taskId) => {
-        const taskFileContentOrNull = this.fileModel.getLatestFileContent(
-          taskId,
-          TaskFileContentReference
-        );
-        return taskFileContentOrNull;
-      };
-      this.getSpecificTaskFileContent = (taskId, versionId) => {
-        const taskFileContentOrNull = this.fileModel.getFileContent(
-          taskId,
-          versionId,
-          TaskFileContentReference
-        );
-        return taskFileContentOrNull;
-      };
-      this.deleteTask = (boardId, taskId) => {
-        const taskFilePath = this.getTaskFilePath(taskId);
-        this.storageModel.removeRecursively(taskFilePath);
-        this.deleteTaskReference(boardId, taskId);
-      };
-      this.deleteTaskReference = (boardId, taskId) => {
-        const taskReferencePath = this.getTaskReferencePath(
-          boardId,
-          taskId
-        );
-        this.storageModel.removeRecursively(taskReferencePath);
-      };
-      this.storageModel = storageModel2;
-      this.settingsModel = settingsModel2;
-      this.chatModel = chatModel;
-      this.fileModel = fileModel;
-      this.calendarModel = new CalendarModel(
-        this.storageModel,
-        this.settingsModel,
-        this.fileModel
-      );
-    }
-    static {
-      // utility
-      this.createBoardInfoFileContent = (fileId, name, color) => {
-        const fileContent = FileModel.createFileContent(fileId, "board-info");
-        return {
-          ...fileContent,
-          name,
-          color
-        };
-      };
-    }
-    static {
-      this.createTaskFileContent = (fileId, name, boardId) => {
-        const fileContent = FileModel.createFileContent(
-          fileId,
-          "task"
-        );
-        return {
-          ...fileContent,
-          name,
-          boardId
-        };
-      };
-    }
-  };
-  var BoardInfoFileContentReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "",
-    fileContentId: "",
-    creationDate: "",
-    type: "board-info",
-    name: "",
-    color: ""
-  };
-  var TaskFileContentReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "string",
-    fileContentId: "",
-    creationDate: "",
-    type: "task",
-    name: "",
-    boardId: ""
-  };
-
-  // src/Model/Global/storageModel.ts
-  var PATH_COMPONENT_SEPARATOR = "\\";
-  var StorageModel = class _StorageModel {
-    // init
-    constructor() {
-      this.storageEntryTree = {};
-      // read
-      this.read = (pathComponents) => {
-        const pathString = _StorageModel.pathComponentsToString(
-          ...pathComponents
-        );
-        return localStorage.getItem(pathString);
-      };
-      this.list = (pathComponents) => {
-        let currentParent = this.storageEntryTree;
-        for (const component of pathComponents) {
-          const nextParent = currentParent[component];
-          if (nextParent == void 0) return [];
-          currentParent = nextParent;
-        }
-        return [...Object.keys(currentParent).sort(localeCompare)];
-      };
-      // write
-      this.write = (pathComponents, value) => {
-        const pathString = _StorageModel.pathComponentsToString(
-          ...pathComponents
-        );
-        localStorage.setItem(pathString, value);
-        this.updateTree(...pathComponents);
-      };
-      this.remove = (pathComponents, shouldInitialize = true) => {
-        const pathString = _StorageModel.pathComponentsToString(
-          ...pathComponents
-        );
-        localStorage.removeItem(pathString);
-        if (shouldInitialize == true) {
-          this.initializeTree();
-        }
-      };
-      this.rename = (sourcePathComponents, destinationPathComponents, shouldInitialize = true) => {
-        const content = this.read(sourcePathComponents);
-        if (content == null) return false;
-        this.write(destinationPathComponents, content);
-        this.remove(sourcePathComponents);
-        if (shouldInitialize == true) {
-          this.initializeTree();
-        }
-        return true;
-      };
-      // recursion
-      this.recurse = (rootDirectory, fn) => {
-        loop_over_files: for (const key of Object.keys(localStorage)) {
-          const pathComponentsOfCurrentEntity = _StorageModel.stringToPathComponents(key);
-          loop_over_path_components: for (let i = 0; i < rootDirectory.length; i++) {
-            if (!pathComponentsOfCurrentEntity[i]) continue loop_over_files;
-            if (pathComponentsOfCurrentEntity[i] != rootDirectory[i])
-              continue loop_over_files;
-          }
-          fn(pathComponentsOfCurrentEntity);
-        }
-        this.initializeTree();
-      };
-      this.removeRecursively = (pathComponents) => {
-        this.recurse(
-          pathComponents,
-          (path) => this.remove(path, false)
-        );
-        this.initializeTree();
-      };
-      this.renameRecursively = (sourcePathComponents, destinationPathComponents) => {
-        this.recurse(sourcePathComponents, (path) => {
-          const relativePathOfCurrentEntity = path.slice(
-            sourcePathComponents.length
-          );
-          const destinationPathComponentsOfCurrentEntity = [
-            ...destinationPathComponents,
-            ...relativePathOfCurrentEntity
-          ];
-          this.rename(path, destinationPathComponentsOfCurrentEntity, false);
-        });
-        this.initializeTree();
-      };
-      // stringifiable
-      this.writeStringifiable = (pathComponents, value) => {
-        const valueString = stringify(value);
-        this.write(pathComponents, valueString);
-      };
-      this.readStringifiable = (pathComponents, reference) => {
-        const valueString = this.read(pathComponents);
-        if (!valueString) return null;
-        const object = parseValidObject(valueString, reference);
-        if (object == null) return null;
-        return object;
-      };
-      // cleaning & usage
-      this.removeJunk = () => {
-        this.recurse([], (path) => {
-          if (path[0] == DATA_VERSION) return;
-          this.remove(path);
-        });
-      };
-      this.determineCapacity = () => {
-        const KEY = "storage-capacity-check";
-        let chunk = "0";
-        for (let i = 0; i < 1024 * 256; i++) {
-          chunk += "0";
-        }
-        localStorage.setItem(KEY, "");
-        while (true) {
-          try {
-            const current = localStorage.getItem(KEY);
-            console.log(current);
-            localStorage.setItem(KEY, current + chunk);
-          } catch (e) {
-            const capacity = this.calculateUsage();
-            localStorage.removeItem(KEY);
-            return capacity;
-          }
-        }
-      };
-      this.calculateUsage = () => {
-        let data = JSON.stringify(localStorage);
-        const encoder = new TextEncoder();
-        const encoded = encoder.encode(data);
-        const bytes = encoded.byteLength;
-        const mb = bytesToMB(bytes);
-        const rounded = Math.round(mb * 100) / 100;
-        return rounded;
-      };
-      // tree
-      this.initializeTree = () => {
-        console.log("initializing tree");
-        this.storageEntryTree = {};
-        for (const key of Object.keys(localStorage)) {
-          const components = _StorageModel.stringToPathComponents(key);
-          this.updateTree(...components);
-        }
-      };
-      this.updateTree = (...pathComponents) => {
-        let currentParent = this.storageEntryTree;
-        for (const pathPart of pathComponents) {
-          if (!currentParent[pathPart]) {
-            currentParent[pathPart] = {};
-          }
-          currentParent = currentParent[pathPart];
-        }
-      };
-      this.printTree = () => {
-        return stringify(this.storageEntryTree);
-      };
-      this.initializeTree();
-    }
-    static {
-      // utility
-      this.getFileName = (pathComponents) => {
-        return pathComponents[pathComponents.length - 1] || "\\";
-      };
-    }
-    static {
-      this.getFileNameFromString = (pathString) => {
-        const pathComponents = this.stringToPathComponents(pathString);
-        return pathComponents[pathComponents.length - 1] || "\\";
-      };
-    }
-    static {
-      this.pathComponentsToString = (...pathComponents) => {
-        return pathComponents.filter((x) => x != "").join(PATH_COMPONENT_SEPARATOR);
-      };
-    }
-    static {
-      this.stringToPathComponents = (string) => {
-        return string.split(PATH_COMPONENT_SEPARATOR).filter((x) => x != "");
-      };
-    }
-    static {
-      this.join = (...items) => {
-        let allComponents = [];
-        for (const item of items) {
-          const parts = this.stringToPathComponents(item);
-          allComponents.push(...parts);
-        }
-        return _StorageModel.pathComponentsToString(...allComponents);
-      };
-    }
-    static getPath(locationName, filePath) {
-      return [DATA_VERSION, locationName, ...filePath];
-    }
-  };
-  var filePaths = {
-    connectionModel: {
-      socketAddress: ["socket-address"],
-      reconnectAddress: ["reconnect-address"],
-      outbox: ["outbox"],
-      mailboxes: ["mailboxes"],
-      previousAddresses: ["previous-addresses"]
-    },
-    chat: {
-      base: [],
-      chatBase: (id) => [id],
-      info: (id) => [...filePaths.chat.chatBase(id), "info"],
-      color: (id) => [...filePaths.chat.chatBase(id), "color"],
-      messages: (id) => [...filePaths.chat.chatBase(id), "messages"],
-      reactions: (id) => [
-        ...filePaths.chat.chatBase(id),
-        "reactions"
-      ],
-      previousFilter: (id) => [...filePaths.chat.chatBase(id), "previous-filter"],
-      lastUsedPage: (id) => [
-        ...filePaths.chat.chatBase(id),
-        "last-used-page"
-      ],
-      files: (id) => [...filePaths.chat.chatBase(id), "files"]
-    },
-    notificationModel: {
-      base: []
-    },
-    settingsModel: {
-      username: ["user-name"],
-      firstDayOfWeek: ["first-day-of-week"],
-      language: ["language"],
-      theme: ["theme"]
-    }
-  };
-
-  // src/Model/Utility/crypto.ts
-  var IV_SIZE = 12;
-  var ENCRYPTION_ALG = "AES-GCM";
-  async function encryptString(plaintext, passphrase) {
-    if (!window.crypto.subtle) return plaintext;
-    const iv = generateIV();
-    const key = await importKey(passphrase, "encrypt");
-    const encryptedArray = await encrypt(iv, key, plaintext);
-    const encryptionData = {
-      iv: uInt8ToArray(iv),
-      encryptedArray: uInt8ToArray(encryptedArray)
-    };
-    return btoa(JSON.stringify(encryptionData));
-  }
-  async function decryptString(cyphertext, passphrase) {
-    try {
-      const encrypionData = JSON.parse(atob(cyphertext));
-      const iv = arrayToUint8(encrypionData.iv);
-      const encryptedArray = arrayToUint8(encrypionData.encryptedArray);
-      const key = await importKey(passphrase, "decrypt");
-      return await decrypt(iv, key, encryptedArray);
-    } catch {
-      return cyphertext;
-    }
-  }
-  function encode(string) {
-    return new TextEncoder().encode(string);
-  }
-  function decode(array) {
-    return new TextDecoder("utf-8").decode(array);
-  }
-  async function encrypt(iv, key, message) {
-    const arrayBuffer = await window.crypto.subtle.encrypt(
-      { name: ENCRYPTION_ALG, iv },
-      key,
-      encode(message)
-    );
-    return new Uint8Array(arrayBuffer);
-  }
-  async function decrypt(iv, key, cyphertext) {
-    const arrayBuffer = await crypto.subtle.decrypt(
-      { name: ENCRYPTION_ALG, iv },
-      key,
-      cyphertext
-    );
-    return arrayBufferToString(arrayBuffer);
-  }
-  async function hash(encoded) {
-    return await crypto.subtle.digest("SHA-256", encoded);
-  }
-  function generateIV() {
-    return crypto.getRandomValues(new Uint8Array(IV_SIZE));
-  }
-  async function importKey(passphrase, purpose) {
-    return await crypto.subtle.importKey(
-      "raw",
-      await hash(encode(passphrase)),
-      { name: ENCRYPTION_ALG },
-      false,
-      [purpose]
-    );
-  }
-  function arrayBufferToString(arrayBuffer) {
-    const uInt8Array = new Uint8Array(arrayBuffer);
-    return decode(uInt8Array);
-  }
-  function uInt8ToArray(uInt8Array) {
-    return Array.from(uInt8Array);
-  }
-  function arrayToUint8(array) {
-    return new Uint8Array(array);
-  }
-
-  // src/Model/Chat/chatModel.ts
-  var ChatModel = class _ChatModel {
-    // init
-    constructor(storageModel2, connectionModel2, settingsModel2, chatListModel2, chatId) {
-      // handler managers
-      this.chatMessageHandlerManager = new HandlerManager();
-      this.reactionHandlerManager = new HandlerManager();
-      this.changeHandlerManager = new HandlerManager();
-      // paths
-      this.getBasePath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.chatBase(this.id)
-        );
-      };
-      this.getInfoPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.info(this.id)
-        );
-      };
-      this.getColorPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.color(this.id)
-        );
-      };
-      this.getMessageDirPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.messages(this.id)
-        );
-      };
-      this.getMessagePath = (id) => {
-        return [...this.getMessageDirPath(), id];
-      };
-      this.getReactionDirPath = () => {
-        return StorageModel.getPath(
-          "chat" /* Chat */,
-          filePaths.chat.reactions(this.id)
-        );
-      };
-      this.getReactionPath = (id) => {
-        return [...this.getReactionDirPath(), id];
-      };
-      this.getPreviousFilterPath = () => {
-        return ["chat" /* Chat */, ...filePaths.chat.previousFilter(this.id)];
-      };
-      // handlers
-      this.handleMessage = (body) => {
-        const chatMessage = parseValidObject(
-          body,
-          ChatMessageReference
-        );
-        if (chatMessage == null) return;
-        chatMessage.status = "received" /* Received */;
-        this.addMessage(chatMessage);
-        if (chatMessage.stringifiedFile) return;
-        this.setReadStatus(true);
-      };
-      this.handleReaction = (reaction) => {
-        if (!checkMatchesObjectStructure(reaction, ChatMessageReactionReference))
-          return;
-        const reactionPath = this.getReactionPath(reaction.fileId);
-        if (reaction.isDeleting == true) {
-          this.storageModel.remove(reactionPath);
-        } else {
-          this.storageModel.writeStringifiable(reactionPath, reaction);
-        }
-        this.reactionHandlerManager.trigger(reaction);
-      };
-      this.handleMessageSent = (chatMessage) => {
-        chatMessage.status = "sent" /* Sent */;
-        this.addMessage(chatMessage);
-      };
-      // settings
-      this.setName = (name) => {
-        this.info.name = name;
-        this.storeInfo();
-        this.syncInfo();
-        this.subscribe();
-      };
-      this.setSecondaryChannels = (secondaryChannels) => {
-        this.info.secondaryChannels = secondaryChannels;
-        this.storeInfo();
-      };
-      this.setEncryptionKey = (key) => {
-        this.info.encryptionKey = key;
-        this.storeInfo();
-      };
-      this.setColor = (color) => {
-        this.info.color = color;
-        this.syncInfo();
-        this.storeInfo();
-      };
-      // messaging
-      this.addMessage = async (chatMessage) => {
-        await this.decryptMessage(chatMessage);
-        if (chatMessage.body != "") {
-          const messagePath = this.getMessagePath(chatMessage.id);
-          this.storageModel.writeStringifiable(messagePath, chatMessage);
-          this.chatMessageHandlerManager.trigger(chatMessage);
-        }
-        this.fileModel.handleStringifiedFileContent(
-          chatMessage.stringifiedFile
-        );
-      };
-      this.getNameAndChannel = () => {
-        const senderName = this.settingsModel.username;
-        if (senderName == "") return false;
-        const allChannels = [this.id];
-        for (const secondaryChannel of this.info.secondaryChannels) {
-          allChannels.push(secondaryChannel);
-        }
-        const combinedChannel = allChannels.join("/");
-        return [senderName, combinedChannel];
-      };
-      this.sendMessage = async (body, inlineReplyId, fileContent) => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return false;
-        const [senderName, combinedChannel] = nameAndChannel;
-        const chatMessage = await _ChatModel.createChatMessage(
-          combinedChannel,
-          senderName,
-          this.info.encryptionKey,
-          body,
-          inlineReplyId,
-          fileContent
-        );
-        this.addMessage(chatMessage);
-        this.connectionModel.sendMessageOrStore(chatMessage);
-        return chatMessage.id;
-      };
-      this.decryptMessage = async (chatMessage) => {
-        const decryptedBody = await decryptString(
-          chatMessage.body,
-          this.info.encryptionKey
-        );
-        const decryptedFile = await decryptString(
-          chatMessage.stringifiedFile ?? "",
-          this.info.encryptionKey
-        );
-        chatMessage.body = decryptedBody;
-        chatMessage.stringifiedFile = decryptedFile;
-      };
-      this.sendReaction = async (messageId, content, isDeleting = false) => {
-        const nameAndChannel = this.getNameAndChannel();
-        if (nameAndChannel == false) return;
-        const [senderName] = nameAndChannel;
-        const reaction = _ChatModel.createMessageReaction(
-          messageId,
-          senderName,
-          content,
-          isDeleting
-        );
-        this.sendMessage("", void 0, reaction);
-        this.handleReaction(reaction);
-      };
-      this.subscribe = () => {
-        this.connectionModel.addChannel(this.id);
-      };
-      this.setReadStatus = (hasUnreadMessages) => {
-        this.info.hasUnreadMessages = hasUnreadMessages;
-        this.storeInfo();
-      };
-      // storage
-      this.storeInfo = () => {
-        this.storageModel.writeStringifiable(this.getInfoPath(), this.info);
-      };
-      this.syncInfo = () => {
-        this.sendMessage("", void 0, this.info);
-      };
-      this.storeFilter = (filter) => {
-        this.storageModel.write(this.getPreviousFilterPath(), filter);
-      };
-      this.getFilter = () => {
-        return this.storageModel.read(this.getPreviousFilterPath()) || "";
-      };
-      this.delete = () => {
-        this.chatListModel.untrackChat(this);
-        const dirPath = this.getBasePath();
-        this.storageModel.removeRecursively(dirPath);
-      };
-      // load
-      this.loadInfo = () => {
-        let info = this.storageModel.readStringifiable(
-          this.getInfoPath(),
-          ChatInfoReference
-        );
-        this.info = info || _ChatModel.generateChatInfo("0", "0", "standard" /* Standard */);
-        this.storeInfo();
-      };
-      this.handleInfo = (info) => {
-        this.info = info;
-        this.changeHandlerManager.trigger(null);
-        this.storeInfo();
-      };
-      this.id = chatId;
-      this.connectionModel = connectionModel2;
-      this.settingsModel = settingsModel2;
-      this.storageModel = storageModel2;
-      this.chatListModel = chatListModel2;
-      this.loadInfo();
-      this.subscribe();
-      this.fileModel = new FileModel(
-        this.storageModel,
-        this.settingsModel,
-        this
-      );
-    }
-    /* load function called in constructor */
-    get secondaryChannels() {
-      return this.info.secondaryChannels.sort(localeCompare);
-    }
-    get color() {
-      const color = this.info.color;
-      if ([...Object.values(Colors)].includes(color)) return color;
-      return "standard" /* Standard */;
-    }
-    get messages() {
-      const messageIds = this.storageModel.list(
-        this.getMessageDirPath()
-      );
-      if (!Array.isArray(messageIds)) return [];
-      const chatMessages = [];
-      for (const messageId of messageIds) {
-        const messagePath = this.getMessagePath(messageId);
-        const chatMessage = this.storageModel.readStringifiable(
-          messagePath,
-          ChatMessageReference
-        );
-        if (chatMessage == null) continue;
-        chatMessages.push(chatMessage);
-      }
-      const sorted = chatMessages.sort(
-        (a, b) => a.dateSent.localeCompare(b.dateSent)
-      );
-      return sorted;
-    }
-    get reactions() {
-      const reactionIds = this.storageModel.list(
-        this.getReactionDirPath()
-      );
-      if (!Array.isArray(reactionIds)) return [];
-      const reactions = [];
-      for (const reactionId of reactionIds) {
-        const reactionPath = this.getReactionPath(reactionId);
-        const reaction = this.storageModel.readStringifiable(
-          reactionPath,
-          ChatMessageReactionReference
-        );
-        if (reaction == null) continue;
-        reactions.push(reaction);
-      }
-      return reactions;
-    }
-    // utility
-    static splitChannel(channelString) {
-      return channelString.split("/");
-    }
-    static {
-      this.generateChatInfo = (name, id, color) => {
-        const file = FileModel.createFileContent(id, "chat-info");
-        return {
-          ...file,
-          name,
-          secondaryChannels: [],
-          encryptionKey: "",
-          color,
-          hasUnreadMessages: false
-        };
-      };
-    }
-    static {
-      this.createChatMessage = async (channel, sender, encryptionKey, body, inlineReplyId, fileContent) => {
-        const chatMessage = {
-          dataVersion: DATA_VERSION,
-          id: v4_default(),
-          channel,
-          sender,
-          body,
-          dateSent: createTimestamp(),
-          inlineReplyId,
-          status: "outbox" /* Outbox */,
-          stringifiedFile: ""
-        };
-        if (fileContent != void 0) {
-          const stringifiedFile = stringify(fileContent);
-          chatMessage.stringifiedFile = stringifiedFile;
-        }
-        if (encryptionKey != "") {
-          chatMessage.body = await encryptString(
-            chatMessage.body,
-            encryptionKey
-          );
-          chatMessage.stringifiedFile = await encryptString(
-            chatMessage.stringifiedFile,
-            encryptionKey
-          );
-        }
-        return chatMessage;
-      };
-    }
-    static {
-      this.createMessageReaction = (messageId, sender, content, isDeleting) => {
-        const fileContent = FileModel.createFileContent(v4_default(), "reaction");
-        const reaction = {
-          ...fileContent,
-          fileId: _ChatModel.createMessageReactionId(messageId, sender),
-          messageId,
-          sender,
-          content,
-          isDeleting
-        };
-        return reaction;
-      };
-    }
-    static {
-      this.createMessageReactionId = (messageId, sender) => {
-        return messageId + sender;
-      };
-    }
-  };
-  var ReactionSymbols = /* @__PURE__ */ ((ReactionSymbols2) => {
-    ReactionSymbols2["ThumbsUp"] = "\u{1F44D}";
-    ReactionSymbols2["Check"] = "\u2705";
-    ReactionSymbols2["Stop"] = "\u{1F6D1}";
-    ReactionSymbols2["Attention"] = "\u2757\uFE0F";
-    ReactionSymbols2["DoubleAttention"] = "\u203C\uFE0F";
-    ReactionSymbols2["Question"] = "\u2753";
-    return ReactionSymbols2;
-  })(ReactionSymbols || {});
-  var ChatInfoReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "",
-    fileContentId: "",
-    creationDate: "",
-    type: "chat-info",
-    name: "",
-    secondaryChannels: [""],
-    encryptionKey: "",
-    color: "",
-    hasUnreadMessages: true
-  };
-  var ChatMessageReference = {
-    dataVersion: DATA_VERSION,
-    id: "",
-    channel: "",
-    sender: "",
-    body: "",
-    dateSent: "",
-    status: "",
-    stringifiedFile: ""
-  };
-  var ChatMessageReactionReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "",
-    fileContentId: "",
-    creationDate: "",
-    type: "reaction",
-    messageId: "",
-    sender: "",
-    content: "",
-    isDeleting: false
-  };
-
-  // src/Model/Files/fileModel.ts
-  var FileModel = class _FileModel {
-    // init
-    constructor(storageModel2, settingsModel2, chatModel) {
-      this.getFileContainerPath = () => {
-        return [...this.basePath, "data" /* Data */];
-      };
-      this.getModelContainerPath = (modelName) => {
-        return [...this.basePath, "model" /* Model */, modelName];
-      };
-      this.getFilePath = (fileId) => {
-        return [...this.getFileContainerPath(), fileId];
-      };
-      this.getFileContentPath = (fileId, fileContentId) => {
-        const filePath = this.getFilePath(fileId);
-        return [...filePath, fileContentId];
-      };
-      // handlers
-      this.handleStringifiedFileContent = (stringifiedFileContent) => {
-        const fileContent = parseValidObject(
-          stringifiedFileContent,
-          FileContentReference
-        );
-        if (fileContent == null) return;
-        this.handleFileContent(fileContent);
-      };
-      this.handleFileContent = (fileContent) => {
-        console.log(fileContent.type);
-        if (fileContent.type == "chat-info") {
-          if (checkMatchesObjectStructure(fileContent, ChatInfoReference) == false) return;
-          this.chatModel.handleInfo(fileContent);
-        }
-        const didStore = this.storeFileContent(fileContent);
-        if (didStore == false) return;
-        switch (fileContent.type) {
-          case "board-info":
-          case "task":
-            this.boardsAndTasksModel.handleFileContent(fileContent);
-            break;
-          case "reaction":
-            this.chatModel.handleReaction(fileContent);
-            break;
-        }
-      };
-      // methods
-      this.addFileContentAndSend = (fileContent) => {
-        this.handleFileContent(fileContent);
-        this.chatModel.sendMessage("", void 0, fileContent);
-      };
-      // storage
-      this.storeFileContent = (fileContent) => {
-        const fileContentPath = this.getFileContentPath(
-          fileContent.fileId,
-          fileContent.fileContentId
-        );
-        const existingFileContent = this.storageModel.read(fileContentPath);
-        if (existingFileContent != null) return false;
-        const stringifiedContent = stringify(fileContent);
-        this.storageModel.write(fileContentPath, stringifiedContent);
-        return true;
-      };
-      this.listFileIds = () => {
-        return this.storageModel.list(this.basePath);
-      };
-      this.listFileContentIds = (fileId) => {
-        const filePath = this.getFilePath(fileId);
-        return this.storageModel.list(filePath);
-      };
-      this.selectLatestFileContentId = (fileContentIds) => {
-        return fileContentIds[fileContentIds.length - 1];
-      };
-      this.getFileContent = (fileId, fileContentName, reference) => {
-        const filePath = this.getFileContentPath(
-          fileId,
-          fileContentName
-        );
-        const fileContentOrNull = this.storageModel.readStringifiable(
-          filePath,
-          reference
-        );
-        return fileContentOrNull;
-      };
-      this.getLatestFileContent = (fileId, reference) => {
-        const fileContentsIds = this.listFileContentIds(fileId);
-        const latestFileContentId = this.selectLatestFileContentId(fileContentsIds);
-        if (latestFileContentId == void 0) return null;
-        const fileContent = this.getFileContent(
-          fileId,
-          latestFileContentId,
-          reference
-        );
-        return fileContent;
-      };
-      this.chatModel = chatModel;
-      this.settingsModel = settingsModel2;
-      this.storageModel = storageModel2;
-      this.boardsAndTasksModel = new BoardsAndTasksModel(
-        this.storageModel,
-        this.settingsModel,
-        chatModel,
-        this
-      );
-    }
-    // paths
-    get basePath() {
-      return StorageModel.getPath(
-        "chat" /* Chat */,
-        filePaths.chat.files(this.chatModel.id)
-      );
-    }
-    static {
-      // utility
-      this.generateFileContentId = (creationDate) => {
-        return creationDate + v4_default();
-      };
-    }
-    static {
-      this.createFileContent = (fileId, type) => {
-        const creationDate = createTimestamp();
-        const fileContentId = _FileModel.generateFileContentId(creationDate);
-        return {
-          dataVersion: DATA_VERSION,
-          fileId,
-          fileContentId,
-          creationDate,
-          type
-        };
-      };
-    }
-  };
-  var FileContentReference = {
-    dataVersion: DATA_VERSION,
-    fileId: "",
-    fileContentId: "",
-    creationDate: "",
-    type: ""
-  };
-
-  // src/Model/Files/calendarModel.ts
-  var CalendarModel = class _CalendarModel {
-    // init
-    constructor(storageModel2, settingsModel2, fileModel) {
-      this.getViewPath = () => {
-        return [...this.basePath, "view" /* ModelView */];
-      };
-      this.getMonthContainerPath = () => {
-        return [...this.basePath, "months" /* Months */];
-      };
-      this.getMonthPath = (monthString) => {
-        return [...this.getMonthContainerPath(), monthString];
-      };
-      // task references
-      this.storeTaskReference = (taskFileContent) => {
-        if (taskFileContent.date == void 0) return;
-        const monthString = _CalendarModel.isoToMonthString(
-          taskFileContent.date
-        );
-        const monthPath = this.getMonthPath(monthString);
-        const referencePath = [...monthPath, taskFileContent.fileId];
-        this.storageModel.write(referencePath, "");
-      };
-      this.deleteTaskReference = (monthString, taskId) => {
-        const monthPath = this.getMonthPath(monthString);
-        const referencePath = [...monthPath, taskId];
-        this.storageModel.write(referencePath, "");
-      };
-      // data
-      this.listTaskIds = (monthString) => {
-        const monthPath = this.getMonthPath(monthString);
-        return this.storageModel.list(monthPath);
-      };
-      // util
-      this.generateMonthGrid = (coreViewModel2, year, month, defaultValueCreator) => {
-        const date = coreViewModel2.unwrappedTodayDate;
-        const isCurrentMonth = year == date.getFullYear() && month == date.getMonth() + 1;
-        date.setDate(1);
-        date.setMonth(month - 1);
-        date.setFullYear(year);
-        const firstWeekdayOfMonth = date.getDay();
-        const firstDayOfWeekSetting = parseInt(
-          this.settingsModel.firstDayOfWeek
-        );
-        const offset = firstWeekdayOfMonth < firstDayOfWeekSetting ? 7 - firstDayOfWeekSetting : firstWeekdayOfMonth - firstDayOfWeekSetting;
-        date.setMonth(month);
-        date.setDate(-1);
-        const daysInMonth = date.getDate() + 1;
-        const grid = {
-          offset,
-          firstDayOfWeek: parseInt(this.settingsModel.firstDayOfWeek),
-          isCurrentMonth,
-          year,
-          month,
-          days: {}
-        };
-        for (let i = 0; i < daysInMonth; i++) {
-          const paddedDate = _CalendarModel.padZero(
-            (i + 1).toString()
-          );
-          grid.days[paddedDate] = defaultValueCreator();
-        }
-        return grid;
-      };
-      this.storageModel = storageModel2;
-      this.settingsModel = settingsModel2;
-      this.fileModel = fileModel;
-    }
-    // paths
-    get basePath() {
-      return this.fileModel.getModelContainerPath(
-        "calendar" /* ModelCalendar */
-      );
-    }
-    static {
-      // utility
-      this.isoToMonthString = (dateISOString) => {
-        const [year, month, _] = dateISOString.split("-");
-        return _CalendarModel.getMonthString(year, month);
-      };
-    }
-    static {
-      this.isoToDateString = (dateISOString) => {
-        const [year, month, date, _] = dateISOString.split("-");
-        const paddedDate = _CalendarModel.padZero(date ?? "");
-        return paddedDate;
-      };
-    }
-    static {
-      this.getMonthString = (year = "", month = "") => {
-        const paddedYear = year.padStart(4, "0");
-        const paddedMonth = _CalendarModel.padZero(month);
-        return `${paddedYear}-${paddedMonth}`;
-      };
-    }
-    static {
-      this.getISODateString = (year, month, date) => {
-        const monthString = _CalendarModel.getMonthString(year, month);
-        const paddedDate = _CalendarModel.padZero(date);
-        return `${monthString}-${paddedDate}`;
-      };
-    }
-    static {
-      this.padZero = (input) => {
-        return input.padStart(2, "0");
-      };
-    }
-  };
+  var DATA_VERSION = "2610";
 
   // src/Model/Utility/utility.ts
   function generateRandomToken(length) {
@@ -2189,14 +1056,32 @@
   function createTimestamp() {
     return (/* @__PURE__ */ new Date()).toISOString();
   }
+  function isoToDateString(dateISOString) {
+    const [year, month, date] = dateISOString.split("-");
+    const paddedDate = padZero(date ?? "", 2);
+    return paddedDate;
+  }
+  function isoToMonthString(dateISOString) {
+    const [year, month, _] = dateISOString.split("-");
+    return formatMonthStringFromParts(year, month);
+  }
   function formatISO(date) {
-    return formatISOFromParts(date.getFullYear(), date.getMonth() + 1, date.getDate());
+    return formatISOFromParts(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      date.getDate()
+    );
   }
   function formatISOFromParts(year, month, date) {
-    return [year, month, date].map((x, i) => i == 0 ? x : CalendarModel.padZero(x.toString())).join("-");
+    return [year, month, date].map((x, i) => i == 0 ? x : padZero(x.toString(), 2)).join("-");
+  }
+  function formatMonthStringFromParts(year = "", month = "") {
+    const paddedYear = padZero(year, 4);
+    const paddedMonth = padZero(month, 2);
+    return `${paddedYear}-${paddedMonth}`;
   }
   function formatTime(date) {
-    return [date.getHours(), date.getMinutes()].map((x) => CalendarModel.padZero(x.toString())).join(":");
+    return [date.getHours(), date.getMinutes()].map((x) => padZero(x.toString(), 2)).join(":");
   }
   function checkDoesObjectMatchSearch(query, getStringsOfObject, object) {
     if (query == "") return true;
@@ -2225,7 +1110,8 @@
     function update() {
       matches.clear();
       allItems.value.forEach((item) => {
-        if (!itemToString(item).toLowerCase().includes(query.value.toLowerCase())) return;
+        if (!itemToString(item).toLowerCase().includes(query.value.toLowerCase()))
+          return;
         matches.add(item);
         allItems.handleRemoval(item, () => {
           matches.remove(item);
@@ -2273,12 +1159,6 @@
       this.itemToString = itemToString;
     }
   };
-  function getLocalStorageItemAndClear(key) {
-    const value = localStorage.getItem(key);
-    localStorage.removeItem(key);
-    if (value != null) localStorage.setItem(`_${key}`, value);
-    return value;
-  }
   function bytesToMB(bytes) {
     return bytes / (1024 * 1024);
   }
@@ -2303,18 +1183,6 @@
       reference
     );
     if (doesMatchReference == false) return null;
-    return parsed;
-  }
-  function parseOrFallback(inputString) {
-    try {
-      return JSON.parse(inputString);
-    } catch {
-      return inputString;
-    }
-  }
-  function parseArray(inputString) {
-    const parsed = parseOrFallback(inputString);
-    if (Array.isArray(parsed) == false) return [];
     return parsed;
   }
   function localeCompare(a, b) {
@@ -2486,9 +1354,12 @@
       this.swRegistration = void 0;
       this.version = new State("");
       this.latestVersion = new State("");
-      this.noUpdateAvailable = createProxyState([this.latestVersion], () => {
-        return this.latestVersion.value == "" || this.latestVersion.value == this.version.value;
-      });
+      this.noUpdateAvailable = createProxyState(
+        [this.latestVersion],
+        () => {
+          return this.latestVersion.value == "" || this.latestVersion.value == this.version.value;
+        }
+      );
       this.updateText = new State("");
       // CONTEXT
       this.contextStack = /* @__PURE__ */ new Map();
@@ -2555,7 +1426,10 @@
           this.version.value = await response.text();
         });
         fetch("/latestVersion").then(async (response) => {
-          this.latestVersion.value = (await response.text()).replace("\n", "");
+          this.latestVersion.value = (await response.text()).replace(
+            "\n",
+            ""
+          );
         });
       };
       this.update = async () => {
@@ -2685,6 +1559,238 @@
     }
   };
 
+  // src/Model/Global/storageModel.ts
+  var PATH_COMPONENT_SEPARATOR = "\\";
+  var StorageModel = class _StorageModel {
+    // init
+    constructor() {
+      this.storageEntryTree = {};
+      // read
+      this.read = (pathComponents) => {
+        const pathString = _StorageModel.pathComponentsToString(
+          ...pathComponents
+        );
+        return localStorage.getItem(pathString);
+      };
+      this.list = (pathComponents) => {
+        let currentParent = this.storageEntryTree;
+        for (const component of pathComponents) {
+          const nextParent = currentParent[component];
+          if (nextParent == void 0) return [];
+          currentParent = nextParent;
+        }
+        return [...Object.keys(currentParent).sort(localeCompare)];
+      };
+      // write
+      this.write = (pathComponents, value) => {
+        const pathString = _StorageModel.pathComponentsToString(
+          ...pathComponents
+        );
+        localStorage.setItem(pathString, value);
+        this.updateTree(...pathComponents);
+      };
+      this.remove = (pathComponents, shouldInitialize = true) => {
+        const pathString = _StorageModel.pathComponentsToString(
+          ...pathComponents
+        );
+        localStorage.removeItem(pathString);
+        if (shouldInitialize == true) {
+          this.initializeTree();
+        }
+      };
+      this.rename = (sourcePathComponents, destinationPathComponents, shouldInitialize = true) => {
+        const content = this.read(sourcePathComponents);
+        if (content == null) return false;
+        this.write(destinationPathComponents, content);
+        this.remove(sourcePathComponents);
+        if (shouldInitialize == true) {
+          this.initializeTree();
+        }
+        return true;
+      };
+      // recursion
+      this.recurse = (rootDirectory, fn) => {
+        loop_over_files: for (const key of Object.keys(localStorage)) {
+          const pathComponentsOfCurrentEntity = _StorageModel.stringToPathComponents(key);
+          loop_over_path_components: for (let i = 0; i < rootDirectory.length; i++) {
+            if (!pathComponentsOfCurrentEntity[i]) continue loop_over_files;
+            if (pathComponentsOfCurrentEntity[i] != rootDirectory[i])
+              continue loop_over_files;
+          }
+          fn(pathComponentsOfCurrentEntity);
+        }
+        this.initializeTree();
+      };
+      this.removeRecursively = (pathComponents) => {
+        this.recurse(
+          pathComponents,
+          (path) => this.remove(path, false)
+        );
+        this.initializeTree();
+      };
+      this.renameRecursively = (sourcePathComponents, destinationPathComponents) => {
+        this.recurse(sourcePathComponents, (path) => {
+          const relativePathOfCurrentEntity = path.slice(
+            sourcePathComponents.length
+          );
+          const destinationPathComponentsOfCurrentEntity = [
+            ...destinationPathComponents,
+            ...relativePathOfCurrentEntity
+          ];
+          this.rename(path, destinationPathComponentsOfCurrentEntity, false);
+        });
+        this.initializeTree();
+      };
+      // stringifiable
+      this.writeStringifiable = (pathComponents, value) => {
+        const valueString = stringify(value);
+        this.write(pathComponents, valueString);
+      };
+      this.readStringifiable = (pathComponents, reference) => {
+        const valueString = this.read(pathComponents);
+        if (!valueString) return null;
+        const object = parseValidObject(valueString, reference);
+        if (object == null) return null;
+        return object;
+      };
+      // cleaning & usage
+      this.removeJunk = () => {
+        this.recurse([], (path) => {
+          if (path[0] == DATA_VERSION) return;
+          this.remove(path);
+        });
+      };
+      this.determineCapacity = () => {
+        const KEY = "storage-capacity-check";
+        let chunk = "0";
+        for (let i = 0; i < 1024 * 256; i++) {
+          chunk += "0";
+        }
+        localStorage.setItem(KEY, "");
+        while (true) {
+          try {
+            const current = localStorage.getItem(KEY);
+            console.log(current);
+            localStorage.setItem(KEY, current + chunk);
+          } catch (e) {
+            const capacity = this.calculateUsage();
+            localStorage.removeItem(KEY);
+            return capacity;
+          }
+        }
+      };
+      this.calculateUsage = () => {
+        let data = JSON.stringify(localStorage);
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(data);
+        const bytes = encoded.byteLength;
+        const mb = bytesToMB(bytes);
+        const rounded = Math.round(mb * 100) / 100;
+        return rounded;
+      };
+      // tree
+      this.initializeTree = () => {
+        console.log("initializing tree");
+        this.storageEntryTree = {};
+        for (const key of Object.keys(localStorage)) {
+          const components = _StorageModel.stringToPathComponents(key);
+          this.updateTree(...components);
+        }
+      };
+      this.updateTree = (...pathComponents) => {
+        let currentParent = this.storageEntryTree;
+        for (const pathPart of pathComponents) {
+          if (!currentParent[pathPart]) {
+            currentParent[pathPart] = {};
+          }
+          currentParent = currentParent[pathPart];
+        }
+      };
+      this.printTree = () => {
+        return stringify(this.storageEntryTree);
+      };
+      // upgrade 
+      this.upgrade = () => {
+      };
+      this.initializeTree();
+      this.upgrade();
+    }
+    static {
+      // utility
+      this.getFileName = (pathComponents) => {
+        return pathComponents[pathComponents.length - 1] || "\\";
+      };
+    }
+    static {
+      this.getFileNameFromString = (pathString) => {
+        const pathComponents = this.stringToPathComponents(pathString);
+        return pathComponents[pathComponents.length - 1] || "\\";
+      };
+    }
+    static {
+      this.pathComponentsToString = (...pathComponents) => {
+        return pathComponents.filter((x) => x != "").join(PATH_COMPONENT_SEPARATOR);
+      };
+    }
+    static {
+      this.stringToPathComponents = (string) => {
+        return string.split(PATH_COMPONENT_SEPARATOR).filter((x) => x != "");
+      };
+    }
+    static {
+      this.join = (...items) => {
+        let allComponents = [];
+        for (const item of items) {
+          const parts = this.stringToPathComponents(item);
+          allComponents.push(...parts);
+        }
+        return _StorageModel.pathComponentsToString(...allComponents);
+      };
+    }
+    static getPath(locationName, filePath) {
+      return [DATA_VERSION, locationName, ...filePath];
+    }
+  };
+  var filePaths = {
+    connectionModel: {
+      socketAddress: ["socket-address"],
+      reconnectAddress: ["reconnect-address"],
+      outbox: ["outbox"],
+      mailboxes: ["mailboxes"],
+      previousAddresses: ["previous-addresses"]
+    },
+    chat: {
+      base: [],
+      chatBase: (id) => [id],
+      info: (id) => [...filePaths.chat.chatBase(id), "info"],
+      color: (id) => [...filePaths.chat.chatBase(id), "color"],
+      messages: (id) => [...filePaths.chat.chatBase(id), "messages"],
+      reactions: (id) => [
+        ...filePaths.chat.chatBase(id),
+        "reactions"
+      ],
+      previousFilter: (id) => [
+        ...filePaths.chat.chatBase(id),
+        "previous-filter"
+      ],
+      lastUsedPage: (id) => [
+        ...filePaths.chat.chatBase(id),
+        "last-used-page"
+      ],
+      files: (id) => [...filePaths.chat.chatBase(id), "files"]
+    },
+    notificationModel: {
+      base: []
+    },
+    settingsModel: {
+      username: ["user-name"],
+      userid: ["user-id"],
+      firstDayOfWeek: ["first-day-of-week"],
+      language: ["language"],
+      theme: ["theme"]
+    }
+  };
+
   // src/ViewModel/Global/storageViewModel.ts
   var StorageViewModel = class extends Context {
     // init
@@ -2756,9 +1862,12 @@
   // src/Model/Global/settingsModel.ts
   var SettingsModel = class _SettingsModel {
     // init
-    constructor(storageModel2) {
+    constructor(storageModel2, contactListModel2) {
+      this.storageModel = storageModel2;
+      this.contactListModel = contactListModel2;
       // data
       this.username = "";
+      this.userid = "";
       this.firstDayOfWeek = "";
       this.language = "";
       this.theme = "";
@@ -2770,9 +1879,14 @@
         );
         this.storageModel.write(path, value);
       };
+      this.setId = (newValue) => {
+        this.userid = newValue;
+        this.storeSetting("userid", newValue);
+      };
       this.setName = (newValue) => {
         this.username = newValue;
         this.storeSetting("username", newValue);
+        this.contactListModel.storeContact(this.userid, newValue);
       };
       this.setFirstDayOfWeek = (newValue) => {
         this.firstDayOfWeek = newValue;
@@ -2794,6 +1908,12 @@
         );
         return this.storageModel.read(path);
       };
+      this.loadId = () => {
+        const content = this.readSetting("userid");
+        const id = content ?? UUID();
+        if (content) this.userid = content;
+        else this.setId(id);
+      };
       this.loadUsername = () => {
         const content = this.readSetting("username");
         this.username = content ?? "";
@@ -2810,7 +1930,7 @@
         const content = this.readSetting("theme");
         this.theme = content ?? "system" /* System */;
       };
-      this.storageModel = storageModel2;
+      this.loadId();
       this.loadUsername();
       this.loadFirstDayofWeek();
       this.loadLanguage();
@@ -2837,9 +1957,10 @@
   // src/ViewModel/Global/settingsViewModel.ts
   var SettingsViewModel = class _SettingsViewModel extends Context {
     // init
-    constructor(coreViewModel2) {
+    constructor(coreViewModel2, settingsModel2) {
       super("settings");
       this.coreViewModel = coreViewModel2;
+      this.settingsModel = settingsModel2;
       // state
       this.username = new State("");
       this.usernameInput = new State("");
@@ -3317,6 +2438,251 @@
     }
   };
 
+  // src/ViewModel/Pages/taskContainingPageViewModel.ts
+  var TaskContainingPageViewModel = class extends Context {
+    // init
+    constructor(coreViewModel2, chatViewModel, boardsAndTasksModel, contextDebugDescription) {
+      super(contextDebugDescription);
+      this.coreViewModel = coreViewModel2;
+      this.chatViewModel = chatViewModel;
+      this.boardsAndTasksModel = boardsAndTasksModel;
+      // state
+      this.taskIndexManager = new IndexManager(
+        (taskViewModel) => taskViewModel.sortingString
+      );
+      this.selectedTaskViewModel = new State(void 0);
+      this.taskViewModels = new MapState();
+      this.taskCategorySuggestions = new ListState();
+      this.taskStatusSuggestions = new ListState();
+      // methods
+      this.createTaskFromBoardId = (boardId) => {
+        const taskFileContent = this.boardsAndTasksModel.createTask(boardId);
+        const taskViewModel = new TaskViewModel(
+          this.coreViewModel,
+          this.chatViewModel,
+          this.boardsAndTasksModel,
+          this,
+          taskFileContent
+        );
+        taskViewModel.open();
+        this.updateTaskIndices();
+      };
+      // view
+      this.showTask = (taskFileContent) => {
+      };
+      this.removeTaskFromView = (taskFileContent) => {
+      };
+      this.selectTask = (selectedTask) => {
+        this.selectedTaskViewModel.value = selectedTask;
+      };
+      this.closeTask = () => {
+        this.selectedTaskViewModel.value = void 0;
+      };
+      this.updateTaskIndices = () => {
+        this.taskIndexManager.update([...this.taskViewModels.value.values()]);
+        for (const taskViewModel of this.taskViewModels.value.values()) {
+          taskViewModel.updateIndex();
+        }
+      };
+    }
+  };
+
+  // src/ViewModel/Pages/calendarPageViewModel.ts
+  var CALENDAR_EVENT_BOARD_ID = "events";
+  var CalendarPageViewModel = class extends TaskContainingPageViewModel {
+    // init
+    constructor(coreViewModel2, chatViewModel, calendarModel, boardsAndTasksModel) {
+      super(coreViewModel2, chatViewModel, boardsAndTasksModel, "calendar");
+      this.coreViewModel = coreViewModel2;
+      this.chatViewModel = chatViewModel;
+      this.calendarModel = calendarModel;
+      this.boardsAndTasksModel = boardsAndTasksModel;
+      // paths
+      this.getBasePath = () => {
+        return [...this.calendarModel.getViewPath()];
+      };
+      // state
+      this.currentTodayDate = void 0;
+      this.selectedYear = new State(0);
+      this.selectedMonth = new State(0);
+      this.selectedDate = new State(0);
+      this.monthGrid = new State(void 0);
+      this.nextTask = new State(void 0);
+      // methods
+      this.createEvent = () => {
+        const taskFileContent = this.boardsAndTasksModel.createTask(CALENDAR_EVENT_BOARD_ID);
+        taskFileContent.date = formatISOFromParts(
+          this.selectedYear.value.toString(),
+          this.selectedMonth.value.toString(),
+          this.selectedDate.value.toString()
+        );
+        const taskViewModel = new TaskViewModel(
+          this.coreViewModel,
+          this.chatViewModel,
+          this.boardsAndTasksModel,
+          this,
+          taskFileContent
+        );
+        taskViewModel.open();
+        this.updateTaskIndices();
+      };
+      this.getEventsForDate = () => {
+        const paddedDate = padZero(this.selectedDate.toString(), 2);
+        if (this.monthGrid.value == void 0) {
+          return void 0;
+        }
+        return this.monthGrid.value.days[paddedDate];
+      };
+      // view
+      this.getTaskMapState = (taskFileContent) => {
+        if (this.monthGrid.value == null) return null;
+        const date = isoToDateString(taskFileContent.date ?? "");
+        return this.monthGrid.value.days[date];
+      };
+      this.showTask = (taskFileContent) => {
+        const monthString = isoToMonthString(
+          taskFileContent.date ?? ""
+        );
+        if (monthString == void 0 || monthString != this.monthString) {
+          this.removeTaskFromView(taskFileContent);
+          this.calendarModel.deleteTaskReference(
+            this.monthString,
+            taskFileContent.fileId
+          );
+          return;
+        }
+        const taskViewModel = new TaskViewModel(
+          this.coreViewModel,
+          this.chatViewModel,
+          this.boardsAndTasksModel,
+          this,
+          taskFileContent
+        );
+        const mapState = this.getTaskMapState(taskFileContent);
+        this.taskViewModels.handleRemoval(taskViewModel, () => {
+          mapState?.remove(taskFileContent.fileId);
+        });
+        this.taskViewModels.remove(taskFileContent.fileId);
+        this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
+        mapState?.set(taskFileContent.fileId, taskViewModel);
+        this.updateTaskIndices();
+      };
+      this.removeTaskFromView = (taskFileContent) => {
+        this.taskViewModels.remove(taskFileContent.fileId);
+      };
+      this.showToday = () => {
+        const today = this.coreViewModel.todayDate.value;
+        this.selectedYear.value = today.getFullYear();
+        this.selectedMonth.value = today.getMonth() + 1;
+        this.selectedDate.value = today.getDate();
+      };
+      this.showPreviousMonth = () => {
+        this.selectedMonth.value -= 1;
+        if (this.selectedMonth.value <= 0) {
+          this.selectedYear.value -= 1;
+          this.selectedMonth.value = 12;
+        }
+      };
+      this.showNextMonth = () => {
+        this.selectedMonth.value += 1;
+        if (this.selectedMonth.value >= 13) {
+          this.selectedYear.value += 1;
+          this.selectedMonth.value = 1;
+        }
+      };
+      this.handleDrop = (year, month, date) => {
+        const ISOString = formatISOFromParts(year, month, date);
+        const draggedObject = this.coreViewModel.draggedObject.value;
+        if (draggedObject instanceof TaskViewModel == false) return;
+        draggedObject.setDate(ISOString);
+      };
+      this.handleChron = () => {
+        this.updateMonthGrid();
+        this.updateNextTask();
+      };
+      this.updateMonthGrid = () => {
+        const today = formatISO(this.coreViewModel.todayDate.value);
+        if (this.currentTodayDate == today) return;
+        this.loadMonthTasks();
+        this.currentTodayDate = today;
+        this.selectedDate.callSubscriptions();
+      };
+      this.updateNextTask = () => {
+        if (this.selectedDateString != this.currentTodayDate) {
+          this.nextTask.value = void 0;
+          return;
+        }
+        const tasks = this.getEventsForDate();
+        if (tasks == void 0) return;
+        const taskArray = [...tasks.value.values()];
+        const sorted = taskArray.sort((a, b) => a.index.value - b.index.value);
+        for (const task of sorted) {
+          if (task.time.value <= this.coreViewModel.time.value) continue;
+          this.nextTask.value = task;
+          break;
+        }
+      };
+      // load
+      this.loadMonthTasks = () => {
+        this.monthGrid.value = this.calendarModel.generateMonthGrid(
+          this.coreViewModel,
+          this.selectedYear.value,
+          this.selectedMonth.value,
+          () => new MapState()
+        );
+        const taskIds = this.calendarModel.listTaskIds(
+          this.monthString
+        );
+        for (const taskId of taskIds) {
+          const taskFileContent = this.boardsAndTasksModel.getLatestTaskFileContent(taskId);
+          if (taskFileContent == null) continue;
+          this.showTask(taskFileContent);
+        }
+      };
+      this.loadData = () => {
+      };
+      this.calendarModel = calendarModel;
+      this.boardsAndTasksModel = boardsAndTasksModel;
+      this.chatViewModel = chatViewModel;
+      bulkSubscribe([this.selectedYear, this.selectedMonth], () => {
+        this.loadMonthTasks();
+      });
+      this.selectedDate.subscribeSilent(() => {
+        this.updateNextTask();
+      });
+      boardsAndTasksModel.taskHandlerManager.setHandler(
+        "calendar" + this.chatViewModel.chatModel.id,
+        (taskFileContent) => {
+          this.showTask(taskFileContent);
+        }
+      );
+      this.coreViewModel.chronHandlerManager.setHandler(
+        `calendar-${this.chatViewModel.chatModel.id}`,
+        this.handleChron
+      );
+      this.showToday();
+      this.registerKeyStroke("-" /* Reset */, this.showToday);
+      this.registerKeyStroke("k", this.showPreviousMonth);
+      this.registerKeyStroke("l", this.showNextMonth);
+      this.registerKeyStroke("a" /* Create */, this.createEvent);
+      this.chatViewModel.registerContext("calendar" /* Calendar */, this);
+    }
+    // data
+    get monthString() {
+      return formatMonthStringFromParts(
+        this.selectedYear.value.toString(),
+        this.selectedMonth.value.toString()
+      );
+    }
+    get selectedDateString() {
+      return formatISOFromParts(
+        this.selectedYear.value,
+        this.selectedMonth.value,
+        this.selectedDate.value
+      );
+    }
+  };
+
   // src/View/viewController.ts
   var Tracker = class {
   };
@@ -3395,255 +2761,890 @@
     }
   };
 
-  // src/ViewModel/Pages/taskContainingPageViewModel.ts
-  var TaskContainingPageViewModel = class extends Context {
+  // src/Model/Utility/crypto.ts
+  var IV_SIZE = 12;
+  var ENCRYPTION_ALG = "AES-GCM";
+  async function encryptString(plaintext, passphrase) {
+    if (!window.crypto.subtle) return plaintext;
+    const iv = generateIV();
+    const key = await importKey(passphrase, "encrypt");
+    const encryptedArray = await encrypt(iv, key, plaintext);
+    const encryptionData = {
+      iv: uInt8ToArray(iv),
+      encryptedArray: uInt8ToArray(encryptedArray)
+    };
+    return btoa(JSON.stringify(encryptionData));
+  }
+  async function decryptString(cyphertext, passphrase) {
+    try {
+      const encrypionData = JSON.parse(atob(cyphertext));
+      const iv = arrayToUint8(encrypionData.iv);
+      const encryptedArray = arrayToUint8(encrypionData.encryptedArray);
+      const key = await importKey(passphrase, "decrypt");
+      return await decrypt(iv, key, encryptedArray);
+    } catch {
+      return cyphertext;
+    }
+  }
+  function encode(string) {
+    return new TextEncoder().encode(string);
+  }
+  function decode(array) {
+    return new TextDecoder("utf-8").decode(array);
+  }
+  async function encrypt(iv, key, message) {
+    const arrayBuffer = await window.crypto.subtle.encrypt(
+      { name: ENCRYPTION_ALG, iv },
+      key,
+      encode(message)
+    );
+    return new Uint8Array(arrayBuffer);
+  }
+  async function decrypt(iv, key, cyphertext) {
+    const arrayBuffer = await crypto.subtle.decrypt(
+      { name: ENCRYPTION_ALG, iv },
+      key,
+      cyphertext
+    );
+    return arrayBufferToString(arrayBuffer);
+  }
+  async function hash(encoded) {
+    return await crypto.subtle.digest("SHA-256", encoded);
+  }
+  function generateIV() {
+    return crypto.getRandomValues(new Uint8Array(IV_SIZE));
+  }
+  async function importKey(passphrase, purpose) {
+    return await crypto.subtle.importKey(
+      "raw",
+      await hash(encode(passphrase)),
+      { name: ENCRYPTION_ALG },
+      false,
+      [purpose]
+    );
+  }
+  function arrayBufferToString(arrayBuffer) {
+    const uInt8Array = new Uint8Array(arrayBuffer);
+    return decode(uInt8Array);
+  }
+  function uInt8ToArray(uInt8Array) {
+    return Array.from(uInt8Array);
+  }
+  function arrayToUint8(array) {
+    return new Uint8Array(array);
+  }
+
+  // src/colors.ts
+  var Colors = /* @__PURE__ */ ((Colors2) => {
+    Colors2["Standard"] = "standard";
+    Colors2["Coral"] = "coral";
+    Colors2["Yellow"] = "yellow";
+    Colors2["Green"] = "green";
+    Colors2["LightBlue"] = "lightblue";
+    Colors2["Blue"] = "blue";
+    Colors2["purple"] = "purple";
+    return Colors2;
+  })(Colors || {});
+
+  // src/Model/Chat/chatModel.ts
+  var ChatModel = class _ChatModel {
     // init
-    constructor(coreViewModel2, chatViewModel, boardsAndTasksModel, contextDebugDescription) {
-      super(contextDebugDescription);
-      this.coreViewModel = coreViewModel2;
-      this.chatViewModel = chatViewModel;
-      this.boardsAndTasksModel = boardsAndTasksModel;
-      // state
-      this.taskIndexManager = new IndexManager(
-        (taskViewModel) => taskViewModel.sortingString
-      );
-      this.selectedTaskViewModel = new State(void 0);
-      this.taskViewModels = new MapState();
-      this.taskCategorySuggestions = new ListState();
-      this.taskStatusSuggestions = new ListState();
-      // methods
-      this.createTaskFromBoardId = (boardId) => {
-        const taskFileContent = this.boardsAndTasksModel.createTask(boardId);
-        const taskViewModel = new TaskViewModel(
-          this.coreViewModel,
-          this.chatViewModel,
-          this.boardsAndTasksModel,
-          this,
-          taskFileContent
+    constructor(storageModel2, connectionModel2, settingsModel2, chatListModel2, contactListModel2, chatId) {
+      this.storageModel = storageModel2;
+      this.connectionModel = connectionModel2;
+      this.settingsModel = settingsModel2;
+      this.chatListModel = chatListModel2;
+      this.contactListModel = contactListModel2;
+      // handler managers
+      this.chatMessageHandlerManager = new HandlerManager();
+      this.reactionHandlerManager = new HandlerManager();
+      this.changeHandlerManager = new HandlerManager();
+      // paths
+      this.getBasePath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.chatBase(this.id)
         );
-        taskViewModel.open();
-        this.updateTaskIndices();
       };
-      // view
-      this.showTask = (taskFileContent) => {
+      this.getInfoPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.info(this.id)
+        );
       };
-      this.removeTaskFromView = (taskFileContent) => {
+      this.getColorPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.color(this.id)
+        );
       };
-      this.selectTask = (selectedTask) => {
-        this.selectedTaskViewModel.value = selectedTask;
+      this.getMessageDirPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.messages(this.id)
+        );
       };
-      this.closeTask = () => {
-        this.selectedTaskViewModel.value = void 0;
+      this.getMessagePath = (id) => {
+        return [...this.getMessageDirPath(), id];
       };
-      this.updateTaskIndices = () => {
-        this.taskIndexManager.update([...this.taskViewModels.value.values()]);
-        for (const taskViewModel of this.taskViewModels.value.values()) {
-          taskViewModel.updateIndex();
+      this.getReactionDirPath = () => {
+        return StorageModel.getPath(
+          "chat" /* Chat */,
+          filePaths.chat.reactions(this.id)
+        );
+      };
+      this.getReactionPath = (id) => {
+        return [...this.getReactionDirPath(), id];
+      };
+      this.getPreviousFilterPath = () => {
+        return [
+          "chat" /* Chat */,
+          ...filePaths.chat.previousFilter(this.id)
+        ];
+      };
+      // handlers
+      this.handleMessage = (body) => {
+        const chatMessage = parseValidObject(
+          body,
+          ChatMessageReference
+        );
+        if (chatMessage == null) return;
+        chatMessage.status = "received" /* Received */;
+        this.addMessage(chatMessage);
+        if (chatMessage.stringifiedFile) return;
+        this.setReadStatus(true);
+      };
+      this.handleReaction = (reaction) => {
+        if (!checkMatchesObjectStructure(reaction, ChatMessageReactionReference))
+          return;
+        const reactionPath = this.getReactionPath(reaction.fileId);
+        if (reaction.isDeleting == true) {
+          this.storageModel.remove(reactionPath);
+        } else {
+          this.storageModel.writeStringifiable(reactionPath, reaction);
         }
+        this.reactionHandlerManager.trigger(reaction);
+      };
+      this.handleMessageSent = (chatMessage) => {
+        chatMessage.status = "sent" /* Sent */;
+        this.addMessage(chatMessage);
+      };
+      // settings
+      this.setName = (name) => {
+        this.info.name = name;
+        this.storeInfo();
+        this.syncInfo();
+        this.subscribe();
+      };
+      this.setSecondaryChannels = (secondaryChannels) => {
+        this.info.secondaryChannels = secondaryChannels;
+        this.storeInfo();
+      };
+      this.setEncryptionKey = (key) => {
+        this.info.encryptionKey = key;
+        this.storeInfo();
+      };
+      this.setColor = (color) => {
+        this.info.color = color;
+        this.syncInfo();
+        this.storeInfo();
+      };
+      // messaging
+      this.addMessage = async (chatMessage) => {
+        await this.decryptMessage(chatMessage);
+        this.contactListModel.storeContact(chatMessage.senderId, chatMessage.senderName);
+        if (chatMessage.body != "") {
+          const messagePath = this.getMessagePath(chatMessage.fileId);
+          this.storageModel.writeStringifiable(messagePath, chatMessage);
+          this.chatMessageHandlerManager.trigger(chatMessage);
+        }
+        this.fileModel.handleStringifiedFileContent(
+          chatMessage.stringifiedFile
+        );
+      };
+      this.getSendingData = () => {
+        const id = this.settingsModel.userid;
+        const senderName = this.settingsModel.username || "?";
+        const allChannels = [this.id];
+        for (const secondaryChannel of this.info.secondaryChannels) {
+          allChannels.push(secondaryChannel);
+        }
+        const combinedChannel = allChannels.join("/");
+        return [id, senderName, combinedChannel];
+      };
+      this.sendMessage = async (body, inlineReplyId, fileContent) => {
+        const [senderId, senderName, combinedChannel] = this.getSendingData();
+        const chatMessage = await _ChatModel.createChatMessage(
+          combinedChannel,
+          senderId,
+          senderName,
+          this.info.encryptionKey,
+          body,
+          inlineReplyId,
+          fileContent
+        );
+        this.addMessage(chatMessage);
+        this.connectionModel.sendMessageOrStore(chatMessage);
+        return chatMessage.fileId;
+      };
+      this.decryptMessage = async (chatMessage) => {
+        const decryptedBody = await decryptString(
+          chatMessage.body,
+          this.info.encryptionKey
+        );
+        const decryptedFile = await decryptString(
+          chatMessage.stringifiedFile ?? "",
+          this.info.encryptionKey
+        );
+        chatMessage.body = decryptedBody;
+        chatMessage.stringifiedFile = decryptedFile;
+      };
+      this.sendReaction = async (messageId, content, isDeleting = false) => {
+        const [senderId, senderName, combinedChannel] = this.getSendingData();
+        const reaction = _ChatModel.createMessageReaction(
+          messageId,
+          senderId,
+          senderName,
+          content,
+          isDeleting
+        );
+        this.sendMessage("", void 0, reaction);
+        this.handleReaction(reaction);
+      };
+      this.subscribe = () => {
+        this.connectionModel.addChannel(this.id);
+      };
+      this.setReadStatus = (hasUnreadMessages) => {
+        this.info.hasUnreadMessages = hasUnreadMessages;
+        this.storeInfo();
+      };
+      // storage
+      this.storeInfo = () => {
+        this.storageModel.writeStringifiable(this.getInfoPath(), this.info);
+      };
+      this.syncInfo = () => {
+        this.sendMessage("", void 0, this.info);
+      };
+      this.storeFilter = (filter) => {
+        this.storageModel.write(this.getPreviousFilterPath(), filter);
+      };
+      this.getFilter = () => {
+        return this.storageModel.read(this.getPreviousFilterPath()) || "";
+      };
+      this.delete = () => {
+        this.chatListModel.untrackChat(this);
+        const dirPath = this.getBasePath();
+        this.storageModel.removeRecursively(dirPath);
+      };
+      // load
+      this.loadInfo = () => {
+        let info = this.storageModel.readStringifiable(
+          this.getInfoPath(),
+          ChatInfoReference
+        );
+        this.info = info || _ChatModel.generateChatInfo("0", "0", "standard" /* Standard */);
+        this.storeInfo();
+      };
+      this.handleInfo = (info) => {
+        this.info = info;
+        this.changeHandlerManager.trigger(null);
+        this.storeInfo();
+      };
+      this.id = chatId;
+      this.loadInfo();
+      this.subscribe();
+      this.fileModel = new FileModel(
+        this.storageModel,
+        this.settingsModel,
+        this
+      );
+    }
+    /* load function called in constructor */
+    get secondaryChannels() {
+      return this.info.secondaryChannels.sort(localeCompare);
+    }
+    get color() {
+      const color = this.info.color;
+      if ([...Object.values(Colors)].includes(color)) return color;
+      return "standard" /* Standard */;
+    }
+    get messages() {
+      const messageIds = this.storageModel.list(
+        this.getMessageDirPath()
+      );
+      if (!Array.isArray(messageIds)) return [];
+      const chatMessages = [];
+      for (const messageId of messageIds) {
+        const messagePath = this.getMessagePath(messageId);
+        const chatMessage = this.storageModel.readStringifiable(
+          messagePath,
+          ChatMessageReference
+        );
+        if (chatMessage == null) continue;
+        chatMessages.push(chatMessage);
+      }
+      const sorted = chatMessages.sort(
+        (a, b) => a.dateSent.localeCompare(b.dateSent)
+      );
+      return sorted;
+    }
+    get reactions() {
+      const reactionIds = this.storageModel.list(
+        this.getReactionDirPath()
+      );
+      if (!Array.isArray(reactionIds)) return [];
+      const reactions = [];
+      for (const reactionId of reactionIds) {
+        const reactionPath = this.getReactionPath(reactionId);
+        const reaction = this.storageModel.readStringifiable(
+          reactionPath,
+          ChatMessageReactionReference
+        );
+        if (reaction == null) continue;
+        reactions.push(reaction);
+      }
+      return reactions;
+    }
+    // utility
+    static splitChannel(channelString) {
+      return channelString.split("/");
+    }
+    static {
+      this.generateChatInfo = (name, id, color) => {
+        const file = FileModel.createFileContent(id, "chat-info");
+        return {
+          ...file,
+          name,
+          secondaryChannels: [],
+          encryptionKey: "",
+          color,
+          hasUnreadMessages: false
+        };
+      };
+    }
+    static {
+      this.createChatMessage = async (channel, senderId, senderName, encryptionKey, body, inlineReplyId, fileContent) => {
+        const messageFileContent = FileModel.createFileContent(v4_default(), "message");
+        const chatMessage = {
+          ...messageFileContent,
+          channel,
+          senderName,
+          senderId,
+          body,
+          dateSent: createTimestamp(),
+          inlineReplyId,
+          status: "outbox" /* Outbox */,
+          stringifiedFile: ""
+        };
+        if (fileContent != void 0) {
+          const stringifiedFile = stringify(fileContent);
+          chatMessage.stringifiedFile = stringifiedFile;
+        }
+        if (encryptionKey != "") {
+          chatMessage.body = await encryptString(
+            chatMessage.body,
+            encryptionKey
+          );
+          chatMessage.stringifiedFile = await encryptString(
+            chatMessage.stringifiedFile,
+            encryptionKey
+          );
+        }
+        return chatMessage;
+      };
+    }
+    static {
+      this.createMessageReaction = (messageId, senderId, senderName, content, isDeleting) => {
+        const fileContent = FileModel.createFileContent(v4_default(), "reaction");
+        const reaction = {
+          ...fileContent,
+          fileId: _ChatModel.createMessageReactionId(messageId, senderId),
+          messageId,
+          senderId,
+          senderName,
+          content,
+          isDeleting
+        };
+        return reaction;
+      };
+    }
+    static {
+      this.createMessageReactionId = (messageId, senderId) => {
+        return messageId + senderId;
       };
     }
   };
+  var ReactionSymbols = /* @__PURE__ */ ((ReactionSymbols2) => {
+    ReactionSymbols2["ThumbsUp"] = "\u{1F44D}";
+    ReactionSymbols2["Check"] = "\u2705";
+    ReactionSymbols2["Stop"] = "\u{1F6D1}";
+    ReactionSymbols2["Attention"] = "\u2757\uFE0F";
+    ReactionSymbols2["DoubleAttention"] = "\u203C\uFE0F";
+    ReactionSymbols2["Question"] = "\u2753";
+    return ReactionSymbols2;
+  })(ReactionSymbols || {});
+  var ChatInfoReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: "chat-info",
+    name: "",
+    secondaryChannels: [""],
+    encryptionKey: "",
+    color: "",
+    hasUnreadMessages: true
+  };
+  var ChatMessageReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: "message",
+    channel: "",
+    senderName: "",
+    senderId: "",
+    body: "",
+    dateSent: "",
+    status: "",
+    stringifiedFile: ""
+  };
+  var ChatMessageReactionReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: "reaction",
+    messageId: "",
+    senderId: "",
+    senderName: "",
+    content: "",
+    isDeleting: false
+  };
 
-  // src/ViewModel/Pages/calendarPageViewModel.ts
-  var CALENDAR_EVENT_BOARD_ID = "events";
-  var CalendarPageViewModel = class extends TaskContainingPageViewModel {
+  // src/Model/Files/fileModel.ts
+  var FileModel = class _FileModel {
     // init
-    constructor(coreViewModel2, chatViewModel, calendarModel, boardsAndTasksModel) {
-      super(coreViewModel2, chatViewModel, boardsAndTasksModel, "calendar");
-      this.coreViewModel = coreViewModel2;
-      this.chatViewModel = chatViewModel;
-      this.calendarModel = calendarModel;
-      this.boardsAndTasksModel = boardsAndTasksModel;
-      // paths
-      this.getBasePath = () => {
-        return [...this.calendarModel.getViewPath()];
+    constructor(storageModel2, settingsModel2, chatModel) {
+      this.getFileContainerPath = () => {
+        return [...this.basePath, "data" /* Data */];
       };
-      // state
-      this.currentTodayDate = void 0;
-      this.selectedYear = new State(0);
-      this.selectedMonth = new State(0);
-      this.selectedDate = new State(0);
-      this.monthGrid = new State(void 0);
-      this.nextTask = new State(void 0);
+      this.getModelContainerPath = (modelName) => {
+        return [...this.basePath, "model" /* Model */, modelName];
+      };
+      this.getFilePath = (fileId) => {
+        return [...this.getFileContainerPath(), fileId];
+      };
+      this.getFileContentPath = (fileId, fileContentId) => {
+        const filePath = this.getFilePath(fileId);
+        return [...filePath, fileContentId];
+      };
+      // handlers
+      this.handleStringifiedFileContent = (stringifiedFileContent) => {
+        const fileContent = parseValidObject(
+          stringifiedFileContent,
+          FileContentReference
+        );
+        if (fileContent == null) return;
+        this.handleFileContent(fileContent);
+      };
+      this.handleFileContent = (fileContent) => {
+        console.log(fileContent.type);
+        if (fileContent.type == "chat-info") {
+          if (checkMatchesObjectStructure(fileContent, ChatInfoReference) == false)
+            return;
+          this.chatModel.handleInfo(fileContent);
+        }
+        const didStore = this.storeFileContent(fileContent);
+        if (didStore == false) return;
+        switch (fileContent.type) {
+          case "board-info":
+          case "task":
+            this.boardsAndTasksModel.handleFileContent(fileContent);
+            break;
+          case "reaction":
+            this.chatModel.handleReaction(fileContent);
+            break;
+        }
+      };
       // methods
-      this.createEvent = () => {
-        const taskFileContent = this.boardsAndTasksModel.createTask(CALENDAR_EVENT_BOARD_ID);
-        taskFileContent.date = CalendarModel.getISODateString(
-          this.selectedYear.value.toString(),
-          this.selectedMonth.value.toString(),
-          this.selectedDate.value.toString()
+      this.addFileContentAndSend = (fileContent) => {
+        this.handleFileContent(fileContent);
+        this.chatModel.sendMessage("", void 0, fileContent);
+      };
+      // storage
+      this.storeFileContent = (fileContent) => {
+        const fileContentPath = this.getFileContentPath(
+          fileContent.fileId,
+          fileContent.fileContentId
         );
-        const taskViewModel = new TaskViewModel(
-          this.coreViewModel,
-          this.chatViewModel,
-          this.boardsAndTasksModel,
-          this,
-          taskFileContent
+        const existingFileContent = this.storageModel.read(fileContentPath);
+        if (existingFileContent != null) return false;
+        const stringifiedContent = stringify(fileContent);
+        this.storageModel.write(fileContentPath, stringifiedContent);
+        return true;
+      };
+      this.listFileIds = () => {
+        return this.storageModel.list(this.basePath);
+      };
+      this.listFileContentIds = (fileId) => {
+        const filePath = this.getFilePath(fileId);
+        return this.storageModel.list(filePath);
+      };
+      this.selectLatestFileContentId = (fileContentIds) => {
+        return fileContentIds[fileContentIds.length - 1];
+      };
+      this.getFileContent = (fileId, fileContentName, reference) => {
+        const filePath = this.getFileContentPath(
+          fileId,
+          fileContentName
         );
-        taskViewModel.open();
-        this.updateTaskIndices();
-      };
-      this.getEventsForDate = () => {
-        const paddedDate = CalendarModel.padZero(
-          this.selectedDate.toString()
+        const fileContentOrNull = this.storageModel.readStringifiable(
+          filePath,
+          reference
         );
-        if (this.monthGrid.value == void 0) {
-          return void 0;
-        }
-        return this.monthGrid.value.days[paddedDate];
+        return fileContentOrNull;
       };
-      // view
-      this.getTaskMapState = (taskFileContent) => {
-        if (this.monthGrid.value == null) return null;
-        const date = CalendarModel.isoToDateString(
-          taskFileContent.date ?? ""
+      this.getLatestFileContent = (fileId, reference) => {
+        const fileContentsIds = this.listFileContentIds(fileId);
+        const latestFileContentId = this.selectLatestFileContentId(fileContentsIds);
+        if (latestFileContentId == void 0) return null;
+        const fileContent = this.getFileContent(
+          fileId,
+          latestFileContentId,
+          reference
         );
-        return this.monthGrid.value.days[date];
+        return fileContent;
       };
-      this.showTask = (taskFileContent) => {
-        const monthString = CalendarModel.isoToMonthString(
-          taskFileContent.date ?? ""
+      this.chatModel = chatModel;
+      this.settingsModel = settingsModel2;
+      this.storageModel = storageModel2;
+      this.boardsAndTasksModel = new BoardsAndTasksModel(
+        this.storageModel,
+        this.settingsModel,
+        chatModel,
+        this
+      );
+    }
+    // paths
+    get basePath() {
+      return StorageModel.getPath(
+        "chat" /* Chat */,
+        filePaths.chat.files(this.chatModel.id)
+      );
+    }
+    static {
+      // utility
+      this.generateFileContentId = (creationDate) => {
+        return creationDate + v4_default();
+      };
+    }
+    static {
+      this.createFileContent = (fileId, type) => {
+        const creationDate = createTimestamp();
+        const fileContentId = _FileModel.generateFileContentId(creationDate);
+        return {
+          dataVersion: DATA_VERSION,
+          fileId,
+          fileContentId,
+          creationDate,
+          type
+        };
+      };
+    }
+  };
+  var FileContentReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: ""
+  };
+
+  // src/Model/Files/calendarModel.ts
+  var CalendarModel = class {
+    // init
+    constructor(storageModel2, settingsModel2, fileModel) {
+      this.getViewPath = () => {
+        return [...this.basePath, "view" /* ModelView */];
+      };
+      this.getMonthContainerPath = () => {
+        return [...this.basePath, "months" /* Months */];
+      };
+      this.getMonthPath = (monthString) => {
+        return [...this.getMonthContainerPath(), monthString];
+      };
+      // task references
+      this.storeTaskReference = (taskFileContent) => {
+        if (taskFileContent.date == void 0) return;
+        const monthString = isoToMonthString(taskFileContent.date);
+        const monthPath = this.getMonthPath(monthString);
+        const referencePath = [...monthPath, taskFileContent.fileId];
+        this.storageModel.write(referencePath, "");
+      };
+      this.deleteTaskReference = (monthString, taskId) => {
+        const monthPath = this.getMonthPath(monthString);
+        const referencePath = [...monthPath, taskId];
+        this.storageModel.write(referencePath, "");
+      };
+      // data
+      this.listTaskIds = (monthString) => {
+        const monthPath = this.getMonthPath(monthString);
+        return this.storageModel.list(monthPath);
+      };
+      // util
+      this.generateMonthGrid = (coreViewModel2, year, month, defaultValueCreator) => {
+        const date = coreViewModel2.unwrappedTodayDate;
+        const isCurrentMonth = year == date.getFullYear() && month == date.getMonth() + 1;
+        date.setDate(1);
+        date.setMonth(month - 1);
+        date.setFullYear(year);
+        const firstWeekdayOfMonth = date.getDay();
+        const firstDayOfWeekSetting = parseInt(
+          this.settingsModel.firstDayOfWeek
         );
-        if (monthString == void 0 || monthString != this.monthString) {
-          this.removeTaskFromView(taskFileContent);
-          this.calendarModel.deleteTaskReference(
-            this.monthString,
-            taskFileContent.fileId
-          );
-          return;
-        }
-        const taskViewModel = new TaskViewModel(
-          this.coreViewModel,
-          this.chatViewModel,
-          this.boardsAndTasksModel,
-          this,
-          taskFileContent
-        );
-        const mapState = this.getTaskMapState(taskFileContent);
-        this.taskViewModels.handleRemoval(taskViewModel, () => {
-          mapState?.remove(taskFileContent.fileId);
-        });
-        this.taskViewModels.remove(taskFileContent.fileId);
-        this.taskViewModels.set(taskFileContent.fileId, taskViewModel);
-        mapState?.set(taskFileContent.fileId, taskViewModel);
-        this.updateTaskIndices();
-      };
-      this.removeTaskFromView = (taskFileContent) => {
-        this.taskViewModels.remove(taskFileContent.fileId);
-      };
-      this.showToday = () => {
-        const today = this.coreViewModel.todayDate.value;
-        this.selectedYear.value = today.getFullYear();
-        this.selectedMonth.value = today.getMonth() + 1;
-        this.selectedDate.value = today.getDate();
-      };
-      this.showPreviousMonth = () => {
-        this.selectedMonth.value -= 1;
-        if (this.selectedMonth.value <= 0) {
-          this.selectedYear.value -= 1;
-          this.selectedMonth.value = 12;
-        }
-      };
-      this.showNextMonth = () => {
-        this.selectedMonth.value += 1;
-        if (this.selectedMonth.value >= 13) {
-          this.selectedYear.value += 1;
-          this.selectedMonth.value = 1;
-        }
-      };
-      this.handleDrop = (year, month, date) => {
-        const ISOString = CalendarModel.getISODateString(
+        const offset = firstWeekdayOfMonth < firstDayOfWeekSetting ? 7 - firstDayOfWeekSetting : firstWeekdayOfMonth - firstDayOfWeekSetting;
+        date.setMonth(month);
+        date.setDate(-1);
+        const daysInMonth = date.getDate() + 1;
+        const grid = {
+          offset,
+          firstDayOfWeek: parseInt(this.settingsModel.firstDayOfWeek),
+          isCurrentMonth,
           year,
           month,
-          date
-        );
-        const draggedObject = this.coreViewModel.draggedObject.value;
-        if (draggedObject instanceof TaskViewModel == false) return;
-        draggedObject.setDate(ISOString);
-      };
-      this.handleChron = () => {
-        this.updateMonthGrid();
-        this.updateNextTask();
-      };
-      this.updateMonthGrid = () => {
-        const today = formatISO(this.coreViewModel.todayDate.value);
-        if (this.currentTodayDate == today)
-          return;
-        this.loadMonthTasks();
-        this.currentTodayDate = today;
-        this.selectedDate.callSubscriptions();
-      };
-      this.updateNextTask = () => {
-        if (this.selectedDateString != this.currentTodayDate) {
-          this.nextTask.value = void 0;
-          return;
+          days: {}
+        };
+        for (let i = 0; i < daysInMonth; i++) {
+          const paddedDate = padZero((i + 1).toString(), 2);
+          grid.days[paddedDate] = defaultValueCreator();
         }
-        const tasks = this.getEventsForDate();
-        if (tasks == void 0) return;
-        const taskArray = [...tasks.value.values()];
-        const sorted = taskArray.sort((a, b) => a.index.value - b.index.value);
-        for (const task of sorted) {
-          if (task.time.value <= this.coreViewModel.time.value) continue;
-          this.nextTask.value = task;
-          break;
-        }
-        ;
+        return grid;
       };
-      // load
-      this.loadMonthTasks = () => {
-        this.monthGrid.value = this.calendarModel.generateMonthGrid(
-          this.coreViewModel,
-          this.selectedYear.value,
-          this.selectedMonth.value,
-          () => new MapState()
-        );
-        const taskIds = this.calendarModel.listTaskIds(
-          this.monthString
-        );
-        for (const taskId of taskIds) {
-          const taskFileContent = this.boardsAndTasksModel.getLatestTaskFileContent(taskId);
-          if (taskFileContent == null) continue;
-          this.showTask(taskFileContent);
-        }
-      };
-      this.loadData = () => {
-      };
-      this.calendarModel = calendarModel;
-      this.boardsAndTasksModel = boardsAndTasksModel;
-      this.chatViewModel = chatViewModel;
-      bulkSubscribe([this.selectedYear, this.selectedMonth], () => {
-        this.loadMonthTasks();
-      });
-      this.selectedDate.subscribeSilent(() => {
-        this.updateNextTask();
-      });
-      boardsAndTasksModel.taskHandlerManager.setHandler(
-        "calendar" + this.chatViewModel.chatModel.id,
-        (taskFileContent) => {
-          this.showTask(taskFileContent);
-        }
-      );
-      this.coreViewModel.chronHandlerManager.setHandler(
-        `calendar-${this.chatViewModel.chatModel.id}`,
-        this.handleChron
-      );
-      this.showToday();
-      this.registerKeyStroke("-" /* Reset */, this.showToday);
-      this.registerKeyStroke("k", this.showPreviousMonth);
-      this.registerKeyStroke("l", this.showNextMonth);
-      this.registerKeyStroke("a" /* Create */, this.createEvent);
-      this.chatViewModel.registerContext("calendar" /* Calendar */, this);
+      this.storageModel = storageModel2;
+      this.settingsModel = settingsModel2;
+      this.fileModel = fileModel;
     }
-    // data
-    get monthString() {
-      return CalendarModel.getMonthString(
-        this.selectedYear.value.toString(),
-        this.selectedMonth.value.toString()
+    // paths
+    get basePath() {
+      return this.fileModel.getModelContainerPath(
+        "calendar" /* ModelCalendar */
       );
     }
-    get selectedDateString() {
-      return formatISOFromParts(this.selectedYear.value, this.selectedMonth.value, this.selectedDate.value);
+  };
+
+  // src/Model/Files/boardsAndTasksModel.ts
+  var BoardsAndTasksModel = class _BoardsAndTasksModel {
+    // init
+    constructor(storageModel2, settingsModel2, chatModel, fileModel) {
+      // data
+      this.boardHandlerManager = new HandlerManager();
+      this.taskHandlerManager = new HandlerManager();
+      // paths
+      this.getBasePath = () => {
+        return this.fileModel.getModelContainerPath("tasks" /* ModelTask */);
+      };
+      this.getViewPath = () => {
+        return [...this.getBasePath(), "view" /* ModelView */];
+      };
+      this.getBoardFilePath = (boardId) => {
+        return [...this.fileModel.getFilePath(boardId)];
+      };
+      this.getTaskFilePath = (taskId) => {
+        return [...this.fileModel.getFilePath(taskId)];
+      };
+      this.getBoardContainerPath = () => {
+        return [...this.getBasePath(), "boards" /* Boards */];
+      };
+      this.getBoardDirectoryPath = (boardId) => {
+        return [...this.getBoardContainerPath(), boardId];
+      };
+      this.getTaskContainerPath = (boardId) => {
+        return [
+          ...this.getBoardDirectoryPath(boardId),
+          "tasks" /* BoardTasks */
+        ];
+      };
+      this.getTaskReferencePath = (boardId, fileId) => {
+        return [...this.getTaskContainerPath(boardId), fileId];
+      };
+      // handlers
+      this.handleFileContent = (fileContent) => {
+        if (checkMatchesObjectStructure(
+          fileContent,
+          BoardInfoFileContentReference
+        ) == true) {
+          this.handleBoard(fileContent);
+        } else if (checkMatchesObjectStructure(
+          fileContent,
+          TaskFileContentReference
+        ) == true) {
+          this.handleTask(fileContent);
+        }
+      };
+      this.handleBoard = (boardInfoFileContent) => {
+        this.updateBoard(boardInfoFileContent);
+      };
+      this.handleTask = (taskFileContent) => {
+        this.updateTask(taskFileContent);
+      };
+      // boards
+      this.createBoard = (name) => {
+        const boardInfoFileContent = _BoardsAndTasksModel.createBoardInfoFileContent(
+          v4_default(),
+          name,
+          "standard" /* Standard */
+        );
+        return boardInfoFileContent;
+      };
+      this.updateBoard = (boardInfoFileContent) => {
+        this.storeBoard(boardInfoFileContent);
+        this.boardHandlerManager.trigger(boardInfoFileContent);
+      };
+      this.updateBoardAndSend = (boardInfoFileContent) => {
+        this.updateBoard(boardInfoFileContent);
+        this.chatModel.sendMessage("", void 0, boardInfoFileContent);
+      };
+      this.storeBoard = (boardInfoFileContent) => {
+        this.fileModel.storeFileContent(boardInfoFileContent);
+        const boardDirectoryPath = this.getBoardDirectoryPath(
+          boardInfoFileContent.fileId
+        );
+        this.storageModel.write(boardDirectoryPath, "");
+      };
+      this.deleteBoard = (boardId) => {
+        const boardFilePath = this.getBoardFilePath(boardId);
+        const boardDirectoryPath = this.getBoardDirectoryPath(boardId);
+        this.storageModel.removeRecursively(boardFilePath);
+        this.storageModel.removeRecursively(boardDirectoryPath);
+      };
+      this.listBoardIds = () => {
+        const boardContainerPath = this.getBoardContainerPath();
+        const boardIds = this.storageModel.list(boardContainerPath);
+        return boardIds;
+      };
+      this.getBoardInfo = (fileId) => {
+        const boardInfoFileContentOrNull = this.fileModel.getLatestFileContent(
+          fileId,
+          BoardInfoFileContentReference
+        );
+        return boardInfoFileContentOrNull;
+      };
+      this.getBoardName = (boardId) => {
+        const boardInfo = this.getBoardInfo(boardId);
+        if (boardInfo == null) return "";
+        return boardInfo.name;
+      };
+      //tasks
+      this.createTask = (boardId) => {
+        const taskFileContent = _BoardsAndTasksModel.createTaskFileContent(v4_default(), "", boardId);
+        return taskFileContent;
+      };
+      this.updateTask = (taskFileContent) => {
+        this.storeTask(taskFileContent);
+        this.taskHandlerManager.trigger(taskFileContent);
+      };
+      this.updateTaskAndSend = (taskFileContent) => {
+        this.updateTask(taskFileContent);
+        this.chatModel.sendMessage("", void 0, taskFileContent);
+      };
+      this.storeTask = (taskFileContent) => {
+        this.fileModel.storeFileContent(taskFileContent);
+        const taskReferencePath = this.getTaskReferencePath(
+          taskFileContent.boardId,
+          taskFileContent.fileId
+        );
+        this.storageModel.write(taskReferencePath, "");
+        this.calendarModel.storeTaskReference(taskFileContent);
+      };
+      this.listTaskIds = (boardId) => {
+        const taskContainerPath = this.getTaskContainerPath(boardId);
+        const fileIds = this.storageModel.list(taskContainerPath);
+        return fileIds;
+      };
+      this.listTaskVersionIds = (taskId) => {
+        const versionIds = this.fileModel.listFileContentIds(taskId);
+        return versionIds;
+      };
+      this.getLatestTaskFileContent = (taskId) => {
+        const taskFileContentOrNull = this.fileModel.getLatestFileContent(
+          taskId,
+          TaskFileContentReference
+        );
+        return taskFileContentOrNull;
+      };
+      this.getSpecificTaskFileContent = (taskId, versionId) => {
+        const taskFileContentOrNull = this.fileModel.getFileContent(
+          taskId,
+          versionId,
+          TaskFileContentReference
+        );
+        return taskFileContentOrNull;
+      };
+      this.deleteTask = (boardId, taskId) => {
+        const taskFilePath = this.getTaskFilePath(taskId);
+        this.storageModel.removeRecursively(taskFilePath);
+        this.deleteTaskReference(boardId, taskId);
+      };
+      this.deleteTaskReference = (boardId, taskId) => {
+        const taskReferencePath = this.getTaskReferencePath(
+          boardId,
+          taskId
+        );
+        this.storageModel.removeRecursively(taskReferencePath);
+      };
+      this.storageModel = storageModel2;
+      this.settingsModel = settingsModel2;
+      this.chatModel = chatModel;
+      this.fileModel = fileModel;
+      this.calendarModel = new CalendarModel(
+        this.storageModel,
+        this.settingsModel,
+        this.fileModel
+      );
     }
+    static {
+      // utility
+      this.createBoardInfoFileContent = (fileId, name, color) => {
+        const fileContent = FileModel.createFileContent(fileId, "board-info");
+        return {
+          ...fileContent,
+          name,
+          color
+        };
+      };
+    }
+    static {
+      this.createTaskFileContent = (fileId, name, boardId) => {
+        const fileContent = FileModel.createFileContent(
+          fileId,
+          "task"
+        );
+        return {
+          ...fileContent,
+          name,
+          boardId
+        };
+      };
+    }
+  };
+  var BoardInfoFileContentReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: "board-info",
+    name: "",
+    color: ""
+  };
+  var TaskFileContentReference = {
+    dataVersion: DATA_VERSION,
+    fileId: "string",
+    fileContentId: "",
+    creationDate: "",
+    type: "task",
+    name: "",
+    boardId: ""
   };
 
   // src/ViewModel/Pages/taskViewModel.ts
@@ -3926,7 +3927,11 @@
       this.isPresentingFilterModal = new State(false);
       this.searchSuggestions = new ListState();
       this.filteredTaskViewModels = new ListState();
-      this.pinchToZoomData = new State({ zoom: 1, x: 0, y: 0 });
+      this.pinchToZoomData = new State({
+        zoom: 1,
+        x: 0,
+        y: 0
+      });
       // paths
       this.getBasePath = () => {
         return [
@@ -4286,7 +4291,12 @@
       };
       this.loadData();
       this.chatViewModel = chatViewModel;
-      implementFilter(this.boardViewModels, this.boardMatches, this.boardQuery, (board) => board.name.value);
+      implementFilter(
+        this.boardViewModels,
+        this.boardMatches,
+        this.boardQuery,
+        (board) => board.name.value
+      );
       this.chatViewModel.registerContext("tasks" /* Tasks */, this);
       this.selectedBoardId.subscribeSilent(this.updateContexts);
       boardsAndTasksModel.boardHandlerManager.setHandler(
@@ -4347,9 +4357,7 @@
       );
       // methods
       this.setName = () => {
-        this.chatViewModel.chatModel.setName(
-          this.nameInput.value
-        );
+        this.chatViewModel.chatModel.setName(this.nameInput.value);
         this.name.value = this.chatViewModel.chatModel.info.name;
         this.chatViewModel.chatListViewModel.updateIndices();
       };
@@ -4417,16 +4425,20 @@
   // src/ViewModel/Chat/chatMessageViewModel.ts
   var ChatMessageViewModel = class {
     // init
-    constructor(coreViewModel2, messagePageViewModel, chatMessage, sentByUser) {
+    constructor(coreViewModel2, messagePageViewModel, chatMessage, contact, sentByUser) {
       this.coreViewModel = coreViewModel2;
       this.messagePageViewModel = messagePageViewModel;
+      this.contact = contact;
       this.channel = "";
-      this.sender = "";
+      this.senderId = "";
       this.dateSent = "";
       this.body = new State("");
       this.inlineReply = void 0;
       this.replies = new MapState();
-      this.replyCount = createProxyState([this.replies], () => this.replies.value.size);
+      this.replyCount = createProxyState(
+        [this.replies],
+        () => this.replies.value.size
+      );
       this.status = new State(
         void 0
       );
@@ -4532,25 +4544,27 @@
         }
         const selectedMessage = this.messagePageViewModel.replyViewSelectedMessage.value;
         if (selectedMessage == void 0) hideForReplyView = false;
-        else if (selectedMessage.chatMessage.id == this.chatMessage.id) hideForReplyView = false;
-        else if (this.inlineReply != void 0 && selectedMessage.chatMessage.id == this.inlineReply.chatMessage.id) hideForReplyView = false;
+        else if (selectedMessage.chatMessage.fileId == this.chatMessage.fileId)
+          hideForReplyView = false;
+        else if (this.inlineReply != void 0 && selectedMessage.chatMessage.id == this.inlineReply.chatMessage.id)
+          hideForReplyView = false;
         else hideForReplyView = true;
         this.isHidden.value = hideForReactions || hideForReplyView;
       };
       // reactions
       this.handleReaction = (reaction) => {
         if (reaction.isDeleting) {
-          this.allReactions.remove(reaction.sender);
+          this.allReactions.remove(reaction.senderId);
         } else {
-          this.allReactions.set(reaction.sender, reaction);
+          this.allReactions.set(reaction.senderId, reaction);
         }
-        if (reaction.sender != this.coreViewModel.settingsModel.username)
+        if (reaction.senderId != this.coreViewModel.settingsModel.userid)
           return;
         this.userReaction.value = reaction.isDeleting ? void 0 : reaction.content;
       };
       this.sendReaction = (content, isDeleting) => {
         this.messagePageViewModel.sendReaction(
-          this.chatMessage.id,
+          this.chatMessage.fileId,
           content,
           isDeleting
         );
@@ -4558,7 +4572,7 @@
       // load
       this.loadData = () => {
         this.channel = this.chatMessage.channel;
-        this.sender = this.chatMessage.sender;
+        this.senderId = this.chatMessage.senderId;
         this.dateSent = new Date(this.chatMessage.dateSent).toLocaleString();
         this.body.value = this.chatMessage.body;
         this.status.value = this.chatMessage.status;
@@ -4566,13 +4580,20 @@
           this.inlineReply = this.messagePageViewModel.chatMessageViewModels.value.get(
             this.chatMessage.inlineReplyId
           );
-          this.inlineReply?.replies.set(this.chatMessage.id, this);
+          this.inlineReply?.replies.set(this.chatMessage.fileId, this);
         }
       };
       this.chatMessage = chatMessage;
       this.sentByUser = sentByUser;
       this.loadData();
-      bulkSubscribe([this.messagePageViewModel.reactionFilter, this.messagePageViewModel.replyViewSelectedMessage, this.allReactions], this.toggleHiding);
+      bulkSubscribe(
+        [
+          this.messagePageViewModel.reactionFilter,
+          this.messagePageViewModel.replyViewSelectedMessage,
+          this.allReactions
+        ],
+        this.toggleHiding
+      );
       this.toggleHiding();
     }
   };
@@ -4580,16 +4601,23 @@
   // src/ViewModel/Pages/messagePageViewModel.ts
   var MessagePageViewModel = class extends Context {
     // init
-    constructor(coreViewModel2, chatViewModel) {
+    constructor(coreViewModel2, chatViewModel, contactListViewModel2) {
       super("message-page");
       this.coreViewModel = coreViewModel2;
       this.chatViewModel = chatViewModel;
+      this.contactListViewModel = contactListViewModel2;
       // state
       this.chatMessageViewModels = new MapState();
       this.filteredMessageViewModels = new ListState();
       this.replyViewSelectedMessage = new State(void 0);
-      this.isReplyViewActive = createProxyState([this.replyViewSelectedMessage], () => this.replyViewSelectedMessage.value != void 0);
-      this.isReplyViewInactive = createProxyState([this.isReplyViewActive], () => !this.isReplyViewActive.value);
+      this.isReplyViewActive = createProxyState(
+        [this.replyViewSelectedMessage],
+        () => this.replyViewSelectedMessage.value != void 0
+      );
+      this.isReplyViewInactive = createProxyState(
+        [this.isReplyViewActive],
+        () => !this.isReplyViewActive.value
+      );
       this.isFilterModalOpen = new State(false);
       this.reactionFilter = new State(void 0);
       this.replyingMessage = new State(
@@ -4610,7 +4638,7 @@
       this.sendMessageFromBody = (body) => {
         let replyId = void 0;
         if (this.replyingMessage.value) {
-          replyId = this.replyingMessage.value.chatMessage.id;
+          replyId = this.replyingMessage.value.chatMessage.fileId;
         }
         const id = this.chatViewModel.chatModel.sendMessage(body, replyId);
         if (this.replyViewSelectedMessage.value == void 0)
@@ -4642,19 +4670,21 @@
       };
       // view
       this.showChatMessage = (chatMessage) => {
+        const contact = this.contactListViewModel.unwrapContact(chatMessage.senderId, chatMessage.senderName);
         const chatMessageViewModel = new ChatMessageViewModel(
           this.coreViewModel,
           this,
           chatMessage,
-          chatMessage.sender == this.chatViewModel.settingsViewModel.username.value
+          contact,
+          chatMessage.senderId == this.chatViewModel.settingsViewModel.settingsModel.userid
         );
-        const existingChatMessageViewModel = this.chatMessageViewModels.value.get(chatMessage.id);
+        const existingChatMessageViewModel = this.chatMessageViewModels.value.get(chatMessage.fileId);
         if (existingChatMessageViewModel != void 0) {
           existingChatMessageViewModel.body.value = chatMessage.body;
           existingChatMessageViewModel.status.value = chatMessage.status;
         } else {
           this.chatMessageViewModels.set(
-            chatMessage.id,
+            chatMessage.fileId,
             chatMessageViewModel
           );
         }
@@ -4707,7 +4737,8 @@
       };
       this.restoreFilter = () => {
         const previousFilter = this.chatViewModel.chatModel.getFilter();
-        if (Object.values(ReactionSymbols).includes(previousFilter)) this.setReactionFilter(previousFilter);
+        if (Object.values(ReactionSymbols).includes(previousFilter))
+          this.setReactionFilter(previousFilter);
       };
       this.restoreFilter();
       this.cannotSendMessage = createProxyState(
@@ -4744,7 +4775,7 @@
   // src/ViewModel/Chat/chatViewModel.ts
   var ChatViewModel6 = class extends ContextHost {
     // init
-    constructor(coreViewModel2, chatModel, settingsViewModel2, notificationViewModel, connectionViewModel2, chatListViewModel2) {
+    constructor(coreViewModel2, chatModel, settingsViewModel2, notificationViewModel, connectionViewModel2, chatListViewModel2, contactListViewModel2) {
       super("chat", coreViewModel2);
       this.coreViewModel = coreViewModel2;
       this.chatModel = chatModel;
@@ -4752,6 +4783,7 @@
       this.notificationViewModel = notificationViewModel;
       this.connectionViewModel = connectionViewModel2;
       this.chatListViewModel = chatListViewModel2;
+      this.contactListViewModel = contactListViewModel2;
       // state
       this.displayedColor = new State("standard" /* Standard */);
       this.selectedPage = new State(
@@ -4846,7 +4878,8 @@
       );
       this.messagePageViewModel = new MessagePageViewModel(
         this.coreViewModel,
-        this
+        this,
+        this.contactListViewModel
       );
       this.settingsPageViewModel = new SettingsPageViewModel(
         this.coreViewModel,
@@ -4866,7 +4899,10 @@
           this.messagePageViewModel.handleReaction(reaction);
         }
       );
-      chatModel.changeHandlerManager.setHandler(this.chatModel.id, this.settingsPageViewModel.updateData);
+      chatModel.changeHandlerManager.setHandler(
+        this.chatModel.id,
+        this.settingsPageViewModel.updateData
+      );
       this.loadPageSelection();
       this.resetColor();
       this.loadInfo();
@@ -4912,7 +4948,7 @@
       this.interval = void 0;
       // main
       this.showNotification = (message) => {
-        if (this.seenMessageIds.has(message.id)) return;
+        if (this.seenMessageIds.has(message.fileId)) return;
         if (this.chatListViewModel.selectedChat.value == void 0) return;
         const notification = this.createNotification(message);
         const currentChat = this.chatListViewModel.selectedChat.value.chatModel.id;
@@ -4927,9 +4963,7 @@
         if (notification == void 0) return;
         const chat = [
           ...this.chatListViewModel.chatViewModels.value.values()
-        ].find(
-          (chat2) => chat2.chatModel.id == notification.fullChannel
-        );
+        ].find((chat2) => chat2.chatModel.id == notification.fullChannel);
         if (!chat) return;
         chat.open();
         chat.openPage("messages" /* Messages */);
@@ -4966,10 +5000,10 @@
       const fullChannel = ChatModel.splitChannel(message.channel)[0];
       const chat = this.chatListViewModel.getDisplayName(fullChannel);
       return {
-        messageId: message.id,
+        messageId: message.fileId,
         chat,
         fullChannel,
-        sender: message.sender,
+        sender: message.senderName,
         body: message.body
       };
     }
@@ -4978,10 +5012,11 @@
   // src/ViewModel/Chat/chatListViewModel.ts
   var ChatListViewModel = class {
     // init
-    constructor(coreViewModel2, settingsViewModel2, connectionViewModel2) {
+    constructor(coreViewModel2, settingsViewModel2, connectionViewModel2, contactListViewModel2) {
       this.coreViewModel = coreViewModel2;
       this.settingsViewModel = settingsViewModel2;
       this.connectionViewModel = connectionViewModel2;
+      this.contactListViewModel = contactListViewModel2;
       // data
       this.chatIndexManager = new IndexManager(
         (chatViewModel) => chatViewModel.settingsPageViewModel.name.value
@@ -5021,7 +5056,8 @@
           this.settingsViewModel,
           this.notificationViewModel,
           this.connectionViewModel,
-          this
+          this,
+          this.contactListViewModel
         );
       };
       this.updateIndices = () => {
@@ -5196,12 +5232,7 @@
         "on:click": coreViewModel2.update,
         "toggle:hidden": coreViewModel2.noUpdateAvailable
       },
-      /* @__PURE__ */ createElement(
-        "span",
-        {
-          "subscribe:innerText": coreViewModel2.updateText
-        }
-      ),
+      /* @__PURE__ */ createElement("span", { "subscribe:innerText": coreViewModel2.updateText }),
       /* @__PURE__ */ createElement("span", { class: "icon" }, "update")
     ), /* @__PURE__ */ createElement("div", { class: "mobile-only" }, /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement("button", { class: "ghost width-50", "on:click": scrollToChat }, coreViewModel2.translations.homePage.scrollToChatButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")))));
     const chatSection = /* @__PURE__ */ createElement("div", { id: "chat-section" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.chatsHeadline), /* @__PURE__ */ createElement("div", { class: "flex-row width-input" }, /* @__PURE__ */ createElement(
@@ -5293,15 +5324,7 @@
         "on:click": taskViewModel.open,
         "on:dragstart": taskViewModel.dragStart
       },
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement(
-        "span",
-        {
-          class: "secondary",
-          "toggle:hidden": taskViewModel.isNotNext
-        },
-        taskViewModel.coreViewModel.translations.chatPage.calendar.eventNext,
-        /* @__PURE__ */ createElement("hr", null)
-      ), /* @__PURE__ */ createElement(
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary", "toggle:hidden": taskViewModel.isNotNext }, taskViewModel.coreViewModel.translations.chatPage.calendar.eventNext, /* @__PURE__ */ createElement("hr", null)), /* @__PURE__ */ createElement(
         "b",
         {
           class: "ellipsis",
@@ -6062,7 +6085,13 @@
         }
       })
     );
-    const wrapper = /* @__PURE__ */ createElement("div", { class: "content main-content allow-drag-move", "children:set": pages });
+    const wrapper = /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "content main-content allow-drag-move",
+        "children:set": pages
+      }
+    );
     implementPinchZoom(wrapper, boardViewModel.pinchToZoomData);
     const taskSettingsModal = createProxyState(
       [boardViewModel.selectedTaskViewModel],
@@ -6148,6 +6177,25 @@
     return /* @__PURE__ */ createElement("div", { class: "width-100 height-100 flex-column justify-center align-center" }, /* @__PURE__ */ createElement("span", { class: "secondary slide-up" }, text));
   }
 
+  // src/View/Components/newItemEntry.tsx
+  function NewItemEntry(coreViewModel2, query, fn) {
+    const isHidden = createProxyState([query], () => query.value == "");
+    const label = createProxyState(
+      [query],
+      () => coreViewModel2.translations.general.createLabel(query.value)
+    );
+    return /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard slide-up",
+        "toggle:hidden": isHidden,
+        "on:click": fn
+      },
+      /* @__PURE__ */ createElement("span", { "subscribe:innerText": label }),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
+    );
+  }
+
   // src/View/Components/boardEntry.tsx
   function BoardEntry(boardViewModel) {
     const view = /* @__PURE__ */ createElement(
@@ -6177,22 +6225,6 @@
   var BoardViewModelToEntry = (boardViewModel) => {
     return BoardEntry(boardViewModel);
   };
-
-  // src/View/Components/newItemEntry.tsx
-  function NewItemEntry(coreViewModel2, query, fn) {
-    const isHidden = createProxyState([query], () => query.value == "");
-    const label = createProxyState([query], () => coreViewModel2.translations.general.createLabel(query.value));
-    return /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "standard slide-up",
-        "toggle:hidden": isHidden,
-        "on:click": fn
-      },
-      /* @__PURE__ */ createElement("span", { "subscribe:innerText": label }),
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
-    );
-  }
 
   // src/View/ChatPages/taskPage.tsx
   function TaskPage(coreViewModel2, taskPageViewModel) {
@@ -6240,7 +6272,11 @@
             "on:enter": taskPageViewModel.createBoard,
             placeholder: coreViewModel2.translations.general.filterOrCreateLabel
           }
-        ))), /* @__PURE__ */ createElement("div", { class: "content gap" }, NewItemEntry(coreViewModel2, taskPageViewModel.boardQuery, taskPageViewModel.createBoard), /* @__PURE__ */ createElement(
+        ))), /* @__PURE__ */ createElement("div", { class: "content gap" }, NewItemEntry(
+          coreViewModel2,
+          taskPageViewModel.boardQuery,
+          taskPageViewModel.createBoard
+        ), /* @__PURE__ */ createElement(
           "div",
           {
             class: "grid gap",
@@ -6440,7 +6476,7 @@
 
   // src/View/Components/replyPreview.tsx
   function ReplyPreview(coreViewModel2, chatMessageViewModel) {
-    return /* @__PURE__ */ createElement("div", { class: "reply-preview" }, /* @__PURE__ */ createElement("div", { class: "surface blur" }, /* @__PURE__ */ createElement("span", { class: "secondary" }, chatMessageViewModel.sender), /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { class: "reply-preview" }, /* @__PURE__ */ createElement("div", { class: "surface blur" }, /* @__PURE__ */ createElement("span", { class: "secondary", "subscribe:innerText": chatMessageViewModel.contact.name }), /* @__PURE__ */ createElement(
       "b",
       {
         class: "ellipsis",
@@ -6454,6 +6490,26 @@
         "aria-label": coreViewModel2.translations.chatPage.message.cancelReplyAudioLabel
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+    ));
+  }
+
+  // src/View/Components/replyLink.tsx
+  function ReplyLink(coreViewModel2, chatMessageViewModel) {
+    const isHidden = createProxyState(
+      [chatMessageViewModel.replyCount],
+      () => chatMessageViewModel.replyCount.value == 0
+    );
+    function select() {
+      chatMessageViewModel.messagePageViewModel.setReplyView(
+        chatMessageViewModel
+      );
+    }
+    return /* @__PURE__ */ createElement("div", { class: "reply-link", "toggle:hidden": isHidden, "on:click": select }, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.message.replyPrefixLabel), /* @__PURE__ */ createElement(
+      "b",
+      {
+        class: "ellipsis",
+        "subscribe:innerText": chatMessageViewModel.replyCount
+      }
     ));
   }
 
@@ -6548,14 +6604,14 @@
     const reply = chatMessageViewModel.inlineReply;
     if (reply == void 0) return /* @__PURE__ */ createElement("div", null);
     const scroll = () => {
-      ViewController.scrollToView(reply.chatMessage.id);
+      ViewController.scrollToView(reply.chatMessage.fileId);
     };
-    return /* @__PURE__ */ createElement("div", { class: "inline-reply", "on:click": scroll }, /* @__PURE__ */ createElement("span", null, reply.sender), /* @__PURE__ */ createElement("b", { class: "ellipsis", "subscribe:innerText": reply.body }));
+    return /* @__PURE__ */ createElement("div", { class: "inline-reply", "on:click": scroll }, /* @__PURE__ */ createElement("span", { "subscribe:innerText": reply.contact.name }), /* @__PURE__ */ createElement("b", { class: "ellipsis", "subscribe:innerText": reply.body }));
   }
 
   // src/View/Components/messageReactionEntry.tsx
   function MessageReactionEntry(reaction) {
-    return /* @__PURE__ */ createElement("div", { class: "tile flex-row" }, /* @__PURE__ */ createElement("span", { class: "flex width-100" }, reaction.sender), /* @__PURE__ */ createElement("span", null, reaction.content));
+    return /* @__PURE__ */ createElement("div", { class: "tile flex-row" }, /* @__PURE__ */ createElement("span", { class: "flex width-100" }, reaction.senderName), /* @__PURE__ */ createElement("span", null, reaction.content));
   }
 
   // src/View/Components/infoTile.tsx
@@ -6580,7 +6636,7 @@
       /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.chatPage.message.messageInfoHeadline), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, InfoTile(
         "account_circle",
         coreViewModel2.translations.chatPage.message.sentBy,
-        chatMessageViewModel.sender
+        chatMessageViewModel.senderId
       ), InfoTile(
         "schedule",
         coreViewModel2.translations.chatPage.message.timeSent,
@@ -6617,24 +6673,6 @@
     );
   }
 
-  // src/View/Components/replyLink.tsx
-  function ReplyLink(coreViewModel2, chatMessageViewModel) {
-    const isHidden = createProxyState([chatMessageViewModel.replyCount], () => chatMessageViewModel.replyCount.value == 0);
-    function select() {
-      chatMessageViewModel.messagePageViewModel.setReplyView(chatMessageViewModel);
-    }
-    return /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "reply-link",
-        "toggle:hidden": isHidden,
-        "on:click": select
-      },
-      /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.chatPage.message.replyPrefixLabel),
-      /* @__PURE__ */ createElement("b", { class: "ellipsis", "subscribe:innerText": chatMessageViewModel.replyCount })
-    );
-  }
-
   // src/View/Components/chatMessage.tsx
   function ChatMessage4(coreViewModel2, chatMessageViewModel) {
     const statusIcon = createProxyState(
@@ -6656,12 +6694,18 @@
       "div",
       {
         class: "message-bubble",
-        id: chatMessageViewModel.chatMessage.id,
+        id: chatMessageViewModel.chatMessage.fileId,
         "toggle:sentbyuser": chatMessageViewModel.sentByUser,
         "toggle:hidden": chatMessageViewModel.isHidden
       },
       InlineReply(chatMessageViewModel),
-      /* @__PURE__ */ createElement("div", { class: "main tile" }, /* @__PURE__ */ createElement("div", { class: "text-container" }, /* @__PURE__ */ createElement("span", { class: "sender-name ellipsis" }, chatMessageViewModel.sender), /* @__PURE__ */ createElement(
+      /* @__PURE__ */ createElement("div", { class: "main tile" }, /* @__PURE__ */ createElement("div", { class: "text-container" }, /* @__PURE__ */ createElement(
+        "span",
+        {
+          class: "sender-name ellipsis",
+          "subscribe:innerText": chatMessageViewModel.contact.name
+        }
+      ), /* @__PURE__ */ createElement(
         "span",
         {
           class: "body",
@@ -6742,17 +6786,33 @@
     messagePageViewModel.filteredMessageViewModels.subscribeSilent(
       scrollDownIfApplicable
     );
-    bulkSubscribe([messagePageViewModel.reactionFilter, messagePageViewModel.searchViewModel.appliedQuery], scrollDown);
-    messagePageViewModel.replyViewSelectedMessage.subscribeSilent((selectedMessage) => {
-      if (selectedMessage != void 0) return;
-      setTimeout(scrollDown, 100);
-    });
+    bulkSubscribe(
+      [
+        messagePageViewModel.reactionFilter,
+        messagePageViewModel.searchViewModel.appliedQuery
+      ],
+      scrollDown
+    );
+    messagePageViewModel.replyViewSelectedMessage.subscribeSilent(
+      (selectedMessage) => {
+        if (selectedMessage != void 0) return;
+        setTimeout(scrollDown, 100);
+      }
+    );
     setTimeout(() => scrollDown(true), 100);
     messagePageViewModel.focusSetter.subscribeSilent(() => {
       ViewController.setFocusWithDelay();
     });
-    const isInReplyView = createProxyState([messagePageViewModel.replyViewSelectedMessage], () => messagePageViewModel.replyViewSelectedMessage.value != void 0);
-    const title = createProxyState([messagePageViewModel.isReplyViewActive], () => messagePageViewModel.isReplyViewActive.value ? coreViewModel2.translations.chatPage.message.replyHeaderLabel(messagePageViewModel.replyViewSelectedMessage.value.body.value) : coreViewModel2.translations.chatPage.message.messagesHeadline);
+    const isInReplyView = createProxyState(
+      [messagePageViewModel.replyViewSelectedMessage],
+      () => messagePageViewModel.replyViewSelectedMessage.value != void 0
+    );
+    const title = createProxyState(
+      [messagePageViewModel.isReplyViewActive],
+      () => messagePageViewModel.isReplyViewActive.value ? coreViewModel2.translations.chatPage.message.replyHeaderLabel(
+        messagePageViewModel.replyViewSelectedMessage.value.body.value
+      ) : coreViewModel2.translations.chatPage.message.messagesHeadline
+    );
     return /* @__PURE__ */ createElement("div", { id: "message-page", "toggle:reply-view": isInReplyView }, /* @__PURE__ */ createElement("div", { class: "pane-wrapper" }, /* @__PURE__ */ createElement("div", { class: "pane" }, /* @__PURE__ */ createElement("div", { class: "toolbar" }, /* @__PURE__ */ createElement(
       "button",
       {
@@ -6808,7 +6868,7 @@
   }
 
   // src/View/Components/monthGrid.tsx
-  function MonthGrid2(coreViewModel2, monthGrid, selectedDate, handleDrop) {
+  function MonthGrid(coreViewModel2, monthGrid, selectedDate, handleDrop) {
     const dayLabels = [];
     let currentWeekday = monthGrid.firstDayOfWeek;
     while (dayLabels.length < 7) {
@@ -6900,7 +6960,7 @@
               date
             );
           };
-          return MonthGrid2(
+          return MonthGrid(
             coreViewModel2,
             monthGrid,
             calendarPageViewModel.selectedDate,
@@ -7199,6 +7259,21 @@
     return view;
   }
 
+  // src/View/Components/usageBar.tsx
+  function UsageBar(label, valueLabel, value, maximum) {
+    const style = createProxyState(
+      [value, maximum],
+      () => `width: ${100 * (value.value / maximum.value)}%`
+    );
+    return /* @__PURE__ */ createElement("div", { class: "surface flex-column padding gap" }, /* @__PURE__ */ createElement("b", null, label), /* @__PURE__ */ createElement("div", { class: "width-100 surface-alt", style: "height: 18px" }, /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "height-100 background-primary",
+        "set:style": style
+      }
+    )), /* @__PURE__ */ createElement("span", { class: "secondary", "subscribe:innerText": valueLabel }));
+  }
+
   // src/View/Components/directoryItemList.tsx
   function DirectoryItemList(storageViewModel2, pathString = PATH_COMPONENT_SEPARATOR) {
     const StringToDirectoryItemList = (pathString2) => DirectoryItemList(storageViewModel2, pathString2);
@@ -7248,47 +7323,25 @@
     ));
   }
 
-  // src/View/Components/usageBar.tsx
-  function UsageBar(label, valueLabel, value, maximum) {
-    const style = createProxyState([value, maximum], () => `width: ${100 * (value.value / maximum.value)}%`);
-    return /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "surface flex-column padding gap"
-      },
-      /* @__PURE__ */ createElement("b", null, label),
-      /* @__PURE__ */ createElement(
-        "div",
-        {
-          class: "width-100 surface-alt",
-          style: "height: 18px"
-        },
-        /* @__PURE__ */ createElement(
-          "div",
-          {
-            class: "height-100 background-primary",
-            "set:style": style
-          }
-        )
-      ),
-      /* @__PURE__ */ createElement(
-        "span",
-        {
-          class: "secondary",
-          "subscribe:innerText": valueLabel
-        }
-      )
-    );
-  }
-
   // src/View/Modals/storageModal.tsx
   function StorageModal(coreViewModel2, storageViewModel2) {
-    const usageValueLabel = createProxyState([storageViewModel2.occupiedSpaceMB, storageViewModel2.maximumSpaceMB], () => coreViewModel2.translations.storage.usageVauleLabel(storageViewModel2.occupiedSpaceMB.value, storageViewModel2.maximumSpaceMB.value));
+    const usageValueLabel = createProxyState(
+      [storageViewModel2.occupiedSpaceMB, storageViewModel2.maximumSpaceMB],
+      () => coreViewModel2.translations.storage.usageVauleLabel(
+        storageViewModel2.occupiedSpaceMB.value,
+        storageViewModel2.maximumSpaceMB.value
+      )
+    );
     const detailView = createProxyState(
       [storageViewModel2.selectedPath],
       () => {
         if (storageViewModel2.selectedPath.value == PATH_COMPONENT_SEPARATOR)
-          return /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.storage.noItemSelected), /* @__PURE__ */ createElement("hr", null), UsageBar(coreViewModel2.translations.storage.usageLabel, usageValueLabel, storageViewModel2.occupiedSpaceMB, storageViewModel2.maximumSpaceMB), /* @__PURE__ */ createElement("hr", null), DangerousActionButton(
+          return /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.storage.noItemSelected), /* @__PURE__ */ createElement("hr", null), UsageBar(
+            coreViewModel2.translations.storage.usageLabel,
+            usageValueLabel,
+            storageViewModel2.occupiedSpaceMB,
+            storageViewModel2.maximumSpaceMB
+          ), /* @__PURE__ */ createElement("hr", null), DangerousActionButton(
             coreViewModel2,
             coreViewModel2.translations.storage.removeJunkButton,
             "delete_forever",
@@ -7443,21 +7496,9 @@
         "on:click": coreViewModel2.update,
         "toggle:hidden": coreViewModel2.noUpdateAvailable
       },
-      /* @__PURE__ */ createElement(
-        "span",
-        {
-          "subscribe:innerText": coreViewModel2.updateText
-        }
-      ),
+      /* @__PURE__ */ createElement("span", { "subscribe:innerText": coreViewModel2.updateText }),
       /* @__PURE__ */ createElement("span", { class: "icon" }, "update")
-    ), /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "standard",
-        "on:click": coreViewModel2.checkUpdates
-      },
-      coreViewModel2.translations.settings.checkUpdatesButton
-    )));
+    ), /* @__PURE__ */ createElement("button", { class: "standard", "on:click": coreViewModel2.checkUpdates }, coreViewModel2.translations.settings.checkUpdatesButton)));
   }
   function SettingsRegionalPane(coreViewModel2, settingsViewModel2) {
     return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.settings.pages.regional), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.settings.language), OptionButtonList(
@@ -7968,205 +8009,6 @@
     );
   }
 
-  // src/Upgrader/v1.ts
-  var v1Upgrader = class {
-    // init
-    constructor(coreViewModel2) {
-      this.coreViewModel = coreViewModel2;
-      // general
-      this.migrateSettings = () => {
-        const name = getLocalStorageItemAndClear("sender-name");
-        if (name != null) {
-          const parsedName = parseOrFallback(name);
-          this.coreViewModel.settingsModel.setName(parsedName);
-        }
-        const firstDayOfWeek = getLocalStorageItemAndClear("first-day-of-week");
-        if (firstDayOfWeek != null) {
-          const parsedFirstDayOfWeek = parseOrFallback(firstDayOfWeek);
-          this.coreViewModel.settingsModel.setFirstDayOfWeek(
-            parsedFirstDayOfWeek
-          );
-        }
-      };
-      this.migrateConnections = () => {
-        const previousAddressString = getLocalStorageItemAndClear("previous-addresses");
-        if (previousAddressString == null) return;
-        const previousAddresses = parseArray(previousAddressString);
-        for (const address of previousAddresses) {
-          if (typeof address != "string") continue;
-          this.coreViewModel.connectionModel.storeAddress(address);
-        }
-      };
-      // chats
-      this.migrateChats = () => {
-        const chatIdString = getLocalStorageItemAndClear("chat-ids");
-        if (chatIdString == null) return;
-        const chatIds = parseArray(chatIdString);
-        for (const chatId of chatIds) {
-          if (typeof chatId != "string") continue;
-          this.migrateChatById(chatId);
-        }
-      };
-      this.migrateChatById = (id) => {
-        const primaryChannel = getLocalStorageItemAndClear(
-          storageKeys.primaryChannel(id)
-        );
-        if (primaryChannel == null) return;
-        const parsedPriamryChannel = parseOrFallback(primaryChannel);
-        const chatModel = this.coreViewModel.chatListModel.createChat(parsedPriamryChannel);
-        const secondaryChannelString = getLocalStorageItemAndClear(storageKeys.secondaryChannels(id));
-        if (secondaryChannelString != null) {
-          const potentialSecondaryChannels = parseArray(
-            secondaryChannelString
-          );
-          const confirmedSecondaryChannels = [];
-          for (const secondaryChannel of potentialSecondaryChannels) {
-            if (typeof secondaryChannel != "string") continue;
-            confirmedSecondaryChannels.push(secondaryChannel);
-          }
-          chatModel.setSecondaryChannels(confirmedSecondaryChannels);
-        }
-        const encryptionKey = getLocalStorageItemAndClear(
-          storageKeys.encyptionKey(id)
-        );
-        if (encryptionKey != null) {
-          const parsedEncryptionKey = parseOrFallback(encryptionKey);
-          chatModel.setEncryptionKey(parsedEncryptionKey);
-        }
-        const messagesString = getLocalStorageItemAndClear(storageKeys.messages(id)) ?? "";
-        const messageOutboxString = getLocalStorageItemAndClear(storageKeys.outbox(id)) ?? "";
-        const potentialMessages = parseArray(messagesString);
-        const potentialMessagesInOutbox = parseArray(messageOutboxString);
-        const addMessages = (potentialMessages2, status) => {
-          for (const potentialMessage of potentialMessages2) {
-            const isV1ChatMessage = checkMatchesObjectStructure(
-              potentialMessage,
-              V1ChatMessageReference
-            );
-            if (isV1ChatMessage == false) continue;
-            const v1ChatMessage = potentialMessage;
-            const convertedChatMessage = {
-              dataVersion: "v2",
-              id: v4_default(),
-              channel: v1ChatMessage.channel,
-              sender: v1ChatMessage.sender,
-              body: v1ChatMessage.body,
-              dateSent: v1ChatMessage.isoDate,
-              status,
-              stringifiedFile: ""
-            };
-            chatModel.addMessage(convertedChatMessage);
-            if (status == "outbox" /* Outbox */) {
-              this.coreViewModel.connectionModel.sendMessageOrStore(
-                convertedChatMessage
-              );
-            }
-          }
-        };
-        addMessages(potentialMessages, "received" /* Received */);
-        addMessages(potentialMessagesInOutbox, "outbox" /* Outbox */);
-        const objectsString = getLocalStorageItemAndClear(storageKeys.objects(id)) ?? "";
-        const objectOutboxString = getLocalStorageItemAndClear(storageKeys.itemOutbox(id)) ?? "";
-        const potentialObjects = parseArray(objectsString);
-        const potentialObjectsInOutbox = parseArray(objectOutboxString);
-        const addObjects = (potentialObjects2) => {
-          const board = chatModel.fileModel.boardsAndTasksModel.createBoard(
-            this.coreViewModel.translations.updater.migrated
-          );
-          chatModel.fileModel.boardsAndTasksModel.updateBoard(board);
-          for (const potentialObjectEntry of potentialObjects2) {
-            const potentialObject = potentialObjectEntry[1];
-            const isV1MessageObject = checkIsV1MessageObject(potentialObject);
-            if (isV1MessageObject == false) continue;
-            const objectId = potentialObject.id;
-            const objectName = potentialObject.title;
-            const contentVersions = Object.values(
-              potentialObject.contentVersions
-            );
-            for (const potentialVersion of contentVersions) {
-              const isV1MessageObjectContent = checkIsV1MessageObjectContent(potentialVersion);
-              if (isV1MessageObjectContent == false) continue;
-              const convertedTaskFileContent = {
-                dataVersion: "v2",
-                fileId: objectId,
-                fileContentId: FileModel.generateFileContentId(
-                  potentialVersion.isoDateVersionCreated
-                ),
-                creationDate: potentialVersion.isoDateVersionCreated,
-                type: "task",
-                name: objectName ?? "",
-                boardId: board.fileId ?? "",
-                description: potentialVersion.noteContent ?? "",
-                category: potentialVersion.categoryName ?? "",
-                status: potentialVersion.status ?? "",
-                priority: potentialVersion.priority ?? "",
-                date: potentialVersion.date ?? "",
-                time: potentialVersion.time ?? ""
-              };
-              console.log(convertedTaskFileContent);
-              chatModel.fileModel.handleFileContent(
-                convertedTaskFileContent
-              );
-            }
-          }
-        };
-        addObjects([...potentialObjects, ...potentialObjectsInOutbox]);
-      };
-      this.migrateSettings();
-      this.migrateConnections();
-      this.migrateChats();
-    }
-  };
-  var storageKeys = {
-    viewType(id) {
-      return id + "view-type";
-    },
-    hasUnread(id) {
-      return id + "has-unread-messages";
-    },
-    primaryChannel(id) {
-      return id + "primary-channel";
-    },
-    secondaryChannels(id) {
-      return id + "secondary-channels";
-    },
-    encyptionKey(id) {
-      return id + "encryption-key";
-    },
-    messages(id) {
-      return id + "messages";
-    },
-    objects(id) {
-      return id + "items";
-    },
-    outbox(id) {
-      return id + "outbox";
-    },
-    itemOutbox(id) {
-      return id + "item-outbox";
-    },
-    composingMessage(id) {
-      return id + "composing-message";
-    }
-  };
-  var V1ChatMessageReference = {
-    channel: "",
-    sender: "",
-    body: "",
-    isoDate: ""
-  };
-  function checkIsV1MessageObject(object) {
-    if (object.id == void 0) return false;
-    if (object.title == void 0) return false;
-    if (object.contentVersions == void 0) return false;
-    return true;
-  }
-  function checkIsV1MessageObjectContent(object) {
-    if (object.id == void 0) return false;
-    if (object.isoDateVersionCreated == void 0) return false;
-    return true;
-  }
-
   // src/Model/Global/fileTransferModel.ts
   var FileTransferModel = class _FileTransferModel {
     // init
@@ -8528,11 +8370,11 @@
         return chatMessages;
       };
       this.addToOutbox = (chatMessage) => {
-        const messagePath = [...this.getOutboxPath(), chatMessage.id];
+        const messagePath = [...this.getOutboxPath(), chatMessage.fileId];
         this.storageModel.writeStringifiable(messagePath, chatMessage);
       };
       this.removeFromOutbox = (chatMessage) => {
-        const messagePath = [...this.getOutboxPath(), chatMessage.id];
+        const messagePath = [...this.getOutboxPath(), chatMessage.fileId];
         this.storageModel.remove(messagePath);
       };
       this.sendMessagesInOutbox = () => {
@@ -8634,7 +8476,11 @@
   // src/Model/Chat/chatListModel.ts
   var ChatListModel = class {
     // init
-    constructor(storageModel2, settingsModel2, connectionModel2) {
+    constructor(storageModel2, settingsModel2, connectionModel2, contactListModel2) {
+      this.storageModel = storageModel2;
+      this.settingsModel = settingsModel2;
+      this.connectionModel = connectionModel2;
+      this.contactListModel = contactListModel2;
       // data
       this.chatModels = /* @__PURE__ */ new Set();
       // chat handling
@@ -8648,6 +8494,7 @@
           this.connectionModel,
           this.settingsModel,
           this,
+          this.contactListModel,
           id
         );
         chatModel.setName(primaryChannel);
@@ -8699,34 +8546,103 @@
             this.connectionModel,
             this.settingsModel,
             this,
+            this.contactListModel,
             chatId
           );
           this.addChatModel(chatModel);
         }
       };
-      this.storageModel = storageModel2;
-      this.settingsModel = settingsModel2;
-      this.connectionModel = connectionModel2;
       this.loadChats();
-      connectionModel2.messageHandlerManager.setHandler(
+      this.connectionModel.messageHandlerManager.setHandler(
         "chat-list",
         this.messageHandler
       );
-      connectionModel2.messageSentHandlerManager.setHandler(
+      this.connectionModel.messageSentHandlerManager.setHandler(
         "chat-list",
         this.messageSentHandler
       );
     }
   };
 
+  // src/Model/Global/contactListModel.ts
+  var ContactListModel = class {
+    constructor(storageModel2) {
+      this.storageModel = storageModel2;
+      this.contactHandlerManager = new HandlerManager();
+      this.getContactPath = (contactId) => {
+        return StorageModel.getPath("contacts" /* ContactsModel */, [contactId]);
+      };
+      this.loadContacts = () => {
+        const contactIds = this.storageModel.list(["contacts" /* ContactsModel */]);
+        const contacts = contactIds.map((id) => [id, this.storageModel.read(this.getContactPath(id)) ?? "?"]);
+        return contacts;
+      };
+      this.storeContact = (id, name) => {
+        const path = this.getContactPath(id);
+        this.storageModel.write(path, name);
+        this.contactHandlerManager.trigger([id, name]);
+      };
+    }
+  };
+
+  // src/ViewModel/Global/contactViewModel.ts
+  var ContactListViewModel = class {
+    // init
+    constructor(contactListModel2) {
+      this.contactListModel = contactListModel2;
+      // state
+      this.contacts = /* @__PURE__ */ new Map();
+      // main
+      this.updateContact = (id, name) => {
+        const match = this.contacts.get(id);
+        if (match) {
+          match.name.value = name;
+          return match;
+        }
+        const vm = new ContactViewModel(id, name);
+        this.contacts.set(id, vm);
+        return vm;
+      };
+      this.handleContact = (contact) => {
+        this.updateContact(...contact);
+      };
+      this.unwrapContact = (id, knownName) => {
+        if (this.contacts.has(id))
+          return this.contacts.get(id);
+        return this.updateContact(id, knownName);
+      };
+      // load
+      this.loadData = () => {
+        const contacts = this.contactListModel.loadContacts();
+        for (const contact of contacts) {
+          const vm = new ContactViewModel(...contact);
+          this.contacts.set(vm.id, vm);
+        }
+      };
+      this.loadData();
+      this.contactListModel.contactHandlerManager.setHandler("contact-list-view-model", this.handleContact);
+    }
+  };
+  var ContactViewModel = class {
+    // init
+    constructor(id, name) {
+      this.id = id;
+      // state
+      this.name = new State("");
+      this.name.value = name;
+    }
+  };
+
   // src/index.tsx
   var storageModel = new StorageModel();
-  var settingsModel = new SettingsModel(storageModel);
+  var contactListModel = new ContactListModel(storageModel);
+  var settingsModel = new SettingsModel(storageModel, contactListModel);
   var connectionModel = new ConnectionModel(storageModel);
   var chatListModel = new ChatListModel(
     storageModel,
     settingsModel,
-    connectionModel
+    connectionModel,
+    contactListModel
   );
   var fileTransferModel = new FileTransferModel(storageModel, connectionModel);
   var coreViewModel = new CoreViewModel(
@@ -8736,14 +8652,15 @@
     chatListModel,
     fileTransferModel
   );
-  new v1Upgrader(coreViewModel);
   var storageViewModel = new StorageViewModel(coreViewModel);
-  var settingsViewModel = new SettingsViewModel(coreViewModel);
+  var contactListViewModel = new ContactListViewModel(contactListModel);
+  var settingsViewModel = new SettingsViewModel(coreViewModel, settingsModel);
   var connectionViewModel = new ConnectionViewModel(coreViewModel);
   var chatListViewModel = new ChatListViewModel(
     coreViewModel,
     settingsViewModel,
-    connectionViewModel
+    connectionViewModel,
+    contactListViewModel
   );
   var fileTransferViewModel = new FileTransferViewModel(coreViewModel);
   var homeViewModel = new HomeViewModel(
