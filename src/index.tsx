@@ -46,13 +46,14 @@ const coreViewModel = new CoreViewModel(
 );
 
 const storageViewModel = new StorageViewModel(coreViewModel);
-const settingsViewModel = new SettingsViewModel(coreViewModel);
+const settingsViewModel = new SettingsViewModel(coreViewModel, settingsModel);
 const contactListViewModel = new ContactListViewModel(contactListModel);
 const connectionViewModel = new ConnectionViewModel(coreViewModel);
 const chatListViewModel = new ChatListViewModel(
     coreViewModel,
     settingsViewModel,
     connectionViewModel,
+    contactListViewModel,
 );
 const fileTransferViewModel = new FileTransferViewModel(coreViewModel);
 

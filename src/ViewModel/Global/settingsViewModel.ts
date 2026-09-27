@@ -1,7 +1,7 @@
 import CoreViewModel, { Context } from "./coreViewModel";
 import * as React from "../../react";
 import { CommonKeys } from "../../View/keystrokes";
-import { Languages, ThemeSettings } from "../../Model/Global/settingsModel";
+import SettingsModel, { Languages, ThemeSettings } from "../../Model/Global/settingsModel";
 
 export default class SettingsViewModel extends Context {
     // state
@@ -126,7 +126,7 @@ export default class SettingsViewModel extends Context {
     };
 
     // init
-    constructor(public readonly coreViewModel: CoreViewModel) {
+    constructor(public readonly coreViewModel: CoreViewModel, public readonly settingsModel: SettingsModel) {
         super("settings");
 
         this.username.value = coreViewModel.settingsModel.username;

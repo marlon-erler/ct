@@ -3,20 +3,28 @@ import * as React from "../../react";
 
 export default class ContactListViewModel {
     // state
-    contacts: React.MapState<ContactViewModel> = new React.MapState();
+    contacts: Map<string, ContactViewModel> = new Map();
 
     // main
-    updateContact = (id: string, name: string): void => {
-	if (this.contacts.value.has(id)) {
-	    this.contacts.value.get(id)!.name.value = name;
-	    return;
+    updateContact = (id: string, name: string): ContactViewModel => {
+	const match = this.contacts.get(id);
+	if (match) {
+	    match.name.value = name;
+	    return match;
 	}
 	const vm = new ContactViewModel(id, name);
 	this.contacts.set(id, vm);
+	return vm;
     }
 
     handleContact = (contact: [string, string]): void => {
 	this.updateContact(...contact);
+    }
+
+    unwrapContact = (id: string, knownName: string): ContactViewModel => {
+	if (this.contacts.has(id))
+	    return this.contacts.get(id)!
+	return this.updateContact(id, knownName);
     }
 
     // load

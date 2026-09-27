@@ -21,6 +21,7 @@ import ChatModel, {
     ChatMessage,
     ChatMessageReaction,
 } from "../../Model/Chat/chatModel";
+import ContactListViewModel from "../Global/contactViewModel";
 
 export default class ChatViewModel extends ContextHost<ChatPageTypes> {
     calendarViewModel: CalendarPageViewModel;
@@ -149,6 +150,7 @@ export default class ChatViewModel extends ContextHost<ChatPageTypes> {
         public readonly notificationViewModel: NotificationViewModel,
         public readonly connectionViewModel: ConnectionViewModel,
         public readonly chatListViewModel: ChatListViewModel,
+	public readonly contactListViewModel: ContactListViewModel,
     ) {
         super("chat", coreViewModel);
 
@@ -167,6 +169,7 @@ export default class ChatViewModel extends ContextHost<ChatPageTypes> {
         this.messagePageViewModel = new MessagePageViewModel(
             this.coreViewModel,
             this,
+	    this.contactListViewModel,
         );
         this.settingsPageViewModel = new SettingsPageViewModel(
             this.coreViewModel,

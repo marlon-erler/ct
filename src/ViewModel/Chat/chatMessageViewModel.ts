@@ -7,13 +7,13 @@ import {
     ChatMessageStatuses,
     ReactionSymbols,
 } from "../../Model/Chat/chatModel";
+import {ContactViewModel} from "../Global/contactViewModel";
 
 export default class ChatMessageViewModel {
     // data
     chatMessage: ChatMessage;
     channel: string = "";
     senderId: string = "";
-    senderName: string = "";
     dateSent: string = "";
     body: React.State<string> = new React.State("");
     inlineReply: ChatMessageViewModel | undefined = undefined;
@@ -185,7 +185,6 @@ export default class ChatMessageViewModel {
     loadData = (): void => {
         this.channel = this.chatMessage.channel;
         this.senderId = this.chatMessage.senderId;
-        this.senderName = this.chatMessage.senderName;
         this.dateSent = new Date(this.chatMessage.dateSent).toLocaleString();
         this.body.value = this.chatMessage.body;
         this.status.value = this.chatMessage.status;
@@ -204,6 +203,7 @@ export default class ChatMessageViewModel {
         public readonly coreViewModel: CoreViewModel,
         public readonly messagePageViewModel: MessagePageViewModel,
         chatMessage: ChatMessage,
+	public contact: ContactViewModel,
         sentByUser: boolean,
     ) {
         this.chatMessage = chatMessage;

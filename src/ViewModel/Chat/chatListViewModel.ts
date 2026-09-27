@@ -6,6 +6,7 @@ import ConnectionViewModel from "../Global/connectionViewModel";
 import * as React from "../../react";
 import { IndexManager } from "../../Model/Utility/utility";
 import ChatModel from "../../Model/Chat/chatModel";
+import ContactListViewModel from "../Global/contactViewModel";
 
 export default class ChatListViewModel {
     notificationViewModel: NotificationViewModel;
@@ -61,6 +62,7 @@ export default class ChatListViewModel {
             this.notificationViewModel,
             this.connectionViewModel,
             this,
+	    this.contactListViewModel,
         );
     };
 
@@ -97,6 +99,7 @@ export default class ChatListViewModel {
         public readonly coreViewModel: CoreViewModel,
         public readonly settingsViewModel: SettingsViewModel,
         public readonly connectionViewModel: ConnectionViewModel,
+	public readonly contactListViewModel: ContactListViewModel,
     ) {
         this.notificationViewModel = new NotificationViewModel(this);
 
