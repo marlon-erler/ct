@@ -5,7 +5,7 @@ export default class ContactListModel {
     contactHandlerManager = new HandlerManager<[string, string]>();
 
     private getContactPath = (contactId: string): string[] => {
-	return [StorageModelSubPaths.ContactsModel, contactId];
+	return StorageModel.getPath(StorageModelSubPaths.ContactsModel, [contactId]);
     }
 
     loadContacts = (): [string, string][] => {
