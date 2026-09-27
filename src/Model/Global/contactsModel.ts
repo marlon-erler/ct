@@ -7,7 +7,7 @@ export default class ContactsModel {
 
     loadContacts = (): [string, string][] => {
 	const contactIds: string[] = this.storageModel.list([StorageModelSubPaths.ContactsModel]);
-	const contacts: [string, string][] = contactIds.map(id => [id, this.storageModel.read(this.getContactPath(id))]);
+	const contacts: [string, string][] = contactIds.map(id => [id, this.storageModel.read(this.getContactPath(id)) ?? "?"]);
 	return contacts;
     }
 
