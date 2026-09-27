@@ -104,6 +104,7 @@ export default class FileTransferModel {
 
     readonly handleDecryptedFile = (data: string): void => {
         const parsed: any = parse(data);
+
         const isFileData: boolean = checkMatchesObjectStructure(
             parsed,
             FileDataReference,
@@ -111,6 +112,7 @@ export default class FileTransferModel {
         if (isFileData == false) throw "not file data";
 
         const fileData: FileData = parsed;
+
         this.storageModel.write(fileData.path, fileData.body);
 
         const pathString: string = StorageModel.pathComponentsToString(

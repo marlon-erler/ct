@@ -7,7 +7,7 @@ export function InlineReply(chatMessageViewModel: ChatMessageViewModel) {
     if (reply == undefined) return <div></div>;
 
     const scroll = () => {
-        ViewController.scrollToView(reply.chatMessage.id);
+        ViewController.scrollToView(reply.chatMessage.fileId);
     };
 
     return (

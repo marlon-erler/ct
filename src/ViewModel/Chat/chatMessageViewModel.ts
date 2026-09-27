@@ -175,7 +175,7 @@ export default class ChatMessageViewModel {
 
     sendReaction = (content: ReactionSymbols, isDeleting: boolean): void => {
         this.messagePageViewModel.sendReaction(
-            this.chatMessage.id,
+            this.chatMessage.fileId,
             content,
             isDeleting,
         );
@@ -194,7 +194,7 @@ export default class ChatMessageViewModel {
                 this.messagePageViewModel.chatMessageViewModels.value.get(
                     this.chatMessage.inlineReplyId,
                 );
-            this.inlineReply?.replies.set(this.chatMessage.id, this);
+            this.inlineReply?.replies.set(this.chatMessage.fileId, this);
         }
     };
 

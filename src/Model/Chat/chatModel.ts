@@ -166,7 +166,7 @@ export default class ChatModel {
 
         // message
         if (chatMessage.body != "") {
-            const messagePath: string[] = this.getMessagePath(chatMessage.id);
+            const messagePath: string[] = this.getMessagePath(chatMessage.fileId);
             this.storageModel.writeStringifiable(messagePath, chatMessage);
             this.chatMessageHandlerManager.trigger(chatMessage);
         }
@@ -210,7 +210,7 @@ export default class ChatModel {
 
         this.addMessage(chatMessage);
         this.connectionModel.sendMessageOrStore(chatMessage);
-        return chatMessage.id;
+        return chatMessage.fileId;
     };
 
     readonly decryptMessage = async (
@@ -397,10 +397,10 @@ export default class ChatModel {
         inlineReplyId?: string,
         fileContent?: FileContent<string>,
     ): Promise<ChatMessage> => {
-        const chatMessage: ChatMessage = {
-            dataVersion: DATA_VERSION,
+	const messageFileContent = FileModel.createFileContent(v4(), "message");
 
-            id: v4(),
+        const chatMessage: ChatMessage = {
+	    ...messageFileContent,
 
             channel,
             senderName,
@@ -488,9 +488,7 @@ export enum ChatMessageStatuses {
     Other = "other",
 }
 
-export interface ChatMessage extends ValidObject {
-    readonly id: string;
-
+export interface ChatMessage extends FileContent<"message"> {
     readonly channel: string;
     readonly senderId: string;
     readonly senderName: string;
@@ -504,7 +502,7 @@ export interface ChatMessage extends ValidObject {
 }
 
 export interface ChatMessageReaction
-    extends ValidObject, FileContent<"reaction"> {
+    extends FileContent<"reaction"> {
     readonly messageId: string;
     readonly senderId: string;
     readonly senderName: string;
@@ -533,8 +531,11 @@ export const ChatInfoReference: ChatInfoFileContent = {
 
 export const ChatMessageReference: ChatMessage = {
     dataVersion: DATA_VERSION,
-
-    id: "",
+    
+    fileId: "",
+    fileContentId: "",
+    creationDate: "",
+    type: "message",
 
     channel: "",
     senderName: "",

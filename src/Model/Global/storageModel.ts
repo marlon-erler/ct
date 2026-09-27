@@ -1,6 +1,7 @@
 import {
     bytesToMB,
     localeCompare,
+    parse,
     parseValidObject,
     stringify,
 } from "../Utility/utility";
@@ -214,46 +215,61 @@ export default class StorageModel {
         return stringify(this.storageEntryTree);
     };
 
+    // upgrade 
+    readonly upgrade = (): void => {
+	const v2To2610 = () => {
+	    this.recurse(["v2"], (path) => {
+		const body = this.read(path);
+		if (!body) return;
+		const parsed = parse(body);
+		console.log(parsed.type);
+	    });
+	}	
+
+	v2To2610();
+    }
+
     // init
     constructor() {
         this.initializeTree();
+	this.upgrade();
     }
 
     // utility
     static getFileName = (pathComponents: string[]): string => {
-        return pathComponents[pathComponents.length - 1] || "\\";
+	return pathComponents[pathComponents.length - 1] || "\\";
     };
 
     static getFileNameFromString = (pathString: string): string => {
-        const pathComponents: string[] =
-            this.stringToPathComponents(pathString);
-        return pathComponents[pathComponents.length - 1] || "\\";
+	const pathComponents: string[] =
+	    this.stringToPathComponents(pathString);
+	return pathComponents[pathComponents.length - 1] || "\\";
     };
 
     static pathComponentsToString = (...pathComponents: string[]): string => {
-        return pathComponents
-            .filter((x) => x != "")
-            .join(PATH_COMPONENT_SEPARATOR);
+	return pathComponents
+	    .filter((x) => x != "")
+	    .join(PATH_COMPONENT_SEPARATOR);
     };
 
     static stringToPathComponents = (string: string): string[] => {
-        return string.split(PATH_COMPONENT_SEPARATOR).filter((x) => x != "");
+	return string.split(PATH_COMPONENT_SEPARATOR).filter((x) => x != "");
     };
 
     static join = (...items: string[]): string => {
-        let allComponents: string[] = [];
-        for (const item of items) {
-            const parts = this.stringToPathComponents(item);
-            allComponents.push(...parts);
-        }
-        return StorageModel.pathComponentsToString(...allComponents);
+	let allComponents: string[] = [];
+	for (const item of items) {
+	    const parts = this.stringToPathComponents(item);
+	    allComponents.push(...parts);
+	}
+	return StorageModel.pathComponentsToString(...allComponents);
     };
 
     static getPath(
-        locationName: StorageModelSubPaths,
-        filePath: string[],
+	locationName: StorageModelSubPaths,
+	filePath: string[],
     ): string[] {
-        return [DATA_VERSION, locationName, ...filePath];
+	return [DATA_VERSION, locationName, ...filePath];
     }
 }
 
@@ -264,52 +280,52 @@ export type StorageEntry = { [key: string]: StorageEntry };
 export enum StorageModelSubPaths {
     Chat = "chat",
 
-    ConnectionModel = "connection",
-    NotificationModel = "notifications",
-    SettingsModel = "settings",
-    ContactsModel = "contacts",
+	ConnectionModel = "connection",
+	NotificationModel = "notifications",
+	SettingsModel = "settings",
+	ContactsModel = "contacts",
 }
 
 export const filePaths = {
     connectionModel: {
-        socketAddress: ["socket-address"],
-        reconnectAddress: ["reconnect-address"],
-        outbox: ["outbox"],
-        mailboxes: ["mailboxes"],
+	socketAddress: ["socket-address"],
+	reconnectAddress: ["reconnect-address"],
+	outbox: ["outbox"],
+	mailboxes: ["mailboxes"],
 
-        previousAddresses: ["previous-addresses"],
+	previousAddresses: ["previous-addresses"],
     },
 
     chat: {
-        base: [],
-        chatBase: (id: string) => [id],
-        info: (id: string) => [...filePaths.chat.chatBase(id), "info"],
-        color: (id: string) => [...filePaths.chat.chatBase(id), "color"],
-        messages: (id: string) => [...filePaths.chat.chatBase(id), "messages"],
-        reactions: (id: string) => [
-            ...filePaths.chat.chatBase(id),
-            "reactions",
-        ],
-        previousFilter: (id: string) => [
-            ...filePaths.chat.chatBase(id),
-            "previous-filter",
-        ],
-        lastUsedPage: (id: string) => [
-            ...filePaths.chat.chatBase(id),
-            "last-used-page",
-        ],
-        files: (id: string) => [...filePaths.chat.chatBase(id), "files"],
+	base: [],
+	chatBase: (id: string) => [id],
+	info: (id: string) => [...filePaths.chat.chatBase(id), "info"],
+	color: (id: string) => [...filePaths.chat.chatBase(id), "color"],
+	messages: (id: string) => [...filePaths.chat.chatBase(id), "messages"],
+	reactions: (id: string) => [
+	    ...filePaths.chat.chatBase(id),
+	    "reactions",
+	],
+	previousFilter: (id: string) => [
+	    ...filePaths.chat.chatBase(id),
+	    "previous-filter",
+	],
+	lastUsedPage: (id: string) => [
+	    ...filePaths.chat.chatBase(id),
+	    "last-used-page",
+	],
+	files: (id: string) => [...filePaths.chat.chatBase(id), "files"],
     },
 
     notificationModel: {
-        base: [],
+	base: [],
     },
 
     settingsModel: {
-        username: ["user-name"],
-        userid: ["user-id"],
-        firstDayOfWeek: ["first-day-of-week"],
-        language: ["language"],
-        theme: ["theme"],
+	username: ["user-name"],
+	userid: ["user-id"],
+	firstDayOfWeek: ["first-day-of-week"],
+	language: ["language"],
+	theme: ["theme"],
     },
 };

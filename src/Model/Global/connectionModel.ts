@@ -149,12 +149,12 @@ export default class ConnectionModel {
     };
 
     readonly addToOutbox = (chatMessage: ChatMessage): void => {
-        const messagePath: string[] = [...this.getOutboxPath(), chatMessage.id];
+        const messagePath: string[] = [...this.getOutboxPath(), chatMessage.fileId];
         this.storageModel.writeStringifiable(messagePath, chatMessage);
     };
 
     readonly removeFromOutbox = (chatMessage: ChatMessage): void => {
-        const messagePath: string[] = [...this.getOutboxPath(), chatMessage.id];
+        const messagePath: string[] = [...this.getOutboxPath(), chatMessage.fileId];
         this.storageModel.remove(messagePath);
     };
 

@@ -13,7 +13,7 @@ export default class NotificationViewModel {
 
     // main
     showNotification = (message: ChatMessage): void => {
-        if (this.seenMessageIds.has(message.id)) return;
+        if (this.seenMessageIds.has(message.fileId)) return;
         if (this.chatListViewModel.selectedChat.value == undefined) return;
 
         const notification: Notification = this.createNotification(message);
@@ -84,7 +84,7 @@ export default class NotificationViewModel {
         const fullChannel = ChatModel.splitChannel(message.channel)[0];
         const chat = this.chatListViewModel.getDisplayName(fullChannel);
         return {
-            messageId: message.id,
+            messageId: message.fileId,
             chat,
             fullChannel,
             sender: message.senderName,

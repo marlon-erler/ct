@@ -59,7 +59,7 @@ export default class MessagePageViewModel extends Context {
     sendMessageFromBody = (body: string): Promise<string | false> => {
         let replyId: string | undefined = undefined;
         if (this.replyingMessage.value) {
-            replyId = this.replyingMessage.value.chatMessage.id;
+            replyId = this.replyingMessage.value.chatMessage.fileId;
         }
         const id = this.chatViewModel.chatModel.sendMessage(body, replyId);
 
@@ -118,13 +118,13 @@ export default class MessagePageViewModel extends Context {
 	);
 
 	const existingChatMessageViewModel: ChatMessageViewModel | undefined =
-	    this.chatMessageViewModels.value.get(chatMessage.id);
+	    this.chatMessageViewModels.value.get(chatMessage.fileId);
 	if (existingChatMessageViewModel != undefined) {
 	    existingChatMessageViewModel.body.value = chatMessage.body;
 	    existingChatMessageViewModel.status.value = chatMessage.status;
 	} else {
 	    this.chatMessageViewModels.set(
-		chatMessage.id,
+		chatMessage.fileId,
 		chatMessageViewModel,
 	    );
 	}
