@@ -1,6 +1,5 @@
 import StorageModel, { StorageModelSubPaths, filePaths } from "./storageModel";
 import { UUID } from "../../react";
-import ContactListModel from "./contactListModel";
 
 export default class SettingsModel {
     // data
@@ -30,7 +29,6 @@ export default class SettingsModel {
     readonly setName = (newValue: string): void => {
         this.username = newValue;
 	this.storeSetting("username", newValue);
-	this.contactListModel.storeContact(this.userid,newValue);
     };
 
     readonly setFirstDayOfWeek = (newValue: string): void => {
@@ -87,7 +85,7 @@ export default class SettingsModel {
     };
 
     // init
-    constructor(public storageModel: StorageModel, public contactListModel: ContactListModel) {
+    constructor(public storageModel: StorageModel) {
 	this.loadId();
 	this.loadUsername();
 	this.loadFirstDayofWeek();

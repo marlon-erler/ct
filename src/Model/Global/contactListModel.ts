@@ -1,4 +1,5 @@
 import {HandlerManager} from "../Utility/utility";
+import SettingsModel from "./settingsModel";
 import StorageModel, {StorageModelSubPaths} from "./storageModel";
 
 export default class ContactListModel {
@@ -11,14 +12,17 @@ export default class ContactListModel {
     loadContacts = (): [string, string][] => {
 	const contactIds: string[] = this.storageModel.list([StorageModelSubPaths.ContactsModel]);
 	const contacts: [string, string][] = contactIds.map(id => [id, this.storageModel.read(this.getContactPath(id)) ?? "?"]);
+	contacts.push([this.settingsModel.userid, this.settingsModel.username]);
 	return contacts;
     }
 
     storeContact = (id: string, name: string) => {
+	this.contactHandlerManager.trigger([id, name]);
+
+	if (id == this.settingsModel.userid) return;
 	const path = this.getContactPath(id);
 	this.storageModel.write(path, name)
-	this.contactHandlerManager.trigger([id, name]);
     }
 
-    constructor(public storageModel: StorageModel) {}
+    constructor(public storageModel: StorageModel, public settingsModel: SettingsModel) {}
 }

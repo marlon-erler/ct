@@ -1,5 +1,6 @@
 import ContactListModel from "../../Model/Global/contactListModel";
 import * as React from "../../react";
+import SettingsViewModel from "./settingsViewModel";
 
 export default class ContactListViewModel {
     // state
@@ -7,6 +8,10 @@ export default class ContactListViewModel {
 
     // main
     updateContact = (id: string, name: string): ContactViewModel => {
+	if (id == this.settingsViewModel.settingsModel.userid) {
+	    this.settingsViewModel.setName(name);
+	}
+
 	const match = this.contacts.get(id);
 	if (match) {
 	    match.name.value = name;
@@ -37,7 +42,7 @@ export default class ContactListViewModel {
     }
     
     // init
-    constructor(public contactListModel: ContactListModel) {
+    constructor(public contactListModel: ContactListModel, public settingsViewModel: SettingsViewModel) {
 	this.loadData();
 	this.contactListModel.contactHandlerManager.setHandler("contact-list-view-model", this.handleContact);
     }
