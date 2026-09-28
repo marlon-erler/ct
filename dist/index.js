@@ -2410,8 +2410,7 @@
         this.updateContact(...contact);
       };
       this.unwrapContact = (id, knownName) => {
-        if (this.contacts.has(id))
-          return this.contacts.get(id);
+        if (this.contacts.has(id)) return this.contacts.get(id);
         return this.updateContact(id, knownName);
       };
       // load
@@ -2423,7 +2422,10 @@
         }
       };
       this.loadData();
-      this.contactListModel.contactHandlerManager.setHandler("contact-list-view-model", this.handleContact);
+      this.contactListModel.contactHandlerManager.setHandler(
+        "contact-list-view-model",
+        this.handleContact
+      );
     }
   };
   var ContactViewModel = class {
@@ -2986,6 +2988,7 @@
         chatMessage.status = "received" /* Received */;
         this.addMessage(chatMessage);
         if (chatMessage.stringifiedFile) return;
+        if (chatMessage.senderId == this.settingsModel.userid) return;
         this.setReadStatus(true);
       };
       this.handleReaction = (reaction) => {
@@ -4749,7 +4752,10 @@
       };
       // view
       this.showChatMessage = (chatMessage) => {
-        const contact = this.contactListViewModel.unwrapContact(chatMessage.senderId, chatMessage.senderName);
+        const contact = this.contactListViewModel.unwrapContact(
+          chatMessage.senderId,
+          chatMessage.senderName
+        );
         const chatMessageViewModel = new ChatMessageViewModel(
           this.coreViewModel,
           this,
@@ -5017,8 +5023,9 @@
   // src/ViewModel/Global/notificationViewModel.ts
   var NotificationViewModel = class {
     // init
-    constructor(chatListViewModel2) {
+    constructor(chatListViewModel2, settingsViewModel2) {
       this.chatListViewModel = chatListViewModel2;
+      this.settingsViewModel = settingsViewModel2;
       // data
       this.seenMessageIds = /* @__PURE__ */ new Set();
       this.messagesInMarquee = [];
@@ -5029,6 +5036,7 @@
       this.showNotification = (message) => {
         if (this.seenMessageIds.has(message.fileId)) return;
         if (this.chatListViewModel.selectedChat.value == void 0) return;
+        if (message.senderId == this.settingsViewModel.settingsModel.userid) return;
         const notification = this.createNotification(message);
         const currentChat = this.chatListViewModel.selectedChat.value.chatModel.id;
         const currentPage = this.chatListViewModel.selectedChat.value.selectedPage.value;
@@ -5170,7 +5178,7 @@
         }
         return fullChannel;
       };
-      this.notificationViewModel = new NotificationViewModel(this);
+      this.notificationViewModel = new NotificationViewModel(this, this.settingsViewModel);
       this.loadChats();
     }
   };

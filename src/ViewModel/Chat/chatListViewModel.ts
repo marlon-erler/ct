@@ -101,7 +101,7 @@ export default class ChatListViewModel {
         public readonly connectionViewModel: ConnectionViewModel,
         public readonly contactListViewModel: ContactListViewModel,
     ) {
-        this.notificationViewModel = new NotificationViewModel(this);
+        this.notificationViewModel = new NotificationViewModel(this, this.settingsViewModel);
 
         this.loadChats();
     }

@@ -1,4 +1,4 @@
-const VERSION = "2610 Beta 16"
+const VERSION = "2610 Beta 17"
 
 function processUrl(event) {
     const url = event.request.url;

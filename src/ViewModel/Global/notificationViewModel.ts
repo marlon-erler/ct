@@ -2,6 +2,7 @@ import { ChatPageTypes } from "../Chat/chatViewModel";
 import ChatListViewModel from "../Chat/chatListViewModel";
 import * as React from "../../react";
 import ChatModel, { ChatMessage } from "../../Model/Chat/chatModel";
+import SettingsViewModel from "./settingsViewModel";
 
 export default class NotificationViewModel {
     // data
@@ -15,6 +16,7 @@ export default class NotificationViewModel {
     showNotification = (message: ChatMessage): void => {
         if (this.seenMessageIds.has(message.fileId)) return;
         if (this.chatListViewModel.selectedChat.value == undefined) return;
+	if (message.senderId == this.settingsViewModel.settingsModel.userid) return;
 
         const notification: Notification = this.createNotification(message);
         const currentChat =
@@ -77,7 +79,7 @@ export default class NotificationViewModel {
     };
 
     // init
-    constructor(public chatListViewModel: ChatListViewModel) {}
+    constructor(public chatListViewModel: ChatListViewModel, public settingsViewModel: SettingsViewModel) {}
 
     // util
     createNotification(message: ChatMessage): Notification {
