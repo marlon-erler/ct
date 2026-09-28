@@ -150,7 +150,7 @@ export default class ChatMessageViewModel {
             hideForReplyView = false;
         else if (
             this.inlineReply != undefined &&
-            selectedMessage.chatMessage.id == this.inlineReply.chatMessage.id
+            selectedMessage.chatMessage.fileId == this.inlineReply.chatMessage.fileId
         )
             hideForReplyView = false;
         else hideForReplyView = true;

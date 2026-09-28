@@ -4628,7 +4628,7 @@
         if (selectedMessage == void 0) hideForReplyView = false;
         else if (selectedMessage.chatMessage.fileId == this.chatMessage.fileId)
           hideForReplyView = false;
-        else if (this.inlineReply != void 0 && selectedMessage.chatMessage.id == this.inlineReply.chatMessage.id)
+        else if (this.inlineReply != void 0 && selectedMessage.chatMessage.fileId == this.inlineReply.chatMessage.fileId)
           hideForReplyView = false;
         else hideForReplyView = true;
         this.isHidden.value = hideForReactions || hideForReplyView;
