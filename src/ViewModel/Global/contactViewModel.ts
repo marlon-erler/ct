@@ -1,6 +1,6 @@
-import ContactListModel from "../../Model/Global/contactListModel";
-import * as React from "../../react";
 import SettingsViewModel from "./settingsViewModel";
+import * as React from "../../react";
+import ContactListModel from "../../Model/Global/contactListModel";
 
 export default class ContactListViewModel {
     // state
@@ -8,43 +8,49 @@ export default class ContactListViewModel {
 
     // main
     updateContact = (id: string, name: string): ContactViewModel => {
-	if (id == this.settingsViewModel.settingsModel.userid) {
-	    this.settingsViewModel.setName(name);
-	}
+        if (id == this.settingsViewModel.settingsModel.userid) {
+            this.settingsViewModel.setName(name);
+        }
 
-	const match = this.contacts.get(id);
-	if (match) {
-	    match.name.value = name;
-	    return match;
-	}
-	const vm = new ContactViewModel(id, name);
-	this.contacts.set(id, vm);
-	return vm;
-    }
+        const match = this.contacts.get(id);
+        if (match) {
+            match.name.value = name;
+            return match;
+        }
+        const vm = new ContactViewModel(id, name);
+        this.contacts.set(id, vm);
+        return vm;
+    };
 
     handleContact = (contact: [string, string]): void => {
-	this.updateContact(...contact);
-    }
+        this.updateContact(...contact);
+    };
 
     unwrapContact = (id: string, knownName: string): ContactViewModel => {
-	if (this.contacts.has(id))
-	    return this.contacts.get(id)!
-	return this.updateContact(id, knownName);
-    }
+        if (this.contacts.has(id)) return this.contacts.get(id)!;
+        return this.updateContact(id, knownName);
+    };
 
     // load
     loadData = (): void => {
-	const contacts: [string, string][] = this.contactListModel.loadContacts();
-	for (const contact of contacts) {
-	    const vm = new ContactViewModel(...contact);
-	    this.contacts.set(vm.id, vm);
-	}
-    }
-    
+        const contacts: [string, string][] =
+            this.contactListModel.loadContacts();
+        for (const contact of contacts) {
+            const vm = new ContactViewModel(...contact);
+            this.contacts.set(vm.id, vm);
+        }
+    };
+
     // init
-    constructor(public contactListModel: ContactListModel, public settingsViewModel: SettingsViewModel) {
-	this.loadData();
-	this.contactListModel.contactHandlerManager.setHandler("contact-list-view-model", this.handleContact);
+    constructor(
+        public contactListModel: ContactListModel,
+        public settingsViewModel: SettingsViewModel,
+    ) {
+        this.loadData();
+        this.contactListModel.contactHandlerManager.setHandler(
+            "contact-list-view-model",
+            this.handleContact,
+        );
     }
 }
 
@@ -53,7 +59,10 @@ export class ContactViewModel {
     name: React.State<string> = new React.State("");
 
     // init
-    constructor(public id: string, name: string) {
-	this.name.value = name;
+    constructor(
+        public id: string,
+        name: string,
+    ) {
+        this.name.value = name;
     }
 }

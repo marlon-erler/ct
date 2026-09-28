@@ -7,6 +7,7 @@ import StorageViewModel from "./ViewModel/Global/storageViewModel";
 import SettingsViewModel from "./ViewModel/Global/settingsViewModel";
 import FileTransferViewModel from "./ViewModel/Global/fileTransferViewModel";
 import CoreViewModel from "./ViewModel/Global/coreViewModel";
+import ContactListViewModel from "./ViewModel/Global/contactViewModel";
 import ConnectionViewModel from "./ViewModel/Global/connectionViewModel";
 import ChatListViewModel from "./ViewModel/Chat/chatListViewModel";
 import { HomePage } from "./View/homePage";
@@ -18,10 +19,9 @@ import { ConnectionModal } from "./View/Modals/connectionModal";
 import StorageModel from "./Model/Global/storageModel";
 import SettingsModel from "./Model/Global/settingsModel";
 import FileTransferModel from "./Model/Global/fileTransferModel";
+import ContactListModel from "./Model/Global/contactListModel";
 import ConnectionModel from "./Model/Global/connectionModel";
 import ChatListModel from "./Model/Chat/chatListModel";
-import ContactListModel from "./Model/Global/contactListModel";
-import ContactListViewModel from "./ViewModel/Global/contactViewModel";
 
 // models
 const storageModel = new StorageModel();
@@ -47,7 +47,10 @@ const coreViewModel = new CoreViewModel(
 
 const storageViewModel = new StorageViewModel(coreViewModel);
 const settingsViewModel = new SettingsViewModel(coreViewModel, settingsModel);
-const contactListViewModel = new ContactListViewModel(contactListModel, settingsViewModel);
+const contactListViewModel = new ContactListViewModel(
+    contactListModel,
+    settingsViewModel,
+);
 const connectionViewModel = new ConnectionViewModel(coreViewModel);
 const chatListViewModel = new ChatListViewModel(
     coreViewModel,

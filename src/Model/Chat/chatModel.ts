@@ -18,10 +18,10 @@ import StorageModel, {
     filePaths,
 } from "../Global/storageModel";
 import SettingsModel from "../Global/settingsModel";
+import ContactListModel from "../Global/contactListModel";
 import ConnectionModel from "../Global/connectionModel";
 import FileModel, { FileContent } from "../Files/fileModel";
 import { Colors } from "../../colors";
-import ContactListModel from "../Global/contactListModel";
 
 export default class ChatModel {
     // models
@@ -162,11 +162,16 @@ export default class ChatModel {
     readonly addMessage = async (chatMessage: ChatMessage): Promise<void> => {
         await this.decryptMessage(chatMessage);
 
-	this.contactListModel.storeContact(chatMessage.senderId, chatMessage.senderName);
+        this.contactListModel.storeContact(
+            chatMessage.senderId,
+            chatMessage.senderName,
+        );
 
         // message
         if (chatMessage.body != "") {
-            const messagePath: string[] = this.getMessagePath(chatMessage.fileId);
+            const messagePath: string[] = this.getMessagePath(
+                chatMessage.fileId,
+            );
             this.storageModel.writeStringifiable(messagePath, chatMessage);
             this.chatMessageHandlerManager.trigger(chatMessage);
         }
@@ -238,7 +243,7 @@ export default class ChatModel {
         const reaction = ChatModel.createMessageReaction(
             messageId,
             senderId,
-	    senderName,
+            senderName,
             content,
             isDeleting,
         );
@@ -350,7 +355,7 @@ export default class ChatModel {
         public connectionModel: ConnectionModel,
         public settingsModel: SettingsModel,
         public chatListModel: ChatListModel,
-	public contactListModel: ContactListModel,
+        public contactListModel: ContactListModel,
         chatId: string,
     ) {
         this.id = chatId;
@@ -397,10 +402,10 @@ export default class ChatModel {
         inlineReplyId?: string,
         fileContent?: FileContent<string>,
     ): Promise<ChatMessage> => {
-	const messageFileContent = FileModel.createFileContent(v4(), "message");
+        const messageFileContent = FileModel.createFileContent(v4(), "message");
 
         const chatMessage: ChatMessage = {
-	    ...messageFileContent,
+            ...messageFileContent,
 
             channel,
             senderName,
@@ -446,7 +451,7 @@ export default class ChatModel {
 
             messageId,
             senderId,
-	    senderName,
+            senderName,
             content,
             isDeleting,
         };
@@ -501,8 +506,7 @@ export interface ChatMessage extends FileContent<"message"> {
     stringifiedFile: string;
 }
 
-export interface ChatMessageReaction
-    extends FileContent<"reaction"> {
+export interface ChatMessageReaction extends FileContent<"reaction"> {
     readonly messageId: string;
     readonly senderId: string;
     readonly senderName: string;
@@ -531,7 +535,7 @@ export const ChatInfoReference: ChatInfoFileContent = {
 
 export const ChatMessageReference: ChatMessage = {
     dataVersion: DATA_VERSION,
-    
+
     fileId: "",
     fileContentId: "",
     creationDate: "",

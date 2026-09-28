@@ -8,8 +8,8 @@ import StorageModel, {
     filePaths,
 } from "../Global/storageModel";
 import SettingsModel from "../Global/settingsModel";
-import ConnectionModel from "../Global/connectionModel";
 import ContactListModel from "../Global/contactListModel";
+import ConnectionModel from "../Global/connectionModel";
 
 export default class ChatListModel {
     // data
@@ -28,7 +28,7 @@ export default class ChatListModel {
             this.connectionModel,
             this.settingsModel,
             this,
-	    this.contactListModel,
+            this.contactListModel,
             id,
         );
         chatModel.setName(primaryChannel);
@@ -90,7 +90,7 @@ export default class ChatListModel {
                 this.connectionModel,
                 this.settingsModel,
                 this,
-		this.contactListModel,
+                this.contactListModel,
                 chatId,
             );
             this.addChatModel(chatModel);
@@ -102,7 +102,7 @@ export default class ChatListModel {
         public storageModel: StorageModel,
         public settingsModel: SettingsModel,
         public connectionModel: ConnectionModel,
-	public contactListModel: ContactListModel
+        public contactListModel: ContactListModel,
     ) {
         this.loadChats();
 

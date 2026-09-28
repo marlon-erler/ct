@@ -65,10 +65,6 @@ const englishTranslations = {
         disconnectAudioLabel: "disconnect from server",
         manageConnectionsAudioLabel: "manage connections",
 
-        yourNameLabel: "Your name",
-        yourNamePlaceholder: "Jane Doe",
-        setNameButtonAudioLabel: "set name",
-
         settingsButton: "Settings",
         manageStorageButton: "Manage storage",
         transferDataButton: "Transfer or export data",
@@ -90,6 +86,7 @@ const englishTranslations = {
     settings: {
         pages: {
             appearance: "Appearance",
+            account: "Account",
             regional: "Language & Region",
             info: "About CT",
         },
@@ -100,13 +97,19 @@ const englishTranslations = {
             system: "Device theme",
             black: "Black",
         },
-
-        version: "Version",
-        language: "Language",
-
-        firstDayOfWeekLabel: "First day of week",
-
-        checkUpdatesButton: "Check for updates",
+        account: {
+            yourNameLabel: "Your name",
+            yourNamePlaceholder: "Jane Doe",
+            setNameButtonAudioLabel: "set name",
+        },
+        regional: {
+            language: "Language",
+            firstDayOfWeekLabel: "First day of week",
+        },
+        about: {
+            version: "Version",
+            checkUpdatesButton: "Check for updates",
+        },
     },
 
     connectionModal: {
@@ -414,10 +417,6 @@ export const allTranslations: {
             disconnectAudioLabel: "vom Server trennen",
             manageConnectionsAudioLabel: "Verbindungen verwalten",
 
-            yourNameLabel: "Dein Name",
-            yourNamePlaceholder: "Max Mustermann",
-            setNameButtonAudioLabel: "Name speichern",
-
             settingsButton: "Einstellungen",
             manageStorageButton: "Daten verwalten",
             transferDataButton: "Daten übertragen",
@@ -437,6 +436,7 @@ export const allTranslations: {
         settings: {
             pages: {
                 appearance: "Erscheinungsbild",
+                account: "Konto",
                 regional: "Sprache & Region",
                 info: "Über CT",
             },
@@ -447,13 +447,19 @@ export const allTranslations: {
                 system: "Geräteeinstellung",
                 black: "Schwarz",
             },
-
-            version: "Version",
-            language: "Sprache",
-
-            firstDayOfWeekLabel: "Erster Wochentag",
-
-            checkUpdatesButton: "Nach updates suchen",
+            account: {
+                yourNameLabel: "Dein Name",
+                yourNamePlaceholder: "Max Mustermann",
+                setNameButtonAudioLabel: "Namen festlegen",
+            },
+            regional: {
+                language: "Sprache",
+                firstDayOfWeekLabel: "Erster Wochentag",
+            },
+            about: {
+                version: "Version",
+                checkUpdatesButton: "Nach Updates suchen",
+            },
         },
 
         connectionModal: {
@@ -729,10 +735,6 @@ export const allTranslations: {
             disconnectAudioLabel: "desconectar del servidor",
             manageConnectionsAudioLabel: "gestionar conexiones",
 
-            yourNameLabel: "Tu nombre",
-            yourNamePlaceholder: "Juan Pérez",
-            setNameButtonAudioLabel: "establecer nombre",
-
             settingsButton: "Ajustes",
             manageStorageButton: "Gestionar almacenamiento",
             transferDataButton: "Enviar o exportar archivos",
@@ -752,6 +754,7 @@ export const allTranslations: {
         settings: {
             pages: {
                 appearance: "Aspecto",
+                account: "Cuenta",
                 regional: "Idioma y Región",
                 info: "Sobre CT",
             },
@@ -762,13 +765,19 @@ export const allTranslations: {
                 system: "Según dispositivo",
                 black: "Negro",
             },
-
-            version: "Versión",
-            language: "Idioma",
-
-            firstDayOfWeekLabel: "Primer día de la semana",
-
-            checkUpdatesButton: "Buscar actualizaciones",
+            account: {
+                yourNameLabel: "Tu nombre",
+                yourNamePlaceholder: "Juan Pérez",
+                setNameButtonAudioLabel: "establecer nombre",
+            },
+            regional: {
+                language: "Idioma",
+                firstDayOfWeekLabel: "Primer día de la semana",
+            },
+            about: {
+                version: "Versión",
+                checkUpdatesButton: "Buscar actualisaciones",
+            },
         },
         connectionModal: {
             connectionModalHeadline: "Gestionar Conexiones",

@@ -29,6 +29,11 @@ export function SettingsModal(
                         coreViewModel,
                         settingsViewModel,
                     );
+                case SettingsModalPages.Account:
+                    return SettingsAccountPane(
+                        coreViewModel,
+                        settingsViewModel,
+                    );
                 case SettingsModalPages.Regional:
                     return SettingsRegionalPane(
                         coreViewModel,
@@ -82,6 +87,12 @@ function SettingsLeftPane(
             {SettingsPaneButton(
                 coreViewModel,
                 settingsViewModel,
+                SettingsModalPages.Account,
+                coreViewModel.translations.settings.pages.account,
+            )}
+            {SettingsPaneButton(
+                coreViewModel,
+                settingsViewModel,
                 SettingsModalPages.Regional,
                 coreViewModel.translations.settings.pages.regional,
             )}
@@ -121,7 +132,7 @@ function SettingsInfoPane(
             <div class="flex-column gap">
                 {InfoTile(
                     "build",
-                    coreViewModel.translations.settings.version,
+                    coreViewModel.translations.settings.about.version,
                     settingsViewModel.coreViewModel.version,
                 )}
 
@@ -135,7 +146,10 @@ function SettingsInfoPane(
                 </button>
 
                 <button class="standard" on:click={coreViewModel.checkUpdates}>
-                    {coreViewModel.translations.settings.checkUpdatesButton}
+                    {
+                        coreViewModel.translations.settings.about
+                            .checkUpdatesButton
+                    }
                 </button>
             </div>
         </div>
@@ -151,7 +165,7 @@ function SettingsRegionalPane(
             <h2>{coreViewModel.translations.settings.pages.regional}</h2>
 
             <hr></hr>
-            <h3>{coreViewModel.translations.settings.language}</h3>
+            <h3>{coreViewModel.translations.settings.regional.language}</h3>
             {OptionButtonList(
                 new React.ListState<[string, string]>(
                     Object.values(Languages).map((x) => [languageNames[x], x]),
@@ -160,7 +174,12 @@ function SettingsRegionalPane(
             )}
 
             <hr></hr>
-            <h3>{coreViewModel.translations.settings.firstDayOfWeekLabel}</h3>
+            <h3>
+                {
+                    coreViewModel.translations.settings.regional
+                        .firstDayOfWeekLabel
+                }
+            </h3>
             {OptionButtonList(
                 new React.ListState<[string, string]>(
                     coreViewModel.translations.regional.weekdays.full.map(
@@ -169,6 +188,51 @@ function SettingsRegionalPane(
                 ),
                 settingsViewModel.firstDayOfWeek,
             )}
+        </div>
+    );
+}
+
+function SettingsAccountPane(
+    coreViewModel: CoreViewModel,
+    settingsViewModel: SettingsViewModel,
+) {
+    return (
+        <div class="slide-up">
+            <h2>{coreViewModel.translations.settings.pages.account}</h2>
+            <hr></hr>
+            <label class="tile flex-no">
+                <span class="icon">account_circle</span>
+                <div>
+                    <span>
+                        {
+                            coreViewModel.translations.settings.account
+                                .yourNameLabel
+                        }
+                    </span>
+                    <input
+                        placeholder={
+                            coreViewModel.translations.settings.account
+                                .yourNamePlaceholder
+                        }
+                        bind:value={settingsViewModel.usernameInput}
+                        on:enter={settingsViewModel.setName}
+                    ></input>
+                </div>
+            </label>
+            <div class="flex-row justify-end width-input">
+                <button
+                    class="width-50"
+                    on:click={settingsViewModel.setName}
+                    toggle:disabled={settingsViewModel.cannotSetName}
+                    aria-label={
+                        coreViewModel.translations.settings.account
+                            .setNameButtonAudioLabel
+                    }
+                >
+                    {coreViewModel.translations.general.setButton}
+                    <span class="icon">check</span>
+                </button>
+            </div>
         </div>
     );
 }

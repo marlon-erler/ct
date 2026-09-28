@@ -37,10 +37,10 @@ export function ChatMessage(
             {InlineReply(chatMessageViewModel)}
             <div class="main tile">
                 <div class="text-container">
-		    <span 
-			class="sender-name ellipsis"
-			subscribe:innerText={chatMessageViewModel.contact.name}
-		    ></span>
+                    <span
+                        class="sender-name ellipsis"
+                        subscribe:innerText={chatMessageViewModel.contact.name}
+                    ></span>
                     <span
                         class="body"
                         subscribe:innerText={chatMessageViewModel.body}

@@ -1,5 +1,6 @@
 import MessagePageViewModel from "../Pages/messagePageViewModel";
 import CoreViewModel from "../Global/coreViewModel";
+import { ContactViewModel } from "../Global/contactViewModel";
 import * as React from "../../react";
 import {
     ChatMessage,
@@ -7,7 +8,6 @@ import {
     ChatMessageStatuses,
     ReactionSymbols,
 } from "../../Model/Chat/chatModel";
-import {ContactViewModel} from "../Global/contactViewModel";
 
 export default class ChatMessageViewModel {
     // data
@@ -203,7 +203,7 @@ export default class ChatMessageViewModel {
         public readonly coreViewModel: CoreViewModel,
         public readonly messagePageViewModel: MessagePageViewModel,
         chatMessage: ChatMessage,
-	public contact: ContactViewModel,
+        public contact: ContactViewModel,
         sentByUser: boolean,
     ) {
         this.chatMessage = chatMessage;

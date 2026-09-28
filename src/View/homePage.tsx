@@ -87,39 +87,6 @@ export function HomePage(
 
             <hr></hr>
 
-            <label class="tile flex-no">
-                <span class="icon">account_circle</span>
-                <div>
-                    <span>
-                        {coreViewModel.translations.homePage.yourNameLabel}
-                    </span>
-                    <input
-                        placeholder={
-                            coreViewModel.translations.homePage
-                                .yourNamePlaceholder
-                        }
-                        bind:value={settingsViewModel.usernameInput}
-                        on:enter={settingsViewModel.setName}
-                    ></input>
-                </div>
-            </label>
-            <div class="flex-row justify-end">
-                <button
-                    class="width-50"
-                    on:click={settingsViewModel.setName}
-                    toggle:disabled={settingsViewModel.cannotSetName}
-                    aria-label={
-                        coreViewModel.translations.homePage
-                            .setNameButtonAudioLabel
-                    }
-                >
-                    {coreViewModel.translations.general.setButton}
-                    <span class="icon">check</span>
-                </button>
-            </div>
-
-            <hr></hr>
-
             {HomePageButton(
                 settingsViewModel.showSettingsModal,
                 coreViewModel.translations.homePage.settingsButton,

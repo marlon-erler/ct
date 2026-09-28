@@ -351,9 +351,6 @@
       connectAudioLabel: "connect to server",
       disconnectAudioLabel: "disconnect from server",
       manageConnectionsAudioLabel: "manage connections",
-      yourNameLabel: "Your name",
-      yourNamePlaceholder: "Jane Doe",
-      setNameButtonAudioLabel: "set name",
       settingsButton: "Settings",
       manageStorageButton: "Manage storage",
       transferDataButton: "Transfer or export data",
@@ -369,6 +366,7 @@
     settings: {
       pages: {
         appearance: "Appearance",
+        account: "Account",
         regional: "Language & Region",
         info: "About CT"
       },
@@ -379,10 +377,19 @@
         system: "Device theme",
         black: "Black"
       },
-      version: "Version",
-      language: "Language",
-      firstDayOfWeekLabel: "First day of week",
-      checkUpdatesButton: "Check for updates"
+      account: {
+        yourNameLabel: "Your name",
+        yourNamePlaceholder: "Jane Doe",
+        setNameButtonAudioLabel: "set name"
+      },
+      regional: {
+        language: "Language",
+        firstDayOfWeekLabel: "First day of week"
+      },
+      about: {
+        version: "Version",
+        checkUpdatesButton: "Check for updates"
+      }
     },
     connectionModal: {
       connectionModalHeadline: "Manage Connections",
@@ -600,9 +607,6 @@
         connectAudioLabel: "mit Server verbinden",
         disconnectAudioLabel: "vom Server trennen",
         manageConnectionsAudioLabel: "Verbindungen verwalten",
-        yourNameLabel: "Dein Name",
-        yourNamePlaceholder: "Max Mustermann",
-        setNameButtonAudioLabel: "Name speichern",
         settingsButton: "Einstellungen",
         manageStorageButton: "Daten verwalten",
         transferDataButton: "Daten \xFCbertragen",
@@ -617,6 +621,7 @@
       settings: {
         pages: {
           appearance: "Erscheinungsbild",
+          account: "Konto",
           regional: "Sprache & Region",
           info: "\xDCber CT"
         },
@@ -627,10 +632,19 @@
           system: "Ger\xE4teeinstellung",
           black: "Schwarz"
         },
-        version: "Version",
-        language: "Sprache",
-        firstDayOfWeekLabel: "Erster Wochentag",
-        checkUpdatesButton: "Nach updates suchen"
+        account: {
+          yourNameLabel: "Dein Name",
+          yourNamePlaceholder: "Max Mustermann",
+          setNameButtonAudioLabel: "Namen festlegen"
+        },
+        regional: {
+          language: "Sprache",
+          firstDayOfWeekLabel: "Erster Wochentag"
+        },
+        about: {
+          version: "Version",
+          checkUpdatesButton: "Nach Updates suchen"
+        }
       },
       connectionModal: {
         connectionModalHeadline: "Verbindungen verwalten",
@@ -829,9 +843,6 @@
         connectAudioLabel: "conectar al servidor",
         disconnectAudioLabel: "desconectar del servidor",
         manageConnectionsAudioLabel: "gestionar conexiones",
-        yourNameLabel: "Tu nombre",
-        yourNamePlaceholder: "Juan P\xE9rez",
-        setNameButtonAudioLabel: "establecer nombre",
         settingsButton: "Ajustes",
         manageStorageButton: "Gestionar almacenamiento",
         transferDataButton: "Enviar o exportar archivos",
@@ -846,6 +857,7 @@
       settings: {
         pages: {
           appearance: "Aspecto",
+          account: "Cuenta",
           regional: "Idioma y Regi\xF3n",
           info: "Sobre CT"
         },
@@ -856,10 +868,19 @@
           system: "Seg\xFAn dispositivo",
           black: "Negro"
         },
-        version: "Versi\xF3n",
-        language: "Idioma",
-        firstDayOfWeekLabel: "Primer d\xEDa de la semana",
-        checkUpdatesButton: "Buscar actualizaciones"
+        account: {
+          yourNameLabel: "Tu nombre",
+          yourNamePlaceholder: "Juan P\xE9rez",
+          setNameButtonAudioLabel: "establecer nombre"
+        },
+        regional: {
+          language: "Idioma",
+          firstDayOfWeekLabel: "Primer d\xEDa de la semana"
+        },
+        about: {
+          version: "Versi\xF3n",
+          checkUpdatesButton: "Buscar actualisaciones"
+        }
       },
       connectionModal: {
         connectionModalHeadline: "Gestionar Conexiones",
@@ -1709,7 +1730,7 @@
       this.printTree = () => {
         return stringify(this.storageEntryTree);
       };
-      // upgrade 
+      // upgrade
       this.upgrade = () => {
       };
       this.initializeTree();
@@ -1862,9 +1883,8 @@
   // src/Model/Global/settingsModel.ts
   var SettingsModel = class _SettingsModel {
     // init
-    constructor(storageModel2, contactListModel2) {
+    constructor(storageModel2) {
       this.storageModel = storageModel2;
-      this.contactListModel = contactListModel2;
       // data
       this.username = "";
       this.userid = "";
@@ -1886,7 +1906,6 @@
       this.setName = (newValue) => {
         this.username = newValue;
         this.storeSetting("username", newValue);
-        this.contactListModel.storeContact(this.userid, newValue);
       };
       this.setFirstDayOfWeek = (newValue) => {
         this.firstDayOfWeek = newValue;
@@ -1976,7 +1995,10 @@
         () => this.usernameInput.value == "" || this.usernameInput.value == this.coreViewModel.settingsModel.username
       );
       // methods
-      this.setName = () => {
+      this.setName = (name) => {
+        if (typeof name == "string") {
+          this.usernameInput.value = name;
+        }
         this.coreViewModel.settingsModel.setName(this.usernameInput.value);
         this.username.value = this.coreViewModel.settingsModel.username;
         this.usernameInput.callSubscriptions();
@@ -2359,6 +2381,58 @@
         () => this.initiateTransfer()
       );
       this.registerKeyStroke("backspace" /* CloseOrCancel */, this.close);
+    }
+  };
+
+  // src/ViewModel/Global/contactViewModel.ts
+  var ContactListViewModel = class {
+    // init
+    constructor(contactListModel2, settingsViewModel2) {
+      this.contactListModel = contactListModel2;
+      this.settingsViewModel = settingsViewModel2;
+      // state
+      this.contacts = /* @__PURE__ */ new Map();
+      // main
+      this.updateContact = (id, name) => {
+        if (id == this.settingsViewModel.settingsModel.userid) {
+          this.settingsViewModel.setName(name);
+        }
+        const match = this.contacts.get(id);
+        if (match) {
+          match.name.value = name;
+          return match;
+        }
+        const vm = new ContactViewModel(id, name);
+        this.contacts.set(id, vm);
+        return vm;
+      };
+      this.handleContact = (contact) => {
+        this.updateContact(...contact);
+      };
+      this.unwrapContact = (id, knownName) => {
+        if (this.contacts.has(id))
+          return this.contacts.get(id);
+        return this.updateContact(id, knownName);
+      };
+      // load
+      this.loadData = () => {
+        const contacts = this.contactListModel.loadContacts();
+        for (const contact of contacts) {
+          const vm = new ContactViewModel(...contact);
+          this.contacts.set(vm.id, vm);
+        }
+      };
+      this.loadData();
+      this.contactListModel.contactHandlerManager.setHandler("contact-list-view-model", this.handleContact);
+    }
+  };
+  var ContactViewModel = class {
+    // init
+    constructor(id, name) {
+      this.id = id;
+      // state
+      this.name = new State("");
+      this.name.value = name;
     }
   };
 
@@ -2952,9 +3026,14 @@
       // messaging
       this.addMessage = async (chatMessage) => {
         await this.decryptMessage(chatMessage);
-        this.contactListModel.storeContact(chatMessage.senderId, chatMessage.senderName);
+        this.contactListModel.storeContact(
+          chatMessage.senderId,
+          chatMessage.senderName
+        );
         if (chatMessage.body != "") {
-          const messagePath = this.getMessagePath(chatMessage.fileId);
+          const messagePath = this.getMessagePath(
+            chatMessage.fileId
+          );
           this.storageModel.writeStringifiable(messagePath, chatMessage);
           this.chatMessageHandlerManager.trigger(chatMessage);
         }
@@ -5196,23 +5275,6 @@
         "toggle:disabled": connectionViewModel2.cannotConnect
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "link")
-    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "account_circle"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.yourNameLabel), /* @__PURE__ */ createElement(
-      "input",
-      {
-        placeholder: coreViewModel2.translations.homePage.yourNamePlaceholder,
-        "bind:value": settingsViewModel2.usernameInput,
-        "on:enter": settingsViewModel2.setName
-      }
-    ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "width-50",
-        "on:click": settingsViewModel2.setName,
-        "toggle:disabled": settingsViewModel2.cannotSetName,
-        "aria-label": coreViewModel2.translations.homePage.setNameButtonAudioLabel
-      },
-      coreViewModel2.translations.general.setButton,
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
     )), /* @__PURE__ */ createElement("hr", null), HomePageButton(
       settingsViewModel2.showSettingsModal,
       coreViewModel2.translations.homePage.settingsButton,
@@ -6476,7 +6538,13 @@
 
   // src/View/Components/replyPreview.tsx
   function ReplyPreview(coreViewModel2, chatMessageViewModel) {
-    return /* @__PURE__ */ createElement("div", { class: "reply-preview" }, /* @__PURE__ */ createElement("div", { class: "surface blur" }, /* @__PURE__ */ createElement("span", { class: "secondary", "subscribe:innerText": chatMessageViewModel.contact.name }), /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { class: "reply-preview" }, /* @__PURE__ */ createElement("div", { class: "surface blur" }, /* @__PURE__ */ createElement(
+      "span",
+      {
+        class: "secondary",
+        "subscribe:innerText": chatMessageViewModel.contact.name
+      }
+    ), /* @__PURE__ */ createElement(
       "b",
       {
         class: "ellipsis",
@@ -7430,12 +7498,17 @@
               coreViewModel2,
               settingsViewModel2
             );
-          case 1 /* Regional */:
+          case 1 /* Account */:
+            return SettingsAccountPane(
+              coreViewModel2,
+              settingsViewModel2
+            );
+          case 2 /* Regional */:
             return SettingsRegionalPane(
               coreViewModel2,
               settingsViewModel2
             );
-          case 2 /* Info */:
+          case 3 /* Info */:
             return SettingsInfoPane(coreViewModel2, settingsViewModel2);
         }
       }
@@ -7466,12 +7539,17 @@
     ), SettingsPaneButton(
       coreViewModel2,
       settingsViewModel2,
-      1 /* Regional */,
+      1 /* Account */,
+      coreViewModel2.translations.settings.pages.account
+    ), SettingsPaneButton(
+      coreViewModel2,
+      settingsViewModel2,
+      2 /* Regional */,
       coreViewModel2.translations.settings.pages.regional
     ), SettingsPaneButton(
       coreViewModel2,
       settingsViewModel2,
-      2 /* Info */,
+      3 /* Info */,
       coreViewModel2.translations.settings.pages.info
     ));
   }
@@ -7487,7 +7565,7 @@
   function SettingsInfoPane(coreViewModel2, settingsViewModel2) {
     return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.appName), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, InfoTile(
       "build",
-      coreViewModel2.translations.settings.version,
+      coreViewModel2.translations.settings.about.version,
       settingsViewModel2.coreViewModel.version
     ), /* @__PURE__ */ createElement(
       "button",
@@ -7498,15 +7576,15 @@
       },
       /* @__PURE__ */ createElement("span", { "subscribe:innerText": coreViewModel2.updateText }),
       /* @__PURE__ */ createElement("span", { class: "icon" }, "update")
-    ), /* @__PURE__ */ createElement("button", { class: "standard", "on:click": coreViewModel2.checkUpdates }, coreViewModel2.translations.settings.checkUpdatesButton)));
+    ), /* @__PURE__ */ createElement("button", { class: "standard", "on:click": coreViewModel2.checkUpdates }, coreViewModel2.translations.settings.about.checkUpdatesButton)));
   }
   function SettingsRegionalPane(coreViewModel2, settingsViewModel2) {
-    return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.settings.pages.regional), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.settings.language), OptionButtonList(
+    return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.settings.pages.regional), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.settings.regional.language), OptionButtonList(
       new ListState(
         Object.values(Languages).map((x) => [languageNames[x], x])
       ),
       settingsViewModel2.language
-    ), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.settings.firstDayOfWeekLabel), OptionButtonList(
+    ), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.settings.regional.firstDayOfWeekLabel), OptionButtonList(
       new ListState(
         coreViewModel2.translations.regional.weekdays.full.map(
           (x, i) => [x, i.toString()]
@@ -7514,6 +7592,26 @@
       ),
       settingsViewModel2.firstDayOfWeek
     ));
+  }
+  function SettingsAccountPane(coreViewModel2, settingsViewModel2) {
+    return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.settings.pages.account), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "account_circle"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.settings.account.yourNameLabel), /* @__PURE__ */ createElement(
+      "input",
+      {
+        placeholder: coreViewModel2.translations.settings.account.yourNamePlaceholder,
+        "bind:value": settingsViewModel2.usernameInput,
+        "on:enter": settingsViewModel2.setName
+      }
+    ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end width-input" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "width-50",
+        "on:click": settingsViewModel2.setName,
+        "toggle:disabled": settingsViewModel2.cannotSetName,
+        "aria-label": coreViewModel2.translations.settings.account.setNameButtonAudioLabel
+      },
+      coreViewModel2.translations.general.setButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
+    )));
   }
   function SettingsAppearancePane(coreViewModel2, settingsViewModel2) {
     return /* @__PURE__ */ createElement("div", { class: "slide-up" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.settings.pages.appearance), /* @__PURE__ */ createElement("hr", null), OptionButtonList(
@@ -8150,6 +8248,37 @@
     body: ""
   };
 
+  // src/Model/Global/contactListModel.ts
+  var ContactListModel = class {
+    constructor(storageModel2, settingsModel2) {
+      this.storageModel = storageModel2;
+      this.settingsModel = settingsModel2;
+      this.contactHandlerManager = new HandlerManager();
+      this.getContactPath = (contactId) => {
+        return StorageModel.getPath("contacts" /* ContactsModel */, [
+          contactId
+        ]);
+      };
+      this.loadContacts = () => {
+        const contactIds = this.storageModel.list([
+          "contacts" /* ContactsModel */
+        ]);
+        const contacts = contactIds.map((id) => [
+          id,
+          this.storageModel.read(this.getContactPath(id)) ?? "?"
+        ]);
+        contacts.push([this.settingsModel.userid, this.settingsModel.username]);
+        return contacts;
+      };
+      this.storeContact = (id, name) => {
+        this.contactHandlerManager.trigger([id, name]);
+        if (id == this.settingsModel.userid) return;
+        const path = this.getContactPath(id);
+        this.storageModel.write(path, name);
+      };
+    }
+  };
+
   // node_modules/udn-frontend/index.ts
   var UDNFrontend = class {
     ws;
@@ -8370,11 +8499,17 @@
         return chatMessages;
       };
       this.addToOutbox = (chatMessage) => {
-        const messagePath = [...this.getOutboxPath(), chatMessage.fileId];
+        const messagePath = [
+          ...this.getOutboxPath(),
+          chatMessage.fileId
+        ];
         this.storageModel.writeStringifiable(messagePath, chatMessage);
       };
       this.removeFromOutbox = (chatMessage) => {
-        const messagePath = [...this.getOutboxPath(), chatMessage.fileId];
+        const messagePath = [
+          ...this.getOutboxPath(),
+          chatMessage.fileId
+        ];
         this.storageModel.remove(messagePath);
       };
       this.sendMessagesInOutbox = () => {
@@ -8564,79 +8699,10 @@
     }
   };
 
-  // src/Model/Global/contactListModel.ts
-  var ContactListModel = class {
-    constructor(storageModel2) {
-      this.storageModel = storageModel2;
-      this.contactHandlerManager = new HandlerManager();
-      this.getContactPath = (contactId) => {
-        return StorageModel.getPath("contacts" /* ContactsModel */, [contactId]);
-      };
-      this.loadContacts = () => {
-        const contactIds = this.storageModel.list(["contacts" /* ContactsModel */]);
-        const contacts = contactIds.map((id) => [id, this.storageModel.read(this.getContactPath(id)) ?? "?"]);
-        return contacts;
-      };
-      this.storeContact = (id, name) => {
-        const path = this.getContactPath(id);
-        this.storageModel.write(path, name);
-        this.contactHandlerManager.trigger([id, name]);
-      };
-    }
-  };
-
-  // src/ViewModel/Global/contactViewModel.ts
-  var ContactListViewModel = class {
-    // init
-    constructor(contactListModel2) {
-      this.contactListModel = contactListModel2;
-      // state
-      this.contacts = /* @__PURE__ */ new Map();
-      // main
-      this.updateContact = (id, name) => {
-        const match = this.contacts.get(id);
-        if (match) {
-          match.name.value = name;
-          return match;
-        }
-        const vm = new ContactViewModel(id, name);
-        this.contacts.set(id, vm);
-        return vm;
-      };
-      this.handleContact = (contact) => {
-        this.updateContact(...contact);
-      };
-      this.unwrapContact = (id, knownName) => {
-        if (this.contacts.has(id))
-          return this.contacts.get(id);
-        return this.updateContact(id, knownName);
-      };
-      // load
-      this.loadData = () => {
-        const contacts = this.contactListModel.loadContacts();
-        for (const contact of contacts) {
-          const vm = new ContactViewModel(...contact);
-          this.contacts.set(vm.id, vm);
-        }
-      };
-      this.loadData();
-      this.contactListModel.contactHandlerManager.setHandler("contact-list-view-model", this.handleContact);
-    }
-  };
-  var ContactViewModel = class {
-    // init
-    constructor(id, name) {
-      this.id = id;
-      // state
-      this.name = new State("");
-      this.name.value = name;
-    }
-  };
-
   // src/index.tsx
   var storageModel = new StorageModel();
-  var contactListModel = new ContactListModel(storageModel);
-  var settingsModel = new SettingsModel(storageModel, contactListModel);
+  var settingsModel = new SettingsModel(storageModel);
+  var contactListModel = new ContactListModel(storageModel, settingsModel);
   var connectionModel = new ConnectionModel(storageModel);
   var chatListModel = new ChatListModel(
     storageModel,
@@ -8653,8 +8719,11 @@
     fileTransferModel
   );
   var storageViewModel = new StorageViewModel(coreViewModel);
-  var contactListViewModel = new ContactListViewModel(contactListModel);
   var settingsViewModel = new SettingsViewModel(coreViewModel, settingsModel);
+  var contactListViewModel = new ContactListViewModel(
+    contactListModel,
+    settingsViewModel
+  );
   var connectionViewModel = new ConnectionViewModel(coreViewModel);
   var chatListViewModel = new ChatListViewModel(
     coreViewModel,
