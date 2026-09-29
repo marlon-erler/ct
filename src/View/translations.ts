@@ -120,8 +120,8 @@ const englishTranslations = {
 
 	///
 	
-	transferHeadline: "Copy Your Data",
-	transferDescription: "If you already use the Coordination Tool on another device, copy your identity here. You can use both devices at the same time.",
+	transferOptionsHeadline: "Copy Your Data",
+	transferOptionsDescription: "If you already use the Coordination Tool on another device, copy your identity here. You can use both devices at the same time.",
 	transferOptionTransfer: "Copy here",
 	transferOptionNew: "Set up as new device",
 
@@ -129,6 +129,12 @@ const englishTranslations = {
 	
 	nameHeadline: "Your Name",
 	nameDescription: "This is what others see when you send messages. You can always change your name in settings.",
+
+	//
+	
+	transferHeadline: "Data Transfer",
+	transferDescription: 'On your other device, prepare to transfer your identity and personal data alongside any chats you wish to copy. Then, enter the displayed data here.',
+	transferButton: "Copy data",
     },
 
     connectionModal: {

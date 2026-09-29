@@ -1,6 +1,7 @@
 import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import OnboardingViewModel, {OnboardingModals} from "../../ViewModel/Global/onboardingViewModel";
+import {ViewController} from "../viewController";
 
 // MAIN
 export function OnboardingModalWrapper(coreViewModel: CoreViewModel, onboardingViewModel: OnboardingViewModel) {
@@ -8,6 +9,7 @@ export function OnboardingModalWrapper(coreViewModel: CoreViewModel, onboardingV
 	{ConnectionModal(coreViewModel, onboardingViewModel)}
     {TransferModal(coreViewModel, onboardingViewModel)}
     {NameModal(coreViewModel, onboardingViewModel)}
+    {TransferDataModal(coreViewModel, onboardingViewModel)}
 </div>
 }
 
@@ -91,15 +93,15 @@ function TransferModal(coreViewModel: CoreViewModel, onboardingViewModel: Onboar
     >
 	<div>
 	    <main>
-		<h2>{coreViewModel.translations.onboarding.transferHeadline}</h2>
-		<p class="secondary width-input">{coreViewModel.translations.onboarding.transferDescription}</p>
+		<h2>{coreViewModel.translations.onboarding.transferOptionsHeadline}</h2>
+		<p class="secondary width-input">{coreViewModel.translations.onboarding.transferOptionsDescription}</p>
 
 		<hr></hr>
 
 		<div class="flex-column gap">
 		    <button
 			class="tile"
-			on:click={onboardingViewModel.transferData}
+			on:click={onboardingViewModel.showTransferData}
 			toggle:disabled={onboardingViewModel.cannotTransfer}
 		    >
 			<div>
@@ -188,6 +190,94 @@ function NameModal(coreViewModel: CoreViewModel, onboardingViewModel: Onboarding
 		    {coreViewModel.translations.general.setButton}
 		    <span class="icon">
 			arrow_forward
+		    </span>
+		</button>
+	    </div>
+	</div>
+    </div>
+}
+
+function TransferDataModal(coreViewModel: CoreViewModel, onboardingViewModel: OnboardingViewModel) {
+    const isPresented = React.createProxyState(
+	[onboardingViewModel.presentedModal],
+	() =>
+	onboardingViewModel.presentedModal.value ==
+	OnboardingModals.Transfer
+    );
+
+    const fileTransferViewModel = onboardingViewModel.fileTransferViewModel;
+
+    return <div
+	class="modal"
+	toggle:open={isPresented}
+    >
+	<div>
+	    <main>
+		<h2>{coreViewModel.translations.onboarding.transferHeadline}</h2>
+		<p class="secondary width-input">{coreViewModel.translations.onboarding.transferDescription}</p>
+
+		<hr></hr>
+
+                    <div class="flex-column gap content-margin-bottom">
+                        <label class="tile">
+                            <span class="icon">forum</span>
+                            <div>
+                                <span class="secondary">
+                                    {
+                                        coreViewModel.translations
+                                            .dataTransferModal
+                                            .transferChannelHeadline
+                                    }
+                                </span>
+                                <input
+                                    type="number"
+                                    on:enter={
+                                        fileTransferViewModel.prepareReceivingData
+                                    }
+                                    bind:value={
+                                        fileTransferViewModel.receivingTransferChannel
+                                    }
+                                ></input>
+                            </div>
+                        </label>
+                        <label class="tile">
+                            <span class="icon">key</span>
+                            <div>
+                                <span class="secondary">
+                                    {
+                                        coreViewModel.translations
+                                            .dataTransferModal
+                                            .transferKeyHeadline
+                                    }
+                                </span>
+                                <input
+                                    type="number"
+                                    on:enter={
+                                        fileTransferViewModel.prepareReceivingData
+                                    }
+                                    bind:value={
+                                        fileTransferViewModel.receivingTransferKey
+                                    }
+                                ></input>
+                            </div>
+                        </label>
+                    </div>
+	    </main>
+	    <div class="flex-row">
+		<button
+		    class="standard width-50"
+		    on:click={onboardingViewModel.showTransferOption}
+		    toggle:disabled={fileTransferViewModel.cannotExitReception}
+		>
+		    {coreViewModel.translations.general.backButton}
+		</button>
+		<button
+		    class="primary width-50"
+		    on:click={onboardingViewModel.transferData}
+		>
+		    {coreViewModel.translations.onboarding.transferButton}
+		    <span class="icon">
+			check
 		    </span>
 		</button>
 	    </div>

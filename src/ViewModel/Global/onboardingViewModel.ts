@@ -23,10 +23,15 @@ export default class OnboardingViewModel {
     setupNew = (): void => {
 	this.presentedModal.value = OnboardingModals.Name;
     }
+    
+    showTransferData = (): void => {
+	this.presentedModal.value = OnboardingModals.Transfer;
+    }
 
     // methods
     transferData = (): void => {
-	this.fileTransferViewModel.showTransferDataInputModal();
+	this.fileTransferViewModel.exitReception = ()=>this.showTransferData();
+	this.fileTransferViewModel.prepareReceivingData();
 	this.presentedModal.value = undefined;
     }
 
@@ -48,5 +53,6 @@ export default class OnboardingViewModel {
 export enum OnboardingModals {
     Connection,
     TransferOrNew,
-    Name
+    Name,
+    Transfer,
 }
