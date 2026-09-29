@@ -1,4 +1,5 @@
 import { SplitModal } from "./splitModal";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { UsageBar } from "../Components/usageBar";
 import { DirectoryItemList } from "../Components/directoryItemList";
 import { DangerousActionButton } from "../Components/dangerousActionButton";
@@ -95,7 +96,10 @@ export function StorageModal(
                         true,
                     )}
                 </main>
-                <button on:click={storageViewModel.close}>
+                <button
+                    on:click={storageViewModel.close}
+                    ctkeystroke={getKeySymbol(CommonKeys.CloseOrCancel)}
+                >
                     {coreViewModel.translations.general.closeButton}
                     <span class="icon">close</span>
                 </button>

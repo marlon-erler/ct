@@ -1,4 +1,5 @@
 import { v4 } from "uuid";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import {
     Entry,
     Option,
@@ -269,12 +270,14 @@ export function TaskSettingsModal(
                     <button
                         class="flex"
                         on:click={taskViewModel.closeAndDiscard}
+                        ctkeystroke={getKeySymbol(CommonKeys.CloseOrCancel)}
                     >
                         {coreViewModel.translations.general.closeButton}
                     </button>
                     <button
                         class="flex primary"
                         on:click={taskViewModel.closeAndSave}
+                        ctkeystroke={getKeySymbol(CommonKeys.Apply)}
                     >
                         {coreViewModel.translations.general.saveButton}
                         <span class="icon">save</span>

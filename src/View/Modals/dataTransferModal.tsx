@@ -1,4 +1,5 @@
 import { ViewController } from "../viewController";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { StringToTextSpan } from "../Components/textSpan";
 import * as React from "../../react";
 import FileTransferViewModel, {
@@ -172,7 +173,10 @@ function DirectionSelectionModal(
                         </button>
                     </div>
                 </main>
-                <button on:click={fileTransferViewModel.close}>
+                <button
+                    on:click={fileTransferViewModel.close}
+                    ctkeystroke={getKeySymbol(CommonKeys.CloseOrCancel)}
+                >
                     {coreViewModel.translations.general.closeButton}
                     <span class="icon">close</span>
                 </button>

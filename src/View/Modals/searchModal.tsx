@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import { ViewController } from "../viewController";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { StringToOption } from "../Components/option";
 import { DeletableListItem } from "../Components/deletableListItem";
 import * as React from "../../react";
@@ -55,6 +56,7 @@ export function SearchModal<T>(
                             }
                             on:click={searchViewModel.clear}
                             toggle:disabled={searchViewModel.cannotClear}
+                            ctkeystroke={getKeySymbol(CommonKeys.Reset)}
                         >
                             <span class="icon">close</span>
                         </button>
@@ -93,7 +95,10 @@ export function SearchModal<T>(
                         ></div>
                     </div>
                 </main>
-                <button on:click={close}>
+                <button
+                    on:click={close}
+                    ctkeystroke={getKeySymbol(CommonKeys.CloseOrCancel)}
+                >
                     {coreViewModel.translations.general.closeButton}
                     <span class="icon">close</span>
                 </button>

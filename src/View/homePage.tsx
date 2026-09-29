@@ -57,6 +57,7 @@ export function HomePage(
                     }
                     on:click={connectionViewModel.disconnect}
                     toggle:disabled={connectionViewModel.cannotDisonnect}
+                    ctkeystroke="x"
                 >
                     <span class="icon">link_off</span>
                 </button>
@@ -80,6 +81,7 @@ export function HomePage(
                     }
                     on:click={connectionViewModel.connect}
                     toggle:disabled={connectionViewModel.cannotConnect}
+                    ctkeystroke="c"
                 >
                     <span class="icon">link</span>
                 </button>
@@ -91,16 +93,19 @@ export function HomePage(
                 settingsViewModel.showSettingsModal,
                 coreViewModel.translations.homePage.settingsButton,
                 "settings",
+                ",",
             )}
             {HomePageButton(
                 fileTransferViewModel.showDirectionSelectionModal,
                 coreViewModel.translations.homePage.transferDataButton,
                 "sync_alt",
+                "t",
             )}
             {HomePageButton(
                 storageViewModel.showStorageModal,
                 coreViewModel.translations.homePage.manageStorageButton,
                 "hard_drive",
+                "e",
             )}
 
             <button

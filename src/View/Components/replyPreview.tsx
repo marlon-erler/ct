@@ -1,3 +1,4 @@
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import * as React from "../../react";
 import CoreViewModel from "../../ViewModel/Global/coreViewModel";
 import ChatMessageViewModel from "../../ViewModel/Chat/chatMessageViewModel";
@@ -25,6 +26,7 @@ export function ReplyPreview(
                     coreViewModel.translations.chatPage.message
                         .cancelReplyAudioLabel
                 }
+                ctkeystroke={getKeySymbol(CommonKeys.CloseOrCancel)}
             >
                 <span class="icon">close</span>
             </button>

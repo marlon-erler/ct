@@ -1,4 +1,5 @@
 import { ViewController } from "../viewController";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { MessageReactionFilterButton } from "../Components/messageReactionFilterButton";
 import * as React from "../../react";
 import MessagePageViewModel from "../../ViewModel/Pages/messagePageViewModel";
@@ -112,7 +113,10 @@ export function MessageFilterModal<T>(
                         </div>
                     </div>
                 </main>
-                <button on:click={messagePageViewModel.hideFilterModal}>
+                <button
+                    on:click={messagePageViewModel.hideFilterModal}
+                    ctkeystroke={getKeySymbol(CommonKeys.CloseOrCancel)}
+                >
                     {coreViewModel.translations.general.closeButton}
                     <span class="icon">close</span>
                 </button>

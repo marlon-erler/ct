@@ -9,6 +9,7 @@ export function BoardViewToggleButton(
     icon: string,
     page: BoardPageTypes,
     boardViewModel: BoardViewModel,
+    key: string,
 ) {
     function select() {
         boardViewModel.selectedPage.value = page;
@@ -19,5 +20,5 @@ export function BoardViewToggleButton(
         () => boardViewModel.selectedPage.value == page,
     );
 
-    return RibbonButton(label, icon, isSelected, select);
+    return RibbonButton(label, icon, isSelected, select, undefined, key);
 }

@@ -1453,6 +1453,7 @@
         if (!(e instanceof KeyboardEvent))
           return console.trace("NOT A KEY EVENT");
         if (_CoreViewModel.checkIsKeystroke(e) == false) return;
+        document.body.setAttribute("keystroke-active", "");
         e.preventDefault();
         const contexts = this.contexts;
         while (contexts.length > 0) {
@@ -1461,6 +1462,9 @@
           const isHandled = currentContext.handleKeystroke(e);
           if (isHandled == true) break;
         }
+      };
+      this.handleKeyUp = () => {
+        document.body.removeAttribute("keystroke-active");
       };
       // CHRON
       this.chronHandlerManager = new HandlerManager();
@@ -1519,6 +1523,7 @@
         this.updateText.value = this.translations.homePage.updateButton(latestVersion);
       });
       document.body.addEventListener("keydown", this.handleKeyDown);
+      document.body.addEventListener("keyup", this.handleKeyUp);
       window.onpopstate = () => {
         if (!this.context) return;
         this.closeContext(this.context.contextId, true);
@@ -1609,6 +1614,18 @@
       return void 0;
     }
   };
+
+  // src/View/keystrokes.ts
+  function getKeySymbol(keystroke) {
+    switch (keystroke) {
+      case "backspace":
+        return "\u232B";
+      case "enter":
+        return "\u23CE";
+      default:
+        return keystroke;
+    }
+  }
 
   // src/ViewModel/Pages/homeViewModel.ts
   var HomeViewModel = class extends Context {
@@ -2210,6 +2227,47 @@
     luma: 0,
     brightness: 0,
     baseTheme: "black" /* Black */
+  };
+
+  // src/ViewModel/Global/onboardingViewModel.ts
+  var OnboardingViewModel = class {
+    // init
+    constructor(connectionViewmodel, fileTransferViewModel2, settingsViewModel2) {
+      this.connectionViewmodel = connectionViewmodel;
+      this.fileTransferViewModel = fileTransferViewModel2;
+      this.settingsViewModel = settingsViewModel2;
+      // state
+      this.presentedModal = new State(void 0);
+      // guards
+      this.cannotTransfer = createProxyState(
+        [this.connectionViewmodel.isConnected],
+        () => !this.connectionViewmodel.isConnected.value
+      );
+      // navigation
+      this.open = () => {
+        this.presentedModal.value = 0 /* Connection */;
+      };
+      this.showTransferOption = () => {
+        this.presentedModal.value = 1 /* TransferOrNew */;
+      };
+      this.setupNew = () => {
+        this.presentedModal.value = 2 /* Name */;
+      };
+      this.showTransferData = () => {
+        this.presentedModal.value = 3 /* Transfer */;
+      };
+      // methods
+      this.transferData = () => {
+        this.fileTransferViewModel.exitReception = () => this.showTransferData();
+        this.fileTransferViewModel.prepareReceivingData();
+        this.presentedModal.value = void 0;
+      };
+      this.finish = () => {
+        this.settingsViewModel.setName();
+        this.presentedModal.value = void 0;
+      };
+      if (this.settingsViewModel.settingsModel.username == "") this.open();
+    }
   };
 
   // src/ViewModel/Global/fileTransferViewModel.ts
@@ -5055,7 +5113,7 @@
       this.resetColor();
       this.loadInfo();
       this.subscribeReadStatus();
-      this.registerKeyStroke(" " /* Home */, this.close);
+      this.registerKeyStroke("w" /* Home */, this.close);
       this.registerKeyStroke(
         "u",
         () => this.openPage("messages" /* Messages */)
@@ -5099,7 +5157,8 @@
       this.showNotification = (message) => {
         if (this.seenMessageIds.has(message.fileId)) return;
         if (this.chatListViewModel.selectedChat.value == void 0) return;
-        if (message.senderId == this.settingsViewModel.settingsModel.userid) return;
+        if (message.senderId == this.settingsViewModel.settingsModel.userid)
+          return;
         const notification = this.createNotification(message);
         const currentChat = this.chatListViewModel.selectedChat.value.chatModel.id;
         const currentPage = this.chatListViewModel.selectedChat.value.selectedPage.value;
@@ -5241,7 +5300,10 @@
         }
         return fullChannel;
       };
-      this.notificationViewModel = new NotificationViewModel(this, this.settingsViewModel);
+      this.notificationViewModel = new NotificationViewModel(
+        this,
+        this.settingsViewModel
+      );
       this.loadChats();
     }
   };
@@ -5261,8 +5323,17 @@
   };
 
   // src/View/Components/homePageButton.tsx
-  function HomePageButton(action, label, icon) {
-    return /* @__PURE__ */ createElement("button", { class: "tile flex-no", "on:click": action }, /* @__PURE__ */ createElement("span", { class: "icon" }, icon), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, label)));
+  function HomePageButton(action, label, icon, key) {
+    return /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "tile flex-no",
+        "on:click": action,
+        ctkeystroke: key
+      },
+      /* @__PURE__ */ createElement("span", { class: "icon" }, icon),
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, label))
+    );
   }
 
   // src/View/Components/chatEntry.tsx
@@ -5325,7 +5396,8 @@
         class: "danger flex justify-center",
         "aria-label": coreViewModel2.translations.homePage.disconnectAudioLabel,
         "on:click": connectionViewModel2.disconnect,
-        "toggle:disabled": connectionViewModel2.cannotDisonnect
+        "toggle:disabled": connectionViewModel2.cannotDisonnect,
+        ctkeystroke: "x"
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "link_off")
     ), /* @__PURE__ */ createElement(
@@ -5343,21 +5415,25 @@
         class: "primary flex justify-center",
         "aria-label": coreViewModel2.translations.homePage.connectAudioLabel,
         "on:click": connectionViewModel2.connect,
-        "toggle:disabled": connectionViewModel2.cannotConnect
+        "toggle:disabled": connectionViewModel2.cannotConnect,
+        ctkeystroke: "c"
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "link")
     )), /* @__PURE__ */ createElement("hr", null), HomePageButton(
       settingsViewModel2.showSettingsModal,
       coreViewModel2.translations.homePage.settingsButton,
-      "settings"
+      "settings",
+      ","
     ), HomePageButton(
       fileTransferViewModel2.showDirectionSelectionModal,
       coreViewModel2.translations.homePage.transferDataButton,
-      "sync_alt"
+      "sync_alt",
+      "t"
     ), HomePageButton(
       storageViewModel2.showStorageModal,
       coreViewModel2.translations.homePage.manageStorageButton,
-      "hard_drive"
+      "hard_drive",
+      "e"
     ), /* @__PURE__ */ createElement(
       "button",
       {
@@ -5402,7 +5478,7 @@
   }
 
   // src/View/Components/ribbonButton.tsx
-  function RibbonButton(label, icon, isSelected, select, isHighlighted = new State(false)) {
+  function RibbonButton(label, icon, isSelected, select, isHighlighted = new State(false), key) {
     return /* @__PURE__ */ createElement(
       "button",
       {
@@ -5410,14 +5486,15 @@
         "aria-label": label,
         "toggle:selected": isSelected,
         "toggle:highlight": isHighlighted,
-        "on:click": select
+        "on:click": select,
+        ctkeystroke: key
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, icon)
     );
   }
 
   // src/View/Components/chatViewToggleButton.tsx
-  function ChatViewToggleButton(label, icon, page, chatViewModel) {
+  function ChatViewToggleButton(label, icon, page, chatViewModel, key) {
     function select() {
       chatViewModel.openPage(page);
     }
@@ -5431,7 +5508,7 @@
         (hasUnreadMessages) => isHighlighted.value = hasUnreadMessages
       );
     }
-    return RibbonButton(label, icon, isSelected, select, isHighlighted);
+    return RibbonButton(label, icon, isSelected, select, isHighlighted, key);
   }
 
   // src/View/Components/taskEntry.tsx
@@ -6008,14 +6085,16 @@
         "button",
         {
           class: "flex",
-          "on:click": taskViewModel.closeAndDiscard
+          "on:click": taskViewModel.closeAndDiscard,
+          ctkeystroke: getKeySymbol("backspace" /* CloseOrCancel */)
         },
         coreViewModel2.translations.general.closeButton
       ), /* @__PURE__ */ createElement(
         "button",
         {
           class: "flex primary",
-          "on:click": taskViewModel.closeAndSave
+          "on:click": taskViewModel.closeAndSave,
+          ctkeystroke: getKeySymbol("enter" /* Apply */)
         },
         coreViewModel2.translations.general.saveButton,
         /* @__PURE__ */ createElement("span", { class: "icon" }, "save")
@@ -6072,7 +6151,8 @@
         class: "standard",
         "aria-label": coreViewModel2.translations.general.searchButtonClearAudioLabel,
         "on:click": searchViewModel.clear,
-        "toggle:disabled": searchViewModel.cannotClear
+        "toggle:disabled": searchViewModel.cannotClear,
+        ctkeystroke: getKeySymbol("-" /* Reset */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
     ), /* @__PURE__ */ createElement(
@@ -6097,7 +6177,15 @@
           )
         ]
       }
-    ))), /* @__PURE__ */ createElement("button", { "on:click": close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close"))));
+    ))), /* @__PURE__ */ createElement(
+      "button",
+      {
+        "on:click": close,
+        ctkeystroke: getKeySymbol("backspace" /* CloseOrCancel */)
+      },
+      coreViewModel2.translations.general.closeButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+    )));
   }
   function SuggestionView(suggestion, searchViewModel, coreViewModel2) {
     const isApplied = createProxyState(
@@ -6173,12 +6261,20 @@
         coreViewModel2.translations.chatPage.task.deleteBoardButton,
         "delete_forever",
         boardViewModel.deleteBoard
-      ))), /* @__PURE__ */ createElement("button", { "on:click": boardViewModel.hideSettings }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close")))
+      ))), /* @__PURE__ */ createElement(
+        "button",
+        {
+          "on:click": boardViewModel.hideSettings,
+          ctkeystroke: getKeySymbol("enter" /* Apply */)
+        },
+        coreViewModel2.translations.general.closeButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+      ))
     );
   }
 
   // src/View/Components/boardViewToggleButton.tsx
-  function BoardViewToggleButton(label, icon, page, boardViewModel) {
+  function BoardViewToggleButton(label, icon, page, boardViewModel, key) {
     function select() {
       boardViewModel.selectedPage.value = page;
     }
@@ -6186,7 +6282,7 @@
       [boardViewModel.selectedPage],
       () => boardViewModel.selectedPage.value == page
     );
-    return RibbonButton(label, icon, isSelected, select);
+    return RibbonButton(label, icon, isSelected, select, void 0, key);
   }
 
   // src/View/ChatPages/boardPage.tsx
@@ -6254,7 +6350,8 @@
         class: "ghost board-toggle-button inset-outline",
         "aria-label": coreViewModel2.translations.chatPage.task.toggleBoardButtonAudioLabel,
         "on:click": boardViewModel.taskPageViewModel.toggleBoardList,
-        "toggle:selected": boardViewModel.taskPageViewModel.isShowingBoadList
+        "toggle:selected": boardViewModel.taskPageViewModel.isShowingBoadList,
+        ctkeystroke: getKeySymbol("." /* Options */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "dock_to_right")
     ), /* @__PURE__ */ createElement(
@@ -6262,31 +6359,36 @@
       {
         class: "ghost",
         "aria-label": coreViewModel2.translations.chatPage.task.boardSettingsHeadline,
-        "on:click": boardViewModel.showSettings
+        "on:click": boardViewModel.showSettings,
+        ctkeystroke: getKeySymbol("," /* Settings */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "settings")
     )), /* @__PURE__ */ createElement("span", { class: "scroll-h ribbon" }, BoardViewToggleButton(
       coreViewModel2.translations.chatPage.task.listViewButtonAudioLabel,
       "view_list",
       "list" /* List */,
-      boardViewModel
+      boardViewModel,
+      "j"
     ), BoardViewToggleButton(
       coreViewModel2.translations.chatPage.task.kanbanViewButtonAudioLabel,
       "view_kanban",
       "kanban" /* Kanban */,
-      boardViewModel
+      boardViewModel,
+      "k"
     ), BoardViewToggleButton(
       coreViewModel2.translations.chatPage.task.statusViewButtonAudioLabel,
       "grid_view",
       "status-grid" /* StatusGrid */,
-      boardViewModel
+      boardViewModel,
+      "l"
     )), /* @__PURE__ */ createElement("span", null, /* @__PURE__ */ createElement(
       "button",
       {
         class: "ghost inset-outline",
         "aria-label": coreViewModel2.translations.chatPage.task.filterTasksButtonAudioLabel,
         "on:click": boardViewModel.showFilterModal,
-        "toggle:selected": boardViewModel.isFilterActive
+        "toggle:selected": boardViewModel.isFilterActive,
+        ctkeystroke: "=" /* Filter */
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "filter_alt")
     ), /* @__PURE__ */ createElement(
@@ -6294,7 +6396,8 @@
       {
         class: "ghost",
         "aria-label": coreViewModel2.translations.chatPage.task.createTaskButtonAudioLabel,
-        "on:click": boardViewModel.createTask
+        "on:click": boardViewModel.createTask,
+        ctkeystroke: getKeySymbol("a" /* Create */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
     ))), wrapper, BoardSettingsModal(coreViewModel2, boardViewModel), SearchModal(
@@ -6604,7 +6707,15 @@
     ), MessageReactionFilterButton(
       messagePageViewModel,
       "\u2753" /* Question */
-    )))), /* @__PURE__ */ createElement("button", { "on:click": messagePageViewModel.hideFilterModal }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close"))));
+    )))), /* @__PURE__ */ createElement(
+      "button",
+      {
+        "on:click": messagePageViewModel.hideFilterModal,
+        ctkeystroke: getKeySymbol("backspace" /* CloseOrCancel */)
+      },
+      coreViewModel2.translations.general.closeButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+    )));
   }
 
   // src/View/Components/replyPreview.tsx
@@ -6626,7 +6737,8 @@
       {
         class: "standard square blur",
         "on:click": chatMessageViewModel.cancelReply,
-        "aria-label": coreViewModel2.translations.chatPage.message.cancelReplyAudioLabel
+        "aria-label": coreViewModel2.translations.chatPage.message.cancelReplyAudioLabel,
+        ctkeystroke: getKeySymbol("backspace" /* CloseOrCancel */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
     ));
@@ -6972,7 +7084,8 @@
         class: "ghost inset-outline",
         "on:click": messagePageViewModel.showFilterModal,
         "aria-label": coreViewModel2.translations.chatPage.message.filterMessagesButtonAudioLabel,
-        "toggle:selected": messagePageViewModel.isFilterActive
+        "toggle:selected": messagePageViewModel.isFilterActive,
+        ctkeystroke: getKeySymbol("=" /* Filter */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "filter_alt")
     ))), /* @__PURE__ */ createElement("div", { class: "content" }, messageContainer, /* @__PURE__ */ createElement("div", { id: "composer" }, /* @__PURE__ */ createElement("div", { class: "content-width-constraint" }, /* @__PURE__ */ createElement(
@@ -7169,7 +7282,8 @@
       {
         class: "ghost",
         "aria-label": coreViewModel2.translations.chatPage.calendar.todayButtonAudioLabel,
-        "on:click": calendarPageViewModel.showToday
+        "on:click": calendarPageViewModel.showToday,
+        ctkeystroke: getKeySymbol("-" /* Reset */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "today")
     )), /* @__PURE__ */ createElement("span", null, /* @__PURE__ */ createElement(
@@ -7177,7 +7291,8 @@
       {
         class: "ghost",
         "aria-label": coreViewModel2.translations.chatPage.calendar.previousMonthButtonAudioLabel,
-        "on:click": calendarPageViewModel.showPreviousMonth
+        "on:click": calendarPageViewModel.showPreviousMonth,
+        ctkeystroke: "k"
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_back")
     ), /* @__PURE__ */ createElement("span", { class: "input-wrapper" }, /* @__PURE__ */ createElement(
@@ -7203,7 +7318,8 @@
       {
         class: "ghost",
         "aria-label": coreViewModel2.translations.chatPage.calendar.nextMonthButtonAudioLabel,
-        "on:click": calendarPageViewModel.showNextMonth
+        "on:click": calendarPageViewModel.showNextMonth,
+        ctkeystroke: "l"
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
     )), /* @__PURE__ */ createElement("span", null, /* @__PURE__ */ createElement(
@@ -7211,7 +7327,8 @@
       {
         class: "ghost",
         "aria-label": coreViewModel2.translations.chatPage.task.createTaskButtonAudioLabel,
-        "on:click": calendarPageViewModel.createEvent
+        "on:click": calendarPageViewModel.createEvent,
+        ctkeystroke: getKeySymbol("a" /* Create */)
       },
       /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
     ))), /* @__PURE__ */ createElement(
@@ -7298,7 +7415,8 @@
           class: "ghost",
           id: "close-button",
           "aria-label": coreViewModel2.translations.chatPage.closeChatAudioLabe,
-          "on:click": chatViewModel.close
+          "on:click": chatViewModel.close,
+          ctkeystroke: getKeySymbol("w" /* Home */)
         },
         /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
       ), /* @__PURE__ */ createElement(
@@ -7315,22 +7433,26 @@
         coreViewModel2.translations.chatPage.pages.calendar,
         "calendar_month",
         "calendar" /* Calendar */,
-        chatViewModel
+        chatViewModel,
+        "o"
       ), ChatViewToggleButton(
         coreViewModel2.translations.chatPage.pages.tasks,
         "task_alt",
         "tasks" /* Tasks */,
-        chatViewModel
+        chatViewModel,
+        "i"
       ), ChatViewToggleButton(
         coreViewModel2.translations.chatPage.pages.messages,
         "forum",
         "messages" /* Messages */,
-        chatViewModel
+        chatViewModel,
+        "u"
       ), ChatViewToggleButton(
         coreViewModel2.translations.chatPage.pages.settings,
         "settings",
         "settings" /* Settings */,
-        chatViewModel
+        chatViewModel,
+        getKeySymbol("," /* Settings */)
       ))), /* @__PURE__ */ createElement(
         "div",
         {
@@ -7510,7 +7632,15 @@
       new State(DirectoryItemList(storageViewModel2)),
       detailView,
       true
-    )), /* @__PURE__ */ createElement("button", { "on:click": storageViewModel2.close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close"))));
+    )), /* @__PURE__ */ createElement(
+      "button",
+      {
+        "on:click": storageViewModel2.close,
+        ctkeystroke: getKeySymbol("backspace" /* CloseOrCancel */)
+      },
+      coreViewModel2.translations.general.closeButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+    )));
   }
 
   // src/View/Components/optionButton.tsx
@@ -7598,7 +7728,15 @@
         detailView,
         true,
         settingsViewModel2.selectedModalPage
-      )), /* @__PURE__ */ createElement("button", { "on:click": settingsViewModel2.close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close")))
+      )), /* @__PURE__ */ createElement(
+        "button",
+        {
+          "on:click": settingsViewModel2.close,
+          ctkeystroke: getKeySymbol("backspace" /* CloseOrCancel */)
+        },
+        coreViewModel2.translations.general.closeButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+      ))
     );
   }
   function SettingsLeftPane(coreViewModel2, settingsViewModel2) {
@@ -7712,6 +7850,146 @@
     ));
   }
 
+  // src/View/Modals/onboardingModal.tsx
+  function OnboardingModalWrapper(coreViewModel2, onboardingViewModel2) {
+    return /* @__PURE__ */ createElement("div", null, ConnectionModal(coreViewModel2, onboardingViewModel2), TransferModal(coreViewModel2, onboardingViewModel2), NameModal(coreViewModel2, onboardingViewModel2), TransferDataModal(coreViewModel2, onboardingViewModel2));
+  }
+  function ConnectionModal(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 0 /* Connection */
+    );
+    const connectionViewModel2 = onboardingViewModel2.connectionViewmodel;
+    const nextButton = createProxyState(
+      [connectionViewModel2.isConnected],
+      () => coreViewModel2.translations.onboarding.connectionNextButton(
+        connectionViewModel2.isConnected.value
+      )
+    );
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.connectionHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.connectionDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
+      "input",
+      {
+        placeholder: coreViewModel2.translations.homePage.serverAddressPlaceholder,
+        "bind:value": connectionViewModel2.serverAddressInput,
+        "on:enter": connectionViewModel2.connect
+      }
+    ))), /* @__PURE__ */ createElement("div", { class: "flex-row width-input justify-end" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard width-50",
+        "on:click": connectionViewModel2.connect,
+        "toggle:disabled": connectionViewModel2.cannotConnect
+      },
+      coreViewModel2.translations.onboarding.connectButton
+    ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "primary width-50",
+        "on:click": onboardingViewModel2.showTransferOption
+      },
+      /* @__PURE__ */ createElement("span", { "subscribe:innerText": nextButton }),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+    ))));
+  }
+  function TransferModal(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 1 /* TransferOrNew */
+    );
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.transferOptionsHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.transferOptionsDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "tile",
+        "on:click": onboardingViewModel2.showTransferData,
+        "toggle:disabled": onboardingViewModel2.cannotTransfer
+      },
+      /* @__PURE__ */ createElement("div", null, coreViewModel2.translations.onboarding.transferOptionTransfer),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "tile",
+        "on:click": onboardingViewModel2.setupNew
+      },
+      /* @__PURE__ */ createElement("div", null, coreViewModel2.translations.onboarding.transferOptionNew),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+    ))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard width-50",
+        "on:click": onboardingViewModel2.open
+      },
+      coreViewModel2.translations.general.backButton
+    ))));
+  }
+  function NameModal(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 2 /* Name */
+    );
+    const settingsViewModel2 = onboardingViewModel2.settingsViewModel;
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.nameHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.nameDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "account_circle"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.settings.account.yourNameLabel), /* @__PURE__ */ createElement(
+      "input",
+      {
+        placeholder: coreViewModel2.translations.settings.account.yourNamePlaceholder,
+        "bind:value": settingsViewModel2.usernameInput
+      }
+    )))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard width-50",
+        "on:click": onboardingViewModel2.showTransferOption
+      },
+      coreViewModel2.translations.general.backButton
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "primary width-50",
+        "on:click": onboardingViewModel2.finish
+      },
+      coreViewModel2.translations.general.setButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+    ))));
+  }
+  function TransferDataModal(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 3 /* Transfer */
+    );
+    const fileTransferViewModel2 = onboardingViewModel2.fileTransferViewModel;
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.transferHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.transferDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap content-margin-bottom" }, /* @__PURE__ */ createElement("label", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "forum"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferChannelHeadline), /* @__PURE__ */ createElement(
+      "input",
+      {
+        type: "number",
+        "on:enter": fileTransferViewModel2.prepareReceivingData,
+        "bind:value": fileTransferViewModel2.receivingTransferChannel
+      }
+    ))), /* @__PURE__ */ createElement("label", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "key"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferKeyHeadline), /* @__PURE__ */ createElement(
+      "input",
+      {
+        type: "number",
+        "on:enter": fileTransferViewModel2.prepareReceivingData,
+        "bind:value": fileTransferViewModel2.receivingTransferKey
+      }
+    ))))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard width-50",
+        "on:click": onboardingViewModel2.showTransferOption,
+        "toggle:disabled": fileTransferViewModel2.cannotExitReception
+      },
+      coreViewModel2.translations.general.backButton
+    ), /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "primary width-50",
+        "on:click": onboardingViewModel2.transferData
+      },
+      coreViewModel2.translations.onboarding.transferButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+    ))));
+  }
+
   // src/View/Components/textSpan.tsx
   var StringToTextSpan = (string) => {
     return /* @__PURE__ */ createElement("span", { class: "ellipsis" }, string);
@@ -7740,7 +8018,15 @@
     function toggle() {
       isSelected.value = !isSelected.value;
     }
-    return /* @__PURE__ */ createElement("button", { class: "tile", "toggle:selected": isSelected, "on:click": toggle }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("b", { class: "ellipsis" }, fileOption.label), /* @__PURE__ */ createElement("span", { class: "secondary ellipsis" }, StorageModel.pathComponentsToString(...fileOption.path))));
+    return /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "tile",
+        "toggle:selected": isSelected,
+        "on:click": toggle
+      },
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("b", { class: "ellipsis" }, fileOption.label), /* @__PURE__ */ createElement("span", { class: "secondary ellipsis" }, StorageModel.pathComponentsToString(...fileOption.path)))
+    );
   }
   function DirectionSelectionModal(coreViewModel2, connectionViewModel2, fileTransferViewModel2) {
     const isPresented = createProxyState(
@@ -7789,7 +8075,15 @@
       /* @__PURE__ */ createElement("span", { class: "icon" }, "upload_file"),
       /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("b", null, coreViewModel2.translations.dataTransferModal.importButton)),
       /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
-    ))), /* @__PURE__ */ createElement("button", { "on:click": fileTransferViewModel2.close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close"))));
+    ))), /* @__PURE__ */ createElement(
+      "button",
+      {
+        "on:click": fileTransferViewModel2.close,
+        ctkeystroke: getKeySymbol("backspace" /* CloseOrCancel */)
+      },
+      coreViewModel2.translations.general.closeButton,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
+    )));
   }
   function FileSelectionModal(coreViewModel2, fileTransferViewModel2) {
     const OptionConverter = (fileOption) => {
@@ -8132,7 +8426,7 @@
   }
 
   // src/View/Modals/connectionModal.tsx
-  function ConnectionModal(coreViewModel2, connectionViewModel2) {
+  function ConnectionModal2(coreViewModel2, connectionViewModel2) {
     const previousAddressConverter = (address) => {
       function connnect() {
         connectionViewModel2.connectToAddress(address);
@@ -8770,212 +9064,6 @@
     }
   };
 
-  // src/ViewModel/Global/onboardingViewModel.ts
-  var OnboardingViewModel = class {
-    // init
-    constructor(connectionViewmodel, fileTransferViewModel2, settingsViewModel2) {
-      this.connectionViewmodel = connectionViewmodel;
-      this.fileTransferViewModel = fileTransferViewModel2;
-      this.settingsViewModel = settingsViewModel2;
-      // state
-      this.presentedModal = new State(void 0);
-      // guards
-      this.cannotTransfer = createProxyState([this.connectionViewmodel.isConnected], () => !this.connectionViewmodel.isConnected.value);
-      // navigation 
-      this.open = () => {
-        this.presentedModal.value = 0 /* Connection */;
-      };
-      this.showTransferOption = () => {
-        this.presentedModal.value = 1 /* TransferOrNew */;
-      };
-      this.setupNew = () => {
-        this.presentedModal.value = 2 /* Name */;
-      };
-      this.showTransferData = () => {
-        this.presentedModal.value = 3 /* Transfer */;
-      };
-      // methods
-      this.transferData = () => {
-        this.fileTransferViewModel.exitReception = () => this.showTransferData();
-        this.fileTransferViewModel.prepareReceivingData();
-        this.presentedModal.value = void 0;
-      };
-      this.finish = () => {
-        this.settingsViewModel.setName();
-        this.presentedModal.value = void 0;
-      };
-      if (this.settingsViewModel.settingsModel.username == "") this.open();
-    }
-  };
-
-  // src/View/Modals/onboardingModal.tsx
-  function OnboardingModalWrapper(coreViewModel2, onboardingViewModel2) {
-    return /* @__PURE__ */ createElement("div", null, ConnectionModal2(coreViewModel2, onboardingViewModel2), TransferModal(coreViewModel2, onboardingViewModel2), NameModal(coreViewModel2, onboardingViewModel2), TransferDataModal(coreViewModel2, onboardingViewModel2));
-  }
-  function ConnectionModal2(coreViewModel2, onboardingViewModel2) {
-    const isPresented = createProxyState(
-      [onboardingViewModel2.presentedModal],
-      () => onboardingViewModel2.presentedModal.value == 0 /* Connection */
-    );
-    const connectionViewModel2 = onboardingViewModel2.connectionViewmodel;
-    const nextButton = createProxyState([connectionViewModel2.isConnected], () => coreViewModel2.translations.onboarding.connectionNextButton(connectionViewModel2.isConnected.value));
-    return /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "modal",
-        "toggle:open": isPresented
-      },
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.connectionHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.connectionDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
-        "input",
-        {
-          placeholder: coreViewModel2.translations.homePage.serverAddressPlaceholder,
-          "bind:value": connectionViewModel2.serverAddressInput,
-          "on:enter": connectionViewModel2.connect
-        }
-      ))), /* @__PURE__ */ createElement("div", { class: "flex-row width-input justify-end" }, /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "standard width-50",
-          "on:click": connectionViewModel2.connect,
-          "toggle:disabled": connectionViewModel2.cannotConnect
-        },
-        coreViewModel2.translations.onboarding.connectButton
-      ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "primary width-50",
-          "on:click": onboardingViewModel2.showTransferOption
-        },
-        /* @__PURE__ */ createElement(
-          "span",
-          {
-            "subscribe:innerText": nextButton
-          }
-        ),
-        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
-      )))
-    );
-  }
-  function TransferModal(coreViewModel2, onboardingViewModel2) {
-    const isPresented = createProxyState(
-      [onboardingViewModel2.presentedModal],
-      () => onboardingViewModel2.presentedModal.value == 1 /* TransferOrNew */
-    );
-    return /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "modal",
-        "toggle:open": isPresented
-      },
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.transferOptionsHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.transferOptionsDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "tile",
-          "on:click": onboardingViewModel2.showTransferData,
-          "toggle:disabled": onboardingViewModel2.cannotTransfer
-        },
-        /* @__PURE__ */ createElement("div", null, coreViewModel2.translations.onboarding.transferOptionTransfer),
-        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
-      ), /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "tile",
-          "on:click": onboardingViewModel2.setupNew
-        },
-        /* @__PURE__ */ createElement("div", null, coreViewModel2.translations.onboarding.transferOptionNew),
-        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
-      ))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "standard width-50",
-          "on:click": onboardingViewModel2.open
-        },
-        coreViewModel2.translations.general.backButton
-      )))
-    );
-  }
-  function NameModal(coreViewModel2, onboardingViewModel2) {
-    const isPresented = createProxyState(
-      [onboardingViewModel2.presentedModal],
-      () => onboardingViewModel2.presentedModal.value == 2 /* Name */
-    );
-    const settingsViewModel2 = onboardingViewModel2.settingsViewModel;
-    return /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "modal",
-        "toggle:open": isPresented
-      },
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.nameHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.nameDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "account_circle"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.settings.account.yourNameLabel), /* @__PURE__ */ createElement(
-        "input",
-        {
-          placeholder: coreViewModel2.translations.settings.account.yourNamePlaceholder,
-          "bind:value": settingsViewModel2.usernameInput
-        }
-      )))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "standard width-50",
-          "on:click": onboardingViewModel2.showTransferOption
-        },
-        coreViewModel2.translations.general.backButton
-      ), /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "primary width-50",
-          "on:click": onboardingViewModel2.finish
-        },
-        coreViewModel2.translations.general.setButton,
-        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
-      )))
-    );
-  }
-  function TransferDataModal(coreViewModel2, onboardingViewModel2) {
-    const isPresented = createProxyState(
-      [onboardingViewModel2.presentedModal],
-      () => onboardingViewModel2.presentedModal.value == 3 /* Transfer */
-    );
-    const fileTransferViewModel2 = onboardingViewModel2.fileTransferViewModel;
-    return /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "modal",
-        "toggle:open": isPresented
-      },
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.transferHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.transferDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap content-margin-bottom" }, /* @__PURE__ */ createElement("label", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "forum"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferChannelHeadline), /* @__PURE__ */ createElement(
-        "input",
-        {
-          type: "number",
-          "on:enter": fileTransferViewModel2.prepareReceivingData,
-          "bind:value": fileTransferViewModel2.receivingTransferChannel
-        }
-      ))), /* @__PURE__ */ createElement("label", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "key"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferKeyHeadline), /* @__PURE__ */ createElement(
-        "input",
-        {
-          type: "number",
-          "on:enter": fileTransferViewModel2.prepareReceivingData,
-          "bind:value": fileTransferViewModel2.receivingTransferKey
-        }
-      ))))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "standard width-50",
-          "on:click": onboardingViewModel2.showTransferOption,
-          "toggle:disabled": fileTransferViewModel2.cannotExitReception
-        },
-        coreViewModel2.translations.general.backButton
-      ), /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "primary width-50",
-          "on:click": onboardingViewModel2.transferData
-        },
-        coreViewModel2.translations.onboarding.transferButton,
-        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
-      )))
-    );
-  }
-
   // src/index.tsx
   var storageModel = new StorageModel();
   var settingsModel = new SettingsModel(storageModel);
@@ -9009,7 +9097,11 @@
     contactListViewModel
   );
   var fileTransferViewModel = new FileTransferViewModel(coreViewModel);
-  var onboardingViewModel = new OnboardingViewModel(connectionViewModel, fileTransferViewModel, settingsViewModel);
+  var onboardingViewModel = new OnboardingViewModel(
+    connectionViewModel,
+    fileTransferViewModel,
+    settingsViewModel
+  );
   var homeViewModel = new HomeViewModel(
     coreViewModel,
     settingsViewModel,
@@ -9037,7 +9129,7 @@
     ),
     ChatPageWrapper(coreViewModel, chatListViewModel),
     OnboardingModalWrapper(coreViewModel, onboardingViewModel),
-    ConnectionModal(coreViewModel, connectionViewModel),
+    ConnectionModal2(coreViewModel, connectionViewModel),
     DataTransferModalWrapper(
       coreViewModel,
       connectionViewModel,

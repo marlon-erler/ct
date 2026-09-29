@@ -1,5 +1,5 @@
 export enum CommonKeys {
-    Home = " ",
+    Home = "w",
     Filter = "=",
     Reset = "-",
     Options = ".",
@@ -7,4 +7,15 @@ export enum CommonKeys {
     Apply = "enter",
     Settings = ",",
     Create = "a",
+}
+
+export function getKeySymbol(keystroke: string): string {
+    switch (keystroke) {
+        case "backspace":
+            return "⌫";
+        case "enter":
+            return "⏎";
+        default:
+            return keystroke;
+    }
 }

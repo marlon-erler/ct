@@ -324,7 +324,7 @@ export default class BoardViewModel extends TaskContainingPageViewModel {
 
         // keystrokes
         this.registerKeyStroke(CommonKeys.Filter, this.showFilterModal);
-        this.registerKeyStroke(CommonKeys.Reset, this.resetFilter);
+        this.registerKeyStroke(CommonKeys.Reset, this.resetFilter); //
         this.registerKeyStroke(CommonKeys.CloseOrCancel, this.hideFilterModal);
         this.registerKeyStroke(CommonKeys.Settings, this.showSettings);
         this.registerKeyStroke(CommonKeys.Apply, this.hideSettings);

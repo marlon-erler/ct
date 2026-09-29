@@ -1,6 +1,7 @@
 import { BoardStatusGridPage } from "./boardStatusGridPage";
 import { BoardKanbanPage } from "./boardKanbanPage";
 import { ViewController } from "../viewController";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { TaskSettingsModal } from "../Modals/taskSettingsModal";
 import { SearchModal } from "../Modals/searchModal";
 import { BoardSettingsModal } from "../Modals/boardSettingsModal";
@@ -96,6 +97,7 @@ export function BoardPage(
                         toggle:selected={
                             boardViewModel.taskPageViewModel.isShowingBoadList
                         }
+                        ctkeystroke={getKeySymbol(CommonKeys.Options)}
                     >
                         <span class="icon">dock_to_right</span>
                     </button>
@@ -106,6 +108,7 @@ export function BoardPage(
                                 .boardSettingsHeadline
                         }
                         on:click={boardViewModel.showSettings}
+                        ctkeystroke={getKeySymbol(CommonKeys.Settings)}
                     >
                         <span class="icon">settings</span>
                     </button>
@@ -117,6 +120,7 @@ export function BoardPage(
                         "view_list",
                         BoardPageTypes.List,
                         boardViewModel,
+                        "j",
                     )}
                     {BoardViewToggleButton(
                         coreViewModel.translations.chatPage.task
@@ -124,6 +128,7 @@ export function BoardPage(
                         "view_kanban",
                         BoardPageTypes.Kanban,
                         boardViewModel,
+                        "k",
                     )}
                     {BoardViewToggleButton(
                         coreViewModel.translations.chatPage.task
@@ -131,6 +136,7 @@ export function BoardPage(
                         "grid_view",
                         BoardPageTypes.StatusGrid,
                         boardViewModel,
+                        "l",
                     )}
                 </span>
                 <span>
@@ -142,6 +148,7 @@ export function BoardPage(
                         }
                         on:click={boardViewModel.showFilterModal}
                         toggle:selected={boardViewModel.isFilterActive}
+                        ctkeystroke={CommonKeys.Filter}
                     >
                         <span class="icon">filter_alt</span>
                     </button>
@@ -152,6 +159,7 @@ export function BoardPage(
                                 .createTaskButtonAudioLabel
                         }
                         on:click={boardViewModel.createTask}
+                        ctkeystroke={getKeySymbol(CommonKeys.Create)}
                     >
                         <span class="icon">add</span>
                     </button>

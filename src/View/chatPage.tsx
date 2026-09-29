@@ -1,4 +1,5 @@
 import { ViewController } from "./viewController";
+import { CommonKeys, getKeySymbol } from "./keystrokes";
 import "./homePage.css";
 import { ChatViewToggleButton } from "./Components/chatViewToggleButton";
 import { TaskPage } from "./ChatPages/taskPage";
@@ -80,6 +81,7 @@ export function ChatPage(
                                 .closeChatAudioLabe
                         }
                         on:click={chatViewModel.close}
+                        ctkeystroke={getKeySymbol(CommonKeys.Home)}
                     >
                         <span class="icon">close</span>
                     </button>
@@ -111,24 +113,28 @@ export function ChatPage(
                             "calendar_month",
                             ChatPageTypes.Calendar,
                             chatViewModel,
+                            "o",
                         )}
                         {ChatViewToggleButton(
                             coreViewModel.translations.chatPage.pages.tasks,
                             "task_alt",
                             ChatPageTypes.Tasks,
                             chatViewModel,
+                            "i",
                         )}
                         {ChatViewToggleButton(
                             coreViewModel.translations.chatPage.pages.messages,
                             "forum",
                             ChatPageTypes.Messages,
                             chatViewModel,
+                            "u",
                         )}
                         {ChatViewToggleButton(
                             coreViewModel.translations.chatPage.pages.settings,
                             "settings",
                             ChatPageTypes.Settings,
                             chatViewModel,
+                            getKeySymbol(CommonKeys.Settings),
                         )}
                     </span>
                 </div>

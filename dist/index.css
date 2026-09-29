@@ -253,6 +253,30 @@ body[theme=dark] #background-wrapper #grass-2 {
   transform-origin: center;
   padding: var(--content-padding);
 }
+[ctkeystroke] {
+  position: relative;
+}
+[ctkeystroke]::after {
+  content: attr(ctkeystroke);
+  background: var(--primary);
+  color: var(--text-on-color);
+  --size: 24px;
+  position: absolute;
+  top: calc(50% - var(--size) / 2);
+  left: calc(50% - var(--size) / 2);
+  width: var(--size);
+  height: var(--size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all calc(var(--animation-duration) / 2);
+}
+body[keystroke-active] [ctkeystroke]::after {
+  opacity: 1;
+  transform: translateY(0px);
+}
 
 /* src/View/homePage.css */
 #home-page > div {

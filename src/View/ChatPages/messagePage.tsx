@@ -1,5 +1,6 @@
 import "./messagePage.css";
 import { ViewController } from "../viewController";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { MessageFilterModal } from "../Modals/messageFilterModal";
 import { ReplyPreview } from "../Components/replyPreview";
 import { ChatMessage } from "../Components/chatMessage";
@@ -129,6 +130,7 @@ export function MessagePage(
                                 toggle:selected={
                                     messagePageViewModel.isFilterActive
                                 }
+                                ctkeystroke={getKeySymbol(CommonKeys.Filter)}
                             >
                                 <span class="icon">filter_alt</span>
                             </button>

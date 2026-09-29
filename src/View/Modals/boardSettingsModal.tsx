@@ -1,4 +1,5 @@
 import { ViewController } from "../viewController";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { DangerousActionButton } from "../Components/dangerousActionButton";
 import { ColorPicker } from "../Components/colorPicker";
 import * as React from "../../react";
@@ -60,7 +61,10 @@ export function BoardSettingsModal(
                         )}
                     </div>
                 </main>
-                <button on:click={boardViewModel.hideSettings}>
+                <button
+                    on:click={boardViewModel.hideSettings}
+                    ctkeystroke={getKeySymbol(CommonKeys.Apply)}
+                >
                     {coreViewModel.translations.general.closeButton}
                     <span class="icon">close</span>
                 </button>

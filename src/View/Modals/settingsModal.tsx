@@ -1,5 +1,6 @@
 import { SplitModal } from "./splitModal";
 import { languageNames } from "../translations";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { PlaceholderView } from "../Components/placeholderView";
 import { OptionButtonList } from "../Components/optionButtonList";
 import { NavigationButton } from "../Components/navigationButton";
@@ -62,7 +63,10 @@ export function SettingsModal(
                         settingsViewModel.selectedModalPage,
                     )}
                 </main>
-                <button on:click={settingsViewModel.close}>
+                <button
+                    on:click={settingsViewModel.close}
+                    ctkeystroke={getKeySymbol(CommonKeys.CloseOrCancel)}
+                >
                     {coreViewModel.translations.general.closeButton}
                     <span class="icon">close</span>
                 </button>

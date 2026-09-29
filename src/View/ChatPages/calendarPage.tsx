@@ -1,5 +1,6 @@
 import "./calendarPage.css";
 import { ViewController } from "../viewController";
+import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { TaskSettingsModal } from "../Modals/taskSettingsModal";
 import { TaskViewModelToEntry } from "../Components/taskEntry";
 import { PlaceholderView } from "../Components/placeholderView";
@@ -115,6 +116,7 @@ export function CalendarPage(
                                         .todayButtonAudioLabel
                                 }
                                 on:click={calendarPageViewModel.showToday}
+                                ctkeystroke={getKeySymbol(CommonKeys.Reset)}
                             >
                                 <span class="icon">today</span>
                             </button>
@@ -129,6 +131,7 @@ export function CalendarPage(
                                 on:click={
                                     calendarPageViewModel.showPreviousMonth
                                 }
+                                ctkeystroke="k"
                             >
                                 <span class="icon">arrow_back</span>
                             </button>
@@ -171,6 +174,7 @@ export function CalendarPage(
                                         .nextMonthButtonAudioLabel
                                 }
                                 on:click={calendarPageViewModel.showNextMonth}
+                                ctkeystroke="l"
                             >
                                 <span class="icon">arrow_forward</span>
                             </button>
@@ -183,6 +187,7 @@ export function CalendarPage(
                                         .createTaskButtonAudioLabel
                                 }
                                 on:click={calendarPageViewModel.createEvent}
+                                ctkeystroke={getKeySymbol(CommonKeys.Create)}
                             >
                                 <span class="icon">add</span>
                             </button>

@@ -65,6 +65,7 @@ export default class CoreViewModel {
         if (!(e instanceof KeyboardEvent))
             return console.trace("NOT A KEY EVENT");
         if (CoreViewModel.checkIsKeystroke(e) == false) return;
+        document.body.setAttribute("keystroke-active", "");
         e.preventDefault();
         const contexts: Context[] = this.contexts;
         while (contexts.length > 0) {
@@ -73,6 +74,10 @@ export default class CoreViewModel {
             const isHandled: boolean = currentContext.handleKeystroke(e);
             if (isHandled == true) break;
         }
+    };
+
+    handleKeyUp = (): void => {
+        document.body.removeAttribute("keystroke-active");
     };
 
     // CHRON
@@ -154,6 +159,7 @@ export default class CoreViewModel {
         });
 
         document.body.addEventListener("keydown", this.handleKeyDown);
+        document.body.addEventListener("keyup", this.handleKeyUp);
 
         window.onpopstate = () => {
             if (!this.context) return;

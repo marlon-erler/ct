@@ -9,6 +9,7 @@ export function ChatViewToggleButton(
     icon: string,
     page: ChatPageTypes,
     chatViewModel: ChatViewModel,
+    key: string,
 ) {
     function select() {
         chatViewModel.openPage(page);
@@ -26,5 +27,5 @@ export function ChatViewToggleButton(
         );
     }
 
-    return RibbonButton(label, icon, isSelected, select, isHighlighted);
+    return RibbonButton(label, icon, isSelected, select, isHighlighted, key);
 }
