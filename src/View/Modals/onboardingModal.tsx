@@ -6,7 +6,8 @@ import OnboardingViewModel, {OnboardingModals} from "../../ViewModel/Global/onbo
 export function OnboardingModalWrapper(coreViewModel: CoreViewModel, onboardingViewModel: OnboardingViewModel) {
     return <div>
 	{ConnectionModal(coreViewModel, onboardingViewModel)}
-    </div>
+    {TransferModal(coreViewModel, onboardingViewModel)}
+</div>
 }
 
 function ConnectionModal(coreViewModel: CoreViewModel, onboardingViewModel: OnboardingViewModel) {
@@ -69,6 +70,63 @@ function ConnectionModal(coreViewModel: CoreViewModel, onboardingViewModel: Onbo
 		    <span class="icon">
 			arrow_forward
 		    </span>
+		</button>
+	    </div>
+	</div>
+    </div>
+}
+
+function TransferModal(coreViewModel: CoreViewModel, onboardingViewModel: OnboardingViewModel) {
+    const isPresented = React.createProxyState(
+	[onboardingViewModel.presentedModal],
+	() =>
+	onboardingViewModel.presentedModal.value ==
+	OnboardingModals.TransferOrNew
+    );
+
+    return <div
+	class="modal"
+	toggle:open={isPresented}
+    >
+	<div>
+	    <main>
+		<h2>{coreViewModel.translations.onboarding.transferHeadline}</h2>
+		<p class="secondary width-input">{coreViewModel.translations.onboarding.transferDescription}</p>
+
+		<hr></hr>
+
+		<div class="flex-column gap">
+		    <button
+			class="tile"
+			on:click={onboardingViewModel.transferData}
+			toggle:disabled={onboardingViewModel.cannotTransfer}
+		    >
+			<div>
+			    {coreViewModel.translations.onboarding.transferOptionTransfer}
+			</div>
+			<span class="icon">
+			    arrow_forward
+			</span>
+		    </button>
+		    <button
+			class="tile"
+			on:click={onboardingViewModel.setupNew}
+		    >
+			<div>
+			    {coreViewModel.translations.onboarding.transferOptionNew}
+			</div>
+			<span class="icon">
+			    arrow_forward
+			</span>
+		    </button>
+		</div>
+	    </main>
+	    <div class="flex-row">
+		<button
+		    class="primary width-50"
+		    on:click={onboardingViewModel.open}
+		>
+		    {coreViewModel.translations.general.backButton}
 		</button>
 	    </div>
 	</div>

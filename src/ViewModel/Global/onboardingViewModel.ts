@@ -8,6 +8,9 @@ export default class OnboardingViewModel {
     // state
     presentedModal: React.State<OnboardingModals | undefined> = new React.State<any>(undefined);
 
+    // guards
+    cannotTransfer: React.State<boolean> = React.createProxyState([this.connectionViewmodel.isConnected], ()=>!this.connectionViewmodel.isConnected.value)
+
     // navigation 
     open = (): void => {
 	this.presentedModal.value = OnboardingModals.Connection;
@@ -17,6 +20,17 @@ export default class OnboardingViewModel {
 	this.presentedModal.value = OnboardingModals.TransferOrNew;
     }
 
+    setupNew = (): void => {
+	this.presentedModal.value = OnboardingModals.Name;
+    }
+
+    // methods
+    transferData = (): void => {
+	this.fileTransferViewModel.showTransferDataInputModal();
+	this.presentedModal.value = undefined;
+    }
+
+    // init
     constructor(
 	public connectionViewmodel: ConnectionViewModel,
 	public fileTransferViewModel: FileTransferViewModel,

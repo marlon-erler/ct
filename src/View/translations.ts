@@ -117,6 +117,13 @@ const englishTranslations = {
 	connectionDescription: "To transfer files and send messages, connect to the Universal Decentralized Network (UDN).",
 	connectButton: "Connect",
 	connectionNextButton: (isConnected: boolean) => isConnected ? "Continue" : "Continue without UDN",
+
+	///
+	
+	transferHeadline: "Copy Your Data",
+	transferDescription: "If you already use the Coordination Tool on another device, copy your identity here. You can use both devices at the same time.",
+	transferOptionTransfer: "Copy here",
+	transferOptionNew: "Set up as new device",
     },
 
     connectionModal: {
