@@ -7,6 +7,7 @@ export function OnboardingModalWrapper(coreViewModel: CoreViewModel, onboardingV
     return <div>
 	{ConnectionModal(coreViewModel, onboardingViewModel)}
     {TransferModal(coreViewModel, onboardingViewModel)}
+    {NameModal(coreViewModel, onboardingViewModel)}
 </div>
 }
 
@@ -62,7 +63,7 @@ function ConnectionModal(coreViewModel: CoreViewModel, onboardingViewModel: Onbo
 	    <div class="flex-row justify-end">
 		<button
 		    class="primary width-50"
-		    on:click={onboardingViewModel.showTransfer}
+		    on:click={onboardingViewModel.showTransferOption}
 		>
 		    <span
 			subscribe:innerText={nextButton}
@@ -123,10 +124,71 @@ function TransferModal(coreViewModel: CoreViewModel, onboardingViewModel: Onboar
 	    </main>
 	    <div class="flex-row">
 		<button
-		    class="primary width-50"
+		    class="standard width-50"
 		    on:click={onboardingViewModel.open}
 		>
 		    {coreViewModel.translations.general.backButton}
+		</button>
+	    </div>
+	</div>
+    </div>
+}
+
+function NameModal(coreViewModel: CoreViewModel, onboardingViewModel: OnboardingViewModel) {
+    const isPresented = React.createProxyState(
+	[onboardingViewModel.presentedModal],
+	() =>
+	onboardingViewModel.presentedModal.value ==
+	OnboardingModals.Name
+    );
+
+    const settingsViewModel = onboardingViewModel.settingsViewModel;
+
+    return <div
+	class="modal"
+	toggle:open={isPresented}
+    >
+	<div>
+	    <main>
+		<h2>{coreViewModel.translations.onboarding.nameHeadline}</h2>
+		<p class="secondary width-input">{coreViewModel.translations.onboarding.nameDescription}</p>
+
+		<hr></hr>
+
+		<label class="tile flex-no">
+		    <span class="icon">account_circle</span>
+		    <div>
+			<span>
+			    {
+				coreViewModel.translations.settings.account
+				.yourNameLabel
+			    }
+			</span>
+			<input
+			    placeholder={
+				coreViewModel.translations.settings.account
+				.yourNamePlaceholder
+			    }
+			    bind:value={settingsViewModel.usernameInput}
+			></input>
+		    </div>
+		</label>
+	    </main>
+	    <div class="flex-row">
+		<button
+		    class="standard width-50"
+		    on:click={onboardingViewModel.showTransferOption}
+		>
+		    {coreViewModel.translations.general.backButton}
+		</button>
+		<button
+		    class="primary width-50"
+		    on:click={onboardingViewModel.finish}
+		>
+		    {coreViewModel.translations.general.setButton}
+		    <span class="icon">
+			arrow_forward
+		    </span>
 		</button>
 	    </div>
 	</div>

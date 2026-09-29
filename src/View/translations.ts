@@ -124,6 +124,11 @@ const englishTranslations = {
 	transferDescription: "If you already use the Coordination Tool on another device, copy your identity here. You can use both devices at the same time.",
 	transferOptionTransfer: "Copy here",
 	transferOptionNew: "Set up as new device",
+
+	//
+	
+	nameHeadline: "Your Name",
+	nameDescription: "This is what others see when you send messages. You can always change your name in settings.",
     },
 
     connectionModal: {
