@@ -22,6 +22,8 @@ import FileTransferModel from "./Model/Global/fileTransferModel";
 import ContactListModel from "./Model/Global/contactListModel";
 import ConnectionModel from "./Model/Global/connectionModel";
 import ChatListModel from "./Model/Chat/chatListModel";
+import OnboardingViewModel from "./ViewModel/Global/onboardingViewModel";
+import {OnboardingModalWrapper} from "./View/Modals/onboardingModal";
 
 // models
 const storageModel = new StorageModel();
@@ -59,6 +61,7 @@ const chatListViewModel = new ChatListViewModel(
     contactListViewModel,
 );
 const fileTransferViewModel = new FileTransferViewModel(coreViewModel);
+const onboardingViewModel = new OnboardingViewModel(connectionViewModel, fileTransferViewModel, settingsViewModel);
 
 const homeViewModel = new HomeViewModel(
     coreViewModel,
@@ -94,7 +97,8 @@ document
             fileTransferViewModel,
             chatListViewModel,
         ),
-        ChatPageWrapper(coreViewModel, chatListViewModel),
+	ChatPageWrapper(coreViewModel, chatListViewModel),
+	OnboardingModalWrapper(coreViewModel, onboardingViewModel),
         ConnectionModal(coreViewModel, connectionViewModel),
         DataTransferModalWrapper(
             coreViewModel,
@@ -102,5 +106,5 @@ document
             fileTransferViewModel,
         ),
         StorageModal(coreViewModel, storageViewModel),
-        SettingsModal(coreViewModel, settingsViewModel),
+	SettingsModal(coreViewModel, settingsViewModel),
     );

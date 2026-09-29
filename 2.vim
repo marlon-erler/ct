@@ -12,8 +12,10 @@ inoremap <silent> <expr> <Down> coc#pum#visible() ? coc#pum#next(0) : coc#inline
 inoremap <silent> <expr> <C-P> coc#pum#visible() ? coc#pum#prev(1) : coc#inline#visible() ? coc#inline#prev() : "\"
 inoremap <silent> <expr> <C-N> coc#pum#visible() ? coc#pum#next(1) : coc#inline#visible() ? coc#inline#next() : "\"
 nnoremap  :NERDTreeFind
+snoremap <silent>  c
 nnoremap  :NERDTree
 nmap  <Plug>(ctrlp)
+snoremap  "_c
 nnoremap  :NERDTreeToggle
 xmap \T <Plug>(table-mode-tableize-delimiter)
 xmap \tt <Plug>(table-mode-tableize)
@@ -26,6 +28,10 @@ nnoremap \1 :call SN("1")
 nmap \rn <Plug>(coc-rename)
 xmap gx <Plug>NetrwBrowseXVis
 nmap gx <Plug>NetrwBrowseX
+snoremap <C-R> "_c
+snoremap <silent> <C-H> c
+snoremap <silent> <Del> c
+snoremap <silent> <BS> c
 nnoremap <silent> <Plug>GitGutterPreviewHunk :call gitgutter#utility#warn('Please change your map <Plug>GitGutterPreviewHunk to <Plug>(GitGutterPreviewHunk)')
 nnoremap <silent> <Plug>(GitGutterPreviewHunk) :GitGutterPreviewHunk
 nnoremap <silent> <Plug>GitGutterUndoHunk :call gitgutter#utility#warn('Please change your map <Plug>GitGutterUndoHunk to <Plug>(GitGutterUndoHunk)')
@@ -147,14 +153,14 @@ else
 endif
 badd +1 build/sw.js
 badd +1 build/version.txt
-badd +41 src/ViewModel/Global/contactViewModel.ts
-badd +50 src/index.tsx
-badd +24 src/ViewModel/Global/settingsViewModel.ts
-badd +38 src/Model/Global/settingsModel.ts
-badd +0 src/Model/Global/contactListModel.ts
+badd +90 src/index.tsx
+badd +0 src/View/Modals/onboardingModal.tsx
+badd +0 src/ViewModel/Global/onboardingViewModel.ts
+badd +0 src/View/translations.ts
 argglobal
 %argdel
 set stal=2
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
 edit build/sw.js
@@ -177,9 +183,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 31 + 135) / 270)
-exe 'vert 2resize ' . ((&columns * 118 + 135) / 270)
-exe 'vert 3resize ' . ((&columns * 123 + 135) / 270)
+exe 'vert 1resize ' . ((&columns * 31 + 137) / 274)
+exe 'vert 2resize ' . ((&columns * 120 + 137) / 274)
+exe 'vert 3resize ' . ((&columns * 121 + 137) / 274)
 argglobal
 enew
 file NERD_tree_tab_2
@@ -510,12 +516,12 @@ setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 13) / 27)
+let s:l = 1 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 10
-normal! $
+keepjumps 1
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("build/version.txt", ":p")) | buffer build/version.txt | else | edit build/version.txt | endif
@@ -667,27 +673,24 @@ setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 13) / 27)
+let s:l = 1 - ((0 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
-normal! 014|
+normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 31 + 135) / 270)
-exe 'vert 2resize ' . ((&columns * 118 + 135) / 270)
-exe 'vert 3resize ' . ((&columns * 123 + 135) / 270)
+exe 'vert 1resize ' . ((&columns * 31 + 137) / 274)
+exe 'vert 2resize ' . ((&columns * 120 + 137) / 274)
+exe 'vert 3resize ' . ((&columns * 121 + 137) / 274)
 tabnext
-edit src/index.tsx
+edit src/ViewModel/Global/onboardingViewModel.ts
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
-wincmd _ | wincmd |
-vsplit
-2wincmd h
-wincmd w
+1wincmd h
 wincmd w
 let &splitbelow = s:save_splitbelow
 let &splitright = s:save_splitright
@@ -698,11 +701,167 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 89 + 135) / 270)
-exe 'vert 2resize ' . ((&columns * 89 + 135) / 270)
-exe 'vert 3resize ' . ((&columns * 90 + 135) / 270)
+exe 'vert 1resize ' . ((&columns * 137 + 137) / 274)
+exe 'vert 2resize ' . ((&columns * 136 + 137) / 274)
 argglobal
-balt src/ViewModel/Global/settingsViewModel.ts
+balt src/index.tsx
+let s:cpo_save=&cpo
+set cpo&vim
+nmap <buffer> [c <Plug>(GitGutterPrevHunk)
+nmap <buffer> \hp <Plug>(GitGutterPreviewHunk)
+nmap <buffer> \hu <Plug>(GitGutterUndoHunk)
+nmap <buffer> \hs <Plug>(GitGutterStageHunk)
+xmap <buffer> \hs <Plug>(GitGutterStageHunk)
+nmap <buffer> ]c <Plug>(GitGutterNextHunk)
+xmap <buffer> ac <Plug>(GitGutterTextObjectOuterVisual)
+omap <buffer> ac <Plug>(GitGutterTextObjectOuterPending)
+xmap <buffer> ic <Plug>(GitGutterTextObjectInnerVisual)
+omap <buffer> ic <Plug>(GitGutterTextObjectInnerPending)
+let &cpo=s:cpo_save
+unlet s:cpo_save
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal backupcopy=
+setlocal balloonexpr=
+setlocal nobinary
+setlocal nobreakindent
+setlocal breakindentopt=
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal nocindent
+setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinscopedecls=public,protected,private
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+setlocal commentstring=//\ %s
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal cursorlineopt=both
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=%+A\ %#%f\ %#(%l\\,%c):\ %m,%C%m
+setlocal noexpandtab
+if &filetype != 'typescript'
+setlocal filetype=typescript
+endif
+setlocal fillchars=
+setlocal fixendofline
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+setlocal foldmethod=manual
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal formatprg=
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=-1
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=GetTypescriptIndent()
+setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e,0],0)
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255,$
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal lispoptions=
+setlocal lispwords=
+setlocal nolist
+setlocal listchars=
+setlocal makeencoding=
+setlocal makeprg=tsc\ \ $*\ %
+setlocal matchpairs=(:),{:},[:]
+setlocal nomodeline
+setlocal modifiable
+setlocal nrformats=bin,octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal scrolloff=-1
+setlocal shiftwidth=4
+setlocal noshortname
+setlocal showbreak=
+setlocal sidescrolloff=-1
+set signcolumn=yes
+setlocal signcolumn=yes
+setlocal nosmartindent
+setlocal nosmoothscroll
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal spelloptions=
+setlocal statusline=
+setlocal suffixesadd=.ts,.tsx
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'typescript'
+setlocal syntax=typescript
+endif
+setlocal tabstop=8
+setlocal tagcase=
+setlocal tagfunc=
+setlocal tags=
+setlocal termwinkey=
+setlocal termwinscroll=10000
+setlocal termwinsize=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal thesaurusfunc=
+setlocal noundofile
+setlocal undolevels=-123456
+setlocal varsofttabstop=
+setlocal vartabstop=
+setlocal virtualedit=
+setlocal wincolor=
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 1 - ((0 * winheight(0) + 18) / 36)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 1
+normal! 0
+wincmd w
+argglobal
+if bufexists(fnamemodify("src/View/Modals/onboardingModal.tsx", ":p")) | buffer src/View/Modals/onboardingModal.tsx | else | edit src/View/Modals/onboardingModal.tsx | endif
+balt src/index.tsx
 let s:cpo_save=&cpo
 set cpo&vim
 nmap <buffer> [c <Plug>(GitGutterPrevHunk)
@@ -850,16 +1009,19 @@ setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 44 - ((17 * winheight(0) + 13) / 27)
+let s:l = 6 - ((5 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 44
-normal! $
+keepjumps 6
+normal! 032|
 wincmd w
+exe 'vert 1resize ' . ((&columns * 137 + 137) / 274)
+exe 'vert 2resize ' . ((&columns * 136 + 137) / 274)
+tabnext
+edit src/View/translations.ts
 argglobal
-if bufexists(fnamemodify("src/Model/Global/contactListModel.ts", ":p")) | buffer src/Model/Global/contactListModel.ts | else | edit src/Model/Global/contactListModel.ts | endif
-balt src/Model/Global/settingsModel.ts
+balt src/ViewModel/Global/onboardingViewModel.ts
 let s:cpo_save=&cpo
 set cpo&vim
 nmap <buffer> [c <Plug>(GitGutterPrevHunk)
@@ -1007,174 +1169,12 @@ setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 22 - ((12 * winheight(0) + 13) / 27)
+let s:l = 115 - ((18 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 22
-normal! 011|
-wincmd w
-argglobal
-if bufexists(fnamemodify("src/Model/Global/settingsModel.ts", ":p")) | buffer src/Model/Global/settingsModel.ts | else | edit src/Model/Global/settingsModel.ts | endif
-balt src/ViewModel/Global/contactViewModel.ts
-let s:cpo_save=&cpo
-set cpo&vim
-nmap <buffer> [c <Plug>(GitGutterPrevHunk)
-nmap <buffer> \hp <Plug>(GitGutterPreviewHunk)
-nmap <buffer> \hu <Plug>(GitGutterUndoHunk)
-nmap <buffer> \hs <Plug>(GitGutterStageHunk)
-xmap <buffer> \hs <Plug>(GitGutterStageHunk)
-nmap <buffer> ]c <Plug>(GitGutterNextHunk)
-xmap <buffer> ac <Plug>(GitGutterTextObjectOuterVisual)
-omap <buffer> ac <Plug>(GitGutterTextObjectOuterPending)
-xmap <buffer> ic <Plug>(GitGutterTextObjectInnerVisual)
-omap <buffer> ic <Plug>(GitGutterTextObjectInnerPending)
-let &cpo=s:cpo_save
-unlet s:cpo_save
-setlocal keymap=
-setlocal noarabic
-setlocal autoindent
-setlocal backupcopy=
-setlocal balloonexpr=
-setlocal nobinary
-setlocal nobreakindent
-setlocal breakindentopt=
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal nocindent
-setlocal cinkeys=0{,0},0),0],:,0#,!^F,o,O,e
-setlocal cinoptions=
-setlocal cinscopedecls=public,protected,private
-setlocal cinwords=if,else,while,do,for,switch
-setlocal colorcolumn=
-setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
-setlocal commentstring=//\ %s
-setlocal complete=.,w,b,u,t,i
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-setlocal nocursorline
-setlocal cursorlineopt=both
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=%+A\ %#%f\ %#(%l\\,%c):\ %m,%C%m
-setlocal noexpandtab
-if &filetype != 'typescript'
-setlocal filetype=typescript
-endif
-setlocal fillchars=
-setlocal fixendofline
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-setlocal foldmethod=manual
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=croql
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal formatprg=
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=-1
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=GetTypescriptIndent()
-setlocal indentkeys=0{,0},0),0],:,0#,!^F,o,O,e,0],0)
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255,$
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal lispoptions=
-setlocal lispwords=
-setlocal nolist
-setlocal listchars=
-setlocal makeencoding=
-setlocal makeprg=tsc\ \ $*\ %
-setlocal matchpairs=(:),{:},[:]
-setlocal nomodeline
-setlocal modifiable
-setlocal nrformats=bin,octal,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-setlocal norelativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal scrolloff=-1
-setlocal shiftwidth=4
-setlocal noshortname
-setlocal showbreak=
-setlocal sidescrolloff=-1
-set signcolumn=yes
-setlocal signcolumn=yes
-setlocal nosmartindent
-setlocal nosmoothscroll
-setlocal softtabstop=0
-setlocal nospell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal spelloptions=
-setlocal statusline=
-setlocal suffixesadd=.ts,.tsx
-setlocal swapfile
-setlocal synmaxcol=3000
-if &syntax != 'typescript'
-setlocal syntax=typescript
-endif
-setlocal tabstop=8
-setlocal tagcase=
-setlocal tagfunc=
-setlocal tags=
-setlocal termwinkey=
-setlocal termwinscroll=10000
-setlocal termwinsize=
-setlocal textwidth=0
-setlocal thesaurus=
-setlocal thesaurusfunc=
-setlocal noundofile
-setlocal undolevels=-123456
-setlocal varsofttabstop=
-setlocal vartabstop=
-setlocal virtualedit=
-setlocal wincolor=
-setlocal nowinfixheight
-setlocal nowinfixwidth
-setlocal wrap
-setlocal wrapmargin=0
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 90 - ((14 * winheight(0) + 13) / 27)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 90
-normal! 026|
-wincmd w
-3wincmd w
-exe 'vert 1resize ' . ((&columns * 89 + 135) / 270)
-exe 'vert 2resize ' . ((&columns * 89 + 135) / 270)
-exe 'vert 3resize ' . ((&columns * 90 + 135) / 270)
+keepjumps 115
+normal! 05|
 tabnext 2
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0

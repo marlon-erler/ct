@@ -112,6 +112,13 @@ const englishTranslations = {
         },
     },
 
+    onboarding: {
+	connectionHeadline: "Connect to UDN",
+	connectionDescription: "To transfer files and send messages, connect to the Universal Decentralized Network (UDN).",
+	connectButton: "Connect",
+	connectionNextButton: (isConnected: boolean) => isConnected ? "Continue" : "Continue without UDN",
+    },
+
     connectionModal: {
         connectionModalHeadline: "Manage Connections",
 
