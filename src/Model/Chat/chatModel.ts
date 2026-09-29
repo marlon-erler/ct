@@ -111,7 +111,7 @@ export default class ChatModel {
         this.addMessage(chatMessage);
 
         if (chatMessage.stringifiedFile) return;
-	if (chatMessage.senderId == this.settingsModel.userid) return;
+        if (chatMessage.senderId == this.settingsModel.userid) return;
         this.setReadStatus(true);
     };
 

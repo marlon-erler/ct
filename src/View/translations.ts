@@ -113,28 +113,33 @@ const englishTranslations = {
     },
 
     onboarding: {
-	connectionHeadline: "Connect to UDN",
-	connectionDescription: "To transfer files and send messages, connect to the Universal Decentralized Network (UDN).",
-	connectButton: "Connect",
-	connectionNextButton: (isConnected: boolean) => isConnected ? "Continue" : "Continue without UDN",
+        connectionHeadline: "Connect to UDN",
+        connectionDescription:
+            "To transfer files and send messages, connect to the Universal Decentralized Network (UDN).",
+        connectButton: "Connect",
+        connectionNextButton: (isConnected: boolean): string =>
+            isConnected ? "Continue" : "Set up without UDN",
 
-	///
-	
-	transferOptionsHeadline: "Copy Your Data",
-	transferOptionsDescription: "If you already use the Coordination Tool on another device, copy your identity here. You can use both devices at the same time.",
-	transferOptionTransfer: "Copy here",
-	transferOptionNew: "Set up as new device",
+        ///
 
-	//
-	
-	nameHeadline: "Your Name",
-	nameDescription: "This is what others see when you send messages. You can always change your name in settings.",
+        transferOptionsHeadline: "Copy Your Data",
+        transferOptionsDescription:
+            "If you already use the Coordination Tool on another device, copy your identity here. You can use both devices at the same time.",
+        transferOptionTransfer: "Copy my data here",
+        transferOptionNew: "Set up as new device",
 
-	//
-	
-	transferHeadline: "Data Transfer",
-	transferDescription: 'On your other device, prepare to transfer your identity and personal data alongside any chats you wish to copy. Then, enter the displayed data here.',
-	transferButton: "Copy data",
+        //
+
+        nameHeadline: "Your Name",
+        nameDescription:
+            "This is what others see when you send messages. You can always change your name in settings.",
+
+        //
+
+        transferHeadline: "Data Transfer",
+        transferDescription:
+            "On your other device, prepare to transfer your identity and personal data alongside any chats you wish to copy. Then, enter the displayed data here. You can find the data transfer on the home screen of the other device.",
+        transferButton: "Copy data",
     },
 
     connectionModal: {
@@ -487,6 +492,36 @@ export const allTranslations: {
             },
         },
 
+        onboarding: {
+            connectionHeadline: "Mit UDN verbinden",
+            connectionDescription:
+                "Um Daten und Nachichten zu verschicken, verbinde dich mit dem Universellen Dezentralen Netzwerk (UDN).",
+            connectButton: "Verbinden",
+            connectionNextButton: (isConnected: boolean) =>
+                isConnected ? "Weiter" : "Ohne UDN einrichten",
+
+            ///
+
+            transferOptionsHeadline: "Deine Daten kopieren",
+            transferOptionsDescription:
+                "Wenn du Coordination Tool bereits auf einem anderen Gerät verwendest, kopiere deine Kontodaten. Du kannst beide Geräte gleichzeitig verwenden.",
+            transferOptionTransfer: "Daten übertragen",
+            transferOptionNew: "Als neues Gerät enrichten",
+
+            //
+
+            nameHeadline: "Dein Name",
+            nameDescription:
+                "Diesen Namen sehen andere, wenn du Nachrichten versendest. Du kannst deinen Namen jederzeit in den Einstellungen ändern.",
+
+            //
+
+            transferHeadline: "Datenübertragung",
+            transferDescription:
+                "Verwende die Funktion zur Datenübertragung auf deinem anderen Getät, um deine Identität und persönlichen Daten zu kopieren. Gib die dazu angezeigten Daten unten ein. Du findest die Datenübertragung auf der Startseite des anderen Geräts.",
+            transferButton: "Daten kopieren",
+        },
+
         connectionModal: {
             connectionModalHeadline: "Verbindungen verwalten",
 
@@ -804,6 +839,37 @@ export const allTranslations: {
                 checkUpdatesButton: "Buscar actualisaciones",
             },
         },
+
+        onboarding: {
+            connectionHeadline: "Conectar al UDN",
+            connectionDescription:
+                "Para transferir datos y enviar mensajes, conéctate a la Red Descentralizada Universal (UDN).",
+            connectButton: "Conectar",
+            connectionNextButton: (isConnected: boolean): string =>
+                isConnected ? "Continuar" : "Configurar sin UDN",
+
+            ///
+
+            transferOptionsHeadline: "Copiar tus datos",
+            transferOptionsDescription:
+                "Si ya usas el Coordination Tool en otro disposistivo, copia tu idantidad aquí. Puedes usar ambos dispositivos al mismo tiempo.",
+            transferOptionTransfer: "Copiar mis datos aquí",
+            transferOptionNew: "Configurar como dispositivo nuevo",
+
+            //
+
+            nameHeadline: "Tu nombre",
+            nameDescription:
+                "Esto es lo que ven otros cuando envías menajes. Siempre lo puedes cambiar en las ajustes.",
+
+            //
+
+            transferHeadline: "Transferencia de datos",
+            transferDescription:
+                "En el otro dispositivo, prepara la transferencia de tu identidad y datos personales. Ingresa los datos que se muestran a continuación. La opción de la transferencia de datos se encuentra en la pantalla inicial en el otro dispositivo.",
+            transferButton: "Copiar datos",
+        },
+
         connectionModal: {
             connectionModalHeadline: "Gestionar Conexiones",
 

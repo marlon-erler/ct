@@ -5,6 +5,7 @@ import "./base.css";
 import HomeViewModel from "./ViewModel/Pages/homeViewModel";
 import StorageViewModel from "./ViewModel/Global/storageViewModel";
 import SettingsViewModel from "./ViewModel/Global/settingsViewModel";
+import OnboardingViewModel from "./ViewModel/Global/onboardingViewModel";
 import FileTransferViewModel from "./ViewModel/Global/fileTransferViewModel";
 import CoreViewModel from "./ViewModel/Global/coreViewModel";
 import ContactListViewModel from "./ViewModel/Global/contactViewModel";
@@ -14,6 +15,7 @@ import { HomePage } from "./View/homePage";
 import { ChatPageWrapper } from "./View/chatPageWrapper";
 import { StorageModal } from "./View/Modals/storageModal";
 import { SettingsModal } from "./View/Modals/settingsModal";
+import { OnboardingModalWrapper } from "./View/Modals/onboardingModal";
 import { DataTransferModalWrapper } from "./View/Modals/dataTransferModal";
 import { ConnectionModal } from "./View/Modals/connectionModal";
 import StorageModel from "./Model/Global/storageModel";
@@ -22,8 +24,6 @@ import FileTransferModel from "./Model/Global/fileTransferModel";
 import ContactListModel from "./Model/Global/contactListModel";
 import ConnectionModel from "./Model/Global/connectionModel";
 import ChatListModel from "./Model/Chat/chatListModel";
-import OnboardingViewModel from "./ViewModel/Global/onboardingViewModel";
-import {OnboardingModalWrapper} from "./View/Modals/onboardingModal";
 
 // models
 const storageModel = new StorageModel();
@@ -61,7 +61,11 @@ const chatListViewModel = new ChatListViewModel(
     contactListViewModel,
 );
 const fileTransferViewModel = new FileTransferViewModel(coreViewModel);
-const onboardingViewModel = new OnboardingViewModel(connectionViewModel, fileTransferViewModel, settingsViewModel);
+const onboardingViewModel = new OnboardingViewModel(
+    connectionViewModel,
+    fileTransferViewModel,
+    settingsViewModel,
+);
 
 const homeViewModel = new HomeViewModel(
     coreViewModel,
@@ -97,8 +101,8 @@ document
             fileTransferViewModel,
             chatListViewModel,
         ),
-	ChatPageWrapper(coreViewModel, chatListViewModel),
-	OnboardingModalWrapper(coreViewModel, onboardingViewModel),
+        ChatPageWrapper(coreViewModel, chatListViewModel),
+        OnboardingModalWrapper(coreViewModel, onboardingViewModel),
         ConnectionModal(coreViewModel, connectionViewModel),
         DataTransferModalWrapper(
             coreViewModel,
@@ -106,5 +110,5 @@ document
             fileTransferViewModel,
         ),
         StorageModal(coreViewModel, storageViewModel),
-	SettingsModal(coreViewModel, settingsViewModel),
+        SettingsModal(coreViewModel, settingsViewModel),
     );

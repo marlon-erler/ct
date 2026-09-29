@@ -391,6 +391,24 @@
         checkUpdatesButton: "Check for updates"
       }
     },
+    onboarding: {
+      connectionHeadline: "Connect to UDN",
+      connectionDescription: "To transfer files and send messages, connect to the Universal Decentralized Network (UDN).",
+      connectButton: "Connect",
+      connectionNextButton: (isConnected) => isConnected ? "Continue" : "Set up without UDN",
+      ///
+      transferOptionsHeadline: "Copy Your Data",
+      transferOptionsDescription: "If you already use the Coordination Tool on another device, copy your identity here. You can use both devices at the same time.",
+      transferOptionTransfer: "Copy my data here",
+      transferOptionNew: "Set up as new device",
+      //
+      nameHeadline: "Your Name",
+      nameDescription: "This is what others see when you send messages. You can always change your name in settings.",
+      //
+      transferHeadline: "Data Transfer",
+      transferDescription: "On your other device, prepare to transfer your identity and personal data alongside any chats you wish to copy. Then, enter the displayed data here. You can find the data transfer on the home screen of the other device.",
+      transferButton: "Copy data"
+    },
     connectionModal: {
       connectionModalHeadline: "Manage Connections",
       ///
@@ -646,6 +664,24 @@
           checkUpdatesButton: "Nach Updates suchen"
         }
       },
+      onboarding: {
+        connectionHeadline: "Mit UDN verbinden",
+        connectionDescription: "Um Daten und Nachichten zu verschicken, verbinde dich mit dem Universellen Dezentralen Netzwerk (UDN).",
+        connectButton: "Verbinden",
+        connectionNextButton: (isConnected) => isConnected ? "Weiter" : "Ohne UDN einrichten",
+        ///
+        transferOptionsHeadline: "Deine Daten kopieren",
+        transferOptionsDescription: "Wenn du Coordination Tool bereits auf einem anderen Ger\xE4t verwendest, kopiere deine Kontodaten. Du kannst beide Ger\xE4te gleichzeitig verwenden.",
+        transferOptionTransfer: "Daten \xFCbertragen",
+        transferOptionNew: "Als neues Ger\xE4t enrichten",
+        //
+        nameHeadline: "Dein Name",
+        nameDescription: "Diesen Namen sehen andere, wenn du Nachrichten versendest. Du kannst deinen Namen jederzeit in den Einstellungen \xE4ndern.",
+        //
+        transferHeadline: "Daten\xFCbertragung",
+        transferDescription: "Verwende die Funktion zur Daten\xFCbertragung auf deinem anderen Get\xE4t, um deine Identit\xE4t und pers\xF6nlichen Daten zu kopieren. Gib die dazu angezeigten Daten unten ein. Du findest die Daten\xFCbertragung auf der Startseite des anderen Ger\xE4ts.",
+        transferButton: "Daten kopieren"
+      },
       connectionModal: {
         connectionModalHeadline: "Verbindungen verwalten",
         connectButtonAudioLabel: "verbinden"
@@ -881,6 +917,24 @@
           version: "Versi\xF3n",
           checkUpdatesButton: "Buscar actualisaciones"
         }
+      },
+      onboarding: {
+        connectionHeadline: "Conectar al UDN",
+        connectionDescription: "Para transferir datos y enviar mensajes, con\xE9ctate a la Red Descentralizada Universal (UDN).",
+        connectButton: "Conectar",
+        connectionNextButton: (isConnected) => isConnected ? "Continuar" : "Configurar sin UDN",
+        ///
+        transferOptionsHeadline: "Copiar tus datos",
+        transferOptionsDescription: "Si ya usas el Coordination Tool en otro disposistivo, copia tu idantidad aqu\xED. Puedes usar ambos dispositivos al mismo tiempo.",
+        transferOptionTransfer: "Copiar mis datos aqu\xED",
+        transferOptionNew: "Configurar como dispositivo nuevo",
+        //
+        nameHeadline: "Tu nombre",
+        nameDescription: "Esto es lo que ven otros cuando env\xEDas menajes. Siempre lo puedes cambiar en las ajustes.",
+        //
+        transferHeadline: "Transferencia de datos",
+        transferDescription: "En el otro dispositivo, prepara la transferencia de tu identidad y datos personales. Ingresa los datos que se muestran a continuaci\xF3n. La opci\xF3n de la transferencia de datos se encuentra en la pantalla inicial en el otro dispositivo.",
+        transferButton: "Copiar datos"
       },
       connectionModal: {
         connectionModalHeadline: "Gestionar Conexiones",
@@ -2165,6 +2219,7 @@
       super("file-transfer");
       this.coreViewModel = coreViewModel2;
       // state
+      this.exitReception = void 0;
       this.presentedModal = new State(void 0);
       this.generalFileOptions = new ListState();
       this.chatFileOptions = new ListState();
@@ -2327,6 +2382,14 @@
         this.presentedModal.value = 2 /* TransferDataDisplay */;
         this.getTransferData();
         this.coreViewModel.fileTransferModel.prepareToSend();
+      };
+      this.correctTransferData = () => {
+        if (this.exitReception != void 0) {
+          this.presentedModal.value = void 0;
+          this.exitReception();
+          return;
+        }
+        this.showTransferDataInputModal();
       };
       this.initiateTransfer = () => {
         this.presentedModal.value = 3 /* TransferDisplay */;
@@ -7913,7 +7976,7 @@
       "button",
       {
         class: "flex",
-        "on:click": fileTransferViewModel2.showTransferDataInputModal,
+        "on:click": fileTransferViewModel2.correctTransferData,
         "toggle:disabled": fileTransferViewModel2.cannotExitReception
       },
       coreViewModel2.translations.general.backButton
@@ -8707,6 +8770,212 @@
     }
   };
 
+  // src/ViewModel/Global/onboardingViewModel.ts
+  var OnboardingViewModel = class {
+    // init
+    constructor(connectionViewmodel, fileTransferViewModel2, settingsViewModel2) {
+      this.connectionViewmodel = connectionViewmodel;
+      this.fileTransferViewModel = fileTransferViewModel2;
+      this.settingsViewModel = settingsViewModel2;
+      // state
+      this.presentedModal = new State(void 0);
+      // guards
+      this.cannotTransfer = createProxyState([this.connectionViewmodel.isConnected], () => !this.connectionViewmodel.isConnected.value);
+      // navigation 
+      this.open = () => {
+        this.presentedModal.value = 0 /* Connection */;
+      };
+      this.showTransferOption = () => {
+        this.presentedModal.value = 1 /* TransferOrNew */;
+      };
+      this.setupNew = () => {
+        this.presentedModal.value = 2 /* Name */;
+      };
+      this.showTransferData = () => {
+        this.presentedModal.value = 3 /* Transfer */;
+      };
+      // methods
+      this.transferData = () => {
+        this.fileTransferViewModel.exitReception = () => this.showTransferData();
+        this.fileTransferViewModel.prepareReceivingData();
+        this.presentedModal.value = void 0;
+      };
+      this.finish = () => {
+        this.settingsViewModel.setName();
+        this.presentedModal.value = void 0;
+      };
+      if (this.settingsViewModel.settingsModel.username == "") this.open();
+    }
+  };
+
+  // src/View/Modals/onboardingModal.tsx
+  function OnboardingModalWrapper(coreViewModel2, onboardingViewModel2) {
+    return /* @__PURE__ */ createElement("div", null, ConnectionModal2(coreViewModel2, onboardingViewModel2), TransferModal(coreViewModel2, onboardingViewModel2), NameModal(coreViewModel2, onboardingViewModel2), TransferDataModal(coreViewModel2, onboardingViewModel2));
+  }
+  function ConnectionModal2(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 0 /* Connection */
+    );
+    const connectionViewModel2 = onboardingViewModel2.connectionViewmodel;
+    const nextButton = createProxyState([connectionViewModel2.isConnected], () => coreViewModel2.translations.onboarding.connectionNextButton(connectionViewModel2.isConnected.value));
+    return /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "modal",
+        "toggle:open": isPresented
+      },
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.connectionHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.connectionDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
+        "input",
+        {
+          placeholder: coreViewModel2.translations.homePage.serverAddressPlaceholder,
+          "bind:value": connectionViewModel2.serverAddressInput,
+          "on:enter": connectionViewModel2.connect
+        }
+      ))), /* @__PURE__ */ createElement("div", { class: "flex-row width-input justify-end" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "standard width-50",
+          "on:click": connectionViewModel2.connect,
+          "toggle:disabled": connectionViewModel2.cannotConnect
+        },
+        coreViewModel2.translations.onboarding.connectButton
+      ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "primary width-50",
+          "on:click": onboardingViewModel2.showTransferOption
+        },
+        /* @__PURE__ */ createElement(
+          "span",
+          {
+            "subscribe:innerText": nextButton
+          }
+        ),
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+      )))
+    );
+  }
+  function TransferModal(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 1 /* TransferOrNew */
+    );
+    return /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "modal",
+        "toggle:open": isPresented
+      },
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.transferOptionsHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.transferOptionsDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "tile",
+          "on:click": onboardingViewModel2.showTransferData,
+          "toggle:disabled": onboardingViewModel2.cannotTransfer
+        },
+        /* @__PURE__ */ createElement("div", null, coreViewModel2.translations.onboarding.transferOptionTransfer),
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+      ), /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "tile",
+          "on:click": onboardingViewModel2.setupNew
+        },
+        /* @__PURE__ */ createElement("div", null, coreViewModel2.translations.onboarding.transferOptionNew),
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+      ))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "standard width-50",
+          "on:click": onboardingViewModel2.open
+        },
+        coreViewModel2.translations.general.backButton
+      )))
+    );
+  }
+  function NameModal(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 2 /* Name */
+    );
+    const settingsViewModel2 = onboardingViewModel2.settingsViewModel;
+    return /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "modal",
+        "toggle:open": isPresented
+      },
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.nameHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.nameDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "account_circle"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.settings.account.yourNameLabel), /* @__PURE__ */ createElement(
+        "input",
+        {
+          placeholder: coreViewModel2.translations.settings.account.yourNamePlaceholder,
+          "bind:value": settingsViewModel2.usernameInput
+        }
+      )))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "standard width-50",
+          "on:click": onboardingViewModel2.showTransferOption
+        },
+        coreViewModel2.translations.general.backButton
+      ), /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "primary width-50",
+          "on:click": onboardingViewModel2.finish
+        },
+        coreViewModel2.translations.general.setButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+      )))
+    );
+  }
+  function TransferDataModal(coreViewModel2, onboardingViewModel2) {
+    const isPresented = createProxyState(
+      [onboardingViewModel2.presentedModal],
+      () => onboardingViewModel2.presentedModal.value == 3 /* Transfer */
+    );
+    const fileTransferViewModel2 = onboardingViewModel2.fileTransferViewModel;
+    return /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "modal",
+        "toggle:open": isPresented
+      },
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.onboarding.transferHeadline), /* @__PURE__ */ createElement("p", { class: "secondary width-input" }, coreViewModel2.translations.onboarding.transferDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap content-margin-bottom" }, /* @__PURE__ */ createElement("label", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "forum"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferChannelHeadline), /* @__PURE__ */ createElement(
+        "input",
+        {
+          type: "number",
+          "on:enter": fileTransferViewModel2.prepareReceivingData,
+          "bind:value": fileTransferViewModel2.receivingTransferChannel
+        }
+      ))), /* @__PURE__ */ createElement("label", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "key"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferKeyHeadline), /* @__PURE__ */ createElement(
+        "input",
+        {
+          type: "number",
+          "on:enter": fileTransferViewModel2.prepareReceivingData,
+          "bind:value": fileTransferViewModel2.receivingTransferKey
+        }
+      ))))), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "standard width-50",
+          "on:click": onboardingViewModel2.showTransferOption,
+          "toggle:disabled": fileTransferViewModel2.cannotExitReception
+        },
+        coreViewModel2.translations.general.backButton
+      ), /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "primary width-50",
+          "on:click": onboardingViewModel2.transferData
+        },
+        coreViewModel2.translations.onboarding.transferButton,
+        /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")
+      )))
+    );
+  }
+
   // src/index.tsx
   var storageModel = new StorageModel();
   var settingsModel = new SettingsModel(storageModel);
@@ -8740,6 +9009,7 @@
     contactListViewModel
   );
   var fileTransferViewModel = new FileTransferViewModel(coreViewModel);
+  var onboardingViewModel = new OnboardingViewModel(connectionViewModel, fileTransferViewModel, settingsViewModel);
   var homeViewModel = new HomeViewModel(
     coreViewModel,
     settingsViewModel,
@@ -8766,6 +9036,7 @@
       chatListViewModel
     ),
     ChatPageWrapper(coreViewModel, chatListViewModel),
+    OnboardingModalWrapper(coreViewModel, onboardingViewModel),
     ConnectionModal(coreViewModel, connectionViewModel),
     DataTransferModalWrapper(
       coreViewModel,

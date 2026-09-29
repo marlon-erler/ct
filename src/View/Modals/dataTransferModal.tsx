@@ -615,9 +615,7 @@ function DataReceptionModal(
                 <div class="flex-row width-100">
                     <button
                         class="flex"
-                        on:click={
-                            fileTransferViewModel.correctTransferData
-                        }
+                        on:click={fileTransferViewModel.correctTransferData}
                         toggle:disabled={
                             fileTransferViewModel.cannotExitReception
                         }

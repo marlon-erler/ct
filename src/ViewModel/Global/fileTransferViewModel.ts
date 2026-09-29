@@ -11,8 +11,8 @@ import ChatModel from "../../Model/Chat/chatModel";
 
 export default class FileTransferViewModel extends Context {
     // state
-    exitReception: ()=>void|undefined = undefined;
-    
+    exitReception: () => void | undefined = undefined;
+
     presentedModal: React.State<FileTransferModals | undefined> =
         new React.State<any>(undefined);
 
@@ -219,13 +219,13 @@ export default class FileTransferViewModel extends Context {
     };
 
     correctTransferData = (): void => {
-	if (this.exitReception != undefined) {
-	    this.presentedModal.value = undefined;
-	    this.exitReception();
-	    return;
-	}
-	this.showTransferDataInputModal()
-    }
+        if (this.exitReception != undefined) {
+            this.presentedModal.value = undefined;
+            this.exitReception();
+            return;
+        }
+        this.showTransferDataInputModal();
+    };
 
     initiateTransfer = (): void => {
         this.presentedModal.value = FileTransferModals.TransferDisplay;
