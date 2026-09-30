@@ -179,8 +179,6 @@ body[theme=black] * {
 #background-wrapper {
   position: fixed;
   inset: 0px;
-  transform: scale(1.2);
-  filter: blur(40px);
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
@@ -189,18 +187,22 @@ body[theme=black] * {
 main {
   z-index: 2;
 }
-#background-wrapper div {
-  content: "";
+#background-wrapper > div {
   position: absolute;
-  inset: 0px;
+  inset: -100px;
   z-index: -1;
   pointer-events: none;
+  opacity: .3;
+}
+#background-wrapper > div > div {
+  position: absolute;
+  inset: 0px;
+  filter: blur(80px);
 }
 #background-wrapper #sky {
   left: -100%;
   bottom: -50%;
   background-image: radial-gradient(var(--sky-1), var(--sky-2));
-  opacity: 0.4;
 }
 body {
   transition: --sky-1 1s, --sky-2 5s;
@@ -209,27 +211,25 @@ body {
   --color-1: hsl(104.61, 100%, 46.85%);
   --color-2: hsl(37.43, 88.75%, 53.58%);
   filter: var(--backdrop-grass-filter);
-  opacity: 0.3;
   background-image:
     linear-gradient(
       350deg,
       var(--color-1),
       var(--color-2) 30%,
-      transparent 40%);
+      transparent 50%);
 }
 #background-wrapper #grass-2 {
   --color-1: hsl(110, 60%, 40%);
   --color-2: hsl(110, 60%, 35%);
   filter: var(--backdrop-grass-filter);
-  opacity: 0.3;
   background-image:
     linear-gradient(
       9deg,
       var(--color-1),
       var(--color-2) 30%,
-      transparent 35%);
+      transparent 45%);
 }
-body[theme=dark] #background-wrapper {
+body[theme=dark] #background-wrapper > div {
   opacity: 0.5;
 }
 body[theme=dark] #background-wrapper #sky {
@@ -274,47 +274,51 @@ body[theme=dark] #background-wrapper #grass-2 {
   transition: all calc(var(--animation-duration) / 2);
 }
 body[keystroke-active] [ctkeystroke]::after {
-  opacity: 1;
+  opacity: .7;
   transform: translateY(0px);
 }
 
 /* src/View/homePage.css */
+#home-page {
+  overflow: auto;
+  padding: var(--content-padding);
+  min-width: unset;
+  max-width: 1000px;
+}
+#home-page > h1 {
+  font-size: 3rem;
+  font-family: IBM Plex Sans Thin;
+}
 #home-page > div {
+  position: relative;
   display: flex;
   flex-direction: row;
-  gap: var(--large-gap);
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  overflow: hidden;
-  overflow-x: scroll;
+  flex-wrap: wrap;
   padding: 0px;
+  height: auto;
+  overflow: visible;
 }
 #home-page > div > div {
   display: flex;
   flex-direction: column;
   justify-content: start;
-  gap: var(--gap-between-tiles);
-  padding: var(--content-padding);
-  padding-top: calc(var(--header-height) + var(--content-margin));
   width: 100%;
   min-width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  scroll-snap-align: center;
 }
-#home-page #overview-section,
-#home-page #chat-section {
-  padding-bottom: calc(var(--content-padding) + var(--header-height) + var(--safe-area-bottom));
+#home-page #overview-section {
+  gap: var(--gap-between-tiles);
+}
+#home-page #chat-section > button {
+  margin-bottom: var(--gap-between-tiles);
 }
 #home-page #chat-grid {
-  margin-top: var(--content-padding);
   display: grid;
   gap: var(--gap-between-tiles);
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
 }
 @media (min-width: 640px) {
   #home-page > div {
-    overflow-x: hidden;
+    gap: var(--content-padding);
   }
   #home-page #overview-section {
     width: 20rem;
@@ -325,18 +329,13 @@ body[keystroke-active] [ctkeystroke]::after {
     min-width: unset;
   }
 }
-@media (min-width: 1200px) {
-  #home-page #overview-section,
-  #home-page #chat-section {
-    padding-left: 3rem;
-    padding-right: 3rem;
+@media (min-width: 1000px) {
+  #home-page > div {
+    gap: var(--large-gap);
   }
-  #home-page #chat-grid {
-    margin-top: 3rem;
-  }
-  #home-page #overview-section {
-    width: var(--max-input-width);
-    min-width: var(--max-input-width);
+  #home-page > h1 {
+    padding-top: 3rem;
+    padding-bottom: 1rem;
   }
 }
 

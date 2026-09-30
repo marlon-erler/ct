@@ -318,7 +318,7 @@
       refreshButton: "Refresh",
       saveButton: "Save",
       setButton: "Set",
-      filterOrCreateLabel: "Search or create",
+      filterOrCreateLabel: (type) => `Search or create ${type}`,
       createLabel: (query) => `Create "${query}"`,
       reloadAppButton: "Reload App",
       fileVersionLabel: "Version",
@@ -344,8 +344,8 @@
     },
     homePage: {
       appName: "Coordination Tool",
+      greeting: (name) => `Hi ${name}`,
       ///
-      overviewHeadline: "Overview",
       serverAddress: "Server address",
       serverAddressPlaceholder: "wss://192.168.0.69:3000",
       connectAudioLabel: "connect to server",
@@ -355,11 +355,8 @@
       manageStorageButton: "Manage storage",
       transferDataButton: "Transfer or export data",
       updateButton: (version) => `Update to ${version}`,
-      scrollToChatButton: "Chats",
       ///
-      backToOverviewAudioLabel: "go back to overview",
-      chatsHeadline: "Chats",
-      addChatAudioLabel: "name of new chat",
+      typeChat: "chat",
       addChatPlaceholder: "Add chat",
       addChatButton: "Add chat"
     },
@@ -520,6 +517,7 @@
       task: {
         noBoardSelected: "No board selected",
         boardNotFound: "Board not found",
+        typeBoard: "board",
         ///
         closeBoardButtonAudioLabel: "close board",
         toggleBoardButtonAudioLabel: "toggle board list",
@@ -593,7 +591,7 @@
         refreshButton: "Aktualisieren",
         saveButton: "Speichern",
         setButton: "OK",
-        filterOrCreateLabel: "Suchen oder erstellen",
+        filterOrCreateLabel: (type) => `${type} suchen oder erstellen`,
         createLabel: (query) => `"${query}" erstellen`,
         reloadAppButton: "Neu laden",
         fileVersionLabel: "Version",
@@ -619,7 +617,7 @@
       },
       homePage: {
         appName: "Coordination Tool",
-        overviewHeadline: "\xDCbersicht",
+        greeting: (name) => `Hi ${name}!`,
         serverAddress: "Serveradresse",
         serverAddressPlaceholder: "wss://192.168.0.69:3000",
         connectAudioLabel: "mit Server verbinden",
@@ -629,10 +627,7 @@
         manageStorageButton: "Daten verwalten",
         transferDataButton: "Daten \xFCbertragen",
         updateButton: (version) => `Aktualisieren: ${version}`,
-        scrollToChatButton: "Chats",
-        backToOverviewAudioLabel: "zur\xFCck zur \xFCbersicht",
-        chatsHeadline: "Chats",
-        addChatAudioLabel: "Name des neuen Chats",
+        typeChat: "Chat",
         addChatPlaceholder: "Chat hinzuf\xFCgen",
         addChatButton: "Chat hinzuf\xFCgen"
       },
@@ -784,6 +779,7 @@
         task: {
           noBoardSelected: "Kein Board ausgew\xE4hlt",
           boardNotFound: "Board nicht gefunden",
+          typeBoard: "Board",
           closeBoardButtonAudioLabel: "board schlie\xDFen",
           toggleBoardButtonAudioLabel: "board-liste ein/ausblenden",
           showBoardSettingsButtonAudioLabel: "Board-Einstellungen anzeigen",
@@ -847,7 +843,7 @@
         refreshButton: "Actualizar",
         saveButton: "Guardar",
         setButton: "OK",
-        filterOrCreateLabel: "Buscar o crear",
+        filterOrCreateLabel: (type) => `Buscar o crear ${type}`,
         createLabel: (query) => `Crear "${query}"`,
         reloadAppButton: "Recargar app",
         fileVersionLabel: "Versi\xF3n",
@@ -873,7 +869,7 @@
       },
       homePage: {
         appName: "Coordination Tool",
-        overviewHeadline: "Resumen",
+        greeting: (name) => `Hola ${name}!`,
         serverAddress: "Direcci\xF3n del servidor",
         serverAddressPlaceholder: "wss://192.168.0.69:3000",
         connectAudioLabel: "conectar al servidor",
@@ -883,10 +879,7 @@
         manageStorageButton: "Gestionar almacenamiento",
         transferDataButton: "Enviar o exportar archivos",
         updateButton: (version) => `Actualizar a ${version}`,
-        scrollToChatButton: "Chats",
-        backToOverviewAudioLabel: "volver al resumen",
-        chatsHeadline: "Chats",
-        addChatAudioLabel: "nombre del nuevo chat",
+        typeChat: "chat",
         addChatPlaceholder: "A\xF1adir chat",
         addChatButton: "A\xF1adir chat"
       },
@@ -1038,6 +1031,7 @@
         task: {
           noBoardSelected: "Ning\xFAn tablero seleccionado",
           boardNotFound: "Tablero no encontrado",
+          typeBoard: "board",
           closeBoardButtonAudioLabel: "cerrar tablero",
           toggleBoardButtonAudioLabel: "mostrar o ocultar lista de tableros",
           showBoardSettingsButtonAudioLabel: "mostrar configuraci\xF3n del tablero",
@@ -1441,12 +1435,21 @@
       this.closeContext = (contextId, fromHistoryEvent = false) => {
         if (!this.contexts.map((context) => context.contextId).includes(contextId))
           return;
+        let exitNext = false;
         while (this.contexts.length > 0) {
           const currentContext = this.context;
           if (!currentContext) return;
-          currentContext.handleContextClose(fromHistoryEvent);
+          const response = currentContext.handleContextClose(fromHistoryEvent);
+          if (response == false) return;
           this.contextStack.delete(currentContext.contextId);
-          if (currentContext.contextId == contextId) break;
+          if (response == true) {
+            exitNext = true;
+            continue;
+          } else if (exitNext == true) {
+            break;
+          } else if (currentContext.contextId == contextId) {
+            break;
+          }
         }
       };
       this.handleKeyDown = (e) => {
@@ -2837,6 +2840,11 @@
         }
       };
       this.loadData = () => {
+      };
+      // context
+      this.handleContextClose = (fromHistoryEvent) => {
+        if (!fromHistoryEvent) return;
+        return true;
       };
       this.calendarModel = calendarModel;
       this.boardsAndTasksModel = boardsAndTasksModel;
@@ -4492,6 +4500,11 @@
         this.updateBoardIndices();
         this.openLastUsedBoard();
       };
+      // context
+      this.handleContextClose = (fromHistoryEvent) => {
+        if (!fromHistoryEvent) return;
+        return true;
+      };
       this.loadData();
       this.chatViewModel = chatViewModel;
       implementFilter(
@@ -4946,6 +4959,12 @@
         if (Object.values(ReactionSymbols).includes(previousFilter))
           this.setReactionFilter(previousFilter);
       };
+      // context
+      this.handleContextClose = (fromHistoryEvent) => {
+        if (this.replyViewSelectedMessage.value == void 0 && fromHistoryEvent) return true;
+        this.resetReplyView();
+        return false;
+      };
       this.restoreFilter();
       this.cannotSendMessage = createProxyState(
         [
@@ -5231,22 +5250,23 @@
         (chatViewModel) => chatViewModel.settingsPageViewModel.name.value
       );
       // state
-      this.newChatPrimaryChannel = new State("");
+      this.chatQuery = new State("");
       this.chatViewModels = new ListState();
+      this.chatMatches = new ListState();
       this.selectedChat = new State(
         void 0
       );
       // guards
       this.cannotCreateChat = createProxyState(
-        [this.newChatPrimaryChannel],
-        () => this.newChatPrimaryChannel.value == ""
+        [this.chatQuery],
+        () => this.chatQuery.value == ""
       );
       // methods
       this.createChat = () => {
         const chatModel = this.coreViewModel.chatListModel.createChat(
-          this.newChatPrimaryChannel.value
+          this.chatQuery.value
         );
-        this.newChatPrimaryChannel.value = "";
+        this.chatQuery.value = "";
         const chatViewModel = this.createChatViewModel(chatModel);
         this.trackChat(chatViewModel);
         this.updateIndices();
@@ -5305,6 +5325,7 @@
         this.settingsViewModel
       );
       this.loadChats();
+      implementFilter(this.chatViewModels, this.chatMatches, this.chatQuery, (chat) => chat.chatModel.info.name);
     }
   };
 
@@ -5324,16 +5345,7 @@
 
   // src/View/Components/homePageButton.tsx
   function HomePageButton(action, label, icon, key) {
-    return /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "tile flex-no",
-        "on:click": action,
-        ctkeystroke: key
-      },
-      /* @__PURE__ */ createElement("span", { class: "icon" }, icon),
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, label))
-    );
+    return /* @__PURE__ */ createElement("button", { class: "tile flex-no", "on:click": action, ctkeystroke: key }, /* @__PURE__ */ createElement("span", { class: "icon" }, icon), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, label)));
   }
 
   // src/View/Components/chatEntry.tsx
@@ -5341,7 +5353,7 @@
     const view = /* @__PURE__ */ createElement(
       "button",
       {
-        class: "tile colored-tile chat-entry animate-highlight",
+        class: "tile colored-tile chat-entry animate-highlight slide-up",
         "set:color": chatViewModel.settingsPageViewModel.color,
         style: "height: 8rem",
         "on:click": chatViewModel.open,
@@ -5370,9 +5382,29 @@
     return ChatEntry(chatViewModel);
   };
 
+  // src/View/Components/newItemEntry.tsx
+  function NewItemEntry(coreViewModel2, query, fn) {
+    const isHidden = createProxyState([query], () => query.value == "");
+    const label = createProxyState(
+      [query],
+      () => coreViewModel2.translations.general.createLabel(query.value)
+    );
+    return /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard slide-up",
+        "toggle:hidden": isHidden,
+        "on:click": fn
+      },
+      /* @__PURE__ */ createElement("span", { "subscribe:innerText": label }),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
+    );
+  }
+
   // src/View/homePage.tsx
   function HomePage(coreViewModel2, storageViewModel2, settingsViewModel2, connectionViewModel2, fileTransferViewModel2, chatListViewModel2) {
-    const overviewSection = /* @__PURE__ */ createElement("div", { id: "overview-section" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.overviewHeadline), /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
+    const greeting = createProxyState([settingsViewModel2.username], () => coreViewModel2.translations.homePage.greeting(settingsViewModel2.username.value));
+    const overviewSection = /* @__PURE__ */ createElement("div", { id: "overview-section" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
       "input",
       {
         list: "previous-connection-list",
@@ -5443,38 +5475,25 @@
       },
       /* @__PURE__ */ createElement("span", { "subscribe:innerText": coreViewModel2.updateText }),
       /* @__PURE__ */ createElement("span", { class: "icon" }, "update")
-    ), /* @__PURE__ */ createElement("div", { class: "mobile-only" }, /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end" }, /* @__PURE__ */ createElement("button", { class: "ghost width-50", "on:click": scrollToChat }, coreViewModel2.translations.homePage.scrollToChatButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "arrow_forward")))));
-    const chatSection = /* @__PURE__ */ createElement("div", { id: "chat-section" }, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.homePage.chatsHeadline), /* @__PURE__ */ createElement("div", { class: "flex-row width-input" }, /* @__PURE__ */ createElement(
+    ), /* @__PURE__ */ createElement("hr", { class: "mobile-only" }));
+    const chatSection = /* @__PURE__ */ createElement("div", { id: "chat-section" }, /* @__PURE__ */ createElement("div", { class: "flex-row width-input" }, /* @__PURE__ */ createElement(
       "input",
       {
-        placeholder: coreViewModel2.translations.homePage.addChatPlaceholder,
-        "aria-label": coreViewModel2.translations.homePage.addChatAudioLabel,
-        "bind:value": chatListViewModel2.newChatPrimaryChannel,
+        placeholder: coreViewModel2.translations.general.filterOrCreateLabel(coreViewModel2.translations.homePage.typeChat),
+        "bind:value": chatListViewModel2.chatQuery,
         "on:enter": chatListViewModel2.createChat
       }
-    ), /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "primary",
-        "aria-label": coreViewModel2.translations.homePage.addChatButton,
-        "on:click": chatListViewModel2.createChat,
-        "toggle:disabled": chatListViewModel2.cannotCreateChat
-      },
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
-    )), /* @__PURE__ */ createElement(
+    )), /* @__PURE__ */ createElement("hr", null), NewItemEntry(coreViewModel2, chatListViewModel2.chatQuery, chatListViewModel2.createChat), /* @__PURE__ */ createElement(
       "div",
       {
         id: "chat-grid",
         "children:append": [
-          chatListViewModel2.chatViewModels,
+          chatListViewModel2.chatMatches,
           ChatViewModelToChatEntry
         ]
       }
     ));
-    function scrollToChat() {
-      chatSection.scrollIntoView();
-    }
-    return /* @__PURE__ */ createElement("article", { id: "home-page" }, /* @__PURE__ */ createElement("div", null, overviewSection, chatSection));
+    return /* @__PURE__ */ createElement("article", { id: "home-page" }, /* @__PURE__ */ createElement("h1", { "subscribe:innerText": greeting }), /* @__PURE__ */ createElement("div", null, overviewSection, chatSection));
   }
 
   // src/View/Components/ribbonButton.tsx
@@ -6413,25 +6432,6 @@
     return /* @__PURE__ */ createElement("div", { class: "width-100 height-100 flex-column justify-center align-center" }, /* @__PURE__ */ createElement("span", { class: "secondary slide-up" }, text));
   }
 
-  // src/View/Components/newItemEntry.tsx
-  function NewItemEntry(coreViewModel2, query, fn) {
-    const isHidden = createProxyState([query], () => query.value == "");
-    const label = createProxyState(
-      [query],
-      () => coreViewModel2.translations.general.createLabel(query.value)
-    );
-    return /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "standard slide-up",
-        "toggle:hidden": isHidden,
-        "on:click": fn
-      },
-      /* @__PURE__ */ createElement("span", { "subscribe:innerText": label }),
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
-    );
-  }
-
   // src/View/Components/boardEntry.tsx
   function BoardEntry(boardViewModel) {
     const view = /* @__PURE__ */ createElement(
@@ -6506,7 +6506,7 @@
             class: "no-outline",
             "bind:value": taskPageViewModel.boardQuery,
             "on:enter": taskPageViewModel.createBoard,
-            placeholder: coreViewModel2.translations.general.filterOrCreateLabel
+            placeholder: coreViewModel2.translations.general.filterOrCreateLabel(coreViewModel2.translations.chatPage.task.typeBoard)
           }
         ))), /* @__PURE__ */ createElement("div", { class: "content gap" }, NewItemEntry(
           coreViewModel2,
@@ -8018,15 +8018,7 @@
     function toggle() {
       isSelected.value = !isSelected.value;
     }
-    return /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "tile",
-        "toggle:selected": isSelected,
-        "on:click": toggle
-      },
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("b", { class: "ellipsis" }, fileOption.label), /* @__PURE__ */ createElement("span", { class: "secondary ellipsis" }, StorageModel.pathComponentsToString(...fileOption.path)))
-    );
+    return /* @__PURE__ */ createElement("button", { class: "tile", "toggle:selected": isSelected, "on:click": toggle }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("b", { class: "ellipsis" }, fileOption.label), /* @__PURE__ */ createElement("span", { class: "secondary ellipsis" }, StorageModel.pathComponentsToString(...fileOption.path))));
   }
   function DirectionSelectionModal(coreViewModel2, connectionViewModel2, fileTransferViewModel2) {
     const isPresented = createProxyState(
@@ -9116,7 +9108,7 @@
     );
   });
   document.body.append(
-    /* @__PURE__ */ createElement("div", { id: "background-wrapper" }, /* @__PURE__ */ createElement("div", { id: "sky" }), /* @__PURE__ */ createElement("div", { id: "grass-1" }), /* @__PURE__ */ createElement("div", { id: "grass-2" }))
+    /* @__PURE__ */ createElement("div", { id: "background-wrapper" }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("div", { id: "sky" }), /* @__PURE__ */ createElement("div", { id: "grass-1" }), /* @__PURE__ */ createElement("div", { id: "grass-2" })))
   );
   document.querySelector("main").append(
     HomePage(

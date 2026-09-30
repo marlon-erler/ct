@@ -8,6 +8,7 @@ BASIC
     outline: none;
     margin: 0px;
     padding: 0px;
+    font-synthesis: none !important;
 }
 
 html {
@@ -326,6 +327,12 @@ TYPE
  */
 
 @font-face {
+    font-family: IBM Plex Sans Thin;
+    src: url("Fonts/IBMPlexSans-Thin.ttf");
+    font-weight: thin;
+}
+
+@font-face {
     font-family: IBM Plex Sans;
     src: url("Fonts/IBMPlexSans-Regular.ttf");
 }
@@ -492,6 +499,11 @@ textarea {
 
 [hidden] {
     display: none !important;
+}
+
+body > main {
+    align-items: safe center;
+    justify-content: safe center;
 }
 
 main,

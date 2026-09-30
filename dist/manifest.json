@@ -1,6 +1,6 @@
 {
     "name": "CT",
-    "display": "fullscreen",
+    "display": "standalone",
     "theme_color": "black",
     "background_color": "black",
     "icons": [

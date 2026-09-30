@@ -54,7 +54,7 @@ const englishTranslations = {
 
     homePage: {
         appName: "Coordination Tool",
-	greeting: (name: string) => `Hi ${name}!`,
+	greeting: (name: string) => `Hi ${name}`,
 
         ///
 

@@ -9,9 +9,7 @@
 /* Gradient */
 #background-wrapper {
     position: fixed;
-    inset: -80px;
-
-    filter: blur(40px);
+    inset: 0px;
 
     z-index: 1;
     pointer-events: none;
@@ -25,14 +23,20 @@ main {
     z-index: 2;
 }
 
-#background-wrapper div {
-    content: "";
-
+#background-wrapper > div {
     position: absolute;
-    inset: 0px;
+    inset: -100px;
 
     z-index: -1;
     pointer-events: none;
+    
+    opacity: .3;
+}
+
+#background-wrapper > div > div {
+    position: absolute;
+    inset: 0px;
+    filter: blur(80px);
 }
 
 #background-wrapper #sky {
@@ -40,8 +44,6 @@ main {
     bottom: -50%;
 
     background-image: radial-gradient(var(--sky-1), var(--sky-2));
-
-    opacity: 0.4;
 }
 
 body {
@@ -55,13 +57,12 @@ body {
     --color-2: hsl(37.43, 88.75%, 53.58%);
 
     filter: var(--backdrop-grass-filter);
-    opacity: 0.3;
 
     background-image: linear-gradient(
         350deg,
         var(--color-1),
         var(--color-2) 30%,
-        transparent 40%
+        transparent 50%
     );
 }
 
@@ -70,17 +71,16 @@ body {
     --color-2: hsl(110, 60%, 35%);
 
     filter: var(--backdrop-grass-filter);
-    opacity: 0.3;
 
     background-image: linear-gradient(
         9deg,
         var(--color-1),
         var(--color-2) 30%,
-        transparent 35%
+        transparent 45%
     );
 }
 
-body[theme="dark"] #background-wrapper {
+body[theme="dark"] #background-wrapper > div {
     opacity: 0.5;
 }
 

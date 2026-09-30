@@ -196,6 +196,13 @@ export default class MessagePageViewModel extends Context {
             this.setReactionFilter(previousFilter);
     };
 
+    // context
+    handleContextClose = (fromHistoryEvent: boolean):boolean=> {
+	if (this.replyViewSelectedMessage.value == undefined && fromHistoryEvent) return true;
+	this.resetReplyView();
+	return false;
+    }
+
     // init
     constructor(
         public readonly coreViewModel: CoreViewModel,
