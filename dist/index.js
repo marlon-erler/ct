@@ -2373,7 +2373,7 @@
         );
         const anchor = document.createElement("a");
         anchor.href = window.URL.createObjectURL(backup);
-        anchor.download = `comms-${date}.bak`;
+        anchor.download = `ct-${date}.bak`;
         anchor.click();
       };
       this.updateImportSelection = () => {
@@ -5400,9 +5400,7 @@
       );
       // methods
       this.createChat = () => {
-        const chatModel = this.coreViewModel.chatListModel.createChat(
-          this.chatQuery.value
-        );
+        const chatModel = this.coreViewModel.chatListModel.createChat(this.chatQuery.value);
         this.chatQuery.value = "";
         const chatViewModel = this.createChatViewModel(chatModel);
         this.trackChat(chatViewModel);
@@ -5462,7 +5460,12 @@
         this.settingsViewModel
       );
       this.loadChats();
-      implementFilter(this.chatViewModels, this.chatMatches, this.chatQuery, (chat) => chat.chatModel.info.name);
+      implementFilter(
+        this.chatViewModels,
+        this.chatMatches,
+        this.chatQuery,
+        (chat) => chat.chatModel.info.name
+      );
     }
   };
 
@@ -5479,6 +5482,25 @@
     const readableName = `${date} ${time}`;
     return Option(readableName, versionId, false);
   };
+
+  // src/View/Components/newItemEntry.tsx
+  function NewItemEntry(coreViewModel2, query, fn) {
+    const isHidden = createProxyState([query], () => query.value == "");
+    const label = createProxyState(
+      [query],
+      () => coreViewModel2.translations.general.createLabel(query.value)
+    );
+    return /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "standard slide-up",
+        "toggle:hidden": isHidden,
+        "on:click": fn
+      },
+      /* @__PURE__ */ createElement("span", { "subscribe:innerText": label }),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
+    );
+  }
 
   // src/View/Components/homePageButton.tsx
   function HomePageButton(action, label, icon, key) {
@@ -5519,29 +5541,18 @@
     return ChatEntry(chatViewModel);
   };
 
-  // src/View/Components/newItemEntry.tsx
-  function NewItemEntry(coreViewModel2, query, fn) {
-    const isHidden = createProxyState([query], () => query.value == "");
-    const label = createProxyState(
-      [query],
-      () => coreViewModel2.translations.general.createLabel(query.value)
-    );
-    return /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "standard slide-up",
-        "toggle:hidden": isHidden,
-        "on:click": fn
-      },
-      /* @__PURE__ */ createElement("span", { "subscribe:innerText": label }),
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "add")
-    );
-  }
-
   // src/View/homePage.tsx
   function HomePage(coreViewModel2, storageViewModel2, settingsViewModel2, connectionViewModel2, fileTransferViewModel2, chatListViewModel2) {
-    const greeting = createProxyState([settingsViewModel2.username], () => coreViewModel2.translations.homePage.greeting(settingsViewModel2.username.value));
-    const isChatPlaceholderHidden = createProxyState([chatListViewModel2.chatMatches, chatListViewModel2.chatQuery], () => chatListViewModel2.chatMatches.value.size > 0 || chatListViewModel2.chatQuery.value != "");
+    const greeting = createProxyState(
+      [settingsViewModel2.username],
+      () => coreViewModel2.translations.homePage.greeting(
+        settingsViewModel2.username.value
+      )
+    );
+    const isChatPlaceholderHidden = createProxyState(
+      [chatListViewModel2.chatMatches, chatListViewModel2.chatQuery],
+      () => chatListViewModel2.chatMatches.value.size > 0 || chatListViewModel2.chatQuery.value != ""
+    );
     const overviewSection = /* @__PURE__ */ createElement("div", { id: "overview-section" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
       "input",
       {
@@ -5617,18 +5628,17 @@
     const chatSection = /* @__PURE__ */ createElement("div", { id: "chat-section" }, /* @__PURE__ */ createElement("div", { class: "flex-row width-input" }, /* @__PURE__ */ createElement(
       "input",
       {
-        placeholder: coreViewModel2.translations.general.filterOrCreateLabel(coreViewModel2.translations.homePage.typeChat),
+        placeholder: coreViewModel2.translations.general.filterOrCreateLabel(
+          coreViewModel2.translations.homePage.typeChat
+        ),
         "bind:value": chatListViewModel2.chatQuery,
         "on:enter": chatListViewModel2.createChat
       }
-    )), /* @__PURE__ */ createElement("hr", null), NewItemEntry(coreViewModel2, chatListViewModel2.chatQuery, chatListViewModel2.createChat), /* @__PURE__ */ createElement(
-      "span",
-      {
-        class: "secondary",
-        "toggle:hidden": isChatPlaceholderHidden
-      },
-      coreViewModel2.translations.homePage.noChatsPlaceholder
-    ), /* @__PURE__ */ createElement(
+    )), /* @__PURE__ */ createElement("hr", null), NewItemEntry(
+      coreViewModel2,
+      chatListViewModel2.chatQuery,
+      chatListViewModel2.createChat
+    ), /* @__PURE__ */ createElement("span", { class: "secondary", "toggle:hidden": isChatPlaceholderHidden }, coreViewModel2.translations.homePage.noChatsPlaceholder), /* @__PURE__ */ createElement(
       "div",
       {
         id: "chat-grid",
@@ -6652,7 +6662,9 @@
             class: "no-outline",
             "bind:value": taskPageViewModel.boardQuery,
             "on:enter": taskPageViewModel.createBoard,
-            placeholder: coreViewModel2.translations.general.filterOrCreateLabel(coreViewModel2.translations.chatPage.task.typeBoard)
+            placeholder: coreViewModel2.translations.general.filterOrCreateLabel(
+              coreViewModel2.translations.chatPage.task.typeBoard
+            )
           }
         ))), /* @__PURE__ */ createElement("div", { class: "content gap" }, NewItemEntry(
           coreViewModel2,
@@ -8319,8 +8331,21 @@
       [fileTransferViewModel2.presentedModal],
       () => fileTransferViewModel2.presentedModal.value == 3 /* TransferDisplay */
     );
-    const progressLabel = createProxyState([fileTransferViewModel2.fileTransferProgress, fileTransferViewModel2.fileTransferTotal], () => coreViewModel2.translations.dataTransferModal.filesSentProgress(fileTransferViewModel2.fileTransferProgress.value, fileTransferViewModel2.fileTransferTotal.value));
-    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.transferDataHeadline), ProgressBar(progressLabel, fileTransferViewModel2.fileTransferProgress, fileTransferViewModel2.fileTransferTotal), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap content-margin-bottom" }, /* @__PURE__ */ createElement("div", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "forum"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferChannelHeadline), /* @__PURE__ */ createElement(
+    const progressLabel = createProxyState(
+      [
+        fileTransferViewModel2.fileTransferProgress,
+        fileTransferViewModel2.fileTransferTotal
+      ],
+      () => coreViewModel2.translations.dataTransferModal.filesSentProgress(
+        fileTransferViewModel2.fileTransferProgress.value,
+        fileTransferViewModel2.fileTransferTotal.value
+      )
+    );
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.transferDataHeadline), ProgressBar(
+      progressLabel,
+      fileTransferViewModel2.fileTransferProgress,
+      fileTransferViewModel2.fileTransferTotal
+    ), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "flex-column gap content-margin-bottom" }, /* @__PURE__ */ createElement("div", { class: "tile" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "forum"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.transferChannelHeadline), /* @__PURE__ */ createElement(
       "b",
       {
         "subscribe:innerText": fileTransferViewModel2.transferChannel
@@ -8347,15 +8372,7 @@
       },
       coreViewModel2.translations.dataTransferModal.sendAgainButton,
       /* @__PURE__ */ createElement("span", { class: "icon" }, "restart_alt")
-    ), /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "flex",
-        "on:click": fileTransferViewModel2.close
-      },
-      coreViewModel2.translations.general.closeButton,
-      /* @__PURE__ */ createElement("span", { class: "icon" }, "close")
-    ))));
+    ), /* @__PURE__ */ createElement("button", { class: "flex", "on:click": fileTransferViewModel2.close }, coreViewModel2.translations.general.closeButton, /* @__PURE__ */ createElement("span", { class: "icon" }, "close")))));
   }
   function TransferDataInputModal(coreViewModel2, fileTransferViewModel2) {
     const isPresented = createProxyState(
@@ -8399,8 +8416,21 @@
       [fileTransferViewModel2.presentedModal],
       () => fileTransferViewModel2.presentedModal.value == 5 /* ReceptionDisplay */
     );
-    const progressLabel = createProxyState([fileTransferViewModel2.fileTransferProgress, fileTransferViewModel2.fileTransferTotal], () => coreViewModel2.translations.dataTransferModal.filesReceivedProgress(fileTransferViewModel2.fileTransferProgress.value, fileTransferViewModel2.fileTransferTotal.value));
-    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.receiveHeadline), ProgressBar(progressLabel, fileTransferViewModel2.fileTransferProgress, fileTransferViewModel2.fileTransferTotal), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement(
+    const progressLabel = createProxyState(
+      [
+        fileTransferViewModel2.fileTransferProgress,
+        fileTransferViewModel2.fileTransferTotal
+      ],
+      () => coreViewModel2.translations.dataTransferModal.filesReceivedProgress(
+        fileTransferViewModel2.fileTransferProgress.value,
+        fileTransferViewModel2.fileTransferTotal.value
+      )
+    );
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.receiveHeadline), ProgressBar(
+      progressLabel,
+      fileTransferViewModel2.fileTransferProgress,
+      fileTransferViewModel2.fileTransferTotal
+    ), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement(
       "div",
       {
         class: "tile flex-column align-start",
