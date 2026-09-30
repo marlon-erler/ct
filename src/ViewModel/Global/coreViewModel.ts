@@ -52,22 +52,23 @@ export default class CoreViewModel {
         )
             return;
 
-	let exitNext: boolean = false;
+        let exitNext: boolean = false;
 
         while (this.contexts.length > 0) {
             const currentContext: Context | undefined = this.context;
             if (!currentContext) break;
-            const response = currentContext.handleContextClose(fromHistoryEvent);
-	    if (response == false) break;
+            const response =
+                currentContext.handleContextClose(fromHistoryEvent);
+            if (response == false) break;
             this.contextStack.delete(currentContext.contextId);
-	    if (response == true) {
-		exitNext = true;
-		continue;
-	    } else if (exitNext == true) {
-		break
-	    } else if (currentContext.contextId == contextId) {
-		break;
-	    }
+            if (response == true) {
+                exitNext = true;
+                continue;
+            } else if (exitNext == true) {
+                break;
+            } else if (currentContext.contextId == contextId) {
+                break;
+            }
         }
     };
 
@@ -206,7 +207,7 @@ export class Context {
     };
 
     close = (): void => {};
-    handleContextClose = (fromHistoryEvent: boolean): void|boolean=> {};
+    handleContextClose = (fromHistoryEvent: boolean): void | boolean => {};
 
     registerKeyStroke = (key: string, fn: () => void): void => {
         this.keystrokes.set(key, fn);

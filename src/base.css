@@ -29,8 +29,8 @@ main {
 
     z-index: -1;
     pointer-events: none;
-    
-    opacity: .3;
+
+    opacity: 0.3;
 }
 
 #background-wrapper > div > div {
@@ -143,6 +143,6 @@ body[theme="dark"] #background-wrapper #grass-2 {
 }
 
 body[keystroke-active] [ctkeystroke]::after {
-    opacity: .7;
+    opacity: 0.7;
     transform: translateY(0px);
 }

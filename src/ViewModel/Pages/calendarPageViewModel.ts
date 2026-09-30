@@ -219,12 +219,12 @@ export default class CalendarPageViewModel extends TaskContainingPageViewModel {
     };
 
     loadData = (): void => {};
-    
+
     // context
     handleContextClose = (fromHistoryEvent: boolean): void | boolean => {
-	if (!fromHistoryEvent) return;
-	return true;
-    }
+        if (!fromHistoryEvent) return;
+        return true;
+    };
 
     // init
     constructor(

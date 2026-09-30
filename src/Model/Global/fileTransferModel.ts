@@ -24,6 +24,7 @@ export default class FileTransferModel {
 
     // handler managers
     readonly fileHandlerManager = new HandlerManager<string>();
+    readonly transferSizeHandlerManager = new HandlerManager<number>();
     readonly readyToSendHandlerManager = new HandlerManager<boolean>();
 
     // general
@@ -105,6 +106,12 @@ export default class FileTransferModel {
     readonly handleDecryptedFile = (data: string): void => {
         const parsed: any = parse(data);
 
+        if (!parsed.type) return;
+        if (parsed.type == "transfer-size" && typeof parsed.count == "number") {
+            this.transferSizeHandlerManager.trigger(parsed.count);
+            return;
+        }
+
         const isFileData: boolean = checkMatchesObjectStructure(
             parsed,
             FileDataReference,
@@ -126,16 +133,22 @@ export default class FileTransferModel {
         directoryPaths: IteratorObject<string[]>,
         fileCallback: (path: string) => void,
     ): void => {
+        const filesToSend = new Set<[string, string[]]>();
         for (const directoryPath of directoryPaths) {
             this.storageModel.recurse(directoryPath, (filePath: string[]) => {
                 const stringifiedFileData =
                     this.prepareFileForSending(filePath);
-                this.sendFile(stringifiedFileData);
-                const pathString: string = StorageModel.pathComponentsToString(
-                    ...filePath,
-                );
-                fileCallback(pathString);
+                filesToSend.add([stringifiedFileData, filePath]);
             });
+        }
+        this.sendTransferSize(filesToSend.size);
+        for (const file of filesToSend) {
+            const [stringifiedFileData, filePath] = file;
+            this.sendFile(stringifiedFileData);
+            const pathString: string = StorageModel.pathComponentsToString(
+                ...filePath,
+            );
+            fileCallback(pathString);
         }
     };
 
@@ -158,11 +171,30 @@ export default class FileTransferModel {
         return blob;
     };
 
+    readonly sendTransferSize = async (count: number): Promise<void> => {
+        if (!this.transferData) return;
+
+        const data: TransferSize = {
+            type: "transfer-size",
+            count,
+        };
+
+        const encryptedData: string = await encryptString(
+            stringify(data),
+            this.transferData.key,
+        );
+        this.connectionModel.sendPlainMessage(
+            this.transferData.channel,
+            encryptedData,
+        );
+    };
+
     readonly prepareFileForSending = (filePath: string[]): string => {
         const fileContent: string | null = this.storageModel.read(filePath);
         if (fileContent == null) return "";
 
         const fileData: FileData = {
+            type: "file-data",
             path: filePath,
             body: fileContent,
         };
@@ -200,11 +232,18 @@ export interface TransferData {
 }
 
 export interface FileData {
+    type: "file-data";
     path: string[];
     body: string;
 }
 
+export interface TransferSize {
+    type: "transfer-size";
+    count: number;
+}
+
 export const FileDataReference: FileData = {
+    type: "file-data",
     path: [""],
     body: "",
 };

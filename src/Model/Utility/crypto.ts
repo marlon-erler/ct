@@ -5,10 +5,10 @@ const ENCRYPTION_ALG = "AES-GCM";
 
 // random
 export function random(length: number): string {
-    return cryptoRandomString({length})
+    return cryptoRandomString({ length });
 }
 
-// encrypt 
+// encrypt
 export async function encryptString(
     plaintext: string,
     passphrase: string,

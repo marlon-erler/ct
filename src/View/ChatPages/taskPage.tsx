@@ -65,10 +65,10 @@ export function TaskPage(
                                 class="no-outline"
                                 bind:value={taskPageViewModel.boardQuery}
                                 on:enter={taskPageViewModel.createBoard}
-                                placeholder={
-                                    coreViewModel.translations.general
-                                        .filterOrCreateLabel(coreViewModel.translations.chatPage.task.typeBoard)
-                                }
+                                placeholder={coreViewModel.translations.general.filterOrCreateLabel(
+                                    coreViewModel.translations.chatPage.task
+                                        .typeBoard,
+                                )}
                             ></input>
                         </div>
                     </div>

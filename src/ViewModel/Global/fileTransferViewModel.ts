@@ -11,7 +11,7 @@ import ChatModel from "../../Model/Chat/chatModel";
 
 export default class FileTransferViewModel extends Context {
     // state
-    exitReception: () => void | undefined = undefined;
+    exitReception: (() => void) | undefined = undefined;
 
     presentedModal: React.State<FileTransferModals | undefined> =
         new React.State<any>(undefined);
@@ -29,29 +29,13 @@ export default class FileTransferViewModel extends Context {
     receivingTransferKey: React.State<string> = new React.State("");
 
     filePathsSent: React.ListState<string> = new React.ListState();
-    filesSentCount: React.State<number> = React.createProxyState(
-        [this.filePathsSent],
-        () => this.filePathsSent.value.size,
-    );
-    filesSentText: React.State<string> = React.createProxyState(
-        [this.filesSentCount],
-        () =>
-            this.coreViewModel.translations.dataTransferModal.filesSentCount(
-                this.filesSentCount.value,
-            ),
-    );
 
+    fileTransferTotal: React.State<number> = new React.State(0);
+    fileTransferProgress: React.State<number> = new React.State(0);
     filePathsReceived: React.ListState<string> = new React.ListState();
     filesReceivedCount: React.State<number> = React.createProxyState(
         [this.filePathsReceived],
         () => this.filePathsReceived.value.size,
-    );
-    filesReceivedText: React.State<string> = React.createProxyState(
-        [this.filesReceivedCount],
-        () =>
-            this.coreViewModel.translations.dataTransferModal.filesReceivedCount(
-                this.filesReceivedCount.value,
-            ),
     );
 
     exportKey: React.State<string> = new React.State("");
@@ -69,7 +53,6 @@ export default class FileTransferViewModel extends Context {
         [this.selectedPaths],
         () => this.selectedPaths.value.size == 0,
     );
-    didNotFinishSending: React.State<boolean> = new React.State(true);
     cannotPrepareToReceive: React.State<boolean> = React.createProxyState(
         [this.receivingTransferChannel, this.receivingTransferKey],
         () =>
@@ -99,6 +82,7 @@ export default class FileTransferViewModel extends Context {
     // handlers
     handleReceivedFile = (path: string): void => {
         this.filePathsReceived.add(path);
+        this.fileTransferProgress.value = this.filePathsReceived.value.size;
     };
 
     // methods
@@ -229,7 +213,6 @@ export default class FileTransferViewModel extends Context {
 
     initiateTransfer = (): void => {
         this.presentedModal.value = FileTransferModals.TransferDisplay;
-        this.didNotFinishSending.value = true;
         this.filePathsSent.clear();
 
         this.coreViewModel.fileTransferModel.sendFiles(
@@ -238,8 +221,6 @@ export default class FileTransferViewModel extends Context {
                 this.filePathsSent.add(path);
             },
         );
-
-        this.didNotFinishSending.value = false;
     };
 
     showTransferDataInputModal = (): void => {
@@ -286,6 +267,11 @@ export default class FileTransferViewModel extends Context {
     // init
     constructor(public readonly coreViewModel: CoreViewModel) {
         super("file-transfer");
+
+        this.coreViewModel.fileTransferModel.transferSizeHandlerManager.setHandler(
+            "file-transfer-view-model",
+            (count) => (this.fileTransferTotal.value = count),
+        );
 
         this.coreViewModel.fileTransferModel.fileHandlerManager.setHandler(
             "file-transfer-view-model",

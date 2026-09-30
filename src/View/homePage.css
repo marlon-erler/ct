@@ -50,7 +50,7 @@
 
 @media (min-width: 640px) {
     #home-page > div {
-	gap: var(--content-padding);
+        gap: var(--content-padding);
     }
 
     #home-page #overview-section {
@@ -66,11 +66,11 @@
 
 @media (min-width: 1000px) {
     #home-page > div {
-	gap: var(--large-gap);
+        gap: var(--large-gap);
     }
 
     #home-page > h1 {
-	padding-top: 3rem;
-	padding-bottom: 1rem;
+        padding-top: 3rem;
+        padding-bottom: 1rem;
     }
 }

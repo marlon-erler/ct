@@ -165,12 +165,12 @@ export default class TaskPageViewModel extends ContextHost<string> {
         this.updateBoardIndices();
         this.openLastUsedBoard();
     };
-    
+
     // context
     handleContextClose = (fromHistoryEvent: boolean): void | boolean => {
-	if (!fromHistoryEvent) return;
-	return true;
-    }
+        if (!fromHistoryEvent) return;
+        return true;
+    };
 
     // init
     constructor(

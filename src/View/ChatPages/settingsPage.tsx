@@ -140,11 +140,12 @@ export function SettingsPage(
                         <div class="flex-row width-input">
                             <button
                                 class="width-50"
-                                on:click={
-                                    settingsPageViewModel.randomizeKey
-                                }
+                                on:click={settingsPageViewModel.randomizeKey}
                             >
-                                {coreViewModel.translations.chatPage.settings.randomizeKey}
+                                {
+                                    coreViewModel.translations.chatPage.settings
+                                        .randomizeKey
+                                }
                                 <span class="icon">shuffle</span>
                             </button>
                             <button
@@ -176,7 +177,7 @@ export function SettingsPage(
                                 coreViewModel.translations.chatPage.settings
                                     .showEncryptionKey
                             }
-			</label>
+                        </label>
 
                         <hr></hr>
 

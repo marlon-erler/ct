@@ -1,5 +1,6 @@
 import "./homePage.css";
 import { StringToOption } from "./Components/option";
+import { NewItemEntry } from "./Components/newItemEntry";
 import { HomePageButton } from "./Components/homePageButton";
 import { ChatViewModelToChatEntry } from "./Components/chatEntry";
 import * as React from "../react";
@@ -9,7 +10,6 @@ import FileTransferViewModel from "../ViewModel/Global/fileTransferViewModel";
 import CoreViewModel from "../ViewModel/Global/coreViewModel";
 import ConnectionViewModel from "../ViewModel/Global/connectionViewModel";
 import ChatListViewModel from "../ViewModel/Chat/chatListViewModel";
-import {NewItemEntry} from "./Components/newItemEntry";
 
 export function HomePage(
     coreViewModel: CoreViewModel,
@@ -19,9 +19,18 @@ export function HomePage(
     fileTransferViewModel: FileTransferViewModel,
     chatListViewModel: ChatListViewModel,
 ) {
-    const greeting = React.createProxyState([settingsViewModel.username], ()=>coreViewModel.translations.homePage.greeting(settingsViewModel.username.value));
+    const greeting = React.createProxyState([settingsViewModel.username], () =>
+        coreViewModel.translations.homePage.greeting(
+            settingsViewModel.username.value,
+        ),
+    );
 
-    const isChatPlaceholderHidden = React.createProxyState([chatListViewModel.chatMatches, chatListViewModel.chatQuery], ()=>chatListViewModel.chatMatches.value.size > 0 || chatListViewModel.chatQuery.value != "");
+    const isChatPlaceholderHidden = React.createProxyState(
+        [chatListViewModel.chatMatches, chatListViewModel.chatQuery],
+        () =>
+            chatListViewModel.chatMatches.value.size > 0 ||
+            chatListViewModel.chatQuery.value != "",
+    );
 
     // sections
     const overviewSection = (
@@ -119,8 +128,8 @@ export function HomePage(
                 <span subscribe:innerText={coreViewModel.updateText}></span>
                 <span class="icon">update</span>
             </button>
-	
-	    <hr class="mobile-only"></hr>
+
+            <hr class="mobile-only"></hr>
         </div>
     );
 
@@ -128,25 +137,25 @@ export function HomePage(
         <div id="chat-section">
             <div class="flex-row width-input">
                 <input
-                                placeholder={
-                                    coreViewModel.translations.general
-                                        .filterOrCreateLabel(coreViewModel.translations.homePage.typeChat)
-                                }
+                    placeholder={coreViewModel.translations.general.filterOrCreateLabel(
+                        coreViewModel.translations.homePage.typeChat,
+                    )}
                     bind:value={chatListViewModel.chatQuery}
                     on:enter={chatListViewModel.createChat}
                 ></input>
-	    </div>
+            </div>
 
-	    <hr></hr>
+            <hr></hr>
 
-	    {NewItemEntry(coreViewModel, chatListViewModel.chatQuery, chatListViewModel.createChat)}
+            {NewItemEntry(
+                coreViewModel,
+                chatListViewModel.chatQuery,
+                chatListViewModel.createChat,
+            )}
 
-	    <span
-		class="secondary"
-		toggle:hidden={isChatPlaceholderHidden}
-	    >
-		{coreViewModel.translations.homePage.noChatsPlaceholder}
-	    </span>
+            <span class="secondary" toggle:hidden={isChatPlaceholderHidden}>
+                {coreViewModel.translations.homePage.noChatsPlaceholder}
+            </span>
 
             <div
                 id="chat-grid"
@@ -154,14 +163,14 @@ export function HomePage(
                     chatListViewModel.chatMatches,
                     ChatViewModelToChatEntry,
                 ]}
-	    ></div>
+            ></div>
         </div>
     );
 
     // final
     return (
-	<article id="home-page">
-	    <h1 subscribe:innerText={greeting}></h1>
+        <article id="home-page">
+            <h1 subscribe:innerText={greeting}></h1>
             <div>
                 {overviewSection}
                 {chatSection}

@@ -85,32 +85,32 @@ chatListViewModel.selectedChat.subscribe(() => {
 
 document.body.append(
     <div id="background-wrapper">
-	<div>
-	    <div id="sky"></div>
-	    <div id="grass-1"></div>
-	    <div id="grass-2"></div>
-	</div>
+        <div>
+            <div id="sky"></div>
+            <div id="grass-1"></div>
+            <div id="grass-2"></div>
+        </div>
     </div>,
 );
 document
     .querySelector("main")!
     .append(
-	HomePage(
-	    coreViewModel,
-	    storageViewModel,
-	    settingsViewModel,
-	    connectionViewModel,
-	    fileTransferViewModel,
-	    chatListViewModel,
-	),
-	ChatPageWrapper(coreViewModel, chatListViewModel),
-	OnboardingModalWrapper(coreViewModel, onboardingViewModel),
-	ConnectionModal(coreViewModel, connectionViewModel),
-	DataTransferModalWrapper(
-	    coreViewModel,
-	    connectionViewModel,
-	    fileTransferViewModel,
-	),
-	StorageModal(coreViewModel, storageViewModel),
-	SettingsModal(coreViewModel, settingsViewModel),
+        HomePage(
+            coreViewModel,
+            storageViewModel,
+            settingsViewModel,
+            connectionViewModel,
+            fileTransferViewModel,
+            chatListViewModel,
+        ),
+        ChatPageWrapper(coreViewModel, chatListViewModel),
+        OnboardingModalWrapper(coreViewModel, onboardingViewModel),
+        ConnectionModal(coreViewModel, connectionViewModel),
+        DataTransferModalWrapper(
+            coreViewModel,
+            connectionViewModel,
+            fileTransferViewModel,
+        ),
+        StorageModal(coreViewModel, storageViewModel),
+        SettingsModal(coreViewModel, settingsViewModel),
     );

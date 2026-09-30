@@ -35,9 +35,7 @@ export default class ChatListViewModel {
     // methods
     createChat = (): void => {
         const chatModel: ChatModel =
-            this.coreViewModel.chatListModel.createChat(
-                this.chatQuery.value,
-            );
+            this.coreViewModel.chatListModel.createChat(this.chatQuery.value);
         this.chatQuery.value = "";
 
         const chatViewModel: ChatViewModel =
@@ -108,8 +106,13 @@ export default class ChatListViewModel {
         );
 
         this.loadChats();
-	
-	implementFilter(this.chatViewModels, this.chatMatches, this.chatQuery, chat => chat.chatModel.info.name)
+
+        implementFilter(
+            this.chatViewModels,
+            this.chatMatches,
+            this.chatQuery,
+            (chat) => chat.chatModel.info.name,
+        );
     }
 
     // utility

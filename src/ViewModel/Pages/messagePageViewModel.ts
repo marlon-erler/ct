@@ -197,61 +197,61 @@ export default class MessagePageViewModel extends Context {
     };
 
     // context
-    handleContextClose = (fromHistoryEvent: boolean):boolean=> {
-	if (fromHistoryEvent) {
-	    if (this.replyViewSelectedMessage.value == undefined) return true;
+    handleContextClose = (fromHistoryEvent: boolean): boolean | void => {
+        if (fromHistoryEvent) {
+            if (this.replyViewSelectedMessage.value == undefined) return true;
 
-	    this.resetReplyView();
-	    return false;
-	}
-    }
+            this.resetReplyView();
+            return false;
+        }
+    };
 
     // init
     constructor(
-	public readonly coreViewModel: CoreViewModel,
-	public readonly chatViewModel: ChatViewModel,
-	public readonly contactListViewModel: ContactListViewModel,
+        public readonly coreViewModel: CoreViewModel,
+        public readonly chatViewModel: ChatViewModel,
+        public readonly contactListViewModel: ContactListViewModel,
     ) {
-	super("message-page");
-	this.restoreFilter();
+        super("message-page");
+        this.restoreFilter();
 
-	// states
-	this.cannotSendMessage = React.createProxyState(
-	    [
-		this.chatViewModel.settingsViewModel.username,
-		this.composingMessage,
-	    ],
-	    () =>
-	    this.chatViewModel.settingsViewModel.username.value == "" ||
-	    this.composingMessage.value == "",
-	);
+        // states
+        this.cannotSendMessage = React.createProxyState(
+            [
+                this.chatViewModel.settingsViewModel.username,
+                this.composingMessage,
+            ],
+            () =>
+                this.chatViewModel.settingsViewModel.username.value == "" ||
+                this.composingMessage.value == "",
+        );
 
-	this.searchViewModel = new SearchViewModel(
-	    this.chatMessageViewModels,
-	    this.filteredMessageViewModels,
-	    (chatMessageViewModel) => [chatMessageViewModel.body.value],
-	    new React.ListState(),
-	);
+        this.searchViewModel = new SearchViewModel(
+            this.chatMessageViewModels,
+            this.filteredMessageViewModels,
+            (chatMessageViewModel) => [chatMessageViewModel.body.value],
+            new React.ListState(),
+        );
 
-	this.isFilterActive = React.createProxyState(
-	    [this.searchViewModel.appliedQuery, this.reactionFilter],
-	    () =>
-	    this.searchViewModel.appliedQuery.value != "" ||
-	    this.reactionFilter.value != undefined,
-	);
+        this.isFilterActive = React.createProxyState(
+            [this.searchViewModel.appliedQuery, this.reactionFilter],
+            () =>
+                this.searchViewModel.appliedQuery.value != "" ||
+                this.reactionFilter.value != undefined,
+        );
 
-	// keystrokes
-	this.registerKeyStroke(CommonKeys.Filter, this.showFilterModal);
-	this.registerKeyStroke(CommonKeys.CloseOrCancel, () => {
-	    if (this.isFilterModalOpen.value == true) {
-		this.hideFilterModal();
-	    } else {
-		this.replyingMessage.value = undefined;
-	    }
-	});
-	this.registerKeyStroke(CommonKeys.Reset, this.resetFilter);
-	this.registerKeyStroke(CommonKeys.Create, this.setFocus);
+        // keystrokes
+        this.registerKeyStroke(CommonKeys.Filter, this.showFilterModal);
+        this.registerKeyStroke(CommonKeys.CloseOrCancel, () => {
+            if (this.isFilterModalOpen.value == true) {
+                this.hideFilterModal();
+            } else {
+                this.replyingMessage.value = undefined;
+            }
+        });
+        this.registerKeyStroke(CommonKeys.Reset, this.resetFilter);
+        this.registerKeyStroke(CommonKeys.Create, this.setFocus);
 
-	this.chatViewModel.registerContext(ChatPageTypes.Messages, this);
+        this.chatViewModel.registerContext(ChatPageTypes.Messages, this);
     }
 }

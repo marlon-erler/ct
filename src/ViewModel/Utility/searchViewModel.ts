@@ -40,7 +40,7 @@ export default class SearchViewModel<T> {
 
     clear = (): void => {
         this.searchInput.value = "";
-	this.applySearch();
+        this.applySearch();
     };
 
     deleteSuggestion = (suggestion: string): void => {

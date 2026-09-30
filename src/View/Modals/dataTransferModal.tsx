@@ -1,6 +1,7 @@
 import { ViewController } from "../viewController";
 import { CommonKeys, getKeySymbol } from "../keystrokes";
 import { StringToTextSpan } from "../Components/textSpan";
+import { ProgressBar } from "../Components/progressBar";
 import * as React from "../../react";
 import FileTransferViewModel, {
     FileTransferModals,
@@ -370,6 +371,18 @@ function TransferDisplayModal(
             FileTransferModals.TransferDisplay,
     );
 
+    const progressLabel = React.createProxyState(
+        [
+            fileTransferViewModel.fileTransferProgress,
+            fileTransferViewModel.fileTransferTotal,
+        ],
+        () =>
+            coreViewModel.translations.dataTransferModal.filesSentProgress(
+                fileTransferViewModel.fileTransferProgress.value,
+                fileTransferViewModel.fileTransferTotal.value,
+            ),
+    );
+
     return (
         <div class="modal" toggle:open={isPresented}>
             <div>
@@ -381,24 +394,11 @@ function TransferDisplayModal(
                         }
                     </h2>
 
-                    <p
-                        class="secondary"
-                        subscribe:innerText={
-                            fileTransferViewModel.filesSentText
-                        }
-                    ></p>
-
-                    <p
-                        class="secondary"
-                        toggle:hidden={
-                            fileTransferViewModel.didNotFinishSending
-                        }
-                    >
-                        {
-                            coreViewModel.translations.dataTransferModal
-                                .allFilesSent
-                        }
-                    </p>
+                    {ProgressBar(
+                        progressLabel,
+                        fileTransferViewModel.fileTransferProgress,
+                        fileTransferViewModel.fileTransferTotal,
+                    )}
 
                     <hr></hr>
 
@@ -460,13 +460,7 @@ function TransferDisplayModal(
                         }
                         <span class="icon">restart_alt</span>
                     </button>
-                    <button
-                        class="flex"
-                        on:click={fileTransferViewModel.close}
-                        toggle:disabled={
-                            fileTransferViewModel.didNotFinishSending
-                        }
-                    >
+                    <button class="flex" on:click={fileTransferViewModel.close}>
                         {coreViewModel.translations.general.closeButton}
                         <span class="icon">close</span>
                     </button>
@@ -588,6 +582,18 @@ function DataReceptionModal(
             FileTransferModals.ReceptionDisplay,
     );
 
+    const progressLabel = React.createProxyState(
+        [
+            fileTransferViewModel.fileTransferProgress,
+            fileTransferViewModel.fileTransferTotal,
+        ],
+        () =>
+            coreViewModel.translations.dataTransferModal.filesReceivedProgress(
+                fileTransferViewModel.fileTransferProgress.value,
+                fileTransferViewModel.fileTransferTotal.value,
+            ),
+    );
+
     return (
         <div class="modal" toggle:open={isPresented}>
             <div>
@@ -599,12 +605,11 @@ function DataReceptionModal(
                         }
                     </h2>
 
-                    <p
-                        class="secondary"
-                        subscribe:innerText={
-                            fileTransferViewModel.filesReceivedText
-                        }
-                    ></p>
+                    {ProgressBar(
+                        progressLabel,
+                        fileTransferViewModel.fileTransferProgress,
+                        fileTransferViewModel.fileTransferTotal,
+                    )}
 
                     <hr></hr>
 
