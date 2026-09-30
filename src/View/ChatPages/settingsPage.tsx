@@ -137,7 +137,16 @@ export function SettingsPage(
                                 ></input>
                             </div>
                         </label>
-                        <div class="flex-row justify-end width-input">
+                        <div class="flex-row width-input">
+                            <button
+                                class="width-50"
+                                on:click={
+                                    settingsPageViewModel.randomizeKey
+                                }
+                            >
+                                {coreViewModel.translations.chatPage.settings.randomizeKey}
+                                <span class="icon">shuffle</span>
+                            </button>
                             <button
                                 class="width-50"
                                 aria-label={
@@ -167,7 +176,7 @@ export function SettingsPage(
                                 coreViewModel.translations.chatPage.settings
                                     .showEncryptionKey
                             }
-                        </label>
+			</label>
 
                         <hr></hr>
 

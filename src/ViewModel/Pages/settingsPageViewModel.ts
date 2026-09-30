@@ -2,6 +2,7 @@ import CoreViewModel, { Context } from "../Global/coreViewModel";
 import ChatViewModel, { ChatPageTypes } from "../Chat/chatViewModel";
 import * as React from "../../react";
 import { Colors } from "../../colors";
+import {random} from "../../Model/Utility/crypto";
 
 export default class SettingsPageViewModel extends Context {
     // state
@@ -72,6 +73,11 @@ export default class SettingsPageViewModel extends Context {
         // disable button
         this.encryptionKeyInput.callSubscriptions();
     };
+
+    randomizeKey = (): void => {
+	this.encryptionKeyInput.value = random(24);
+	this.setEncryptionKey();
+    }
 
     applyColor = (): void => {
         this.chatViewModel.setColor(this.color.value);

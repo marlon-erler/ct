@@ -1,7 +1,14 @@
+import cryptoRandomString from "crypto-random-string";
+
 const IV_SIZE = 12;
 const ENCRYPTION_ALG = "AES-GCM";
 
-// minimal
+// random
+export function random(length: number): string {
+    return cryptoRandomString({length})
+}
+
+// encrypt 
 export async function encryptString(
     plaintext: string,
     passphrase: string,

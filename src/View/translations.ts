@@ -236,6 +236,7 @@ const englishTranslations = {
             encryptionKeyLabel: "Encryption key",
             setEncryptionKeyButtonAudioLabel: "set encryption key",
             showEncryptionKey: "Show encryption key",
+	    randomizeKey: "Randomize",
 
             setColorButtonAudioLabel: "set color",
 
@@ -605,6 +606,7 @@ export const allTranslations: {
 		encryptionKeyLabel: "Schlüssel",
 		setEncryptionKeyButtonAudioLabel: "Schlüssel festlegen",
 		showEncryptionKey: "Schlüssel anzeigen",
+		randomizeKey: "Zufällig generieren",
 
 		setColorButtonAudioLabel: "Farbe festlegen",
 
@@ -948,6 +950,7 @@ export const allTranslations: {
 		setEncryptionKeyButtonAudioLabel:
 		"establecer clave de encriptación",
 		showEncryptionKey: "Mostrar clave de encriptación",
+		randomizeKey: "Aleatorizar",
 
 		setColorButtonAudioLabel: "establecer color",
 

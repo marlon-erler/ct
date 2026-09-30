@@ -357,8 +357,7 @@
       updateButton: (version) => `Update to ${version}`,
       ///
       typeChat: "chat",
-      addChatPlaceholder: "Add chat",
-      addChatButton: "Add chat"
+      noChatsPlaceholder: "No chats"
     },
     settings: {
       pages: {
@@ -478,6 +477,7 @@
         encryptionKeyLabel: "Encryption key",
         setEncryptionKeyButtonAudioLabel: "set encryption key",
         showEncryptionKey: "Show encryption key",
+        randomizeKey: "Randomize",
         setColorButtonAudioLabel: "set color",
         deleteChatButton: "Delete entire chat"
       },
@@ -628,8 +628,7 @@
         transferDataButton: "Daten \xFCbertragen",
         updateButton: (version) => `Aktualisieren: ${version}`,
         typeChat: "Chat",
-        addChatPlaceholder: "Chat hinzuf\xFCgen",
-        addChatButton: "Chat hinzuf\xFCgen"
+        noChatsPlaceholder: "Keine Chats"
       },
       settings: {
         pages: {
@@ -743,6 +742,7 @@
           encryptionKeyLabel: "Schl\xFCssel",
           setEncryptionKeyButtonAudioLabel: "Schl\xFCssel festlegen",
           showEncryptionKey: "Schl\xFCssel anzeigen",
+          randomizeKey: "Zuf\xE4llig generieren",
           setColorButtonAudioLabel: "Farbe festlegen",
           deleteChatButton: "Gesamten Chat l\xF6schen"
         },
@@ -880,8 +880,7 @@
         transferDataButton: "Enviar o exportar archivos",
         updateButton: (version) => `Actualizar a ${version}`,
         typeChat: "chat",
-        addChatPlaceholder: "A\xF1adir chat",
-        addChatButton: "A\xF1adir chat"
+        noChatsPlaceholder: "No hay chats"
       },
       settings: {
         pages: {
@@ -995,6 +994,7 @@
           encryptionKeyLabel: "Clave de encriptaci\xF3n",
           setEncryptionKeyButtonAudioLabel: "establecer clave de encriptaci\xF3n",
           showEncryptionKey: "Mostrar clave de encriptaci\xF3n",
+          randomizeKey: "Aleatorizar",
           setColorButtonAudioLabel: "establecer color",
           deleteChatButton: "Eliminar todo el chat"
         },
@@ -2966,9 +2966,144 @@
     }
   };
 
+  // node_modules/uint8array-extras/index.js
+  var objectToString = Object.prototype.toString;
+  var uint8ArrayStringified = "[object Uint8Array]";
+  var arrayBufferStringified = "[object ArrayBuffer]";
+  function isType(value, typeConstructor, typeStringified) {
+    if (!value) {
+      return false;
+    }
+    if (value.constructor === typeConstructor) {
+      return true;
+    }
+    return objectToString.call(value) === typeStringified;
+  }
+  function isUint8Array(value) {
+    return isType(value, Uint8Array, uint8ArrayStringified);
+  }
+  function isArrayBuffer(value) {
+    return isType(value, ArrayBuffer, arrayBufferStringified);
+  }
+  function isUint8ArrayOrArrayBuffer(value) {
+    return isUint8Array(value) || isArrayBuffer(value);
+  }
+  function toUint8ArrayIfArrayBuffer(value) {
+    return isArrayBuffer(value) ? new Uint8Array(value) : value;
+  }
+  function assertUint8ArrayOrArrayBuffer(value) {
+    if (!isUint8ArrayOrArrayBuffer(value)) {
+      throw new TypeError(`Expected \`Uint8Array\` or \`ArrayBuffer\`, got \`${typeof value}\``);
+    }
+  }
+  var cachedDecoders = {
+    utf8: new globalThis.TextDecoder("utf8")
+  };
+  var cachedEncoder = new globalThis.TextEncoder();
+  function base64ToBase64Url(base64) {
+    return base64.replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+  }
+  var MAX_BLOCK_SIZE = 65535;
+  function uint8ArrayToBase64(array, { urlSafe = false } = {}) {
+    assertUint8ArrayOrArrayBuffer(array);
+    array = toUint8ArrayIfArrayBuffer(array);
+    let base64 = "";
+    for (let index = 0; index < array.length; index += MAX_BLOCK_SIZE) {
+      const chunk = array.subarray(index, index + MAX_BLOCK_SIZE);
+      base64 += globalThis.btoa(String.fromCodePoint.apply(void 0, chunk));
+    }
+    return urlSafe ? base64ToBase64Url(base64) : base64;
+  }
+  var byteToHexLookupTable = Array.from({ length: 256 }, (_, index) => index.toString(16).padStart(2, "0"));
+  function uint8ArrayToHex(array) {
+    assertUint8ArrayOrArrayBuffer(array);
+    array = toUint8ArrayIfArrayBuffer(array);
+    let hexString = "";
+    for (let index = 0; index < array.length; index++) {
+      hexString += byteToHexLookupTable[array[index]];
+    }
+    return hexString;
+  }
+
+  // node_modules/crypto-random-string/index.js
+  var maxBytesPerRequest = 65536;
+  var maxCharacterSetSize = 65536;
+  function fillWithRandomValues(typedArray) {
+    const maxElementsPerRequest = maxBytesPerRequest / typedArray.BYTES_PER_ELEMENT;
+    for (let offset = 0; offset < typedArray.length; offset += maxElementsPerRequest) {
+      crypto.getRandomValues(typedArray.subarray(offset, offset + maxElementsPerRequest));
+    }
+    return typedArray;
+  }
+  var randomBytes = (byteLength) => fillWithRandomValues(new Uint8Array(byteLength));
+  var generateForCustomCharacters = (length, characters) => {
+    const characterCount = characters.length;
+    const validSelectorCount = Math.floor(maxCharacterSetSize / characterCount) * characterCount;
+    const entropyLength = Math.ceil(1.1 * length * (maxCharacterSetSize / validSelectorCount));
+    let string = "";
+    let stringLength = 0;
+    while (stringLength < length) {
+      const entropy = fillWithRandomValues(new Uint16Array(entropyLength));
+      for (let index = 0; index < entropyLength; index++) {
+        const entropyValue = entropy[index];
+        if (entropyValue < validSelectorCount) {
+          string += characters[entropyValue % characterCount];
+          stringLength++;
+          if (stringLength === length) {
+            return string;
+          }
+        }
+      }
+    }
+    return string;
+  };
+  var characterSets = /* @__PURE__ */ new Map([
+    ["url-safe", [..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~"]],
+    ["numeric", [..."0123456789"]],
+    ["distinguishable", [..."CDEHKMPRTUWXY012458"]],
+    ["ascii-printable", [..."!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"]],
+    ["alphanumeric", [..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"]]
+  ]);
+  var allowedTypes = /* @__PURE__ */ new Set(["hex", "base64", ...characterSets.keys()]);
+  function cryptoRandomString({ length, type, characters }) {
+    if (!Number.isSafeInteger(length) || length < 0) {
+      throw new TypeError("Expected `length` to be a non-negative integer");
+    }
+    if (type !== void 0 && characters !== void 0) {
+      throw new TypeError("Expected either `type` or `characters`");
+    }
+    if (characters !== void 0) {
+      if (typeof characters !== "string") {
+        throw new TypeError("Expected `characters` to be a string");
+      }
+      const customCharacterSet = [...characters];
+      if (customCharacterSet.length === 0) {
+        throw new TypeError("Expected `characters` to contain at least 1 character");
+      }
+      if (customCharacterSet.length > maxCharacterSetSize) {
+        throw new TypeError(`Expected \`characters\` to contain at most ${maxCharacterSetSize} characters, got ${customCharacterSet.length}`);
+      }
+      return generateForCustomCharacters(length, customCharacterSet);
+    }
+    if (type !== void 0 && !allowedTypes.has(type)) {
+      throw new TypeError(`Unknown type: ${type}`);
+    }
+    const characterSet = characterSets.get(type);
+    if (characterSet !== void 0) {
+      return generateForCustomCharacters(length, characterSet);
+    }
+    if (type === "base64") {
+      return uint8ArrayToBase64(randomBytes(Math.ceil(length * 0.75))).slice(0, length);
+    }
+    return uint8ArrayToHex(randomBytes(Math.ceil(length * 0.5))).slice(0, length);
+  }
+
   // src/Model/Utility/crypto.ts
   var IV_SIZE = 12;
   var ENCRYPTION_ALG = "AES-GCM";
+  function random(length) {
+    return cryptoRandomString({ length });
+  }
   async function encryptString(plaintext, passphrase) {
     if (!window.crypto.subtle) return plaintext;
     const iv = generateIV();
@@ -4090,6 +4225,7 @@
       };
       this.clear = () => {
         this.searchInput.value = "";
+        this.applySearch();
       };
       this.deleteSuggestion = (suggestion) => {
         this.suggestions.remove(suggestion);
@@ -4273,6 +4409,9 @@
         const index = this.taskPageViewModel.boardIndexManager.getIndex(this);
         this.index.value = index;
       };
+      this.resetPinchZoom = () => {
+        this.pinchToZoomData.value = { x: 0, y: 0, zoom: 1 };
+      };
       // load
       this.preloadData = () => {
         this.name.value = this.boardInfo.name;
@@ -4321,27 +4460,6 @@
         this.taskPageViewModel.storeLastUsedBoard();
       };
       this.preloadData();
-      this.isSelected = createProxyState(
-        [this.taskPageViewModel.selectedBoardId],
-        () => this.taskPageViewModel.selectedBoardId.value == this.boardInfo.fileId
-      );
-      this.color.subscribe(() => {
-        if (this.isSelected.value == false) return;
-        if (this.chatViewModel.selectedPage.value != "tasks" /* Tasks */)
-          return;
-        this.applyColor();
-      });
-      this.selectedPage.subscribeSilent(() => {
-        this.storeLastUsedView();
-      });
-      boardsAndTasksModel.taskHandlerManager.setHandler(
-        this.boardInfo.fileId,
-        (taskFileContent) => {
-          if (taskFileContent.boardId != this.boardInfo.fileId) return;
-          this.showTask(taskFileContent);
-          this.updateTaskIndices();
-        }
-      );
       this.searchViewModel = new SearchViewModel(
         this.taskViewModels,
         this.filteredTaskViewModels,
@@ -4356,6 +4474,30 @@
       this.isFilterActive = createProxyState(
         [this.searchViewModel.appliedQuery],
         () => this.searchViewModel.appliedQuery.value != ""
+      );
+      this.isSelected = createProxyState(
+        [this.taskPageViewModel.selectedBoardId],
+        () => this.taskPageViewModel.selectedBoardId.value == this.boardInfo.fileId
+      );
+      this.color.subscribe(() => {
+        if (this.isSelected.value == false) return;
+        if (this.chatViewModel.selectedPage.value != "tasks" /* Tasks */)
+          return;
+        this.applyColor();
+      });
+      this.selectedPage.subscribeSilent(() => {
+        this.storeLastUsedView();
+      });
+      this.searchViewModel.appliedQuery.subscribeSilent(() => {
+        this.resetPinchZoom();
+      });
+      boardsAndTasksModel.taskHandlerManager.setHandler(
+        this.boardInfo.fileId,
+        (taskFileContent) => {
+          if (taskFileContent.boardId != this.boardInfo.fileId) return;
+          this.showTask(taskFileContent);
+          this.updateTaskIndices();
+        }
       );
       this.registerKeyStroke("=" /* Filter */, this.showFilterModal);
       this.registerKeyStroke("-" /* Reset */, this.resetFilter);
@@ -4597,6 +4739,10 @@
           this.encryptionKeyInput.value
         );
         this.encryptionKeyInput.callSubscriptions();
+      };
+      this.randomizeKey = () => {
+        this.encryptionKeyInput.value = random(24);
+        this.setEncryptionKey();
       };
       this.applyColor = () => {
         this.chatViewModel.setColor(this.color.value);
@@ -5411,6 +5557,7 @@
   // src/View/homePage.tsx
   function HomePage(coreViewModel2, storageViewModel2, settingsViewModel2, connectionViewModel2, fileTransferViewModel2, chatListViewModel2) {
     const greeting = createProxyState([settingsViewModel2.username], () => coreViewModel2.translations.homePage.greeting(settingsViewModel2.username.value));
+    const isChatPlaceholderHidden = createProxyState([chatListViewModel2.chatMatches, chatListViewModel2.chatQuery], () => chatListViewModel2.chatMatches.value.size > 0 || chatListViewModel2.chatQuery.value != "");
     const overviewSection = /* @__PURE__ */ createElement("div", { id: "overview-section" }, /* @__PURE__ */ createElement("label", { class: "tile flex-no" }, /* @__PURE__ */ createElement("span", { class: "icon" }, "cell_tower"), /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("span", null, coreViewModel2.translations.homePage.serverAddress), /* @__PURE__ */ createElement(
       "input",
       {
@@ -5491,6 +5638,13 @@
         "on:enter": chatListViewModel2.createChat
       }
     )), /* @__PURE__ */ createElement("hr", null), NewItemEntry(coreViewModel2, chatListViewModel2.chatQuery, chatListViewModel2.createChat), /* @__PURE__ */ createElement(
+      "span",
+      {
+        class: "secondary",
+        "toggle:hidden": isChatPlaceholderHidden
+      },
+      coreViewModel2.translations.homePage.noChatsPlaceholder
+    ), /* @__PURE__ */ createElement(
       "div",
       {
         id: "chat-grid",
@@ -6303,6 +6457,7 @@
   function BoardViewToggleButton(label, icon, page, boardViewModel, key) {
     function select() {
       boardViewModel.selectedPage.value = page;
+      boardViewModel.resetPinchZoom();
     }
     const isSelected = createProxyState(
       [boardViewModel.selectedPage],
@@ -6604,7 +6759,15 @@
         "on:enter": settingsPageViewModel.setEncryptionKey,
         "set:type": settingsPageViewModel.encryptionKeyInputType
       }
-    ))), /* @__PURE__ */ createElement("div", { class: "flex-row justify-end width-input" }, /* @__PURE__ */ createElement(
+    ))), /* @__PURE__ */ createElement("div", { class: "flex-row width-input" }, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "width-50",
+        "on:click": settingsPageViewModel.randomizeKey
+      },
+      coreViewModel2.translations.chatPage.settings.randomizeKey,
+      /* @__PURE__ */ createElement("span", { class: "icon" }, "shuffle")
+    ), /* @__PURE__ */ createElement(
       "button",
       {
         class: "width-50",
