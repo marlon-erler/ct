@@ -138,7 +138,7 @@ export default class FileTransferViewModel extends Context {
             );
         const anchor = document.createElement("a");
         anchor.href = window.URL.createObjectURL(backup);
-        anchor.download = `comms-${date}.bak`;
+        anchor.download = `ct-${date}.bak`;
         anchor.click();
     };
 
