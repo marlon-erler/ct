@@ -115,6 +115,12 @@ export default class SettingsPageViewModel extends Context {
         }
     };
 
+    // context
+    handleContextClose = (fromHistoryEvent: boolean): void | boolean => {
+	if (!fromHistoryEvent) return;
+	return true;
+    }
+
     // init
     constructor(
         public readonly coreViewModel: CoreViewModel,

@@ -56,17 +56,16 @@ export default class CoreViewModel {
 
         while (this.contexts.length > 0) {
             const currentContext: Context | undefined = this.context;
-            if (!currentContext) return;
+            if (!currentContext) break;
             const response = currentContext.handleContextClose(fromHistoryEvent);
-	    if (response == false) return;
+	    if (response == false) break;
             this.contextStack.delete(currentContext.contextId);
 	    if (response == true) {
 		exitNext = true;
 		continue;
 	    } else if (exitNext == true) {
 		break
-	    }
-	    else if (currentContext.contextId == contextId) {
+	    } else if (currentContext.contextId == contextId) {
 		break;
 	    }
         }

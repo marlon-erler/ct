@@ -1438,9 +1438,9 @@
         let exitNext = false;
         while (this.contexts.length > 0) {
           const currentContext = this.context;
-          if (!currentContext) return;
+          if (!currentContext) break;
           const response = currentContext.handleContextClose(fromHistoryEvent);
-          if (response == false) return;
+          if (response == false) break;
           this.contextStack.delete(currentContext.contextId);
           if (response == true) {
             exitNext = true;
@@ -4629,6 +4629,11 @@
           this.secondaryChannels.add(secondaryChannel);
         }
       };
+      // context
+      this.handleContextClose = (fromHistoryEvent) => {
+        if (!fromHistoryEvent) return;
+        return true;
+      };
       this.preloadData();
       this.cannotSetEncryptionKey = createProxyState(
         [this.encryptionKeyInput],
@@ -4961,9 +4966,11 @@
       };
       // context
       this.handleContextClose = (fromHistoryEvent) => {
-        if (this.replyViewSelectedMessage.value == void 0 && fromHistoryEvent) return true;
-        this.resetReplyView();
-        return false;
+        if (fromHistoryEvent) {
+          if (this.replyViewSelectedMessage.value == void 0) return true;
+          this.resetReplyView();
+          return false;
+        }
       };
       this.restoreFilter();
       this.cannotSendMessage = createProxyState(
