@@ -18,11 +18,11 @@ export function HomePage(
     fileTransferViewModel: FileTransferViewModel,
     chatListViewModel: ChatListViewModel,
 ) {
+    const greeting = React.createProxyState([settingsViewModel.username], ()=>coreViewModel.translations.homePage.greeting(settingsViewModel.username.value));
+
     // sections
     const overviewSection = (
         <div id="overview-section">
-            <h2>{coreViewModel.translations.homePage.overviewHeadline}</h2>
-
             <label class="tile flex-no">
                 <span class="icon">cell_tower</span>
                 <div>
@@ -116,24 +116,13 @@ export function HomePage(
                 <span subscribe:innerText={coreViewModel.updateText}></span>
                 <span class="icon">update</span>
             </button>
-
-            <div class="mobile-only">
-                <hr></hr>
-
-                <div class="flex-row justify-end">
-                    <button class="ghost width-50" on:click={scrollToChat}>
-                        {coreViewModel.translations.homePage.scrollToChatButton}
-                        <span class="icon">arrow_forward</span>
-                    </button>
-                </div>
-            </div>
+	
+	    <hr class="mobile-only"></hr>
         </div>
     );
 
     const chatSection = (
         <div id="chat-section">
-            <h2>{coreViewModel.translations.homePage.chatsHeadline}</h2>
-
             <div class="flex-row width-input">
                 <input
                     placeholder={
@@ -155,7 +144,9 @@ export function HomePage(
                 >
                     <span class="icon">add</span>
                 </button>
-            </div>
+	    </div>
+
+	    <hr></hr>
 
             <div
                 id="chat-grid"
@@ -163,18 +154,14 @@ export function HomePage(
                     chatListViewModel.chatViewModels,
                     ChatViewModelToChatEntry,
                 ]}
-            ></div>
+	    ></div>
         </div>
     );
 
-    // methods
-    function scrollToChat() {
-        chatSection.scrollIntoView();
-    }
-
     // final
     return (
-        <article id="home-page">
+	<article id="home-page">
+	    <h1 subscribe:innerText={greeting}></h1>
             <div>
                 {overviewSection}
                 {chatSection}

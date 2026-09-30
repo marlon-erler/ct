@@ -9,9 +9,8 @@
 /* Gradient */
 #background-wrapper {
     position: fixed;
-    inset: 0px;
+    inset: -80px;
 
-    transform: scale(1.2);
     filter: blur(40px);
 
     z-index: 1;
@@ -144,6 +143,6 @@ body[theme="dark"] #background-wrapper #grass-2 {
 }
 
 body[keystroke-active] [ctkeystroke]::after {
-    opacity: 1;
+    opacity: .7;
     transform: translateY(0px);
 }
