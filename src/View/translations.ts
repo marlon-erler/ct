@@ -73,9 +73,7 @@ const englishTranslations = {
         ///
 
 	typeChat: "chat",
-
-        addChatPlaceholder: "Add chat",
-        addChatButton: "Add chat",
+	noChatsPlaceholder: "No chats",
     },
 
     settings: {
@@ -450,9 +448,7 @@ export const allTranslations: {
 	    updateButton: (version: string) => `Aktualisieren: ${version}`,
 	
 	    typeChat: "Chat",
-
-	    addChatPlaceholder: "Chat hinzufügen",
-	    addChatButton: "Chat hinzufügen",
+	    noChatsPlaceholder: "Keine Chats",
 	},
 
 	settings: {
@@ -658,7 +654,7 @@ export const allTranslations: {
 	    task: {
 		noBoardSelected: "Kein Board ausgewählt",
 		boardNotFound: "Board nicht gefunden",
-	    
+
 		typeBoard: "Board",
 
 		closeBoardButtonAudioLabel: "board schließen",
@@ -748,7 +744,7 @@ export const allTranslations: {
 	    saveButton: "Guardar",
 	    setButton: "OK",
 
-        filterOrCreateLabel: (type: string) => `Buscar o crear ${type}`,
+	    filterOrCreateLabel: (type: string) => `Buscar o crear ${type}`,
 	    createLabel: (query: string) => `Crear "${query}"`,
 
 	    reloadAppButton: "Recargar app",
@@ -793,11 +789,9 @@ export const allTranslations: {
 	    transferDataButton: "Enviar o exportar archivos",
 
 	    updateButton: (version: string) => `Actualizar a ${version}`,
-	
-	    typeChat: "chat",
 
-	    addChatPlaceholder: "Añadir chat",
-	    addChatButton: "Añadir chat",
+	    typeChat: "chat",
+	    noChatsPlaceholder: "No hay chats",
 	},
 
 	settings: {
@@ -1004,7 +998,7 @@ export const allTranslations: {
 	    task: {
 		noBoardSelected: "Ningún tablero seleccionado",
 		boardNotFound: "Tablero no encontrado",
-	    
+
 		typeBoard: "board",
 
 		closeBoardButtonAudioLabel: "cerrar tablero",

@@ -21,6 +21,8 @@ export function HomePage(
 ) {
     const greeting = React.createProxyState([settingsViewModel.username], ()=>coreViewModel.translations.homePage.greeting(settingsViewModel.username.value));
 
+    const isChatPlaceholderHidden = React.createProxyState([chatListViewModel.chatMatches, chatListViewModel.chatQuery], ()=>chatListViewModel.chatMatches.value.size > 0 || chatListViewModel.chatQuery.value != "");
+
     // sections
     const overviewSection = (
         <div id="overview-section">
@@ -138,6 +140,13 @@ export function HomePage(
 	    <hr></hr>
 
 	    {NewItemEntry(coreViewModel, chatListViewModel.chatQuery, chatListViewModel.createChat)}
+
+	    <span
+		class="secondary"
+		toggle:hidden={isChatPlaceholderHidden}
+	    >
+		{coreViewModel.translations.homePage.noChatsPlaceholder}
+	    </span>
 
             <div
                 id="chat-grid"

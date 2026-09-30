@@ -232,11 +232,13 @@ body[showing-chat] #chat-page-wrapper {
     overflow-x: auto;
 
     padding: 0px;
+    overflow-y: hidden;
 }
 
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar > span {
     display: flex;
     align-items: center;
+    overflow-y: hidden;
 }
 
 #chat-page > div > #main > div > .pane-wrapper > .pane > .toolbar > span.title {

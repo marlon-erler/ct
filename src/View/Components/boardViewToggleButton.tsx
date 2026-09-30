@@ -12,7 +12,8 @@ export function BoardViewToggleButton(
     key: string,
 ) {
     function select() {
-        boardViewModel.selectedPage.value = page;
+	boardViewModel.selectedPage.value = page;
+	boardViewModel.resetPinchZoom();
     }
 
     const isSelected = React.createProxyState(

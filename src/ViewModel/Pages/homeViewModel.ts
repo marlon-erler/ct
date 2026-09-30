@@ -1,3 +1,5 @@
+import * as React from "../../react";
+
 import StorageViewModel from "../Global/storageViewModel";
 import SettingsViewModel from "../Global/settingsViewModel";
 import FileTransferViewModel from "../Global/fileTransferViewModel";
@@ -7,26 +9,26 @@ import { CommonKeys } from "../../View/keystrokes";
 
 export default class HomeViewModel extends Context {
     constructor(
-        public readonly coreViewModel: CoreViewModel,
-        public readonly settingsViewModel: SettingsViewModel,
-        public readonly fileTransferViewModel: FileTransferViewModel,
-        public readonly storageViewModel: StorageViewModel,
-        public readonly connectionViewModel: ConnectionViewModel,
+	public readonly coreViewModel: CoreViewModel,
+	public readonly settingsViewModel: SettingsViewModel,
+	public readonly fileTransferViewModel: FileTransferViewModel,
+	public readonly storageViewModel: StorageViewModel,
+	public readonly connectionViewModel: ConnectionViewModel,
     ) {
-        super("home");
+	super("home");
 
-        this.coreViewModel.context = this;
+	this.coreViewModel.context = this;
 
-        this.registerKeyStroke(
-            CommonKeys.Settings,
-            this.settingsViewModel.showSettingsModal,
-        );
-        this.registerKeyStroke(
-            "t",
-            this.fileTransferViewModel.showDirectionSelectionModal,
-        );
-        this.registerKeyStroke("e", this.storageViewModel.showStorageModal);
-        this.registerKeyStroke("x", this.connectionViewModel.disconnect);
-        this.registerKeyStroke("c", this.connectionViewModel.connect);
+	this.registerKeyStroke(
+	    CommonKeys.Settings,
+	    this.settingsViewModel.showSettingsModal,
+	);
+	this.registerKeyStroke(
+	    "t",
+	    this.fileTransferViewModel.showDirectionSelectionModal,
+	);
+	this.registerKeyStroke("e", this.storageViewModel.showStorageModal);
+	this.registerKeyStroke("x", this.connectionViewModel.disconnect);
+	this.registerKeyStroke("c", this.connectionViewModel.connect);
     }
 }
