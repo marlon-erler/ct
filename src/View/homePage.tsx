@@ -9,6 +9,7 @@ import FileTransferViewModel from "../ViewModel/Global/fileTransferViewModel";
 import CoreViewModel from "../ViewModel/Global/coreViewModel";
 import ConnectionViewModel from "../ViewModel/Global/connectionViewModel";
 import ChatListViewModel from "../ViewModel/Chat/chatListViewModel";
+import {NewItemEntry} from "./Components/newItemEntry";
 
 export function HomePage(
     coreViewModel: CoreViewModel,
@@ -125,33 +126,23 @@ export function HomePage(
         <div id="chat-section">
             <div class="flex-row width-input">
                 <input
-                    placeholder={
-                        coreViewModel.translations.homePage.addChatPlaceholder
-                    }
-                    aria-label={
-                        coreViewModel.translations.homePage.addChatAudioLabel
-                    }
-                    bind:value={chatListViewModel.newChatPrimaryChannel}
+                                placeholder={
+                                    coreViewModel.translations.general
+                                        .filterOrCreateLabel(coreViewModel.translations.homePage.typeChat)
+                                }
+                    bind:value={chatListViewModel.chatQuery}
                     on:enter={chatListViewModel.createChat}
                 ></input>
-                <button
-                    class="primary"
-                    aria-label={
-                        coreViewModel.translations.homePage.addChatButton
-                    }
-                    on:click={chatListViewModel.createChat}
-                    toggle:disabled={chatListViewModel.cannotCreateChat}
-                >
-                    <span class="icon">add</span>
-                </button>
 	    </div>
 
 	    <hr></hr>
 
+	    {NewItemEntry(coreViewModel, chatListViewModel.chatQuery, chatListViewModel.createChat)}
+
             <div
                 id="chat-grid"
                 children:append={[
-                    chatListViewModel.chatViewModels,
+                    chatListViewModel.chatMatches,
                     ChatViewModelToChatEntry,
                 ]}
 	    ></div>

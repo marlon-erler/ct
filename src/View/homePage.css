@@ -29,15 +29,19 @@
     flex-direction: column;
     justify-content: start;
 
-    gap: var(--gap-between-tiles);
-
     width: 100%;
     min-width: 100%;
 }
 
-#home-page #chat-grid {
-    margin-top: var(--content-padding);
+#home-page #overview-section {
+    gap: var(--gap-between-tiles);
+}
 
+#home-page #chat-section > button {
+    margin-bottom: var(--gap-between-tiles);
+}
+
+#home-page #chat-grid {
     display: grid;
     gap: var(--gap-between-tiles);
 

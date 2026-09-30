@@ -22,7 +22,7 @@ const englishTranslations = {
         saveButton: "Save",
         setButton: "Set",
 
-        filterOrCreateLabel: "Search or create",
+        filterOrCreateLabel: (type: string) => `Search or create ${type}`,
         createLabel: (query: string) => `Create "${query}"`,
 
         reloadAppButton: "Reload App",
@@ -72,7 +72,8 @@ const englishTranslations = {
 
         ///
 
-        addChatAudioLabel: "name of new chat",
+	typeChat: "chat",
+
         addChatPlaceholder: "Add chat",
         addChatButton: "Add chat",
     },
@@ -292,6 +293,8 @@ const englishTranslations = {
             noBoardSelected: "No board selected",
             boardNotFound: "Board not found",
 
+	    typeBoard: "board",
+
             ///
 
             closeBoardButtonAudioLabel: "close board",
@@ -400,7 +403,7 @@ export const allTranslations: {
             saveButton: "Speichern",
             setButton: "OK",
 
-            filterOrCreateLabel: "Suchen oder erstellen",
+        filterOrCreateLabel: (type: string) => `${type} suchen oder erstellen`,
             createLabel: (query: string) => `"${query}" erstellen`,
 
             reloadAppButton: "Neu laden",
@@ -445,8 +448,9 @@ export const allTranslations: {
 	    transferDataButton: "Daten übertragen",
 
 	    updateButton: (version: string) => `Aktualisieren: ${version}`,
+	
+	    typeChat: "Chat",
 
-	    addChatAudioLabel: "Name des neuen Chats",
 	    addChatPlaceholder: "Chat hinzufügen",
 	    addChatButton: "Chat hinzufügen",
 	},
@@ -654,6 +658,8 @@ export const allTranslations: {
 	    task: {
 		noBoardSelected: "Kein Board ausgewählt",
 		boardNotFound: "Board nicht gefunden",
+	    
+		typeBoard: "Board",
 
 		closeBoardButtonAudioLabel: "board schließen",
 		toggleBoardButtonAudioLabel: "board-liste ein/ausblenden",
@@ -742,7 +748,7 @@ export const allTranslations: {
 	    saveButton: "Guardar",
 	    setButton: "OK",
 
-	    filterOrCreateLabel: "Buscar o crear",
+        filterOrCreateLabel: (type: string) => `Buscar o crear ${type}`,
 	    createLabel: (query: string) => `Crear "${query}"`,
 
 	    reloadAppButton: "Recargar app",
@@ -787,8 +793,9 @@ export const allTranslations: {
 	    transferDataButton: "Enviar o exportar archivos",
 
 	    updateButton: (version: string) => `Actualizar a ${version}`,
+	
+	    typeChat: "chat",
 
-	    addChatAudioLabel: "nombre del nuevo chat",
 	    addChatPlaceholder: "Añadir chat",
 	    addChatButton: "Añadir chat",
 	},
@@ -997,6 +1004,8 @@ export const allTranslations: {
 	    task: {
 		noBoardSelected: "Ningún tablero seleccionado",
 		boardNotFound: "Tablero no encontrado",
+	    
+		typeBoard: "board",
 
 		closeBoardButtonAudioLabel: "cerrar tablero",
 		toggleBoardButtonAudioLabel:

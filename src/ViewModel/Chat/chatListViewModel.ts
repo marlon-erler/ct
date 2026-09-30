@@ -5,7 +5,7 @@ import CoreViewModel from "../Global/coreViewModel";
 import ContactListViewModel from "../Global/contactViewModel";
 import ConnectionViewModel from "../Global/connectionViewModel";
 import * as React from "../../react";
-import { IndexManager } from "../../Model/Utility/utility";
+import implementFilter, { IndexManager } from "../../Model/Utility/utility";
 import ChatModel from "../../Model/Chat/chatModel";
 
 export default class ChatListViewModel {
@@ -18,8 +18,9 @@ export default class ChatListViewModel {
     );
 
     // state
-    newChatPrimaryChannel: React.State<string> = new React.State("");
+    chatQuery: React.State<string> = new React.State("");
     chatViewModels: React.ListState<ChatViewModel> = new React.ListState();
+    chatMatches: React.ListState<ChatViewModel> = new React.ListState();
 
     selectedChat: React.State<ChatViewModel | undefined> = new React.State<any>(
         undefined,
@@ -27,17 +28,17 @@ export default class ChatListViewModel {
 
     // guards
     cannotCreateChat = React.createProxyState(
-        [this.newChatPrimaryChannel],
-        () => this.newChatPrimaryChannel.value == "",
+        [this.chatQuery],
+        () => this.chatQuery.value == "",
     );
 
     // methods
     createChat = (): void => {
         const chatModel: ChatModel =
             this.coreViewModel.chatListModel.createChat(
-                this.newChatPrimaryChannel.value,
+                this.chatQuery.value,
             );
-        this.newChatPrimaryChannel.value = "";
+        this.chatQuery.value = "";
 
         const chatViewModel: ChatViewModel =
             this.createChatViewModel(chatModel);
@@ -107,6 +108,8 @@ export default class ChatListViewModel {
         );
 
         this.loadChats();
+	
+	implementFilter(this.chatViewModels, this.chatMatches, this.chatQuery, chat => chat.chatModel.info.name)
     }
 
     // utility

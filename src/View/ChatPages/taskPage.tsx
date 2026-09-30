@@ -67,7 +67,7 @@ export function TaskPage(
                                 on:enter={taskPageViewModel.createBoard}
                                 placeholder={
                                     coreViewModel.translations.general
-                                        .filterOrCreateLabel
+                                        .filterOrCreateLabel(coreViewModel.translations.chatPage.task.typeBoard)
                                 }
                             ></input>
                         </div>
