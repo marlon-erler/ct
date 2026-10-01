@@ -445,7 +445,7 @@ body[showing-chat] #chat-page-wrapper {
   justify-content: space-between;
 }
 #chat-page > div > #ribbon > span {
-  overflow-y: auto;
+  overflowx: hidden;
   flex-direction: column;
   justify-content: end;
 }
