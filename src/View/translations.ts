@@ -22,7 +22,7 @@ const englishTranslations = {
         saveButton: "Save",
         setButton: "Set",
 
-	selectAllLabel: "Select all",
+        selectAllLabel: "Select all",
 
         filterOrCreateLabel: (type: string) => `Search or create ${type}`,
         createLabel: (query: string) => `Create "${query}"`,
@@ -172,6 +172,7 @@ const englishTranslations = {
         settingsData: "Identity & personal data",
 
         chatsHeadline: "Chats",
+        noChatsPlaceholder: "No chats",
 
         ///
 
@@ -403,8 +404,8 @@ export const allTranslations: {
             refreshButton: "Aktualisieren",
             saveButton: "Speichern",
             setButton: "OK",
-	
-	    selectAllLabel: "Alle auswählen",
+
+            selectAllLabel: "Alle auswählen",
 
             filterOrCreateLabel: (type: string) =>
                 `${type} suchen oder erstellen`,
@@ -548,6 +549,7 @@ export const allTranslations: {
             settingsData: "Identität und persönliche Daten",
 
             chatsHeadline: "Chats",
+            noChatsPlaceholder: "Keine Chats",
 
             transferChannelHeadline: "Übertragungskanal",
             transferKeyHeadline: "Schlüssel",
@@ -750,8 +752,8 @@ export const allTranslations: {
             refreshButton: "Actualizar",
             saveButton: "Guardar",
             setButton: "OK",
-	
-	    selectAllLabel: "Seleccionar todos",
+
+            selectAllLabel: "Seleccionar todos",
 
             filterOrCreateLabel: (type: string) => `Buscar o crear ${type}`,
             createLabel: (query: string) => `Crear "${query}"`,
@@ -894,6 +896,7 @@ export const allTranslations: {
             settingsData: "Identidad y datos personales",
 
             chatsHeadline: "Chats",
+            noChatsPlaceholder: "No hay chats",
 
             transferChannelHeadline: "Canal de Transferencia",
             transferKeyHeadline: "Clave de encriptación de transferencia",

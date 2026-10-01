@@ -53,9 +53,9 @@ function OptionEntry(
             fileTransferViewModel.selectedPaths.remove(fileOption.path);
         }
     });
-    fileTransferViewModel.allOptionsSelected.subscribe(allSelected => {
-	isSelected.value = allSelected;
-    })
+    fileTransferViewModel.allOptionsSelected.subscribe((allSelected) => {
+        isSelected.value = allSelected;
+    });
     function toggle() {
         isSelected.value = !isSelected.value;
     }
@@ -69,6 +69,69 @@ function OptionEntry(
                 </span>
             </div>
         </button>
+    );
+}
+
+function FileSelectionDetail(
+    coreViewModel: CoreViewModel,
+    fileTransferViewModel: FileTransferViewModel,
+) {
+    const OptionConverter: React.StateItemConverter<FileTransferOption> = (
+        fileOption: FileTransferOption,
+    ) => {
+        return OptionEntry(fileOption, fileTransferViewModel);
+    };
+
+    const chatList = React.createProxyState(
+        [fileTransferViewModel.chatFileOptions],
+        () =>
+            fileTransferViewModel.chatFileOptions.value.size == 0 ? (
+                <span class="secondary">
+                    {
+                        coreViewModel.translations.dataTransferModal
+                            .noChatsPlaceholder
+                    }
+                </span>
+            ) : (
+                <div
+                    class="flex-column gap"
+                    children:append={[
+                        fileTransferViewModel.chatFileOptions,
+                        OptionConverter,
+                    ]}
+                ></div>
+            ),
+    );
+
+    return (
+        <div>
+            <h3>
+                {coreViewModel.translations.dataTransferModal.generalHeadline}
+            </h3>
+            <div
+                class="flex-column gap content-margin-bottom"
+                children:append={[
+                    fileTransferViewModel.generalFileOptions,
+                    OptionConverter,
+                ]}
+            ></div>
+
+            <hr></hr>
+
+            <h3>
+                {coreViewModel.translations.dataTransferModal.chatsHeadline}
+            </h3>
+            <div children:set={chatList}></div>
+            <hr></hr>
+
+            <label class="inline">
+                <input
+                    type="checkbox"
+                    bind:checked={fileTransferViewModel.allOptionsSelected}
+                ></input>
+                {coreViewModel.translations.general.selectAllLabel}
+            </label>
+        </div>
     );
 }
 
@@ -193,12 +256,6 @@ function FileSelectionModal(
     coreViewModel: CoreViewModel,
     fileTransferViewModel: FileTransferViewModel,
 ) {
-    const OptionConverter: React.StateItemConverter<FileTransferOption> = (
-        fileOption: FileTransferOption,
-    ) => {
-        return OptionEntry(fileOption, fileTransferViewModel);
-    };
-
     // state
     const isPresented = React.createProxyState(
         [fileTransferViewModel.presentedModal],
@@ -226,40 +283,7 @@ function FileSelectionModal(
 
                     <hr></hr>
 
-                    <h3>
-                        {
-                            coreViewModel.translations.dataTransferModal
-                                .generalHeadline
-                        }
-                    </h3>
-                    <div
-                        class="flex-column gap content-margin-bottom"
-                        children:append={[
-                            fileTransferViewModel.generalFileOptions,
-                            OptionConverter,
-                        ]}
-                    ></div>
-
-                    <h3>
-                        {
-                            coreViewModel.translations.dataTransferModal
-                                .chatsHeadline
-                        }
-                    </h3>
-                    <div
-                        class="flex-column gap"
-                        children:append={[
-                            fileTransferViewModel.chatFileOptions,
-                            OptionConverter,
-                        ]}
-		    ></div>
-		
-		<hr></hr>
-
-		<label class="inline">
-		    <input type="checkbox" bind:checked={fileTransferViewModel.allOptionsSelected}></input>
-		    {coreViewModel.translations.general.selectAllLabel}
-		</label>
+                    {FileSelectionDetail(coreViewModel, fileTransferViewModel)}
                 </main>
                 <div class="flex-row width-100">
                     <button
@@ -688,40 +712,7 @@ function ExportFileSelectionModal(
 
                     <hr></hr>
 
-                    <h3>
-                        {
-                            coreViewModel.translations.dataTransferModal
-                                .generalHeadline
-                        }
-                    </h3>
-                    <div
-                        class="flex-column gap content-margin-bottom"
-                        children:append={[
-                            fileTransferViewModel.generalFileOptions,
-                            OptionConverter,
-                        ]}
-                    ></div>
-
-                    <h3>
-                        {
-                            coreViewModel.translations.dataTransferModal
-                                .chatsHeadline
-                        }
-                    </h3>
-                    <div
-                        class="flex-column gap"
-                        children:append={[
-                            fileTransferViewModel.chatFileOptions,
-                            OptionConverter,
-                        ]}
-                    ></div>
-		
-		<hr></hr>
-
-		<label class="inline">
-		    <input type="checkbox" bind:checked={fileTransferViewModel.allOptionsSelected}></input>
-		    {coreViewModel.translations.general.selectAllLabel}
-		</label>
+                    {FileSelectionDetail(coreViewModel, fileTransferViewModel)}
                 </main>
                 <div class="flex-row width-100">
                     <button

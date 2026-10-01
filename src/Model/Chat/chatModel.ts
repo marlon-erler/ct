@@ -92,7 +92,7 @@ export default class ChatModel {
     };
 
     readonly getPreviousFilterPath = (): string[] => {
-        return StorageModel.getPath( 
+        return StorageModel.getPath(
             StorageModelSubPaths.Chat,
             filePaths.chat.previousFilter(this.id),
         );

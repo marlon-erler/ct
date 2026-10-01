@@ -318,6 +318,7 @@
       refreshButton: "Refresh",
       saveButton: "Save",
       setButton: "Set",
+      selectAllLabel: "Select all",
       filterOrCreateLabel: (type) => `Search or create ${type}`,
       createLabel: (query) => `Create "${query}"`,
       reloadAppButton: "Reload App",
@@ -430,6 +431,7 @@
       connectionData: "Connection data",
       settingsData: "Identity & personal data",
       chatsHeadline: "Chats",
+      noChatsPlaceholder: "No chats",
       ///
       transferChannelHeadline: "Transfer Chanel",
       transferKeyHeadline: "Transfer Encryption Key",
@@ -590,6 +592,7 @@
         refreshButton: "Aktualisieren",
         saveButton: "Speichern",
         setButton: "OK",
+        selectAllLabel: "Alle ausw\xE4hlen",
         filterOrCreateLabel: (type) => `${type} suchen oder erstellen`,
         createLabel: (query) => `"${query}" erstellen`,
         reloadAppButton: "Neu laden",
@@ -697,6 +700,7 @@
         connectionData: "Verbindungsdaten",
         settingsData: "Identit\xE4t und pers\xF6nliche Daten",
         chatsHeadline: "Chats",
+        noChatsPlaceholder: "Keine Chats",
         transferChannelHeadline: "\xDCbertragungskanal",
         transferKeyHeadline: "Schl\xFCssel",
         sendButton: "Senden",
@@ -841,6 +845,7 @@
         refreshButton: "Actualizar",
         saveButton: "Guardar",
         setButton: "OK",
+        selectAllLabel: "Seleccionar todos",
         filterOrCreateLabel: (type) => `Buscar o crear ${type}`,
         createLabel: (query) => `Crear "${query}"`,
         reloadAppButton: "Recargar app",
@@ -948,6 +953,7 @@
         connectionData: "Datos de conexi\xF3n",
         settingsData: "Identidad y datos personales",
         chatsHeadline: "Chats",
+        noChatsPlaceholder: "No hay chats",
         transferChannelHeadline: "Canal de Transferencia",
         transferKeyHeadline: "Clave de encriptaci\xF3n de transferencia",
         sendButton: "Enviar",
@@ -2282,6 +2288,7 @@
       this.generalFileOptions = new ListState();
       this.chatFileOptions = new ListState();
       this.selectedPaths = new ListState();
+      this.allOptionsSelected = new State(false);
       this.transferChannel = new State("");
       this.transferKey = new State("");
       this.receivingTransferChannel = new State("");
@@ -8196,10 +8203,41 @@
         fileTransferViewModel2.selectedPaths.remove(fileOption.path);
       }
     });
+    fileTransferViewModel2.allOptionsSelected.subscribe((allSelected) => {
+      isSelected.value = allSelected;
+    });
     function toggle() {
       isSelected.value = !isSelected.value;
     }
     return /* @__PURE__ */ createElement("button", { class: "tile", "toggle:selected": isSelected, "on:click": toggle }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("b", { class: "ellipsis" }, fileOption.label), /* @__PURE__ */ createElement("span", { class: "secondary ellipsis" }, StorageModel.pathComponentsToString(...fileOption.path))));
+  }
+  function FileSelectionDetail(coreViewModel2, fileTransferViewModel2) {
+    const OptionConverter = (fileOption) => {
+      return OptionEntry(fileOption, fileTransferViewModel2);
+    };
+    const chatList = createProxyState(
+      [fileTransferViewModel2.chatFileOptions],
+      () => fileTransferViewModel2.chatFileOptions.value.size == 0 ? /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.noChatsPlaceholder) : /* @__PURE__ */ createElement(
+        "div",
+        {
+          class: "flex-column gap",
+          "children:append": [
+            fileTransferViewModel2.chatFileOptions,
+            OptionConverter
+          ]
+        }
+      )
+    );
+    return /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.generalHeadline), /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "flex-column gap content-margin-bottom",
+        "children:append": [
+          fileTransferViewModel2.generalFileOptions,
+          OptionConverter
+        ]
+      }
+    ), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.chatsHeadline), /* @__PURE__ */ createElement("div", { "children:set": chatList }), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "inline" }, /* @__PURE__ */ createElement("input", { type: "checkbox", "bind:checked": fileTransferViewModel2.allOptionsSelected }), coreViewModel2.translations.general.selectAllLabel));
   }
   function DirectionSelectionModal(coreViewModel2, connectionViewModel2, fileTransferViewModel2) {
     const isPresented = createProxyState(
@@ -8259,32 +8297,11 @@
     )));
   }
   function FileSelectionModal(coreViewModel2, fileTransferViewModel2) {
-    const OptionConverter = (fileOption) => {
-      return OptionEntry(fileOption, fileTransferViewModel2);
-    };
     const isPresented = createProxyState(
       [fileTransferViewModel2.presentedModal],
       () => fileTransferViewModel2.presentedModal.value == 1 /* FileSelection */
     );
-    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.sendHeadline), /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.selectionDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.generalHeadline), /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "flex-column gap content-margin-bottom",
-        "children:append": [
-          fileTransferViewModel2.generalFileOptions,
-          OptionConverter
-        ]
-      }
-    ), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.chatsHeadline), /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "flex-column gap",
-        "children:append": [
-          fileTransferViewModel2.chatFileOptions,
-          OptionConverter
-        ]
-      }
-    )), /* @__PURE__ */ createElement("div", { class: "flex-row width-100" }, /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.sendHeadline), /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.selectionDescription), /* @__PURE__ */ createElement("hr", null), FileSelectionDetail(coreViewModel2, fileTransferViewModel2)), /* @__PURE__ */ createElement("div", { class: "flex-row width-100" }, /* @__PURE__ */ createElement(
       "button",
       {
         class: "flex",
@@ -8457,25 +8474,7 @@
       [fileTransferViewModel2.presentedModal],
       () => fileTransferViewModel2.presentedModal.value == 6 /* ExportFileSelection */
     );
-    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.exportHeadline), /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.exportSelectionDescription), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.generalHeadline), /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "flex-column gap content-margin-bottom",
-        "children:append": [
-          fileTransferViewModel2.generalFileOptions,
-          OptionConverter
-        ]
-      }
-    ), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.chatsHeadline), /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "flex-column gap",
-        "children:append": [
-          fileTransferViewModel2.chatFileOptions,
-          OptionConverter
-        ]
-      }
-    )), /* @__PURE__ */ createElement("div", { class: "flex-row width-100" }, /* @__PURE__ */ createElement(
+    return /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isPresented }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, coreViewModel2.translations.dataTransferModal.exportHeadline), /* @__PURE__ */ createElement("span", { class: "secondary" }, coreViewModel2.translations.dataTransferModal.exportSelectionDescription), /* @__PURE__ */ createElement("hr", null), FileSelectionDetail(coreViewModel2, fileTransferViewModel2)), /* @__PURE__ */ createElement("div", { class: "flex-row width-100" }, /* @__PURE__ */ createElement(
       "button",
       {
         class: "flex",
