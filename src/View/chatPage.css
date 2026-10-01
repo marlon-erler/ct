@@ -137,7 +137,7 @@ body[showing-chat] #chat-page-wrapper {
 }
 
 #chat-page > div > #ribbon > span {
-    overflow-y: auto;
+    overflowx: hidden;
     flex-direction: column;
     justify-content: end;
 }
