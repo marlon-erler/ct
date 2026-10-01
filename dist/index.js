@@ -619,7 +619,7 @@
       },
       homePage: {
         appName: "Coordination Tool",
-        greeting: (name) => `Hi ${name}!`,
+        greeting: (name) => `Hallo ${name}`,
         serverAddress: "Serveradresse",
         serverAddressPlaceholder: "wss://192.168.0.69:3000",
         connectAudioLabel: "mit Server verbinden",
@@ -872,7 +872,7 @@
       },
       homePage: {
         appName: "Coordination Tool",
-        greeting: (name) => `Hola ${name}!`,
+        greeting: (name) => `Hola ${name}`,
         serverAddress: "Direcci\xF3n del servidor",
         serverAddressPlaceholder: "wss://192.168.0.69:3000",
         connectAudioLabel: "conectar al servidor",
@@ -8237,7 +8237,13 @@
           OptionConverter
         ]
       }
-    ), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.chatsHeadline), /* @__PURE__ */ createElement("div", { "children:set": chatList }), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "inline" }, /* @__PURE__ */ createElement("input", { type: "checkbox", "bind:checked": fileTransferViewModel2.allOptionsSelected }), coreViewModel2.translations.general.selectAllLabel));
+    ), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("h3", null, coreViewModel2.translations.dataTransferModal.chatsHeadline), /* @__PURE__ */ createElement("div", { "children:set": chatList }), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("label", { class: "inline" }, /* @__PURE__ */ createElement(
+      "input",
+      {
+        type: "checkbox",
+        "bind:checked": fileTransferViewModel2.allOptionsSelected
+      }
+    ), coreViewModel2.translations.general.selectAllLabel));
   }
   function DirectionSelectionModal(coreViewModel2, connectionViewModel2, fileTransferViewModel2) {
     const isPresented = createProxyState(

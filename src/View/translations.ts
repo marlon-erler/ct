@@ -440,7 +440,7 @@ export const allTranslations: {
 
         homePage: {
             appName: "Coordination Tool",
-            greeting: (name: string) => `Hi ${name}!`,
+            greeting: (name: string) => `Hallo ${name}`,
 
             serverAddress: "Serveradresse",
             serverAddressPlaceholder: "wss://192.168.0.69:3000",
@@ -787,7 +787,7 @@ export const allTranslations: {
 
         homePage: {
             appName: "Coordination Tool",
-            greeting: (name: string) => `Hola ${name}!`,
+            greeting: (name: string) => `Hola ${name}`,
 
             serverAddress: "Dirección del servidor",
             serverAddressPlaceholder: "wss://192.168.0.69:3000",
