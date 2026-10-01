@@ -21,6 +21,7 @@ export default class FileTransferViewModel extends Context {
     chatFileOptions: React.ListState<FileTransferOption> =
         new React.ListState();
     selectedPaths: React.ListState<string[]> = new React.ListState();
+    allOptionsSelected: React.State<boolean> = new React.State(false);
 
     transferChannel: React.State<string> = new React.State("");
     transferKey: React.State<string> = new React.State("");

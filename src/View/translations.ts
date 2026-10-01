@@ -22,6 +22,8 @@ const englishTranslations = {
         saveButton: "Save",
         setButton: "Set",
 
+	selectAllLabel: "Select all",
+
         filterOrCreateLabel: (type: string) => `Search or create ${type}`,
         createLabel: (query: string) => `Create "${query}"`,
 
@@ -401,6 +403,8 @@ export const allTranslations: {
             refreshButton: "Aktualisieren",
             saveButton: "Speichern",
             setButton: "OK",
+	
+	    selectAllLabel: "Alle auswählen",
 
             filterOrCreateLabel: (type: string) =>
                 `${type} suchen oder erstellen`,
@@ -746,6 +750,8 @@ export const allTranslations: {
             refreshButton: "Actualizar",
             saveButton: "Guardar",
             setButton: "OK",
+	
+	    selectAllLabel: "Seleccionar todos",
 
             filterOrCreateLabel: (type: string) => `Buscar o crear ${type}`,
             createLabel: (query: string) => `Crear "${query}"`,

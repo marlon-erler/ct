@@ -53,6 +53,9 @@ function OptionEntry(
             fileTransferViewModel.selectedPaths.remove(fileOption.path);
         }
     });
+    fileTransferViewModel.allOptionsSelected.subscribe(allSelected => {
+	isSelected.value = allSelected;
+    })
     function toggle() {
         isSelected.value = !isSelected.value;
     }
@@ -249,7 +252,14 @@ function FileSelectionModal(
                             fileTransferViewModel.chatFileOptions,
                             OptionConverter,
                         ]}
-                    ></div>
+		    ></div>
+		
+		<hr></hr>
+
+		<label class="inline">
+		    <input type="checkbox" bind:checked={fileTransferViewModel.allOptionsSelected}></input>
+		    {coreViewModel.translations.general.selectAllLabel}
+		</label>
                 </main>
                 <div class="flex-row width-100">
                     <button
@@ -705,6 +715,13 @@ function ExportFileSelectionModal(
                             OptionConverter,
                         ]}
                     ></div>
+		
+		<hr></hr>
+
+		<label class="inline">
+		    <input type="checkbox" bind:checked={fileTransferViewModel.allOptionsSelected}></input>
+		    {coreViewModel.translations.general.selectAllLabel}
+		</label>
                 </main>
                 <div class="flex-row width-100">
                     <button
