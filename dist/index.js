@@ -3222,10 +3222,10 @@
         return [...this.getReactionDirPath(), id];
       };
       this.getPreviousFilterPath = () => {
-        return [
+        return StorageModel.getPath(
           "chat" /* Chat */,
-          ...filePaths.chat.previousFilter(this.id)
-        ];
+          filePaths.chat.previousFilter(this.id)
+        );
       };
       // handlers
       this.handleMessage = (body) => {
