@@ -480,7 +480,9 @@
         showEncryptionKey: "Show encryption key",
         randomizeKey: "Randomize",
         setColorButtonAudioLabel: "set color",
-        deleteChatButton: "Delete entire chat"
+        deleteChatButton: "Delete entire chat",
+        deleteChatHeadline: "Delete chat?",
+        deleteChatDescription: "This will delete all messages, tasks, and other data related to this chat from device."
       },
       message: {
         messagesHeadline: "Messages",
@@ -746,7 +748,9 @@
           showEncryptionKey: "Schl\xFCssel anzeigen",
           randomizeKey: "Zuf\xE4llig generieren",
           setColorButtonAudioLabel: "Farbe festlegen",
-          deleteChatButton: "Gesamten Chat l\xF6schen"
+          deleteChatButton: "Gesamten Chat l\xF6schen",
+          deleteChatHeadline: "Gesamten Chat l\xF6schen?",
+          deleteChatDescription: "Dies l\xF6scht alle Nachrichten, Aufgaben und alle anderen Daten, die zu diesem Chat geh\xF6ren."
         },
         message: {
           messagesHeadline: "Nachrichten",
@@ -999,7 +1003,9 @@
           showEncryptionKey: "Mostrar clave de encriptaci\xF3n",
           randomizeKey: "Aleatorizar",
           setColorButtonAudioLabel: "establecer color",
-          deleteChatButton: "Eliminar todo el chat"
+          deleteChatButton: "Eliminar todo el chat",
+          deleteChatHeadline: "\xBFEliminar chat?",
+          deleteChatDescription: "\xBFQuieres borrar todas las mensajes, tareas y otros datos que pertenecen a este chat?"
         },
         message: {
           messagesHeadline: "Mensajes",
@@ -6700,6 +6706,48 @@
     );
   }
 
+  // src/View/Components/confirmationDialog.tsx
+  function ConfirmationDialog(coreViewModel2, buttonLabel, icon, headline, description, action) {
+    const isModalOpen = new State(false);
+    function openModal() {
+      isModalOpen.value = true;
+    }
+    function closeModal() {
+      isModalOpen.value = false;
+    }
+    return /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement(
+      "button",
+      {
+        class: "danger width-100",
+        "on:click": openModal
+      },
+      /* @__PURE__ */ createElement("span", null, buttonLabel),
+      /* @__PURE__ */ createElement("span", { class: "icon" }, icon)
+    ), /* @__PURE__ */ createElement(
+      "div",
+      {
+        class: "modal",
+        "toggle:open": isModalOpen
+      },
+      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, headline), /* @__PURE__ */ createElement("p", { class: "secondary" }, description)), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "standard width-50",
+          "on:click": closeModal
+        },
+        coreViewModel2.translations.general.cancelButton
+      ), /* @__PURE__ */ createElement(
+        "button",
+        {
+          class: "danger width-50",
+          "on:click": action
+        },
+        /* @__PURE__ */ createElement("span", null, buttonLabel),
+        /* @__PURE__ */ createElement("span", { class: "icon" }, icon)
+      )))
+    ));
+  }
+
   // src/View/ChatPages/settingsPage.tsx
   function SettingsPage(coreViewModel2, settingsPageViewModel) {
     settingsPageViewModel.loadData();
@@ -6796,12 +6844,7 @@
       },
       coreViewModel2.translations.general.setButton,
       /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
-    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, DangerousActionButton(
-      coreViewModel2,
-      coreViewModel2.translations.chatPage.settings.deleteChatButton,
-      "chat_error",
-      settingsPageViewModel.remove
-    ))))));
+    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, ConfirmationDialog(coreViewModel2, coreViewModel2.translations.chatPage.settings.deleteChatButton, "delete_forever", coreViewModel2.translations.chatPage.settings.deleteChatHeadline, coreViewModel2.translations.chatPage.settings.deleteChatDescription, settingsPageViewModel.remove))))));
   }
 
   // src/View/Components/messageReactionFilterButton.tsx

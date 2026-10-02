@@ -1,5 +1,5 @@
 import { DeletableListItem } from "../Components/deletableListItem";
-import { DangerousActionButton } from "../Components/dangerousActionButton";
+import { ConfirmationDialog } from "../Components/confirmationDialog";
 import { ColorPicker } from "../Components/colorPicker";
 import * as React from "../../react";
 import SettingsPageViewModel from "../../ViewModel/Pages/settingsPageViewModel";
@@ -203,11 +203,15 @@ export function SettingsPage(
                         <hr></hr>
 
                         <div class="width-input">
-                            {DangerousActionButton(
+                            {ConfirmationDialog(
                                 coreViewModel,
                                 coreViewModel.translations.chatPage.settings
                                     .deleteChatButton,
-                                "chat_error",
+                                "delete_forever",
+                                coreViewModel.translations.chatPage.settings
+                                    .deleteChatHeadline,
+                                coreViewModel.translations.chatPage.settings
+                                    .deleteChatDescription,
                                 settingsPageViewModel.remove,
                             )}
                         </div>

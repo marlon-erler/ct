@@ -244,6 +244,9 @@ const englishTranslations = {
             setColorButtonAudioLabel: "set color",
 
             deleteChatButton: "Delete entire chat",
+            deleteChatHeadline: "Delete chat?",
+            deleteChatDescription:
+                "This will delete all messages, tasks, and other data related to this chat from device.",
         },
 
         message: {
@@ -618,6 +621,9 @@ export const allTranslations: {
                 setColorButtonAudioLabel: "Farbe festlegen",
 
                 deleteChatButton: "Gesamten Chat löschen",
+                deleteChatHeadline: "Gesamten Chat löschen?",
+                deleteChatDescription:
+                    "Dies löscht alle Nachrichten, Aufgaben und alle anderen Daten, die zu diesem Chat gehören.",
             },
 
             message: {
@@ -965,6 +971,9 @@ export const allTranslations: {
                 setColorButtonAudioLabel: "establecer color",
 
                 deleteChatButton: "Eliminar todo el chat",
+                deleteChatHeadline: "¿Eliminar chat?",
+                deleteChatDescription:
+                    "¿Quieres borrar todas las mensajes, tareas y otros datos que pertenecen a este chat?",
             },
 
             message: {
