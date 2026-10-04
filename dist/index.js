@@ -348,7 +348,7 @@
       greeting: (name) => `Hi ${name}`,
       ///
       serverAddress: "Server address",
-      serverAddressPlaceholder: "wss://192.168.0.69:3000",
+      serverAddressPlaceholder: "wss://udn-s1.onrender.com",
       connectAudioLabel: "connect to server",
       disconnectAudioLabel: "disconnect from server",
       manageConnectionsAudioLabel: "manage connections",
@@ -623,7 +623,7 @@
         appName: "Coordination Tool",
         greeting: (name) => `Hallo ${name}`,
         serverAddress: "Serveradresse",
-        serverAddressPlaceholder: "wss://192.168.0.69:3000",
+        serverAddressPlaceholder: "wss://udn-s1.onrender.com",
         connectAudioLabel: "mit Server verbinden",
         disconnectAudioLabel: "vom Server trennen",
         manageConnectionsAudioLabel: "Verbindungen verwalten",
@@ -878,7 +878,7 @@
         appName: "Coordination Tool",
         greeting: (name) => `Hola ${name}`,
         serverAddress: "Direcci\xF3n del servidor",
-        serverAddressPlaceholder: "wss://192.168.0.69:3000",
+        serverAddressPlaceholder: "wss://udn-s1.onrender.com",
         connectAudioLabel: "conectar al servidor",
         disconnectAudioLabel: "desconectar del servidor",
         manageConnectionsAudioLabel: "gestionar conexiones",
@@ -6715,37 +6715,7 @@
     function closeModal() {
       isModalOpen.value = false;
     }
-    return /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement(
-      "button",
-      {
-        class: "danger width-100",
-        "on:click": openModal
-      },
-      /* @__PURE__ */ createElement("span", null, buttonLabel),
-      /* @__PURE__ */ createElement("span", { class: "icon" }, icon)
-    ), /* @__PURE__ */ createElement(
-      "div",
-      {
-        class: "modal",
-        "toggle:open": isModalOpen
-      },
-      /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, headline), /* @__PURE__ */ createElement("p", { class: "secondary" }, description)), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "standard width-50",
-          "on:click": closeModal
-        },
-        coreViewModel2.translations.general.cancelButton
-      ), /* @__PURE__ */ createElement(
-        "button",
-        {
-          class: "danger width-50",
-          "on:click": action
-        },
-        /* @__PURE__ */ createElement("span", null, buttonLabel),
-        /* @__PURE__ */ createElement("span", { class: "icon" }, icon)
-      )))
-    ));
+    return /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("button", { class: "danger width-100", "on:click": openModal }, /* @__PURE__ */ createElement("span", null, buttonLabel), /* @__PURE__ */ createElement("span", { class: "icon" }, icon)), /* @__PURE__ */ createElement("div", { class: "modal", "toggle:open": isModalOpen }, /* @__PURE__ */ createElement("div", null, /* @__PURE__ */ createElement("main", null, /* @__PURE__ */ createElement("h2", null, headline), /* @__PURE__ */ createElement("p", { class: "secondary" }, description)), /* @__PURE__ */ createElement("div", { class: "flex-row" }, /* @__PURE__ */ createElement("button", { class: "standard width-50", "on:click": closeModal }, coreViewModel2.translations.general.cancelButton), /* @__PURE__ */ createElement("button", { class: "danger width-50", "on:click": action }, /* @__PURE__ */ createElement("span", null, buttonLabel), /* @__PURE__ */ createElement("span", { class: "icon" }, icon))))));
   }
 
   // src/View/ChatPages/settingsPage.tsx
@@ -6844,7 +6814,14 @@
       },
       coreViewModel2.translations.general.setButton,
       /* @__PURE__ */ createElement("span", { class: "icon" }, "check")
-    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, ConfirmationDialog(coreViewModel2, coreViewModel2.translations.chatPage.settings.deleteChatButton, "delete_forever", coreViewModel2.translations.chatPage.settings.deleteChatHeadline, coreViewModel2.translations.chatPage.settings.deleteChatDescription, settingsPageViewModel.remove))))));
+    )), /* @__PURE__ */ createElement("hr", null), /* @__PURE__ */ createElement("div", { class: "width-input" }, ConfirmationDialog(
+      coreViewModel2,
+      coreViewModel2.translations.chatPage.settings.deleteChatButton,
+      "delete_forever",
+      coreViewModel2.translations.chatPage.settings.deleteChatHeadline,
+      coreViewModel2.translations.chatPage.settings.deleteChatDescription,
+      settingsPageViewModel.remove
+    ))))));
   }
 
   // src/View/Components/messageReactionFilterButton.tsx
