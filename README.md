@@ -1,4 +1,11 @@
-# udn-comms
+# CT
+
+> [!NOTE]
+> **LOCAL DEVELOPMENT**
+>
+> This project is developed on a locally run git service.
+>
+> This repository gets updated for public releases and announcements only.
 
 CT is a messenger and task management application built for [UDN](https://github.com/marlon-erler/udn).
 
@@ -10,9 +17,15 @@ CT is a messenger and task management application built for [UDN](https://github
 - Calendar for tasks
 - Data transfer and export/import for identity, connections, and chats
 
+# Update Cycle
+
+- Updates are published monthly
+- Version numbers are a combination of year and months, e.g. 2610 for October 2026
+- Specific release dates and notes are published within two weeks of the release
+
 # Changes
 
-## 2610: (October 11th, 2026) Initial Release
+## 2610 - Scheduled for October 11th, 2026: Initial Release
 This application is a rebrand of Comms, whose development started in July 2024. Changelogs or versioning have not been present initially and were never standardized. The CT repository is a fork of Comms. Changes made between the lastest iteration of Comms and CT 2610 include:
 - Account and chat identity
     - Use a randomized UUID to identify users instead of manually entered names
