@@ -61,7 +61,7 @@ const englishTranslations = {
         ///
 
         serverAddress: "Server address",
-        serverAddressPlaceholder: "wss://192.168.0.69:3000",
+        serverAddressPlaceholder: "wss://udn-s1.onrender.com",
         connectAudioLabel: "connect to server",
         disconnectAudioLabel: "disconnect from server",
         manageConnectionsAudioLabel: "manage connections",
@@ -446,7 +446,7 @@ export const allTranslations: {
             greeting: (name: string) => `Hallo ${name}`,
 
             serverAddress: "Serveradresse",
-            serverAddressPlaceholder: "wss://192.168.0.69:3000",
+        serverAddressPlaceholder: "wss://udn-s1.onrender.com",
             connectAudioLabel: "mit Server verbinden",
             disconnectAudioLabel: "vom Server trennen",
             manageConnectionsAudioLabel: "Verbindungen verwalten",
@@ -796,7 +796,7 @@ export const allTranslations: {
             greeting: (name: string) => `Hola ${name}`,
 
             serverAddress: "Dirección del servidor",
-            serverAddressPlaceholder: "wss://192.168.0.69:3000",
+        serverAddressPlaceholder: "wss://udn-s1.onrender.com",
             connectAudioLabel: "conectar al servidor",
             disconnectAudioLabel: "desconectar del servidor",
             manageConnectionsAudioLabel: "gestionar conexiones",
